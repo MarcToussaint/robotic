@@ -4,3 +4,6 @@
 [submodule "rai-robotModels"]
 	path = rai-robotModels
 	url = https://github.com/MarcToussaint/rai-robotModels.git
+[submodule "pybind11"]
+	path = pybind11
+	url = https://github.com/pybind/pybind11.git

@@ -1,7 +1,7 @@
 BASE = rai
 BASE2 = src
 
-DEPEND = ry
+DEPEND = Core Algo Geo Plot Kin Gui ry
 
 test_paths = $(shell find . -maxdepth 1 -name '??-*' -printf "%f ")
 
