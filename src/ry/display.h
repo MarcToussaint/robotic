@@ -4,9 +4,10 @@
 #include <Gui/opengl.h>
 #include <pybind11/numpy.h>
 
+#include "types.h"
+
 namespace ry{
 
-  template<class T> using ptr=std::shared_ptr<T>;
   struct Configuration;
 
   struct Display_self{

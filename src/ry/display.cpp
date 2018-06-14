@@ -24,6 +24,7 @@ ry::Display_self::Display_self(ry::Configuration* _kin) : kin(_kin) {
 
   gl.add(glStandardScene);
   gl.add(kin->K);
+  gl.camera.setDefault();
   gl.update();
 }
 
