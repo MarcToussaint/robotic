@@ -1,0 +1,137 @@
+share/gofMake/config.mk
+
+%% compile temporaries
+*.o
+*.a
+*.so
+*.swp
+parser.tab.h
+parser.tab.cpp
+parser.tab.hpp
+parser.output
+lex.yy.c
+*_moc.cpp
+*_ui.h
+callgrind.out.*
+
+%% EXECUTABLE
+*.exe
+
+%% IDE temporaries
+*.kdev4
+vc60.idb
+.*.config
+.*.creator
+.*.creator.user*
+.*.files
+.*.includes
+
+.cproject
+.project
+*eclipse*
+
+tags
+.cccc
+
+*.orig
+
+# PYTHON
+*.pyc
+_*.py
+
+
+# EXECUTION
+core
+CORE
+*.log
+
+
+%% BACKUP/temporary files
+*.tmp
+*.dat
+nogit*
+*~
+z.*
+z/
+rai.log
+.#*#
+.#*
+#*#
+
+
+%% MAKE
+Makefile.dep
+Make.lock
+.lastMake
+makefile
+
+
+%% CMAKE
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+CMakeLists.txt.user
+CTestTestfile.cmake
+
+
+%% SWIG
+*_wrap.cxx
+ors.py
+orspy.py
+
+
+%% LATEX
+*.aux
+*.dvi
+*.log
+*.out
+*.toc
+*.tdo
+*.blg
+*.bbl
+*.snm
+*.nav
+*.ilg
+*.ind
+*.fdb_latexmk
+_region_.*
+
+
+%% SPECIAL for git/mlr:
+share/gofMake/config.mk
+share/extern/tony_mdp/parser.tab.cpp
+share/extern/ODE_0.11/download
+share/extern/ODE_0.11/ode-0.11
+share/extern/ODE_0.11/ode-0.11
+share/extern/ode-0.11
+share/extern/cuda
+share/extern/cudaSDK
+share/extern/ntcan
+share/extern/opencv-2.1
+share/extern/schunkLWA
+share/extern/schunkSDH-11-05-11
+share/extern/urg-0.0.2
+share/extern/esdcan-*
+
+
+%% QUESTIONABLE ???!!!
+*.zip
+*_doc
+html
+*.tgz
+
+
+%% ROS
+catkin/
+catkin_generated/
+devel/
+gtest/
+msg_gen
+srv_gen
+*Action.msg
+*ActionFeedback.msg
+*ActionGoal.msg
+*ActionResult.msg
+*Feedback.msg
+*Goal.msg
+*Result.msg

@@ -1,0 +1,6 @@
+[submodule "rai"]
+	path = rai
+	url = git@github.com:MarcToussaint/rai.git
+[submodule "rai-robotModels"]
+	path = rai-robotModels
+	url = https://github.com/MarcToussaint/rai-robotModels.git
