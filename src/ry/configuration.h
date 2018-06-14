@@ -8,17 +8,18 @@
 
 namespace ry{
 
-  struct Kin{
+  struct Configuration{
     Var<rai::KinematicWorld> K;
-    rai::Array<KinDisplay*> displays;
+    rai::Array<Display_self*> displays;
 
-    Kin(){}
+    Configuration(){}
+    ~Configuration();
 
     void addFile(const std::string& file);
 
     pybind11::array getJointState();
 
-    KinDisplay* display();
+    Display display();
   };
 
 }

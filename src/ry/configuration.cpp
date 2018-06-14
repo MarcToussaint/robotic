@@ -1,15 +1,22 @@
 #include "configuration.h"
 
-void ry::Kin::addFile(const std::string& file){
-  K.set()->addModel(file.c_str());
-  for(auto *d:displays) d->update(false);
+ry::Configuration::~Configuration(){
+//  LOG(0) <<"destroy " <<this;
+  cout <<displays <<endl;
+  for(auto& d:displays) d->kin=NULL;
+  displays.clear();
 }
 
-pybind11::array ry::Kin::getJointState(){
+void ry::Configuration::addFile(const std::string& file){
+  K.set()->addModel(file.c_str());
+  for(auto& d:displays) d->gl.update(STRING("addFile '" <<file <<"'"));
+}
+
+pybind11::array ry::Configuration::getJointState(){
   arr q = K.get()->getJointState();
   return pybind11::array(q.dim(), q.p);
 }
 
-ry::KinDisplay*ry::Kin::display(){ return new KinDisplay(*this); }
+ry::Display ry::Configuration::display(){ return Display(this); }
 
 

@@ -5,8 +5,8 @@ This is a container repo, exposing some functionality of the RAI code. See https
 ## Quick Start
 
 ```
-# if you don't have a github account: (switch submodules to public url)
-git config --file=.gitmodules submodule.rai.url https://github.com/MarcToussaint/rai.git
+git clone git@github.mit.edu:mtoussai/rai-python.git
+cd rai-python
 
 git submodule init
 git submodule update

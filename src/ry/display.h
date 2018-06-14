@@ -7,16 +7,23 @@
 namespace ry{
 
   template<class T> using ptr=std::shared_ptr<T>;
-  struct Kin;
+  struct Configuration;
 
-  struct KinDisplay{
-    Kin& kin;
+  struct Display_self{
+    Display_self(Configuration* _kin);
+    ~Display_self();
+    Configuration* kin=0;
     OpenGL gl;
+  };
 
-    KinDisplay(struct Kin& _kin);
-    ~KinDisplay();
+  struct Display{
+    ptr<Display_self> self;
+
+    Display(Configuration* _kin);
+    ~Display();
 
     void update(bool wait=false);
+    void update(std::string txt, bool wait=false);
   };
 
 }

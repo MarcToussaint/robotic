@@ -8,12 +8,13 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(libry, m) {
-  py::class_<ry::Kin>(m, "Kin")
+  py::class_<ry::Configuration>(m, "Configuration")
       .def(py::init<>())
-      .def("addFile", &ry::Kin::addFile)
-      .def("getJointState", &ry::Kin::getJointState)
-      .def("display", &ry::Kin::display);
+      .def("addFile", &ry::Configuration::addFile)
+      .def("getJointState", &ry::Configuration::getJointState)
+      .def("display", &ry::Configuration::display);
 
-  py::class_<ry::KinDisplay>(m, "KinDisplay")
-      .def("update", &ry::KinDisplay::update);
+  py::class_<ry::Display>(m, "Display")
+      .def("update", (void (ry::Display::*)(bool)) &ry::Display::update)
+      .def("update", (void (ry::Display::*)(std::string, bool)) &ry::Display::update);
 }
