@@ -39,6 +39,21 @@ void ry::Configuration::addFrame(const std::string& name, const std::string& par
   for(auto& d:displays) d->gl.update(STRING("addFrame '" <<name <<'(' <<parent <<")'"));
 }
 
+void ry::Configuration::editorFile(const std::string& filename){
+  cout <<"Edit the configuration in the editor. Whenever you save, the display will update. Wrong syntax errors will be displayed here. Hit SPACE in the window to animate, ENTER to force reload after error, q to exit this mode." <<endl;
+  K.writeAccess();
+  K().clear();
+  K().addModel(filename.c_str());
+  rai::system(STRING("emacs " <<filename <<" &"));
+  {
+    OpenGL gl;
+    gl.add(glStandardScene);
+    gl.add(K());
+    editConfiguration(filename.c_str(), K(), gl);
+  }
+  K.deAccess();
+}
+
 I_StringA ry::Configuration::getJointNames(){
   return I_conv(K.get()->getJointNames());
 }

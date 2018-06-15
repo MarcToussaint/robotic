@@ -5,7 +5,7 @@ This is a container repo, exposing some functionality of the RAI code. See https
 ## Quick Start
 
 ```
-git clone git@github.mit.edu:mtoussai/rai-python.git
+git clone git@github.com:MarcToussaint/rai-python.git
 cd rai-python
 
 git submodule init

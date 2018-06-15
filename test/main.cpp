@@ -22,6 +22,8 @@ void test(){
   cout <<"frame names: " << I_conv(K.getFrameNames()) <<endl;
   D.update(true);
 
+//  K.editorFile("../rai-robotModels/baxter/baxter.g");
+
 //    q = K.getJointState()
 //    print('joint state: ', q)
 //    q[2] = q[2] + 1.
