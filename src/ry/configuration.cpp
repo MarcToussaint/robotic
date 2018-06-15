@@ -19,6 +19,7 @@ void ry::Configuration::addFrame(const std::string& name, const std::string& par
   rai::Frame *p = 0;
   if(parent.size()) p = K()[parent.c_str()];
   rai::Frame *f = new rai::Frame(K());
+  f->name = name;
   if(p) f->linkFrom(p);
 
   Graph _args;
@@ -89,5 +90,7 @@ double ry::Configuration::getPairDistance(const char* frameA, const char* frameB
 }
 
 ry::Display ry::Configuration::display(){ return Display(this); }
+
+ry::KOMOpy ry::Configuration::komo(){ return KOMOpy(this); }
 
 

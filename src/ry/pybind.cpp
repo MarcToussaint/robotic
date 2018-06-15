@@ -24,9 +24,14 @@ PYBIND11_MODULE(libry, m) {
 
       .def("getPairDistance", &ry::Configuration::getPairDistance)
 
-      .def("display", &ry::Configuration::display);
+      .def("display", &ry::Configuration::display)
+      .def("komo", &ry::Configuration::komo);
 
   py::class_<ry::Display>(m, "Display")
       .def("update", (void (ry::Display::*)(bool)) &ry::Display::update)
       .def("update", (void (ry::Display::*)(std::string, bool)) &ry::Display::update);
+
+  py::class_<ry::KOMOpy>(m, "KOMOpy")
+      .def("optimize", &ry::KOMOpy::optimize);
+
 }

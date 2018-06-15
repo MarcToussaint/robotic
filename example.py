@@ -5,7 +5,7 @@ from ry import *
 def main():
     K = Configuration()
     D = K.display()
-    D.update(True)
+    D.update("empty configuration\n -- hit ENTER here to continue", True)
 
     K.addFile('rai-robotModels/baxter/baxter.g');
     print("joint names: ", K.getJointNames())
@@ -30,12 +30,12 @@ def main():
     K.setJointState(q)
     D.update(True)
 
-    K.addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(1. 1. 2)>" );
+    K.addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(.8 .8 1.5)>" );
     D.update(True)
 
-#    IK = K.getIK()
-#    IK.optimize( [ ('eq', ['posDiff', 'baxterL', 'ball'], {}) ] )
-#    D.update(True)
+    komo = K.komo()
+    komo.optimize( [ ('eq', ['posDiff', 'baxterL', 'ball'], {}) ] )
+    D.update(True)
     
     
 
