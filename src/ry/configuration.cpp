@@ -2,6 +2,7 @@
 
 #include <Kin/TM_PairCollision.h>
 #include <Kin/frame.h>
+#include <Kin/proxy.h>
 
 ry::Configuration::~Configuration(){
 //  LOG(0) <<"destroy " <<this;
@@ -14,7 +15,7 @@ void ry::Configuration::addFile(const std::string& file){
 }
 
 void ry::Configuration::addFrame(const std::string& name, const std::string& parent, const std::string& args){
-  LOG(0) <<"here" <<args <<endl;
+//  LOG(0) <<"here" <<args <<endl;
   K.writeAccess();
   rai::Frame *p = 0;
   if(parent.size()) p = K()[parent.c_str()];
@@ -24,8 +25,9 @@ void ry::Configuration::addFrame(const std::string& name, const std::string& par
 
   Graph _args;
   rai::String(args) >>_args;
-  cout <<"ARGUMENTS: " <<_args <<endl;
+//  cout <<"ARGUMENTS: " <<_args <<endl;
   f->read(_args);
+//  if(f->shape) f->shape->geom->createMeshes();
 //  if(args.size()){
 //    rai::Shape *s = new rai::Shape(*f);
 //    rai::String(args) >>s->type();
@@ -35,6 +37,8 @@ void ry::Configuration::addFrame(const std::string& name, const std::string& par
 //    rai::String(pose) >>f->Q;
 //    if(!p) f->X = f->Q;
 //  }
+
+  if(f->parent) f->X = f->parent->X * f->Q;
   K.deAccess();
   for(auto& d:displays) d->gl.update(STRING("addFrame '" <<name <<'(' <<parent <<")'"));
 }
@@ -100,7 +104,22 @@ double ry::Configuration::getPairDistance(const char* frameA, const char* frameB
   TM_PairCollision coll(K(), frameA, frameB, TM_PairCollision::_negScalar, false);
   arr y;
   coll.phi(y, NoArr, K());
+
+  rai::Proxy& proxy = K().proxies.append();
+  proxy.a = K().frames(coll.i);
+  proxy.b = K().frames(coll.j);
+
+  proxy.d = coll.coll->distance;
+  proxy.normal = coll.coll->normal;
+  arr P1 = coll.coll->p1;
+  arr P2 = coll.coll->p2;
+  if(coll.coll->rad1>0.) P1 -= coll.coll->rad1*coll.coll->normal;
+  if(coll.coll->rad2>0.) P2 += coll.coll->rad2*coll.coll->normal;
+  proxy.posA = P1;
+  proxy.posB = P2;
+
   K.deAccess();
+  for(auto& d:displays) d->gl.update(STRING("getPairDistance " <<frameA <<' ' <<frameB <<" = " <<-y.scalar()));
   return -y.scalar();
 }
 

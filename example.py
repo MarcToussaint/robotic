@@ -32,10 +32,18 @@ def main():
 
     K.addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(.8 .8 1.5)>" );
     D.update(True)
+    
+    K.addFrame("hand", "baxterL", "shape:ssBox size:[.3 .2 .1 .01] color:[1 1 0] Q:<t(0 0 0)>" );
+    D.update(True);
+
+    dist = K.getPairDistance("hand", "ball");
+    print('distance: ', dist);
+    D.update(True);
 
     komo = K.komo()
     komo.optimize( [ ('eq', ['posDiff', 'baxterL', 'ball'], {}) ] )
     D.update(True)
+
     
     
 

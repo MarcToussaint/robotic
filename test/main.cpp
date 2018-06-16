@@ -45,6 +45,12 @@ void test(){
     K.addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(.8 .8 1.5)>" );
     D.update(true);
 
+    K.addFrame("hand", "baxterL", "shape:ssBox size:[.3 .2 .1 .01] color:[1 1 0] Q:<t(0 0 0)>" );
+    D.update(true);
+
+    K.getPairDistance("hand", "ball");
+    D.update(true);
+
     auto komo = K.komo();
     komo.optimize( { I_feature("eq", {"posDiff", "baxterL", "ball"}, {} ) } );
     D.update(true);
