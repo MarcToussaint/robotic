@@ -15,7 +15,7 @@ void ry::Configuration::addFile(const std::string& file){
 }
 
 void ry::Configuration::addFrame(const std::string& name, const std::string& parent, const std::string& args){
-//  LOG(0) <<"here" <<args <<endl;
+//  LOG(0) <<"here" <<args;
   K.writeAccess();
   rai::Frame *p = 0;
   if(parent.size()) p = K()[parent.c_str()];
@@ -23,10 +23,9 @@ void ry::Configuration::addFrame(const std::string& name, const std::string& par
   f->name = name;
   if(p) f->linkFrom(p);
 
-  Graph _args;
-  rai::String(args) >>_args;
+  rai::String(args) >>f->ats;
 //  cout <<"ARGUMENTS: " <<_args <<endl;
-  f->read(_args);
+  f->read(f->ats);
 //  if(f->shape) f->shape->geom->createMeshes();
 //  if(args.size()){
 //    rai::Shape *s = new rai::Shape(*f);
@@ -124,6 +123,10 @@ double ry::Configuration::getPairDistance(const char* frameA, const char* frameB
 }
 
 ry::Display ry::Configuration::display(){ return Display(this); }
+
+ry::Camera ry::Configuration::camera(const std::string& frame, bool _renderInBackground){
+  return Camera(*this, rai::String(frame), _renderInBackground);
+}
 
 ry::KOMOpy ry::Configuration::komo(){ return KOMOpy(this); }
 

@@ -6,6 +6,7 @@
 
 #include "types.h"
 #include "display.h"
+#include "camera.h"
 #include "komo-py.h"
 
 namespace ry{
@@ -45,9 +46,11 @@ namespace ry{
     //-- modules
     Display display();
 
-    //view - simulate rgb & depth images, point clouds, for a cam
+    /// simulate rgb & depth images, point clouds, for a cam
+    Camera camera(const std::string& frame, bool _renderInBackground=false);
 
-    KOMOpy komo();     ///< IK, motion and seq manipulation optimization
+    /// IK, motion and seq manipulation optimization
+    KOMOpy komo();
 
     //cgo - more general constraint graph optimization
 
