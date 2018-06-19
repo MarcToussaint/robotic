@@ -207,13 +207,17 @@ arr ry::KOMOpy_self::getRelPose(uint t, const rai::String& from, const rai::Stri
  * komo.setObjective({2}, OT_sos, { "vec", "object" }, { {"target", {0.,0.,1.} } );
  *
  */
-void ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, const StringA &featureSymbols, const std::map<std::string, arr> &parameters){
+void ry::KOMOpy_self::setObjective(const arr& times, const StringA &featureSymbols, const std::map<std::string, arr> &parameters){
   arr target;
   double scale=1e1;
   if(parameters.find("scale")!=parameters.end()) scale = parameters.at("scale").scalar();
   if(parameters.find("target")!=parameters.end()) target = parameters.at("target");
 
-  Task *t = setObjective(times, type, symbols2feature(featureSymbols, parameters), target, scale);
+  rai::Enum<ObjectiveType> type;
+  featureSymbols(0) >>type;
+  StringA symbols = featureSymbols({1,-1});
+
+  Task *t = setObjective(times, type, symbols2feature(symbols, parameters), target, scale);
 
   if(parameters.find("order")!=parameters.end()) t->map->order = (uint)parameters.at("order").scalar();
 }
@@ -230,15 +234,18 @@ ry::KOMOpy::KOMOpy(ry::Configuration* _kin, double phases, uint stepsPerPhase, d
 ry::KOMOpy::~KOMOpy(){
 }
 
+void ry::KOMOpy::makeObjectsFree(const I_StringA& objs){
+  self->world.makeObjectsFree(I_conv(objs));
+  self->world.optimizeTree();
+  self->world.calc_q();
+}
+
 void ry::KOMOpy::optimize(const Graph& features){
   for(Node* n : features) {
     Graph& feature = n->graph();
 
     arr times;
     if(feature["time"]) times = feature.get<arr>("time");
-
-    rai::Enum<ObjectiveType> type;
-    feature.get<rai::String>("type") >>type;
 
     StringA symbols = feature.get<StringA>("feature");
 
@@ -252,7 +259,7 @@ void ry::KOMOpy::optimize(const Graph& features){
       }
     }
 
-    self->setObjective(times, type, symbols, parameters);
+    self->setObjective(times, symbols, parameters);
   }
 
   self->reset();
@@ -276,17 +283,14 @@ void ry::KOMOpy::optimize2(const I_features& features){
     arr times;
     times = std::get<0>(feature);
 
-    rai::Enum<ObjectiveType> type;
-    rai::String( std::get<1>(feature) ) >>type;
-
-    StringA symbols = I_conv(std::get<2>(feature));
+    StringA symbols = I_conv(std::get<1>(feature));
 
     std::map<std::string, arr> parameters;
-    for (const auto& x : std::get<3>(feature)) {
+    for (const auto& x : std::get<2>(feature)) {
       parameters.insert(std::make_pair(x.first, conv_stdvec2arr(x.second)));
     }
 
-    self->setObjective(times, type, symbols, parameters);
+    self->setObjective(times, symbols, parameters);
   }
 
   self->reset();
@@ -303,4 +307,10 @@ void ry::KOMOpy::optimize2(const I_features& features){
   self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
   for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy::optimization end pose"));
 }
+
+void ry::KOMOpy::getConfiguration(int t){
+  self->kin->K.set()->setFrameState(self->configurations(t+self->k_order)->getFrameState());
+  for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy configuration " <<t));
+}
+
 #endif

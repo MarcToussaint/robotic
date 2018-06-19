@@ -58,20 +58,20 @@ void test(){
   K.stash();
   {
     auto komo = K.komo_IK();
-//    komo.optimize( { I_feature({}, "eq", {"posDiff", "pr2L", "ball"}, {} ) } );
-    komo.optimize( { "type:eq, feature:[posDiff pr2L ball]" } );
+//    komo.optimize( { I_feature({}, {"eq", "posDiff", "pr2L", "ball"}, {} ) } );
+    komo.optimize( { "feature:[eq posDiff pr2L ball]" } );
   }
   D.update(true);
 
   K.pop();
   {
     auto komo = K.komo_path(1.);
-//    I_args a = ;
-    komo.optimize( { "time:[1.], type:eq, feature:[posDiff pr2L ball]",
-                     "time:[1.], type:eq, feature:[qRobot], order:1",
-//                     I_feature({1.}, "eq", {"posDiff", "pr2L", "ball"}, I_args() ),
-//                     I_feature({1.}, "eq", {"qRobot"}, {{std::string("order"), {1.}}} )
+    komo.optimize( { "time:[1.], feature:[eq posDiff pr2L ball]",
+                     "time:[1.], feature:[eq qRobot], order:1",
                    } );
+//    komo.optimize( {   I_feature({1.}, {"eq", "posDiff", "pr2L", "ball"}, I_args() ),
+//                       I_feature({1.}, {"eq", "qRobot"}, {{std::string("order"), {1.}}} )
+//                   } );
   }
   D.update(true);
 

@@ -19,7 +19,7 @@ namespace ry{
     void setDiscreteOpt(uint k);
 
     /// set an objective
-    void setObjective(const arr& times, ObjectiveType type, const StringA& featureSymbols, const std::map<std::string, arr>& parameters={});
+    void setObjective(const arr& times, const StringA& featureSymbols, const std::map<std::string, arr>& parameters={});
 
     /// output the defined problem as a generic graph, that can also be displayed, saved and loaded
     Graph getProblemGraph(bool includeValues=false);
@@ -44,11 +44,13 @@ namespace ry{
     KOMOpy(Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase);
     ~KOMOpy();
 
+    void makeObjectsFree(const I_StringA& objs);
+
     void optimize(const Graph& features);
     void optimize2(const I_features& features);
 
     void adopt();
-    void adopt(uint config);
+    void getConfiguration(int t);
     void adopt(double phase);
   };
 
