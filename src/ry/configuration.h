@@ -14,6 +14,7 @@ namespace ry{
   struct Configuration{
     Var<rai::KinematicWorld> K;
     rai::Array<Display_self*> displays;
+    arr stack;
 
     Configuration(){}
     ~Configuration();
@@ -32,6 +33,9 @@ namespace ry{
     pybind11::array getFrameState();
     void setFrameState(pybind11::array& X);
 
+    void stash();
+    void pop();
+
     //-- set/get frame-wise
     FrameInfo getFrameInfo(const char* frame);
 
@@ -41,21 +45,19 @@ namespace ry{
 
     //-- collision queries
     double getPairDistance(const char* frameA, const char* frameB);
-    I_dict getCollisionReport();
+//    I_dict getCollisionReport();
 
     //-- modules
-    Display display();
-
     /// simulate rgb & depth images, point clouds, for a cam
     Camera camera(const std::string& frame, bool _renderInBackground=false);
+    Display display();
 
     /// IK, motion and seq manipulation optimization
-    KOMOpy komo();
-
-    //cgo - more general constraint graph optimization
+    KOMOpy komo_IK();    ///< to optimize a single configuration
+    KOMOpy komo_path(double phases, uint stepsPerPhase=20, double timePerPhase=5.);  ///< to optimize a k-order Markov path
+    KOMOpy komo_CGO(uint numConfigurations);   ///< to optimize a (non-sequential) constraint graph
 
     //physx - stepping the PhysX simulator
-
     //bullet - stepping the bullet simulator
 
     //exec - execute motions on pr2, baxter, kuka; and sync back joint states

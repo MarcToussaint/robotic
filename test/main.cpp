@@ -43,8 +43,8 @@ void test(){
   //    K.setJointState(q)
   //    D.update(True)
 
-  K.addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5");
-  auto C = K.camera("camera");
+//  K.addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5");
+//  auto C = K.camera("camera");
 
   K.addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(.8 .8 1.5)>" );
   D.update(true);
@@ -55,8 +55,24 @@ void test(){
   K.getPairDistance("hand", "ball");
   D.update(true);
 
-  auto komo = K.komo();
-  komo.optimize( { I_feature("eq", {"posDiff", "pr2L", "ball"}, {} ) } );
+  K.stash();
+  {
+    auto komo = K.komo_IK();
+//    komo.optimize( { I_feature({}, "eq", {"posDiff", "pr2L", "ball"}, {} ) } );
+    komo.optimize( { "type:eq, feature:[posDiff pr2L ball]" } );
+  }
+  D.update(true);
+
+  K.pop();
+  {
+    auto komo = K.komo_path(1.);
+//    I_args a = ;
+    komo.optimize( { "time:[1.], type:eq, feature:[posDiff pr2L ball]",
+                     "time:[1.], type:eq, feature:[qRobot], order:1",
+//                     I_feature({1.}, "eq", {"posDiff", "pr2L", "ball"}, I_args() ),
+//                     I_feature({1.}, "eq", {"qRobot"}, {{std::string("order"), {1.}}} )
+                   } );
+  }
   D.update(true);
 
 }

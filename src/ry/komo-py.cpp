@@ -1,8 +1,6 @@
 #include "komo-py.h"
 #include "configuration.h"
 
-
-
 #include "komo-py.h"
 
 #include <Kin/TM_default.h>
@@ -14,10 +12,16 @@
 
 double shapeSize(const rai::KinematicWorld& K, const char* name, uint i=2);
 
-ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin) : kin(_kin) {
+ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, uint T)
+  : kin(_kin) {
 //  LOG(0) <<"create " <<this;
   setModel(kin->K.get(), false);
-  setIKOpt();
+  denseMode = true;
+  if(T==0){ //IK mode
+    setIKOpt();
+  }else{
+    setDiscreteOpt(T);
+  }
 
 //  for (const auto&  pair : collision_pairs) {
 //    komo.activateCollisions(rai::String(pair.first), rai::String(pair.second));
@@ -27,7 +31,14 @@ ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin) : kin(_kin) {
 //  }
 //  if (checkLimits) {
 //    komo.setLimits(true, .05, 1e-2);
-//  }
+  //  }
+}
+
+ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase)
+  : kin(_kin) {
+  setModel(kin->K.get(), false);
+  denseMode = false;
+  setPathOpt(phases, stepsPerPhase, timePerPhase);
 }
 
 ry::KOMOpy_self::~KOMOpy_self(){
@@ -53,18 +64,28 @@ void ry::KOMOpy_self::setDiscreteOpt(uint k){
  * adds a sum-of-square objective over variables x(1) and x(2), defined by the TM-qItself feature, namely, the difference of q in x(1) and x(2)
  *
  */
-Task *ry::KOMOpy_self::setObjective(const intA& vars, ObjectiveType type, TaskMap *map, const arr &target, double scale){
-  uint order = vars.N-1;
-  CHECK_GE(k_order, order, "task requires larger k-order: " <<map->shortTag(world));
-  map->order = order;
+Task *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, TaskMap *map, const arr &target, double scale){
   Task *task = addTask(map->shortTag(world), map, type);
-//  if(vars.N==2) CHECK_EQ(vars(1), vars(0)+1, "so far only consecutive vars are supported");
-//  if(vars.N==3){
-//    CHECK_EQ(vars(1), vars(0)+1, "so far only consecutive vars are supported");
-//    CHECK_EQ(vars(2), vars(1)+1, "so far only consecutive vars are supported");
-//  }
-  task->setCostSpecs(vars(-1), vars(-1), target, scale);
-//  task->setCostSpecsDense(vars, target, scale);
+  if(!denseMode){
+    if(!times.N){
+      task->setCostSpecs(-1, -1, target, scale);
+    }else if(times.N==1){
+      task->setCostSpecs(times(0), times(0), stepsPerPhase, T, target, scale);
+    }else{
+      CHECK_EQ(times.N, 2, "");
+      task->setCostSpecs(times(0), times(1), stepsPerPhase, T, target, scale);
+    }
+  }else{
+    intA vars = convert<int,double>(times);
+    if(!vars.N){
+      CHECK_EQ(T, 1, "not in IK mode: you need to specify a variable tuple");
+      vars = {0};
+    }
+    uint order = vars.N-1;
+    CHECK_GE(k_order, order, "task requires larger k-order: " <<map->shortTag(world));
+    map->order = order;
+    task->setCostSpecsDense(vars, target, scale);
+  }
   return task;
 }
 
@@ -186,49 +207,100 @@ arr ry::KOMOpy_self::getRelPose(uint t, const rai::String& from, const rai::Stri
  * komo.setObjective({2}, OT_sos, { "vec", "object" }, { {"target", {0.,0.,1.} } );
  *
  */
-void ry::KOMOpy_self::setObjective(const intA& vars, ObjectiveType type, const StringA &featureSymbols, const std::map<std::string, arr> &parameters){
+void ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, const StringA &featureSymbols, const std::map<std::string, arr> &parameters){
   arr target;
   double scale=1e1;
   if(parameters.find("scale")!=parameters.end()) scale = parameters.at("scale").scalar();
   if(parameters.find("target")!=parameters.end()) target = parameters.at("target");
 
-  setObjective(vars, type, symbols2feature(featureSymbols, parameters), target, scale);
+  Task *t = setObjective(times, type, symbols2feature(featureSymbols, parameters), target, scale);
+
+  if(parameters.find("order")!=parameters.end()) t->map->order = (uint)parameters.at("order").scalar();
 }
 
 
-ry::KOMOpy::KOMOpy(ry::Configuration* _kin)
-  : self(make_shared<ry::KOMOpy_self>(_kin)) { //self(make_shared<KinIK_self>(K)){
+ry::KOMOpy::KOMOpy(ry::Configuration* _kin, uint T)
+  : self(make_shared<ry::KOMOpy_self>(_kin, T)) {
+}
+
+ry::KOMOpy::KOMOpy(ry::Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase)
+  : self(make_shared<ry::KOMOpy_self>(_kin, phases, stepsPerPhase, timePerPhase)) {
 }
 
 ry::KOMOpy::~KOMOpy(){
 }
 
-void ry::KOMOpy::optimize(const I_features& features){
-  for (const I_feature& feature : features) {
-    rai::Enum<ObjectiveType> type;
-    rai::String( std::get<0>(feature) ) >>type;
+void ry::KOMOpy::optimize(const Graph& features){
+  for(Node* n : features) {
+    Graph& feature = n->graph();
 
-    StringA symbols = I_conv(std::get<1>(feature));
+    arr times;
+    if(feature["time"]) times = feature.get<arr>("time");
+
+    rai::Enum<ObjectiveType> type;
+    feature.get<rai::String>("type") >>type;
+
+    StringA symbols = feature.get<StringA>("feature");
 
     std::map<std::string, arr> parameters;
-    for (const auto& x : std::get<2>(feature)) {
-      parameters.insert(std::make_pair(x.first, conv_stdvec2arr(x.second)));
+    for (Node *p:feature){
+      if(p->isOfType<arr>()){
+        parameters.insert(std::make_pair(p->keys.last().p, p->get<arr>()));
+      }
+      if(p->isOfType<double>()){
+        parameters.insert(std::make_pair(p->keys.last().p, ARR(p->get<double>())));
+      }
     }
 
-    self->setObjective({0}, type, symbols, parameters);
+    self->setObjective(times, type, symbols, parameters);
   }
 
   self->reset();
   self->reportProblem();
+
+  self->run(self->denseMode);
+
   Graph specs = self->getProblemGraph();
   cout <<specs <<endl;
-
-  self->run(false);
-
-  specs = self->getProblemGraph();
-  cout <<specs <<endl;
   cout <<self->getReport(false) <<endl; // Enables plot
+//  while(self->displayTrajectory());
 
-  self->kin->K.set()->setJointState(self->x);
+
+  self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
   for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy::optimization end pose"));
 }
+
+#if 1
+void ry::KOMOpy::optimize2(const I_features& features){
+  for (const I_feature& feature : features) {
+    arr times;
+    times = std::get<0>(feature);
+
+    rai::Enum<ObjectiveType> type;
+    rai::String( std::get<1>(feature) ) >>type;
+
+    StringA symbols = I_conv(std::get<2>(feature));
+
+    std::map<std::string, arr> parameters;
+    for (const auto& x : std::get<3>(feature)) {
+      parameters.insert(std::make_pair(x.first, conv_stdvec2arr(x.second)));
+    }
+
+    self->setObjective(times, type, symbols, parameters);
+  }
+
+  self->reset();
+  self->reportProblem();
+
+  self->run(self->denseMode);
+
+  Graph specs = self->getProblemGraph();
+  cout <<specs <<endl;
+  cout <<self->getReport(false) <<endl; // Enables plot
+//  while(self->displayTrajectory());
+
+
+  self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
+  for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy::optimization end pose"));
+}
+#endif

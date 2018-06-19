@@ -98,6 +98,19 @@ void ry::Configuration::setFrameState(pybind11::array& X){
   for(auto& d:displays) d->gl.update(STRING("setFrameState"));
 }
 
+void ry::Configuration::stash(){
+  arr X = K.get()->getFrameState();
+  stack.append(X);
+  stack.reshape(stack.N/X.N, X.d0, 7);
+}
+
+void ry::Configuration::pop(){
+  arr X = stack[-1];
+  stack.resizeCopy(stack.d0-1, stack.d1, stack.d2);
+  K.set()->setFrameState(X, true);
+  for(auto& d:displays) d->gl.update(STRING("pop"));
+}
+
 double ry::Configuration::getPairDistance(const char* frameA, const char* frameB){
   K.readAccess();
   TM_PairCollision coll(K(), frameA, frameB, TM_PairCollision::_negScalar, false);
@@ -128,6 +141,17 @@ ry::Camera ry::Configuration::camera(const std::string& frame, bool _renderInBac
   return Camera(*this, rai::String(frame), _renderInBackground);
 }
 
-ry::KOMOpy ry::Configuration::komo(){ return KOMOpy(this); }
+ry::KOMOpy ry::Configuration::komo_IK(){
+  return KOMOpy(this, 0);
+}
+
+ry::KOMOpy ry::Configuration::komo_path(double phases, uint stepsPerPhase, double timePerPhase){
+  return KOMOpy(this, phases, stepsPerPhase, timePerPhase);
+}
+
+ry::KOMOpy ry::Configuration::komo_CGO(uint numConfigurations){
+  CHECK_GE(numConfigurations, 1, "");
+  return KOMOpy(this, numConfigurations);
+}
 
 

@@ -12,7 +12,7 @@ template<class T> using ptr=std::shared_ptr<T>;
 typedef std::map<std::string, std::string> I_dict;
 typedef std::map<std::string, std::vector<double> > I_args;
 
-typedef std::tuple<std::string, I_StringA, I_args> I_feature;
+typedef std::tuple<std::vector<double>, std::string, I_StringA, I_args> I_feature;
 typedef std::vector<I_feature> I_features;
 
 struct FrameInfo{

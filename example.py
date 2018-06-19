@@ -45,7 +45,7 @@ def main():
     D.update(True);
 
     komo = K.komo()
-    komo.optimize( [ ('eq', ['posDiff', 'pr2L', 'ball'], {}) ] )
+    komo.optimize( [ ([], 'eq', ['posDiff', 'pr2L', 'ball'], {}) ] )
 
     C.update()
     D.update(True)

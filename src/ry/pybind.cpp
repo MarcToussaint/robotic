@@ -26,7 +26,7 @@ PYBIND11_MODULE(libry, m) {
 
       .def("display", &ry::Configuration::display)
       .def("camera", &ry::Configuration::camera, "bla", py::arg("frame")="camera", py::arg("renderInBackground") = false)
-      .def("komo", &ry::Configuration::komo);
+      .def("komo", &ry::Configuration::komo_IK);
 
   py::class_<ry::Display>(m, "Display")
       .def("update", (void (ry::Display::*)(bool)) &ry::Display::update)
@@ -37,6 +37,6 @@ PYBIND11_MODULE(libry, m) {
       .def("update", &ry::Camera::update);
 
   py::class_<ry::KOMOpy>(m, "KOMOpy")
-      .def("optimize", &ry::KOMOpy::optimize);
+      .def("optimize", &ry::KOMOpy::optimize2);
 
 }
