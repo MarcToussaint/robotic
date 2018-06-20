@@ -11,6 +11,7 @@ namespace ry{
   struct KOMOpy_self : KOMO{
     Configuration* kin=0;
     bool denseMode = true;
+    Graph features;
 
     KOMOpy_self(Configuration* _kin, uint T);
     KOMOpy_self(Configuration* _kin, double phases, uint stepsPerPhase=20, double timePerPhase=5.);
@@ -19,7 +20,7 @@ namespace ry{
     void setDiscreteOpt(uint k);
 
     /// set an objective
-    void setObjective(const arr& times, const StringA& featureSymbols, const std::map<std::string, arr>& parameters={});
+    void setObjective(const arr& times, const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
 
     /// output the defined problem as a generic graph, that can also be displayed, saved and loaded
     Graph getProblemGraph(bool includeValues=false);
@@ -34,7 +35,7 @@ namespace ry{
 
   private:
     Task* setObjective(const arr& times, ObjectiveType type, TaskMap* feature, const arr& target=NoArr, double scale=1e1);
-    TaskMap *symbols2feature(const StringA& featureSymbols, const std::map<std::string, arr> &parameters={});
+    TaskMap *symbols2feature(const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
   };
 
   struct KOMOpy{
@@ -46,8 +47,18 @@ namespace ry{
 
     void makeObjectsFree(const I_StringA& objs);
 
-    void optimize(const Graph& features);
-    void optimize2(const I_features& features);
+    void clearObjectives();
+
+    void addObjective(const std::vector<int>& vars, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
+    void addObjectives2(const Graph& features);
+    void addObjectives(const I_features& features);
+
+    void add_grasp(int var, const char* gripper, const char* object);
+    void add_place(int var, const char* object, const char* table);
+    void add_resting(int var1, int var2, const char* object);
+    void add_restingRelative(int var1, int var2, const char* object, const char* tableOrGripper);
+
+    void optimize();
 
     void adopt();
     void getConfiguration(int t);

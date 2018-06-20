@@ -19,35 +19,22 @@ c0=0; c1=1; c2=2; c3=3;
 komo = K.komo_CGO(4)
 komo.makeObjectsFree([obj1, obj2])
 
-features = [
-    ([-1,c0], ['eq', 'pose', obj1], {}),
-    ([c1,c2], ['eq', 'pose', obj1], {}),
-    ([c2,c3], ['eq', 'pose', obj1], {}),
-    
-    ([-1,c0], ['eq', 'pose', obj2], {}),
-    ([c0,c1], ['eq', 'pose', obj2], {}),
-    ([c1,c2], ['eq', 'pose', obj2], {}),
-    
-    #-- pick obj1
-    ([c0], ['eq', 'dist', arm, obj1], {}),
-    
-    #-- place obj1
-    ([c1], ['ineq', 'above', table, obj1], {}),
-    ([c1], ['eq', 'aboveZ', table, obj1], {}),
-    ([c1], ['sos', 'vec', obj1], {'v1': [0.,0.,1.], 'target':[0.,0.,1.]}),
-    ([c0,c1], ['eq', 'poseDiff', arm, obj1], {}),
-    
-    #-- pick obj2
-    ([c2], ['eq', 'dist', arm, obj2], {}),
-    
-    #-- place obj2
-    ([c3], ['ineq', 'above', table, obj2], {}),
-    ([c3], ['eq', 'aboveZ', table, obj2], {}),
-    ([c3], ['sos', 'vec', obj2], {'v1': [0.,0.,1.], 'target':[0.,0.,1.]}),
-    ([c2,c3], ['eq', 'poseDiff', arm, obj2], {}),
-]
+komo.add_grasp(c0, arm, obj1)
+komo.add_place(c1, obj1, table)
+komo.add_grasp(c2, arm, obj2)
+komo.add_place(c3, obj2, table)
 
-komo.optimize( features )
+komo.add_resting(-1, c0, obj1)
+komo.add_restingRelative(c0, c1 , obj1, arm)
+komo.add_resting(c1, c2, obj1)
+komo.add_resting(c2, c3, obj1)
+
+komo.add_resting(-1, c0, obj2)
+komo.add_resting(c0, c1, obj2)
+komo.add_resting(c1, c2, obj2)
+komo.add_restingRelative(c2, c3 , obj2, arm)
+
+komo.optimize()
 
 komo.getConfiguration(-1)
 komo.getConfiguration(0)

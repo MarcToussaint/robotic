@@ -89,7 +89,7 @@ Task *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, TaskMa
   return task;
 }
 
-TaskMap *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map<std::string, arr>& parameters){
+TaskMap *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map<std::string, std::vector<double>>& parameters){
   if(!symbols.N) return 0;
   if(symbols(0)=="dist") {  return new TM_PairCollision(world, symbols(1), symbols(2), TM_PairCollision::_negScalar, false); }
   if(symbols(0)=="above") {  return new TM_AboveBox(world, symbols(2), symbols(1), .05); }
@@ -123,7 +123,7 @@ TaskMap *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map
   if(symbols(0)=="gazeAt") { return new TM_Default(TMT_gazeAt, world, symbols(1), v1, symbols(2), v2); }
 
   double margin=.05;
-  if(parameters.find("margin")!=parameters.end()) margin = parameters.at("v1").scalar();
+  if(parameters.find("margin")!=parameters.end()) margin = parameters.at("v1")[0];
 
   if(symbols(0)=="coll") {  return new TM_Proxy(TMT_allP, {0u}, margin, true); }
   if(symbols(0)=="limits") {  return new LimitsConstraint(margin); }
@@ -207,10 +207,10 @@ arr ry::KOMOpy_self::getRelPose(uint t, const rai::String& from, const rai::Stri
  * komo.setObjective({2}, OT_sos, { "vec", "object" }, { {"target", {0.,0.,1.} } );
  *
  */
-void ry::KOMOpy_self::setObjective(const arr& times, const StringA &featureSymbols, const std::map<std::string, arr> &parameters){
+void ry::KOMOpy_self::setObjective(const arr& times, const StringA &featureSymbols, const std::map<std::string, std::vector<double>> &parameters){
   arr target;
   double scale=1e1;
-  if(parameters.find("scale")!=parameters.end()) scale = parameters.at("scale").scalar();
+  if(parameters.find("scale")!=parameters.end()) scale = parameters.at("scale")[0];
   if(parameters.find("target")!=parameters.end()) target = parameters.at("target");
 
   rai::Enum<ObjectiveType> type;
@@ -219,7 +219,7 @@ void ry::KOMOpy_self::setObjective(const arr& times, const StringA &featureSymbo
 
   Task *t = setObjective(times, type, symbols2feature(symbols, parameters), target, scale);
 
-  if(parameters.find("order")!=parameters.end()) t->map->order = (uint)parameters.at("order").scalar();
+  if(parameters.find("order")!=parameters.end()) t->map->order = (uint)parameters.at("order")[0];
 }
 
 
@@ -240,7 +240,27 @@ void ry::KOMOpy::makeObjectsFree(const I_StringA& objs){
   self->world.calc_q();
 }
 
-void ry::KOMOpy::optimize(const Graph& features){
+void ry::KOMOpy::clearObjectives(){
+  self->clearTasks();
+}
+
+void ry::KOMOpy::addObjective(const std::vector<int>& vars, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale, const std::vector<double>& target, I_args parameters){
+  StringA Feat;
+  Feat.append(rai::String(type));
+  Feat.append(rai::String(feature));
+  Feat.append(I_conv(frames));
+  if(scale.size()) parameters["scale"] = scale;
+  if(target.size()) parameters["target"] = target;
+  if(timeInterval.size()){
+    CHECK_EQ(vars.size(), 0, "");
+    self->setObjective(arr(timeInterval), Feat, parameters);
+  }else{
+    CHECK_EQ(timeInterval.size(), 0, "");
+    self->setObjective(convert<double>(intA(vars)), Feat, parameters);
+  }
+}
+
+void ry::KOMOpy::addObjectives2(const Graph& features){
   for(Node* n : features) {
     Graph& feature = n->graph();
 
@@ -249,7 +269,7 @@ void ry::KOMOpy::optimize(const Graph& features){
 
     StringA symbols = feature.get<StringA>("feature");
 
-    std::map<std::string, arr> parameters;
+    std::map<std::string, std::vector<double>> parameters;
     for (Node *p:feature){
       if(p->isOfType<arr>()){
         parameters.insert(std::make_pair(p->keys.last().p, p->get<arr>()));
@@ -261,38 +281,43 @@ void ry::KOMOpy::optimize(const Graph& features){
 
     self->setObjective(times, symbols, parameters);
   }
-
-  self->reset();
-  self->reportProblem();
-
-  self->run(self->denseMode);
-
-  Graph specs = self->getProblemGraph();
-  cout <<specs <<endl;
-  cout <<self->getReport(false) <<endl; // Enables plot
-//  while(self->displayTrajectory());
-
-
-  self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
-  for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy::optimization end pose"));
 }
 
-#if 1
-void ry::KOMOpy::optimize2(const I_features& features){
+void ry::KOMOpy::addObjectives(const I_features& features){
   for (const I_feature& feature : features) {
     arr times;
     times = std::get<0>(feature);
 
     StringA symbols = I_conv(std::get<1>(feature));
 
-    std::map<std::string, arr> parameters;
+    std::map<std::string, std::vector<double>> parameters;
     for (const auto& x : std::get<2>(feature)) {
       parameters.insert(std::make_pair(x.first, conv_stdvec2arr(x.second)));
     }
 
     self->setObjective(times, symbols, parameters);
   }
+}
 
+void ry::KOMOpy::add_grasp(int var, const char* gripper, const char* object){
+  addObjective({var}, {}, "eq", "dist", {gripper, object});
+}
+
+void ry::KOMOpy::add_place(int var, const char* object, const char* table){
+  addObjective({var}, {}, "ineq", "above", {table, object});
+  addObjective({var}, {}, "eq", "aboveZ", {table, object});
+  addObjective({var}, {}, "sos", "vec", {object}, {}, {0.,0.,1.}, {{"v1",{0.,0.,1.}}});
+}
+
+void ry::KOMOpy::add_restingRelative(int var1, int var2, const char* object, const char* tableOrGripper){
+  addObjective({var1, var2}, {}, "eq", "poseDiff", {tableOrGripper, object});
+}
+
+void ry::KOMOpy::add_resting(int var1, int var2, const char* object){
+  addObjective({var1, var2}, {}, "eq", "pose", {object});
+}
+
+void ry::KOMOpy::optimize(){
   self->reset();
   self->reportProblem();
 
@@ -312,5 +337,3 @@ void ry::KOMOpy::getConfiguration(int t){
   self->kin->K.set()->setFrameState(self->configurations(t+self->k_order)->getFrameState());
   for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy configuration " <<t));
 }
-
-#endif

@@ -58,20 +58,27 @@ void test(){
   K.stash();
   {
     auto komo = K.komo_IK();
-//    komo.optimize( { I_feature({}, {"eq", "posDiff", "pr2L", "ball"}, {} ) } );
-    komo.optimize( { "feature:[eq posDiff pr2L ball]" } );
+    komo.addObjective({}, {}, "eq", "posDiff", {"pr2L", "ball"});
+//    komo.addObjectives2( { "feature:[eq posDiff pr2L ball]" } );
+    komo.optimize();
+    D.update(true);
+
+    komo.clearObjectives();
+    komo.addObjective({}, {}, "eq", "posDiff", {"pr2L", "ball"}, {}, {.1,.1,.1});
+    komo.optimize();
   }
   D.update(true);
 
   K.pop();
   {
     auto komo = K.komo_path(1.);
-    komo.optimize( { "time:[1.], feature:[eq posDiff pr2L ball]",
-                     "time:[1.], feature:[eq qRobot], order:1",
-                   } );
+    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
+                          "time:[1.], feature:[eq qRobot], order:1",
+                        } );
 //    komo.optimize( {   I_feature({1.}, {"eq", "posDiff", "pr2L", "ball"}, I_args() ),
 //                       I_feature({1.}, {"eq", "qRobot"}, {{std::string("order"), {1.}}} )
 //                   } );
+    komo.optimize();
   }
   D.update(true);
 

@@ -39,7 +39,26 @@ PYBIND11_MODULE(libry, m) {
 
   py::class_<ry::KOMOpy>(m, "KOMOpy")
       .def("makeObjectsFree", &ry::KOMOpy::makeObjectsFree)
-      .def("optimize", &ry::KOMOpy::optimize2)
-      .def("getConfiguration", &ry::KOMOpy::getConfiguration);
+
+      .def("clearObjectives", &ry::KOMOpy::clearObjectives)
+      .def("addObjective", &ry::KOMOpy::addObjective, "some docu",
+           py::arg("vars")=std::vector<int>(),
+           py::arg("timeInterval")=std::vector<double>(),
+           py::arg("type"),
+           py::arg("feature"),
+           py::arg("frames"),
+           py::arg("scale")=std::vector<double>(),
+           py::arg("target")=std::vector<double>(),
+           py::arg("params")=std::map<std::string, std::vector<double>>() )
+      .def("addObjectives", &ry::KOMOpy::addObjectives)
+
+      .def("add_grasp", &ry::KOMOpy::add_grasp)
+      .def("add_place", &ry::KOMOpy::add_place)
+      .def("add_resting", &ry::KOMOpy::add_resting)
+      .def("add_restingRelative", &ry::KOMOpy::add_restingRelative)
+
+      .def("optimize", &ry::KOMOpy::optimize)
+      .def("getConfiguration", &ry::KOMOpy::getConfiguration)
+      ;
 
 }
