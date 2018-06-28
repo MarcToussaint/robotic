@@ -5,7 +5,6 @@
 #include <pybind11/numpy.h>
 
 #include "types.h"
-#include "display.h"
 #include "camera.h"
 #include "komo-py.h"
 
@@ -13,7 +12,7 @@ namespace ry{
 
   struct Configuration{
     Var<rai::KinematicWorld> K;
-    rai::Array<Display_self*> displays;
+    rai::Array<Camera_self*> cameras;
     arr stack;
 
     Configuration(){}
@@ -49,8 +48,7 @@ namespace ry{
 
     //-- modules
     /// simulate rgb & depth images, point clouds, for a cam
-    Camera camera(const std::string& frame, bool _renderInBackground=false);
-    Display display();
+    Camera camera(const std::string& frame={}, bool _renderInBackground=false);
 
     /// IK, motion and seq manipulation optimization
     KOMOpy komo_IK();    ///< to optimize a single configuration

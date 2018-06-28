@@ -3,7 +3,7 @@
 from ry import *
 
 K = Configuration()
-D = K.display()
+D = K.camera()
 K.addFile('../test/kitchen.g')
 K.addFile('../rai-robotModels/pr2/pr2.g')
 

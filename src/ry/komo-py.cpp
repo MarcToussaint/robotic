@@ -16,6 +16,9 @@ ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, uint T)
   : kin(_kin) {
 //  LOG(0) <<"create " <<this;
   setModel(kin->K.get(), false);
+  world.optimizeTree();
+  world.calc_q();
+
   denseMode = true;
   if(T==0){ //IK mode
     setIKOpt();
@@ -37,6 +40,9 @@ ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, uint T)
 ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase)
   : kin(_kin) {
   setModel(kin->K.get(), false);
+  world.optimizeTree();
+  world.calc_q();
+
   denseMode = false;
   setPathOpt(phases, stepsPerPhase, timePerPhase);
 }
@@ -236,15 +242,13 @@ ry::KOMOpy::~KOMOpy(){
 
 void ry::KOMOpy::makeObjectsFree(const I_StringA& objs){
   self->world.makeObjectsFree(I_conv(objs));
-  self->world.optimizeTree();
-  self->world.calc_q();
 }
 
 void ry::KOMOpy::clearObjectives(){
   self->clearTasks();
 }
 
-void ry::KOMOpy::addObjective(const std::vector<int>& vars, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale, const std::vector<double>& target, I_args parameters){
+void ry::KOMOpy::addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale, const std::vector<double>& target, I_args parameters){
   StringA Feat;
   Feat.append(rai::String(type));
   Feat.append(rai::String(feature));
@@ -252,11 +256,11 @@ void ry::KOMOpy::addObjective(const std::vector<int>& vars, const std::vector<do
   if(scale.size()) parameters["scale"] = scale;
   if(target.size()) parameters["target"] = target;
   if(timeInterval.size()){
-    CHECK_EQ(vars.size(), 0, "");
+    CHECK_EQ(confs.size(), 0, "");
     self->setObjective(arr(timeInterval), Feat, parameters);
   }else{
     CHECK_EQ(timeInterval.size(), 0, "");
-    self->setObjective(convert<double>(intA(vars)), Feat, parameters);
+    self->setObjective(convert<double>(intA(confs)), Feat, parameters);
   }
 }
 
@@ -299,22 +303,38 @@ void ry::KOMOpy::addObjectives(const I_features& features){
   }
 }
 
-void ry::KOMOpy::add_grasp(int var, const char* gripper, const char* object){
-  addObjective({var}, {}, "eq", "dist", {gripper, object});
+void ry::KOMOpy::add_IsGraspKin(int conf, const char* gripper, const char* object){
+  addObjective({conf}, {}, "eq", "dist", {gripper, object});
 }
 
-void ry::KOMOpy::add_place(int var, const char* object, const char* table){
-  addObjective({var}, {}, "ineq", "above", {table, object});
-  addObjective({var}, {}, "eq", "aboveZ", {table, object});
-  addObjective({var}, {}, "sos", "vec", {object}, {}, {0.,0.,1.}, {{"v1",{0.,0.,1.}}});
+void ry::KOMOpy::add_IsPlaceKin(int conf, const char* object, const char* table){
+  addObjective({conf}, {}, "ineq", "above", {table, object});
+  addObjective({conf}, {}, "eq", "aboveZ", {table, object});
+  addObjective({conf}, {}, "sos", "vec", {object}, {}, {0.,0.,1.}, {{"v1",{0.,0.,1.}}});
 }
 
-void ry::KOMOpy::add_restingRelative(int var1, int var2, const char* object, const char* tableOrGripper){
-  addObjective({var1, var2}, {}, "eq", "poseDiff", {tableOrGripper, object});
+void ry::KOMOpy::add_GraspDecisionVariable(const std::vector<int>& confs, const char* gripper, const char* object){
+  for(uint i=1;i<confs.size();i++)
+    add_restingRelative(confs[0], confs[i], object, gripper);
+
+//  for(uint i=0;i<confs.size();i++) self->configurations(self->k_order+confs[i]) -> makeObjectsFree({object});
+  self->world.makeObjectsFree({object});
 }
 
-void ry::KOMOpy::add_resting(int var1, int var2, const char* object){
-  addObjective({var1, var2}, {}, "eq", "pose", {object});
+void ry::KOMOpy::add_PoseDecisionVariable(const std::vector<int>& confs, const char* object){
+  for(uint i=1;i<confs.size();i++)
+    add_resting(confs[0], confs[i], object);
+
+//  for(uint i=0;i<confs.size();i++) self->configurations(self->k_order+confs[i]) -> makeObjectsFree({object});
+  self->world.makeObjectsFree({object});
+}
+
+void ry::KOMOpy::add_restingRelative(int conf1, int conf2, const char* object, const char* tableOrGripper){
+  addObjective({conf1, conf2}, {}, "eq", "poseDiff", {tableOrGripper, object});
+}
+
+void ry::KOMOpy::add_resting(int conf1, int conf2, const char* object){
+  addObjective({conf1, conf2}, {}, "eq", "pose", {object});
 }
 
 void ry::KOMOpy::optimize(){
@@ -330,10 +350,10 @@ void ry::KOMOpy::optimize(){
 
 
   self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
-  for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy::optimization end pose"));
+  for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy::optimization end pose"));
 }
 
 void ry::KOMOpy::getConfiguration(int t){
   self->kin->K.set()->setFrameState(self->configurations(t+self->k_order)->getFrameState());
-  for(auto& d:self->kin->displays) d->gl.update(STRING("KOMOpy configuration " <<t));
+  for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy configuration " <<t));
 }

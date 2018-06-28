@@ -1,5 +1,4 @@
 #include "configuration.h"
-#include "display.h"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -24,18 +23,19 @@ PYBIND11_MODULE(libry, m) {
 
       .def("getPairDistance", &ry::Configuration::getPairDistance)
 
-      .def("display", &ry::Configuration::display)
-      .def("camera", &ry::Configuration::camera, "bla", py::arg("frame")="camera", py::arg("renderInBackground") = false)
+//      .def("display", &ry::Configuration::display)
+      .def("camera", &ry::Configuration::camera, "bla", py::arg("frame")="", py::arg("renderInBackground") = false)
       .def("komo", &ry::Configuration::komo_IK)
       .def("komo_CGO", &ry::Configuration::komo_CGO);
 
-  py::class_<ry::Display>(m, "Display")
-      .def("update", (void (ry::Display::*)(bool)) &ry::Display::update)
-      .def("update", (void (ry::Display::*)(std::string, bool)) &ry::Display::update);
+//  py::class_<ry::Display>(m, "Display")
+//      .def("update", (void (ry::Display::*)(bool)) &ry::Display::update)
+//      .def("update", (void (ry::Display::*)(std::string, bool)) &ry::Display::update);
 
   py::class_<ry::Camera>(m, "Camera")
       .def("set", &ry::Camera::set)
-      .def("update", &ry::Camera::update);
+      .def("update", (void (ry::Camera::*)(bool)) &ry::Camera::update)
+      .def("update", (void (ry::Camera::*)(std::string, bool)) &ry::Camera::update);
 
   py::class_<ry::KOMOpy>(m, "KOMOpy")
       .def("makeObjectsFree", &ry::KOMOpy::makeObjectsFree)
@@ -52,8 +52,8 @@ PYBIND11_MODULE(libry, m) {
            py::arg("params")=std::map<std::string, std::vector<double>>() )
       .def("addObjectives", &ry::KOMOpy::addObjectives)
 
-      .def("add_grasp", &ry::KOMOpy::add_grasp)
-      .def("add_place", &ry::KOMOpy::add_place)
+      .def("add_grasp", &ry::KOMOpy::add_IsGraspKin)
+      .def("add_place", &ry::KOMOpy::add_IsPlaceKin)
       .def("add_resting", &ry::KOMOpy::add_resting)
       .def("add_restingRelative", &ry::KOMOpy::add_restingRelative)
 

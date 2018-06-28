@@ -15,9 +15,9 @@ namespace ry{
   struct Configuration;
 
   struct Camera_self : GLDrawer{
-    Camera_self(Configuration& _kin) : kin(_kin) {}
-    ~Camera_self(){}
-    Configuration &kin;
+    Camera_self(Configuration* _kin);
+    ~Camera_self();
+    Configuration *kin;
     rai::Frame *frame;
     OpenGL gl;
     rai::Camera cam;
@@ -32,7 +32,7 @@ namespace ry{
   struct Camera {
     ptr<Camera_self> self;
 
-    Camera(Configuration& _kin, const rai::String& frame, bool _renderInBackground=false);
+    Camera(Configuration* _kin, const rai::String& frame={}, bool _renderInBackground=false);
     ~Camera(){}
 
     //-- set camera parameters (the pose is given by the frame)
@@ -42,7 +42,8 @@ namespace ry{
     void setBasler();
     void setBackgroundImage(const byteA& img);
 
-    void update();
+    void update(bool wait=false);
+    void update(std::string txt, bool wait=false);
 
     //-- modulate what is drawn
     void drawFrames(StringA& frames);

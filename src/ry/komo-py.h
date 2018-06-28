@@ -49,14 +49,17 @@ namespace ry{
 
     void clearObjectives();
 
-    void addObjective(const std::vector<int>& vars, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
+    void addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
     void addObjectives2(const Graph& features);
     void addObjectives(const I_features& features);
 
-    void add_grasp(int var, const char* gripper, const char* object);
-    void add_place(int var, const char* object, const char* table);
-    void add_resting(int var1, int var2, const char* object);
-    void add_restingRelative(int var1, int var2, const char* object, const char* tableOrGripper);
+    void add_IsGraspKin(int conf, const char* gripper, const char* object);
+    void add_IsPlaceKin(int conf, const char* object, const char* table);
+    void add_GraspDecisionVariable(const std::vector<int>& confs, const char* gripper, const char* object);
+    void add_PoseDecisionVariable(const std::vector<int>& confs, const char* object);
+
+    void add_resting(int conf1, int conf2, const char* object);
+    void add_restingRelative(int conf1, int conf2, const char* object, const char* tableOrGripper);
 
     void optimize();
 

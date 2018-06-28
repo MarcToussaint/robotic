@@ -3,7 +3,7 @@
 from ry import *
 
 K = Configuration()
-D = K.display()
+D = K.camera()
 D.update("empty configuration\n -- hit ENTER here to continue", True)
 
 K.addFile('../rai-robotModels/pr2/pr2.g');
