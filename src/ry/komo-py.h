@@ -45,27 +45,26 @@ namespace ry{
     KOMOpy(Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase);
     ~KOMOpy();
 
+    //--
     void makeObjectsFree(const I_StringA& objs);
+    void setCollionPairs(const std::vector<std::pair<std::string, std::string>>& collision_pairs);
 
     void clearObjectives();
 
-    void addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
-    void addObjectives2(const Graph& features);
+    //-- core methods to add objectives
+    void addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames={}, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
     void addObjectives(const I_features& features);
 
-    void add_IsGraspKin(int conf, const char* gripper, const char* object);
-    void add_IsPlaceKin(int conf, const char* object, const char* table);
+    //-- macros
+    void add_grasp(int conf, const char* gripper, const char* object);
+    void add_place(int conf, const char* object, const char* table);
     void add_GraspDecisionVariable(const std::vector<int>& confs, const char* gripper, const char* object);
     void add_PoseDecisionVariable(const std::vector<int>& confs, const char* object);
-
     void add_resting(int conf1, int conf2, const char* object);
     void add_restingRelative(int conf1, int conf2, const char* object, const char* tableOrGripper);
 
     void optimize();
-
-    void adopt();
     void getConfiguration(int t);
-    void adopt(double phase);
   };
 
 }

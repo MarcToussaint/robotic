@@ -9,13 +9,14 @@
 #include <Kin/TM_PairCollision.h>
 #include <Kin/TM_transition.h>
 #include <Kin/TM_qLimits.h>
+#include <Kin/proxy.h>
 
 double shapeSize(const rai::KinematicWorld& K, const char* name, uint i=2);
 
 ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, uint T)
   : kin(_kin) {
 //  LOG(0) <<"create " <<this;
-  setModel(kin->K.get(), false);
+  setModel(kin->K.get(), true);
   world.optimizeTree();
   world.calc_q();
 
@@ -84,13 +85,15 @@ Task *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, TaskMa
   }else{
     intA vars = convert<int,double>(times);
     if(!vars.N){
-      CHECK_EQ(T, 1, "not in IK mode: you need to specify a variable tuple");
-      vars = {0};
+      task->setCostSpecs(0, T-1, target, scale);
+//      CHECK_EQ(T, 1, "you are not in IK mode: you need to specify a variable tuple");
+//      vars = {0};
+    }else{
+      uint order = vars.N-1;
+      CHECK_GE(k_order, order, "task requires larger k-order: " <<map->shortTag(world));
+      map->order = order;
+      task->setCostSpecsDense(vars, target, scale);
     }
-    uint order = vars.N-1;
-    CHECK_GE(k_order, order, "task requires larger k-order: " <<map->shortTag(world));
-    map->order = order;
-    task->setCostSpecsDense(vars, target, scale);
   }
   return task;
 }
@@ -128,11 +131,11 @@ TaskMap *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map
 
   if(symbols(0)=="gazeAt") { return new TM_Default(TMT_gazeAt, world, symbols(1), v1, symbols(2), v2); }
 
-  double margin=.05;
-  if(parameters.find("margin")!=parameters.end()) margin = parameters.at("v1")[0];
+  double margin=.0;
+  if(parameters.find("margin")!=parameters.end()) margin = parameters.at("margin")[0];
 
-  if(symbols(0)=="coll") {  return new TM_Proxy(TMT_allP, {0u}, margin, true); }
-  if(symbols(0)=="limits") {  return new LimitsConstraint(margin); }
+  if(symbols(0)=="coll") {  return new TM_Proxy(TMT_allP, {}, margin); }
+  if(symbols(0)=="limits") {  return new LimitsConstraint(.05); }
 
   if(symbols(0)=="qRobot") { return new TM_qItself(); }
 
@@ -244,6 +247,12 @@ void ry::KOMOpy::makeObjectsFree(const I_StringA& objs){
   self->world.makeObjectsFree(I_conv(objs));
 }
 
+void ry::KOMOpy::setCollionPairs(const std::vector<std::pair<std::string, std::string> >& collision_pairs){
+  for (const auto&  pair : collision_pairs) {
+    self->activateCollisions(rai::String(pair.first), rai::String(pair.second));
+  }
+}
+
 void ry::KOMOpy::clearObjectives(){
   self->clearTasks();
 }
@@ -264,28 +273,28 @@ void ry::KOMOpy::addObjective(const std::vector<int>& confs, const std::vector<d
   }
 }
 
-void ry::KOMOpy::addObjectives2(const Graph& features){
-  for(Node* n : features) {
-    Graph& feature = n->graph();
+//void ry::KOMOpy::addObjectives2(const Graph& features){
+//  for(Node* n : features) {
+//    Graph& feature = n->graph();
 
-    arr times;
-    if(feature["time"]) times = feature.get<arr>("time");
+//    arr times;
+//    if(feature["time"]) times = feature.get<arr>("time");
 
-    StringA symbols = feature.get<StringA>("feature");
+//    StringA symbols = feature.get<StringA>("feature");
 
-    std::map<std::string, std::vector<double>> parameters;
-    for (Node *p:feature){
-      if(p->isOfType<arr>()){
-        parameters.insert(std::make_pair(p->keys.last().p, p->get<arr>()));
-      }
-      if(p->isOfType<double>()){
-        parameters.insert(std::make_pair(p->keys.last().p, ARR(p->get<double>())));
-      }
-    }
+//    std::map<std::string, std::vector<double>> parameters;
+//    for (Node *p:feature){
+//      if(p->isOfType<arr>()){
+//        parameters.insert(std::make_pair(p->keys.last().p, p->get<arr>()));
+//      }
+//      if(p->isOfType<double>()){
+//        parameters.insert(std::make_pair(p->keys.last().p, ARR(p->get<double>())));
+//      }
+//    }
 
-    self->setObjective(times, symbols, parameters);
-  }
-}
+//    self->setObjective(times, symbols, parameters);
+//  }
+//}
 
 void ry::KOMOpy::addObjectives(const I_features& features){
   for (const I_feature& feature : features) {
@@ -303,11 +312,11 @@ void ry::KOMOpy::addObjectives(const I_features& features){
   }
 }
 
-void ry::KOMOpy::add_IsGraspKin(int conf, const char* gripper, const char* object){
+void ry::KOMOpy::add_grasp(int conf, const char* gripper, const char* object){
   addObjective({conf}, {}, "eq", "dist", {gripper, object});
 }
 
-void ry::KOMOpy::add_IsPlaceKin(int conf, const char* object, const char* table){
+void ry::KOMOpy::add_place(int conf, const char* object, const char* table){
   addObjective({conf}, {}, "ineq", "above", {table, object});
   addObjective({conf}, {}, "eq", "aboveZ", {table, object});
   addObjective({conf}, {}, "sos", "vec", {object}, {}, {0.,0.,1.}, {{"v1",{0.,0.,1.}}});
@@ -355,5 +364,6 @@ void ry::KOMOpy::optimize(){
 
 void ry::KOMOpy::getConfiguration(int t){
   self->kin->K.set()->setFrameState(self->configurations(t+self->k_order)->getFrameState());
+  self->kin->K.set()->proxies = self->configurations(t+self->k_order)->proxies;
   for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy configuration " <<t));
 }

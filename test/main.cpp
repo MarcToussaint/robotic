@@ -72,12 +72,12 @@ void test(){
   K.pop();
   {
     auto komo = K.komo_path(1.);
-    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
-                          "time:[1.], feature:[eq qRobot], order:1",
-                        } );
-//    komo.optimize( {   I_feature({1.}, {"eq", "posDiff", "pr2L", "ball"}, I_args() ),
-//                       I_feature({1.}, {"eq", "qRobot"}, {{std::string("order"), {1.}}} )
-//                   } );
+//    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
+//                          "time:[1.], feature:[eq qRobot], order:1",
+//                        } );
+    komo.addObjectives({   I_feature({1.}, {"eq", "posDiff", "pr2L", "ball"}, I_args() ),
+                           I_feature({1.}, {"eq", "qRobot"}, {{std::string("order"), {1.}}} )
+                       });
     komo.optimize();
   }
   D.update(true);
@@ -104,16 +104,21 @@ void test_pickAndPlace(){
 
   auto komo = K.komo_CGO(4);
 
+  komo.setCollionPairs({{obj1, obj2}});
+//  komo.addObjective({3}, {}, "ineq", "dist", {obj1, obj2}, {}, {-.1});
+  komo.addObjective({}, {}, "eq", "coll");
+  komo.addObjective({}, {}, "ineq", "limits");
+
   komo.add_GraspDecisionVariable({c0, c1}, arm, obj1);
   komo.add_GraspDecisionVariable({c2, c3}, arm, obj2);
   komo.add_PoseDecisionVariable({-1, c0}, obj1);
   komo.add_PoseDecisionVariable({c1, c2, c3}, obj1);
   komo.add_PoseDecisionVariable({-1, c0, c1, c2}, obj2);
 
-  komo.add_IsGraspKin(c0, arm, obj1);
-  komo.add_IsPlaceKin(c1, obj1, table);
-  komo.add_IsGraspKin(c2, arm, obj2);
-  komo.add_IsPlaceKin(c3, obj2, table);
+  komo.add_grasp(c0, arm, obj1);
+  komo.add_place(c1, obj1, table);
+  komo.add_grasp(c2, arm, obj2);
+  komo.add_place(c3, obj2, table);
 
   komo.optimize();
 
