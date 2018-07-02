@@ -131,7 +131,7 @@ TaskMap *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map
   double margin=.05;
   if(parameters.find("margin")!=parameters.end()) margin = parameters.at("v1")[0];
 
-  if(symbols(0)=="coll") {  return new TM_Proxy(TMT_allP, {0u}, margin, true); }
+  if(symbols(0)=="coll") {  return new TM_Proxy(TMT_allP, {0u}, margin); }
   if(symbols(0)=="limits") {  return new LimitsConstraint(margin); }
 
   if(symbols(0)=="qRobot") { return new TM_qItself(); }
