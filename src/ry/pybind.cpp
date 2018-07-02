@@ -41,8 +41,8 @@ PYBIND11_MODULE(libry, m) {
       .def("makeObjectsFree", &ry::KOMOpy::makeObjectsFree)
 
       .def("clearObjectives", &ry::KOMOpy::clearObjectives)
-      .def("addObjective", &ry::KOMOpy::addObjective, "some docu",
-           py::arg("vars")=std::vector<int>(),
+      .def("addObjective", &ry::KOMOpy::addObjective, "core method to add an objective",
+           py::arg("confs")=std::vector<int>(),
            py::arg("timeInterval")=std::vector<double>(),
            py::arg("type"),
            py::arg("feature"),
@@ -50,10 +50,14 @@ PYBIND11_MODULE(libry, m) {
            py::arg("scale")=std::vector<double>(),
            py::arg("target")=std::vector<double>(),
            py::arg("params")=std::map<std::string, std::vector<double>>() )
+
       .def("addObjectives", &ry::KOMOpy::addObjectives)
 
-      .def("add_grasp", &ry::KOMOpy::add_IsGraspKin)
-      .def("add_place", &ry::KOMOpy::add_IsPlaceKin)
+      .def("add_GraspDecisionVariable", &ry::KOMOpy::add_GraspDecisionVariable, "", py::arg("confs"), py::arg("gripper"), py::arg("object"))
+      .def("add_PoseDecisionVariable", &ry::KOMOpy::add_PoseDecisionVariable, "", py::arg("confs"), py::arg("object"))
+
+      .def("add_grasp", &ry::KOMOpy::add_grasp)
+      .def("add_place", &ry::KOMOpy::add_place)
       .def("add_resting", &ry::KOMOpy::add_resting)
       .def("add_restingRelative", &ry::KOMOpy::add_restingRelative)
 
