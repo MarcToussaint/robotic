@@ -94,7 +94,7 @@ void ry::Configuration::setFrameState(pybind11::array& X){
 
   arr _X((double*)buf.ptr, buf.size);
   _X.reshape(buf.size/7, 7);
-  K.set()->setFrameState(_X, true);
+  K.set()->setFrameState(_X, {}, true);
   for(auto& d:cameras) d->gl.update(STRING("setFrameState"));
 }
 
@@ -107,7 +107,7 @@ void ry::Configuration::stash(){
 void ry::Configuration::pop(){
   arr X = stack[-1];
   stack.resizeCopy(stack.d0-1, stack.d1, stack.d2);
-  K.set()->setFrameState(X, true);
+  K.set()->setFrameState(X, {}, true);
   for(auto& d:cameras) d->gl.update(STRING("pop"));
 }
 
@@ -152,6 +152,10 @@ ry::KOMOpy ry::Configuration::komo_path(double phases, uint stepsPerPhase, doubl
 ry::KOMOpy ry::Configuration::komo_CGO(uint numConfigurations){
   CHECK_GE(numConfigurations, 1, "");
   return KOMOpy(this, numConfigurations);
+}
+
+ry::LGPpy ry::Configuration::lgp(){
+  return LGPpy(this);
 }
 
 

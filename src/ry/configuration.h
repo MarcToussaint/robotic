@@ -7,6 +7,7 @@
 #include "types.h"
 #include "camera.h"
 #include "komo-py.h"
+#include "lgp-py.h"
 
 namespace ry{
 
@@ -54,6 +55,8 @@ namespace ry{
     KOMOpy komo_IK();    ///< to optimize a single configuration
     KOMOpy komo_path(double phases, uint stepsPerPhase=20, double timePerPhase=5.);  ///< to optimize a k-order Markov path
     KOMOpy komo_CGO(uint numConfigurations);   ///< to optimize a (non-sequential) constraint graph
+
+    LGPpy lgp();
 
     //physx - stepping the PhysX simulator
     //bullet - stepping the bullet simulator

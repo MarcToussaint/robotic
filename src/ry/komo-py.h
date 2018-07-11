@@ -34,8 +34,8 @@ namespace ry{
   //  void setObjectivesFromString(istream& is); ///< first reads a generic graph, then interprets as objectives
 
   private:
-    Task* setObjective(const arr& times, ObjectiveType type, TaskMap* feature, const arr& target=NoArr, double scale=1e1);
-    TaskMap *symbols2feature(const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
+    Objective* setObjective(const arr& times, ObjectiveType type, Feature* feature, const arr& target=NoArr, double scale=1e1);
+    Feature* symbols2feature(const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
   };
 
   struct KOMOpy{
@@ -58,8 +58,8 @@ namespace ry{
     //-- macros
     void add_grasp(int conf, const char* gripper, const char* object);
     void add_place(int conf, const char* object, const char* table);
-    void add_GraspDecisionVariable(const std::vector<int>& confs, const char* gripper, const char* object);
-    void add_PoseDecisionVariable(const std::vector<int>& confs, const char* object);
+    void add_StableRelativePose(const std::vector<int>& confs, const char* gripper, const char* object);
+    void add_StablePose(const std::vector<int>& confs, const char* object);
     void add_resting(int conf1, int conf2, const char* object);
     void add_restingRelative(int conf1, int conf2, const char* object, const char* tableOrGripper);
 

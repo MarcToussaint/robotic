@@ -46,15 +46,15 @@ PYBIND11_MODULE(libry, m) {
            py::arg("timeInterval")=std::vector<double>(),
            py::arg("type"),
            py::arg("feature"),
-           py::arg("frames"),
+           py::arg("frames")=I_StringA(),
            py::arg("scale")=std::vector<double>(),
            py::arg("target")=std::vector<double>(),
            py::arg("params")=std::map<std::string, std::vector<double>>() )
 
       .def("addObjectives", &ry::KOMOpy::addObjectives)
 
-      .def("add_GraspDecisionVariable", &ry::KOMOpy::add_GraspDecisionVariable, "", py::arg("confs"), py::arg("gripper"), py::arg("object"))
-      .def("add_PoseDecisionVariable", &ry::KOMOpy::add_PoseDecisionVariable, "", py::arg("confs"), py::arg("object"))
+      .def("add_StableRelativePose", &ry::KOMOpy::add_StableRelativePose, "", py::arg("confs"), py::arg("gripper"), py::arg("object"))
+      .def("add_StablePose", &ry::KOMOpy::add_StablePose, "", py::arg("confs"), py::arg("object"))
 
       .def("add_grasp", &ry::KOMOpy::add_grasp)
       .def("add_place", &ry::KOMOpy::add_place)

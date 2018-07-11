@@ -95,38 +95,62 @@ void test_pickAndPlace(){
 
   K.addFrame("item1", "sink1", "type:ssBox Q:<t(-.1 -.1 .52)> size:[.1 .1 .25 .02] color:[1. 0. 0.], contact" );
   K.addFrame("item2", "sink1", "type:ssBox Q:<t(.1 .1 .52)> size:[.1 .1 .25 .02] color:[1. 1. 0.], contact" );
+  K.addFrame("tray", "stove1", "type:ssBox Q:<t(.0 .0 .42)> size:[.2 .2 .05 .02] color:[0. 1. 0.], contact" );
 
   auto obj1 = "item2";
   auto obj2 = "item1";
+  auto tray = "tray";
   auto arm = "pr2L";
   auto table = "_13";
-  int c0=0, c1=1, c2=2, c3=3;
 
-  auto komo = K.komo_CGO(4);
+  uint T=6;
+  auto komo = K.komo_CGO(T);
 
   komo.setCollionPairs({{obj1, obj2}});
-//  komo.addObjective({3}, {}, "ineq", "dist", {obj1, obj2}, {}, {-.1});
   komo.addObjective({}, {}, "eq", "coll");
   komo.addObjective({}, {}, "ineq", "limits");
 
-  komo.add_GraspDecisionVariable({c0, c1}, arm, obj1);
-  komo.add_GraspDecisionVariable({c2, c3}, arm, obj2);
-  komo.add_PoseDecisionVariable({-1, c0}, obj1);
-  komo.add_PoseDecisionVariable({c1, c2, c3}, obj1);
-  komo.add_PoseDecisionVariable({-1, c0, c1, c2}, obj2);
+  komo.add_StableRelativePose({0, 1}, arm, obj1);
+  komo.add_StableRelativePose({2, 3}, arm, obj2);
+  komo.add_StableRelativePose({4, 5}, arm, tray);
 
-  komo.add_grasp(c0, arm, obj1);
-  komo.add_place(c1, obj1, table);
-  komo.add_grasp(c2, arm, obj2);
-  komo.add_place(c3, obj2, table);
+  komo.add_StableRelativePose({1,2,3,4,5}, tray, obj1);
+  komo.add_StableRelativePose({3,4,5}, tray, obj2);
+
+  komo.add_StablePose({-1,0}, obj1);
+  komo.add_StablePose({-1,0,1,2}, obj2);
+  komo.add_StablePose({-1,0,1,2,3,4}, tray);
+
+  komo.add_grasp(0, arm, obj1);
+  komo.add_place(1, obj1, tray);
+
+  komo.add_grasp(2, arm, obj2);
+  komo.add_place(3, obj2, tray);
+
+  komo.add_grasp(4, arm, tray);
+  komo.add_place(5, tray, "_12");
 
   komo.optimize();
 
-  komo.getConfiguration(-1); D.update(true);
-  komo.getConfiguration(0); D.update(true);
-  komo.getConfiguration(1); D.update(true);
-  komo.getConfiguration(2); D.update(true);
-  komo.getConfiguration(3); D.update(true);
+  for(int t=-1;t<T;t++){
+    komo.getConfiguration(t);
+    D.update(true);
+  }
+}
+
+
+//===========================================================================
+
+void test_lgp(){
+  auto K = ry::Configuration();
+  auto D = K.camera();
+
+  K.addFile("lgp-example.g");
+  D.update(true);
+
+  auto lgp = K.lgp();
+
+  lgp.optimizeFixedSequence("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
 }
 
 //===========================================================================
@@ -136,6 +160,7 @@ int main(int argc,char** argv){
 
 //  test();
   test_pickAndPlace();
+//  test_lgp();
 
   return 0;
 }

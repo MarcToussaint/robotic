@@ -71,8 +71,8 @@ void ry::KOMOpy_self::setDiscreteOpt(uint k){
  * adds a sum-of-square objective over variables x(1) and x(2), defined by the TM-qItself feature, namely, the difference of q in x(1) and x(2)
  *
  */
-Task *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, TaskMap *map, const arr &target, double scale){
-  Task *task = addTask(map->shortTag(world), map, type);
+Objective *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, Feature *map, const arr &target, double scale){
+  Objective *task = addObjective(-1.,-1., map, type);
   if(!denseMode){
     if(!times.N){
       task->setCostSpecs(-1, -1, target, scale);
@@ -98,13 +98,13 @@ Task *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, TaskMa
   return task;
 }
 
-TaskMap *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map<std::string, std::vector<double>>& parameters){
+Feature *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map<std::string, std::vector<double>>& parameters){
   if(!symbols.N) return 0;
   if(symbols(0)=="dist") {  return new TM_PairCollision(world, symbols(1), symbols(2), TM_PairCollision::_negScalar, false); }
   if(symbols(0)=="above") {  return new TM_AboveBox(world, symbols(2), symbols(1), .05); }
   if(symbols(0)=="aboveZ") {
     double h = .5*(shapeSize(world, symbols(1)) + shapeSize(world, symbols(2)));
-    TaskMap *relPos = new TM_Default(TMT_posDiff, world, symbols(1), rai::Vector(0.,0.,h), symbols(2), NoVector);
+    Feature *relPos = new TM_Default(TMT_posDiff, world, symbols(1), rai::Vector(0.,0.,h), symbols(2), NoVector);
     return new TM_LinTrans(relPos, arr(1,3,{0.,0.,1.}), {});
   }
 
@@ -171,7 +171,7 @@ Graph ry::KOMOpy_self::getProblemGraph(bool includeValues){
 
   //objectives
   uint t_count=0;
-  for(Task* task:tasks){
+  for(Objective* task : objectives){
     CHECK(task->prec.nd==1,"");
     for(uint t=0;t<task->prec.N;t++){
       if(task->prec(t)){
@@ -226,7 +226,7 @@ void ry::KOMOpy_self::setObjective(const arr& times, const StringA &featureSymbo
   featureSymbols(0) >>type;
   StringA symbols = featureSymbols({1,-1});
 
-  Task *t = setObjective(times, type, symbols2feature(symbols, parameters), target, scale);
+  Objective *t = setObjective(times, type, symbols2feature(symbols, parameters), target, scale);
 
   if(parameters.find("order")!=parameters.end()) t->map->order = (uint)parameters.at("order")[0];
 }
@@ -322,7 +322,7 @@ void ry::KOMOpy::add_place(int conf, const char* object, const char* table){
   addObjective({conf}, {}, "sos", "vec", {object}, {}, {0.,0.,1.}, {{"v1",{0.,0.,1.}}});
 }
 
-void ry::KOMOpy::add_GraspDecisionVariable(const std::vector<int>& confs, const char* gripper, const char* object){
+void ry::KOMOpy::add_StableRelativePose(const std::vector<int>& confs, const char* gripper, const char* object){
   for(uint i=1;i<confs.size();i++)
     add_restingRelative(confs[0], confs[i], object, gripper);
 
@@ -330,7 +330,7 @@ void ry::KOMOpy::add_GraspDecisionVariable(const std::vector<int>& confs, const 
   self->world.makeObjectsFree({object});
 }
 
-void ry::KOMOpy::add_PoseDecisionVariable(const std::vector<int>& confs, const char* object){
+void ry::KOMOpy::add_StablePose(const std::vector<int>& confs, const char* object){
   for(uint i=1;i<confs.size();i++)
     add_resting(confs[0], confs[i], object);
 

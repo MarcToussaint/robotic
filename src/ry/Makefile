@@ -2,7 +2,7 @@ BASE   = ../../rai
 NAME   = $(shell basename `pwd`)
 OUTPUT = lib$(NAME).so
 
-DEPEND = Core Kin KOMO
+DEPEND = Core Kin KOMO LGP
 
 PYBIND = 1
 
