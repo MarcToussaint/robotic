@@ -154,8 +154,8 @@ ry::KOMOpy ry::Configuration::komo_CGO(uint numConfigurations){
   return KOMOpy(this, numConfigurations);
 }
 
-ry::LGPpy ry::Configuration::lgp(){
-  return LGPpy(this);
+ry::LGPpy ry::Configuration::lgp(const std::string& folFileName){
+  return LGPpy(this, folFileName);
 }
 
 

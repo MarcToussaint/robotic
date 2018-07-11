@@ -26,7 +26,8 @@ PYBIND11_MODULE(libry, m) {
 //      .def("display", &ry::Configuration::display)
       .def("camera", &ry::Configuration::camera, "bla", py::arg("frame")="", py::arg("renderInBackground") = false)
       .def("komo", &ry::Configuration::komo_IK)
-      .def("komo_CGO", &ry::Configuration::komo_CGO);
+      .def("komo_CGO", &ry::Configuration::komo_CGO)
+      .def("lgp", &ry::Configuration::lgp);
 
 //  py::class_<ry::Display>(m, "Display")
 //      .def("update", (void (ry::Display::*)(bool)) &ry::Display::update)
@@ -34,7 +35,8 @@ PYBIND11_MODULE(libry, m) {
 
   py::class_<ry::Camera>(m, "Camera")
       .def("set", &ry::Camera::set)
-      .def("update", (void (ry::Camera::*)(bool)) &ry::Camera::update)
+      .def("update", (void (ry::Camera::*)(bool)) &ry::Camera::update,
+           py::arg("wait")=false)
       .def("update", (void (ry::Camera::*)(std::string, bool)) &ry::Camera::update);
 
   py::class_<ry::KOMOpy>(m, "KOMOpy")
@@ -65,4 +67,7 @@ PYBIND11_MODULE(libry, m) {
       .def("getConfiguration", &ry::KOMOpy::getConfiguration)
       ;
 
+  py::class_<ry::LGPpy>(m, "LGPpy")
+      .def("optimizeFixedSequence", &ry::LGPpy::optimizeFixedSequence)
+      ;
 }

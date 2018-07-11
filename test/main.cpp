@@ -101,9 +101,9 @@ void test_pickAndPlace(){
   auto obj2 = "item1";
   auto tray = "tray";
   auto arm = "pr2L";
-  auto table = "_13";
+  auto table = "_12";
 
-  uint T=6;
+  int T=6;
   auto komo = K.komo_CGO(T);
 
   komo.setCollionPairs({{obj1, obj2}});
@@ -128,7 +128,7 @@ void test_pickAndPlace(){
   komo.add_place(3, obj2, tray);
 
   komo.add_grasp(4, arm, tray);
-  komo.add_place(5, tray, "_12");
+  komo.add_place(5, tray, table);
 
   komo.optimize();
 
@@ -148,7 +148,7 @@ void test_lgp(){
   K.addFile("lgp-example.g");
   D.update(true);
 
-  auto lgp = K.lgp();
+  auto lgp = K.lgp("fol.g");
 
   lgp.optimizeFixedSequence("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
 }
@@ -159,8 +159,8 @@ int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
 //  test();
-  test_pickAndPlace();
-//  test_lgp();
+//  test_pickAndPlace();
+  test_lgp();
 
   return 0;
 }

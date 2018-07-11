@@ -56,7 +56,7 @@ namespace ry{
     KOMOpy komo_path(double phases, uint stepsPerPhase=20, double timePerPhase=5.);  ///< to optimize a k-order Markov path
     KOMOpy komo_CGO(uint numConfigurations);   ///< to optimize a (non-sequential) constraint graph
 
-    LGPpy lgp();
+    LGPpy lgp(const std::string& folFileName="fol.g");
 
     //physx - stepping the PhysX simulator
     //bullet - stepping the bullet simulator

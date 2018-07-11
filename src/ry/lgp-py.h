@@ -13,17 +13,17 @@ namespace ry{
     rai::KinematicWorld K;
     FOL_World L;
 
-    LGPpy_self(Configuration* _kin);
+    LGPpy_self(Configuration* _kin, const std::string& folFileName);
     ~LGPpy_self();
   };
 
   struct LGPpy{
     ptr<LGPpy_self> self;
 
-    LGPpy(Configuration* _kin);
+    LGPpy(Configuration* _kin, const std::string& folFileName);
     ~LGPpy();
 
-    void optimizeFixedSequence(const rai::String& seq);
+    void optimizeFixedSequence(const std::string& seq);
   };
 
 }

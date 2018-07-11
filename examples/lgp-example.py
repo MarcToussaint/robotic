@@ -5,16 +5,13 @@ from ry import *
 K = Configuration()
 D = K.camera()
 
-K.addFile('lgp-example.g');
+K.addFile('../test/lgp-example.g');
+D.update()
+
+
+lgp = K.lgp("../test/fol.g");
+
+lgp.optimizeFixedSequence("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
+
 D.update(True)
-
-
-komo = K.komo()
-komo.addObjective(type='eq', feature='posDiff', frames=['ball', 'hand'])
-komo.optimize()
-
-komo.clearObjectives()
-komo.addObjective(type='eq', feature='posDiff', frames=['hand', 'ball'], target=[.1, .1, .1])
-komo.optimize()
-
 
