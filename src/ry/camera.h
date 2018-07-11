@@ -17,8 +17,8 @@ namespace ry{
   struct Camera_self : GLDrawer{
     Camera_self(Configuration* _kin);
     ~Camera_self();
-    Configuration *kin;
-    rai::Frame *frame;
+    Configuration *kin=0;
+    rai::Frame *frame=0;
     OpenGL gl;
     rai::Camera cam;
     uint width=640, height=480;

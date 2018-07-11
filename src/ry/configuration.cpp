@@ -4,6 +4,10 @@
 #include <Kin/frame.h>
 #include <Kin/proxy.h>
 
+ry::Configuration::Configuration(){
+//  LOG(0) <<"create " <<this;
+}
+
 ry::Configuration::~Configuration(){
 //  LOG(0) <<"destroy " <<this;
   for(auto& d:cameras) d->kin=NULL;

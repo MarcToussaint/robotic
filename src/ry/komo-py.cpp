@@ -103,6 +103,7 @@ Feature *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map
   if(symbols(0)=="dist") {  return new TM_PairCollision(world, symbols(1), symbols(2), TM_PairCollision::_negScalar, false); }
   if(symbols(0)=="above") {  return new TM_AboveBox(world, symbols(2), symbols(1), .05); }
   if(symbols(0)=="aboveZ") {
+    // Difference in z coordinate values
     double h = .5*(shapeSize(world, symbols(1)) + shapeSize(world, symbols(2)));
     Feature *relPos = new TM_Default(TMT_posDiff, world, symbols(1), rai::Vector(0.,0.,h), symbols(2), NoVector);
     return new TM_LinTrans(relPos, arr(1,3,{0.,0.,1.}), {});
@@ -137,7 +138,10 @@ Feature *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map
   if(symbols(0)=="coll") {  return new TM_Proxy(TMT_allP, {}, margin); }
   if(symbols(0)=="limits") {  return new LimitsConstraint(.05); }
 
-  if(symbols(0)=="qRobot") { return new TM_qItself(); }
+  if(symbols(0)=="qRobot") {
+    if(symbols.N==1) return new TM_qItself();
+    return new TM_qItself(QIP_byJointNames, symbols({1,-1}), world);
+  }
 
   HALT("can't interpret feature symbols: " <<symbols);
   return 0;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <KOMO/komo.h>
-
 #include "types.h"
+
+#include <KOMO/komo.h>
 
 namespace ry{
 

@@ -16,7 +16,7 @@ namespace ry{
     rai::Array<Camera_self*> cameras;
     arr stack;
 
-    Configuration(){}
+    Configuration();
     ~Configuration();
 
     //-- editing
