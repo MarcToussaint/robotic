@@ -10,22 +10,34 @@ PYBIND11_MODULE(libry, m) {
   py::class_<ry::Configuration>(m, "Configuration")
       .def(py::init<>())
 
+      .def("clear", &ry::Configuration::clear)
       .def("addFile", &ry::Configuration::addFile)
       .def("addFrame", &ry::Configuration::addFrame)
 
       .def("getJointNames", &ry::Configuration::getJointNames)
-      .def("getJointState", &ry::Configuration::getJointState, "bla", py::arg("joints") = I_StringA())
-      .def("setJointState", &ry::Configuration::setJointState)
+      .def("getJointState", &ry::Configuration::getJointState, "",
+           py::arg("joints") = ry::I_StringA())
+      .def("setJointState", &ry::Configuration::setJointState, "",
+           py::arg("q"),
+           py::arg("joints") = ry::I_StringA() )
 
       .def("getFrameNames", &ry::Configuration::getFrameNames)
-      .def("getFrameState", &ry::Configuration::getFrameState)
-      .def("setFrameState", &ry::Configuration::setFrameState)
+      .def("getFrameState", (pybind11::array (ry::Configuration::*)()) &ry::Configuration::getFrameState)
+      .def("getFrameState", (pybind11::array (ry::Configuration::*)(const char*)) &ry::Configuration::getFrameState)
+      .def("setFrameState", &ry::Configuration::setFrameState, "",
+           py::arg("X"),
+           py::arg("frames") = ry::I_StringA(),
+           py::arg("calc_q_from_X") = true )
 
       .def("getPairDistance", &ry::Configuration::getPairDistance)
 
-//      .def("display", &ry::Configuration::display)
+      .def("useJointGroups", &ry::Configuration::useJointGroups)
+      .def("setActiveJoints", &ry::Configuration::setActiveJoints)
+      .def("makeObjectsFree", &ry::Configuration::makeObjectsFree)
+
       .def("camera", &ry::Configuration::camera, "bla", py::arg("frame")="", py::arg("renderInBackground") = false)
-      .def("komo", &ry::Configuration::komo_IK)
+      .def("komo_IK", &ry::Configuration::komo_IK)
+      .def("komo_path", &ry::Configuration::komo_path)
       .def("komo_CGO", &ry::Configuration::komo_CGO)
       .def("lgp", &ry::Configuration::lgp);
 
@@ -48,7 +60,7 @@ PYBIND11_MODULE(libry, m) {
            py::arg("timeInterval")=std::vector<double>(),
            py::arg("type"),
            py::arg("feature"),
-           py::arg("frames")=I_StringA(),
+           py::arg("frames")=ry::I_StringA(),
            py::arg("scale")=std::vector<double>(),
            py::arg("target")=std::vector<double>(),
            py::arg("params")=std::map<std::string, std::vector<double>>() )

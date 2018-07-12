@@ -3,6 +3,7 @@
 #include "types.h"
 
 #include <KOMO/komo.h>
+#include <pybind11/numpy.h>
 
 namespace ry{
 
@@ -20,7 +21,7 @@ namespace ry{
     void setDiscreteOpt(uint k);
 
     /// set an objective
-    void setObjective(const arr& times, const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
+    void setObjective(const arr& times, ObjectiveType type, const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
 
     /// output the defined problem as a generic graph, that can also be displayed, saved and loaded
     Graph getProblemGraph(bool includeValues=false);
@@ -28,10 +29,6 @@ namespace ry{
     /// getting output after the optimization
     arr getPose(uint t, const rai::String& name);
     arr getRelPose(uint t, const rai::String& from, const rai::String& to);
-
-  //  //TODO
-  //  void setObjectivesFromGraph(const Graph& O);
-  //  void setObjectivesFromString(istream& is); ///< first reads a generic graph, then interprets as objectives
 
   private:
     Objective* setObjective(const arr& times, ObjectiveType type, Feature* feature, const arr& target=NoArr, double scale=1e1);
@@ -63,8 +60,13 @@ namespace ry{
     void add_resting(int conf1, int conf2, const char* object);
     void add_restingRelative(int conf1, int conf2, const char* object, const char* tableOrGripper);
 
+    //-- optimize
     void optimize();
+
+    //-- get results
     void getConfiguration(int t);
+    double getConstraintViolations();
+    double getCosts();
   };
 
 }

@@ -20,6 +20,7 @@ namespace ry{
     ~Configuration();
 
     //-- editing
+    void clear();
     void addFile(const std::string& file);
     void addFrame(const std::string& name, const std::string& parent, const std::string& args);
     void editorFile(const std::string& file);
@@ -27,14 +28,20 @@ namespace ry{
     //-- set/get state
     I_StringA getJointNames();
     pybind11::array getJointState(const I_StringA& joints);
-    void setJointState(pybind11::array& q);
+    void setJointState(pybind11::array& q, const I_StringA& joints);
 
     I_StringA getFrameNames();
     pybind11::array getFrameState();
-    void setFrameState(pybind11::array& X);
+    pybind11::array getFrameState(const char* frame);
+    void setFrameState(pybind11::array& X, const I_StringA& frames, bool calc_q_from_X);
 
     void stash();
     void pop();
+
+    //-- modulate DOFs
+    void useJointGroups(const I_StringA& jointGroups);
+    void setActiveJoints(const I_StringA& joints);
+    void makeObjectsFree(const I_StringA& objs);
 
     //-- set/get frame-wise
     FrameInfo getFrameInfo(const char* frame);

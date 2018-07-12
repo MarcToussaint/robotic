@@ -26,16 +26,6 @@ ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, uint T)
   }else{
     setDiscreteOpt(T);
   }
-
-//  for (const auto&  pair : collision_pairs) {
-//    komo.activateCollisions(rai::String(pair.first), rai::String(pair.second));
-//  }
-//  if (checkCollisions) {
-//    komo.setCollisions(false); // Soft constraint
-//  }
-//  if (checkLimits) {
-//    komo.setLimits(true, .05, 1e-2);
-  //  }
 }
 
 ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase)
@@ -220,17 +210,17 @@ arr ry::KOMOpy_self::getRelPose(uint t, const rai::String& from, const rai::Stri
  * komo.setObjective({2}, OT_sos, { "vec", "object" }, { {"target", {0.,0.,1.} } );
  *
  */
-void ry::KOMOpy_self::setObjective(const arr& times, const StringA &featureSymbols, const std::map<std::string, std::vector<double>> &parameters){
+void ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, const StringA &featureSymbols, const std::map<std::string, std::vector<double>> &parameters){
   arr target;
   double scale=1e1;
   if(parameters.find("scale")!=parameters.end()) scale = parameters.at("scale")[0];
   if(parameters.find("target")!=parameters.end()) target = parameters.at("target");
 
-  rai::Enum<ObjectiveType> type;
-  featureSymbols(0) >>type;
-  StringA symbols = featureSymbols({1,-1});
+//  rai::Enum<ObjectiveType> type;
+//  featureSymbols(0) >>type;
+//  StringA symbols = featureSymbols({1,-1});
 
-  Objective *t = setObjective(times, type, symbols2feature(symbols, parameters), target, scale);
+  Objective *t = setObjective(times, type, symbols2feature(featureSymbols, parameters), target, scale);
 
   if(parameters.find("order")!=parameters.end()) t->map->order = (uint)parameters.at("order")[0];
 }
@@ -262,18 +252,20 @@ void ry::KOMOpy::clearObjectives(){
 }
 
 void ry::KOMOpy::addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale, const std::vector<double>& target, I_args parameters){
-  StringA Feat;
-  Feat.append(rai::String(type));
-  Feat.append(rai::String(feature));
-  Feat.append(I_conv(frames));
+  rai::Enum<ObjectiveType> __type;
+  __type = type.c_str();
+
+  StringA feat;
+  feat.append(rai::String(feature));
+  feat.append(I_conv(frames));
   if(scale.size()) parameters["scale"] = scale;
   if(target.size()) parameters["target"] = target;
   if(timeInterval.size()){
     CHECK_EQ(confs.size(), 0, "");
-    self->setObjective(arr(timeInterval), Feat, parameters);
+    self->setObjective(arr(timeInterval), __type, feat, parameters);
   }else{
     CHECK_EQ(timeInterval.size(), 0, "");
-    self->setObjective(convert<double>(intA(confs)), Feat, parameters);
+    self->setObjective(convert<double>(intA(confs)), __type, feat, parameters);
   }
 }
 
@@ -306,13 +298,15 @@ void ry::KOMOpy::addObjectives(const I_features& features){
     times = std::get<0>(feature);
 
     StringA symbols = I_conv(std::get<1>(feature));
+    rai::Enum<ObjectiveType> type;
+    type = symbols.popFirst();
 
     std::map<std::string, std::vector<double>> parameters;
     for (const auto& x : std::get<2>(feature)) {
       parameters.insert(std::make_pair(x.first, conv_stdvec2arr(x.second)));
     }
 
-    self->setObjective(times, symbols, parameters);
+    self->setObjective(times, type, symbols, parameters);
   }
 }
 

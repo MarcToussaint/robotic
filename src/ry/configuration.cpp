@@ -13,6 +13,10 @@ ry::Configuration::~Configuration(){
   for(auto& d:cameras) d->kin=NULL;
 }
 
+void ry::Configuration::clear(){
+  K.set()->clear();
+}
+
 void ry::Configuration::addFile(const std::string& file){
   K.set()->addModel(file.c_str());
   for(auto& d:cameras) d->gl.update(STRING("addFile '" <<file <<"'"));
@@ -61,7 +65,7 @@ void ry::Configuration::editorFile(const std::string& filename){
   K.deAccess();
 }
 
-I_StringA ry::Configuration::getJointNames(){
+ry::I_StringA ry::Configuration::getJointNames(){
   return I_conv(K.get()->getJointNames());
 }
 
@@ -72,18 +76,22 @@ pybind11::array ry::Configuration::getJointState(const I_StringA& joints){
   return pybind11::array(q.dim(), q.p);
 }
 
-void ry::Configuration::setJointState(pybind11::array& q){
+void ry::Configuration::setJointState(pybind11::array& q, const I_StringA& joints){
   auto buf = q.request();
-  CHECK_EQ(buf.ndim, 1, "");
+//  CHECK_EQ(buf.ndim, 1, "");
 
   arr _q((double*)buf.ptr, buf.size);
-  K.set()->setJointState(_q);
+  if(joints.size()){
+    K.set()->setJointState(_q, I_conv(joints));
+  }else{
+    K.set()->setJointState(_q);
+  }
   rai::String str = "setJointState";
   _q.write(str,"\n");
   for(auto& d:cameras) d->gl.update(str);
 }
 
-I_StringA ry::Configuration::getFrameNames(){
+ry::I_StringA ry::Configuration::getFrameNames(){
   return I_conv(K.get()->getFrameNames());
 }
 
@@ -92,13 +100,22 @@ pybind11::array ry::Configuration::getFrameState(){
   return pybind11::array(X.dim(), X.p);
 }
 
-void ry::Configuration::setFrameState(pybind11::array& X){
+pybind11::array ry::Configuration::getFrameState(const char* frame){
+  arr X;
+  K.readAccess();
+  rai::Frame *f = K().getFrameByName(frame, true);
+  if(f) X=f->X.getArr7d();
+  K.deAccess();
+  return pybind11::array(X.dim(), X.p);
+}
+
+void ry::Configuration::setFrameState(pybind11::array& X, const I_StringA& frames, bool calc_q_from_X){
   auto buf = X.request();
-  CHECK_EQ(buf.ndim, 2, "");
+//  CHECK_EQ(buf.ndim, 2, "");
 
   arr _X((double*)buf.ptr, buf.size);
   _X.reshape(buf.size/7, 7);
-  K.set()->setFrameState(_X);
+  K.set()->setFrameState(_X, I_conv(frames), calc_q_from_X);
   for(auto& d:cameras) d->gl.update(STRING("setFrameState"));
 }
 
@@ -113,6 +130,20 @@ void ry::Configuration::pop(){
   stack.resizeCopy(stack.d0-1, stack.d1, stack.d2);
   K.set()->setFrameState(X);
   for(auto& d:cameras) d->gl.update(STRING("pop"));
+}
+
+void ry::Configuration::useJointGroups(const ry::I_StringA& jointGroups){
+  K.set()->useJointGroups(I_conv(jointGroups), true, true);
+}
+
+void ry::Configuration::setActiveJoints(const ry::I_StringA& joints) {
+  // TODO: this is joint groups
+  // TODO: maybe call joint groups just joints and joints DOFs
+  K.set()->setActiveJointsByName(I_conv(joints));
+}
+
+void ry::Configuration::makeObjectsFree(const ry::I_StringA& objs){
+  K.set()->makeObjectsFree(I_conv(objs));
 }
 
 double ry::Configuration::getPairDistance(const char* frameA, const char* frameB){

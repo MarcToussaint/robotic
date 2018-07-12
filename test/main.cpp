@@ -75,8 +75,8 @@ void test(){
 //    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
 //                          "time:[1.], feature:[eq qRobot], order:1",
 //                        } );
-    komo.addObjectives({   I_feature({1.}, {"eq", "posDiff", "pr2L", "ball"}, I_args() ),
-                           I_feature({1.}, {"eq", "qRobot"}, {{std::string("order"), {1.}}} )
+    komo.addObjectives({   ry::I_feature({1.}, {"eq", "posDiff", "pr2L", "ball"}, ry::I_args() ),
+	  ry::I_feature({1.}, {"eq", "qRobot"}, {{std::string("order"), {1.}}} )
                        });
     komo.optimize();
   }
@@ -158,9 +158,9 @@ void test_lgp(){
 int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
-//  test();
+  test();
 //  test_pickAndPlace();
-  test_lgp();
+//  test_lgp();
 
   return 0;
 }

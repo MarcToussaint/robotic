@@ -43,7 +43,7 @@ dist = K.getPairDistance("hand", "ball");
 print('distance: ', dist);
 D.update(True);
 
-komo = K.komo()
+komo = K.komo_IK()
 komo.addObjective(type='eq', feature='posDiff', frames=['ball', 'hand'])
 komo.optimize()
 
