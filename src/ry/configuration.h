@@ -9,6 +9,13 @@
 #include "komo-py.h"
 #include "lgp-py.h"
 
+/* TODO:
+ *
+ * delFrame
+ * arguments should always be I_arr, not ny.array
+ * IK.optimize()  should not push back -> getResult
+ */
+
 namespace ry{
 
   struct Configuration{
@@ -18,6 +25,9 @@ namespace ry{
 
     Configuration();
     ~Configuration();
+
+    //--
+    Configuration copy();
 
     //-- editing
     void clear();
