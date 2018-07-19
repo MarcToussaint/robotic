@@ -14,7 +14,7 @@ namespace ry{
 
   struct Configuration;
 
-  struct Camera_self : GLDrawer{
+  struct Camera_self : GLDrawer, NonCopyable {
     Camera_self(Configuration* _kin);
     ~Camera_self();
     Configuration *kin=0;

@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+import sys
+sys.path.append('../src')
+
 from ry import *
 
 K = Configuration()
@@ -21,20 +24,20 @@ T = 6
 komo = K.komo_CGO(T)
 #komo.makeObjectsFree([obj1, obj2])
 
-komo.addObjective(confs=[3], type='ineq', feature='dist', frames=[obj1, obj2], target=[-.05]); # distance between objects!
-komo.addObjective(type='eq', feature='coll');
-komo.addObjective(type='ineq', feature='limits');
+komo.addObjective(confs=[3], type='ineq', feature='dist', frames=[obj1, obj2], target=[-.05]) # distance between objects!
+komo.addObjective(type='eq', feature='coll')
+komo.addObjective(type='ineq', feature='limits')
 
-komo.add_StableRelativePose(confs=[0, 1], gripper=arm, object=obj1);
-komo.add_StableRelativePose(confs=[2, 3], gripper=arm, object=obj2);
-komo.add_StableRelativePose(confs=[4, 5], gripper=arm, object=tray);
+komo.add_StableRelativePose(confs=[0, 1], gripper=arm, object=obj1)
+komo.add_StableRelativePose(confs=[2, 3], gripper=arm, object=obj2)
+komo.add_StableRelativePose(confs=[4, 5], gripper=arm, object=tray)
 
-komo.add_StableRelativePose(confs=[1,2,3,4,5], gripper=tray, object=obj1);
-komo.add_StableRelativePose(confs=[3,4,5], gripper=tray, object=obj2);
+komo.add_StableRelativePose(confs=[1,2,3,4,5], gripper=tray, object=obj1)
+komo.add_StableRelativePose(confs=[3,4,5], gripper=tray, object=obj2)
 
-komo.add_StablePose(confs=[-1, 0], object=obj1);
-komo.add_StablePose(confs=[-1, 0, 1, 2], object=obj2);
-komo.add_StablePose(confs=[-1, 0, 1, 2, 3, 4], object=tray);
+komo.add_StablePose(confs=[-1, 0], object=obj1)
+komo.add_StablePose(confs=[-1, 0, 1, 2], object=obj2)
+komo.add_StablePose(confs=[-1, 0, 1, 2, 3, 4], object=tray)
 
 komo.add_grasp(0, arm, obj1)
 komo.add_place(1, obj1, tray)
@@ -42,8 +45,8 @@ komo.add_place(1, obj1, tray)
 komo.add_grasp(2, arm, obj2)
 komo.add_place(3, obj2, tray)
 
-komo.add_grasp(4, arm, tray);
-komo.add_place(5, tray, table);
+komo.add_grasp(4, arm, tray)
+komo.add_place(5, tray, table)
 
 # komo.add_resting(-1, 0, obj1)
 # komo.add_restingRelative(0, 1 , obj1, arm)
@@ -58,5 +61,5 @@ komo.add_place(5, tray, table);
 komo.optimize()
 
 for t in range(-1, T):
-    komo.getConfiguration(t);
+    komo.getConfiguration(t)
     D.update(True)

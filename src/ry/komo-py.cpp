@@ -30,7 +30,8 @@ ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, uint T)
 
 ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase)
   : kin(_kin) {
-  setModel(kin->K.get(), false);
+  //  LOG(0) <<"create " <<this;
+  setModel(kin->K.get(), true);
   world.optimizeTree();
   world.calc_q();
 
@@ -362,6 +363,6 @@ void ry::KOMOpy::optimize(){
 
 void ry::KOMOpy::getConfiguration(int t){
   self->kin->K.set()->setFrameState(self->configurations(t+self->k_order)->getFrameState());
-  self->kin->K.set()->proxies = self->configurations(t+self->k_order)->proxies;
+  self->kin->K.set()->copyProxies( *self->configurations(t+self->k_order) );
   for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy configuration " <<t));
 }

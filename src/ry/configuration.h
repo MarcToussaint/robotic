@@ -33,6 +33,7 @@ namespace ry{
     void clear();
     void addFile(const std::string& file);
     void addFrame(const std::string& name, const std::string& parent, const std::string& args);
+    void delFrame(const std::string& name);
     void editorFile(const std::string& file);
 
     //-- set/get state

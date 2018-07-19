@@ -23,31 +23,29 @@ void ry::Configuration::addFile(const std::string& file){
 }
 
 void ry::Configuration::addFrame(const std::string& name, const std::string& parent, const std::string& args){
-//  LOG(0) <<"here" <<args;
   K.writeAccess();
-  rai::Frame *p = 0;
-  if(parent.size()) p = K()[parent.c_str()];
   rai::Frame *f = new rai::Frame(K());
   f->name = name;
-  if(p) f->linkFrom(p);
+
+  if(parent.size()){
+    rai::Frame *p = K().getFrameByName(parent.c_str());
+    if(p) f->linkFrom(p);
+  }
 
   rai::String(args) >>f->ats;
-//  cout <<"ARGUMENTS: " <<_args <<endl;
   f->read(f->ats);
-//  if(f->shape) f->shape->geom->createMeshes();
-//  if(args.size()){
-//    rai::Shape *s = new rai::Shape(*f);
-//    rai::String(args) >>s->type();
-//    s->size() = size;
-//  }
-//  if(pose.size()){
-//    rai::String(pose) >>f->Q;
-//    if(!p) f->X = f->Q;
-//  }
 
   if(f->parent) f->X = f->parent->X * f->Q;
   K.deAccess();
   for(auto& d:cameras) d->gl.update(STRING("addFrame '" <<name <<'(' <<parent <<")'"));
+}
+
+void ry::Configuration::delFrame(const std::string& name){
+  K.writeAccess();
+  rai::Frame *p = K().getFrameByName(name.c_str(), true);
+  if(p) delete p;
+  K.deAccess();
+  for(auto& d:cameras) d->gl.update(STRING("delFrame '" <<name <<"'"));
 }
 
 void ry::Configuration::editorFile(const std::string& filename){
