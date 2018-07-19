@@ -26,6 +26,7 @@ namespace ry{
     byteA captureImage;
     floatA captureDepth;
     bool renderInBackground;
+    void update(const char* txt);
     void glDraw(OpenGL &);
   };
 

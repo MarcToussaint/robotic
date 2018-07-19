@@ -13,11 +13,12 @@ PYBIND11_MODULE(libry, m) {
       .def("clear", &ry::Configuration::clear)
       .def("addFile", &ry::Configuration::addFile)
       .def("addFrame", &ry::Configuration::addFrame)
+      .def("delFrame", &ry::Configuration::delFrame)
 
       .def("getJointNames", &ry::Configuration::getJointNames)
       .def("getJointState", &ry::Configuration::getJointState, "",
            py::arg("joints") = ry::I_StringA())
-      .def("setJointState", &ry::Configuration::setJointState, "",
+      .def("setJointState", (void (ry::Configuration::*)(pybind11::array& q, const ry::I_StringA& joints)) &ry::Configuration::setJointState, "",
            py::arg("q"),
            py::arg("joints") = ry::I_StringA() )
 

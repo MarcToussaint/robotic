@@ -86,6 +86,28 @@ void test(){
 
 //===========================================================================
 
+void test_camera(){
+
+  auto K = ry::Configuration();
+  auto D = K.camera();
+  D.update("empty configuration\n -- hit ENTER here to continue", true);
+
+  K.addFile("../rai-robotModels/pr2/pr2.g");
+  K.addFile("kitchen.g");
+  D.update(true);
+
+  K.addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5");
+  auto C = K.camera("camera");
+  C.update(true);
+
+  K.setJointState(I_conv(arr({1.})), {"head_pan_joint"});
+  C.update(false);
+  D.update(true);
+
+}
+
+//===========================================================================
+
 void test_pickAndPlace(){
   auto K = ry::Configuration();
   auto D = K.camera();
@@ -158,7 +180,8 @@ void test_lgp(){
 int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
-  test();
+//  test();
+  test_camera();
 //  test_pickAndPlace();
 //  test_lgp();
 

@@ -14,6 +14,23 @@ ry::Camera_self::~Camera_self(){
   if(kin) kin->cameras.removeValue(this);
 }
 
+void ry::Camera_self::update(const char* txt){
+  if(txt) gl.text = txt;
+
+  if(backgroundImage.N) gl.background = backgroundImage;
+
+  if(frame){
+    cam.X = frame->X;
+    gl.camera = cam;
+  }
+
+  if(!renderInBackground){
+    gl.update(NULL, true, true, true);
+  }else{
+    gl.renderInBack(true, true, width, height);
+  }
+}
+
 ry::Camera::Camera(Configuration* _kin, const rai::String& frame, bool _renderInBackground)
   : self(make_shared<Camera_self>(_kin)){
 
@@ -52,23 +69,12 @@ void ry::Camera::set(uint width, uint height, double focalLength, double zNear, 
 }
 
 void ry::Camera::update(std::string txt, bool wait){
-  self->gl.text = txt.c_str();
-  update(wait);
+  self->update(txt.c_str());
+  if(wait) self->gl.watch();
 }
 
 void ry::Camera::update(bool wait){
-  if(self->backgroundImage.N) self->gl.background = self->backgroundImage;
-  if(self->frame){
-    self->cam.X = self->frame->X;
-    self->gl.camera = self->cam;
-  }
-
-  if(!self->renderInBackground){
-    self->gl.update(NULL, true, true, true);
-  }else{
-    self->gl.renderInBack(true, true, self->width, self->height);
-  }
-
+  self->update(NULL);
   if(wait) self->gl.watch();
 }
 

@@ -40,6 +40,7 @@ namespace ry{
     I_StringA getJointNames();
     pybind11::array getJointState(const I_StringA& joints);
     void setJointState(pybind11::array& q, const I_StringA& joints);
+    void setJointState(const I_arr& q, const I_StringA& joints);
 
     I_StringA getFrameNames();
     pybind11::array getFrameState();
