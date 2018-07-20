@@ -24,9 +24,9 @@ T = 6
 komo = K.komo_CGO(T)
 #komo.makeObjectsFree([obj1, obj2])
 
-komo.addObjective(confs=[3], type='ineq', feature='dist', frames=[obj1, obj2], target=[-.05]) # distance between objects!
-komo.addObjective(type='eq', feature='coll')
-komo.addObjective(type='ineq', feature='limits')
+komo.addObjective(confs=[3], type='ineq', feature='distance', frames=[obj1, obj2], target=[-.05]) # distance between objects!
+komo.addObjective(type='eq', feature='accumulatedCollisions')
+komo.addObjective(type='ineq', feature='jointLimits')
 
 komo.add_StableRelativePose(confs=[0, 1], gripper=arm, object=obj1)
 komo.add_StableRelativePose(confs=[2, 3], gripper=arm, object=obj2)

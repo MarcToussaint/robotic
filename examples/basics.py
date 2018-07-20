@@ -24,7 +24,7 @@ D.update(True)
 X = K.getFrameState()
 print('frame state: ', X)
 X = X + .1
-K.setFrameState(X)
+K.setFrameState(X.flatten().tolist())
 D.update(True)
 
 q = K.getJointState()
@@ -47,11 +47,11 @@ print('distance: ', dist);
 D.update(True);
 
 komo = K.komo_IK()
-komo.addObjective(type='eq', feature='posDiff', frames=['ball', 'hand'])
+komo.addObjective(type='eq', feature='positionDiff', frames=['ball', 'hand'])
 komo.optimize()
 
 komo.clearObjectives()
-komo.addObjective(type='eq', feature='posDiff', frames=['hand', 'ball'], target=[.1, .1, .1])
+komo.addObjective(type='eq', feature='positionDiff', frames=['hand', 'ball'], target=[.1, .1, .1])
 komo.optimize()
 
 

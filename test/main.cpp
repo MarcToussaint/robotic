@@ -108,6 +108,19 @@ void test_camera(){
 
 //===========================================================================
 
+void test_constraints(){
+  auto K = ry::Configuration();
+  auto D = K.camera();
+  K.addFile("../rai-robotModels/pr2/pr2.g");
+  K.addFile("../test/kitchen.g");
+//  auto x0 = K.getFrameState();
+  K.addFrame("goal", "", "shape:marker size:[.3] color:[.5 1 1]" );
+  K.setFrameState(I_conv(arr({1,1,1,1,0,0,0})), {"goal"});
+  D.update(true);
+}
+
+//===========================================================================
+
 void test_pickAndPlace(){
   auto K = ry::Configuration();
   auto D = K.camera();
@@ -181,8 +194,9 @@ int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
 //  test();
-  test_camera();
+//  test_camera();
 //  test_pickAndPlace();
+  test_constraints();
 //  test_lgp();
 
   return 0;

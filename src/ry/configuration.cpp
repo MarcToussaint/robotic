@@ -15,6 +15,7 @@ ry::Configuration::~Configuration(){
 
 void ry::Configuration::clear(){
   K.set()->clear();
+  for(auto& d:cameras) d->update(STRING("clear"));
 }
 
 void ry::Configuration::addFile(const std::string& file){
@@ -74,23 +75,8 @@ pybind11::array ry::Configuration::getJointState(const I_StringA& joints){
   return pybind11::array(q.dim(), q.p);
 }
 
-void ry::Configuration::setJointState(pybind11::array& q, const I_StringA& joints){
-  auto buf = q.request();
-//  CHECK_EQ(buf.ndim, 1, "");
-
-  arr _q((double*)buf.ptr, buf.size);
-  if(joints.size()){
-    K.set()->setJointState(_q, I_conv(joints));
-  }else{
-    K.set()->setJointState(_q);
-  }
-  rai::String str = "setJointState";
-  _q.write(str,"\n");
-  for(auto& d:cameras) d->update(str);
-}
-
-void ry::Configuration::setJointState(const I_arr& q, const I_StringA& joints){
-  arr _q = I_conv(q);
+void ry::Configuration::setJointState(const std::vector<double>& q, const I_StringA& joints){
+  arr _q = conv_stdvec2arr(q);
   if(joints.size()){
     K.set()->setJointState(_q, I_conv(joints));
   }else{
@@ -119,12 +105,9 @@ pybind11::array ry::Configuration::getFrameState(const char* frame){
   return pybind11::array(X.dim(), X.p);
 }
 
-void ry::Configuration::setFrameState(pybind11::array& X, const I_StringA& frames, bool calc_q_from_X){
-  auto buf = X.request();
-//  CHECK_EQ(buf.ndim, 2, "");
-
-  arr _X((double*)buf.ptr, buf.size);
-  _X.reshape(buf.size/7, 7);
+void ry::Configuration::setFrameState(const std::vector<double>& X, const I_StringA& frames, bool calc_q_from_X){
+  arr _X = conv_stdvec2arr(X);
+  _X.reshape(_X.N/7, 7);
   K.set()->setFrameState(_X, I_conv(frames), calc_q_from_X);
   for(auto& d:cameras) d->update(STRING("setFrameState"));
 }

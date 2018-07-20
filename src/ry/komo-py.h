@@ -21,7 +21,7 @@ namespace ry{
     void setDiscreteOpt(uint k);
 
     /// set an objective
-    void setObjective(const arr& times, ObjectiveType type, const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
+    void setObjective(const arr& times, ObjectiveType type, FeatureSymbol feat, const StringA& frames, const std::map<std::string, std::vector<double> >& parameters={});
 
     /// output the defined problem as a generic graph, that can also be displayed, saved and loaded
     Graph getProblemGraph(bool includeValues=false);
@@ -32,7 +32,7 @@ namespace ry{
 
   private:
     Objective* setObjective(const arr& times, ObjectiveType type, Feature* feature, const arr& target=NoArr, double scale=1e1);
-    Feature* symbols2feature(const StringA& featureSymbols, const std::map<std::string, std::vector<double> >& parameters={});
+    Feature* symbols2feature(FeatureSymbol feat, const StringA& frames, const std::map<std::string, std::vector<double> >& parameters={});
   };
 
   struct KOMOpy{
@@ -65,6 +65,8 @@ namespace ry{
 
     //-- get results
     void getConfiguration(int t);
+//    std::string getReport();
+    Graph getProblemGraph();
     double getConstraintViolations();
     double getCosts();
   };

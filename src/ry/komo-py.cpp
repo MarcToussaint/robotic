@@ -89,7 +89,10 @@ Objective *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, F
   return task;
 }
 
-Feature *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map<std::string, std::vector<double>>& parameters){
+Feature *ry::KOMOpy_self::symbols2feature(FeatureSymbol feat, const StringA &frames, const std::map<std::string, std::vector<double>>& parameters){
+#if 1
+  return ::symbols2feature(feat, frames, world); //parameters);
+#else
   if(!symbols.N) return 0;
   if(symbols(0)=="dist") {  return new TM_PairCollision(world, symbols(1), symbols(2), TM_PairCollision::_negScalar, false); }
   if(symbols(0)=="above") {  return new TM_AboveBox(world, symbols(2), symbols(1), .05); }
@@ -136,11 +139,13 @@ Feature *ry::KOMOpy_self::symbols2feature(const StringA &symbols, const std::map
 
   HALT("can't interpret feature symbols: " <<symbols);
   return 0;
+#endif
 }
 
 Graph ry::KOMOpy_self::getProblemGraph(bool includeValues){
   Graph K;
   //header
+#if 0
   Graph& g = K.newSubgraph({"KOMO_specs"}) -> graph();
   g.newNode<uint>({"x_dim"}, {}, x.N);
   g.newNode<uint>({"T"}, {}, T);
@@ -153,37 +158,53 @@ Graph ry::KOMOpy_self::getProblemGraph(bool includeValues){
 //  for(uint i=0; i<configurations.N; i++) times(i)=configurations(i)->frames.first()->time;
 //  g.newNode<double>({"times"}, {}, times);
   g.newNode<bool>({"useSwift"}, {}, useSwift);
+#endif
 
   //nodes for each configuration
-  for(uint s=0;s<configurations.N;s++){
-    Graph& g = K.newSubgraph({STRING((int)s-(int)k_order)}) -> graph();
-    g.newNode<uint>({"dim"}, {}, configurations(s)->q.N);
-    g.newNode<double>({"tau"}, {}, configurations(s)->frames.first()->time);
-  }
+//  for(uint s=0;s<configurations.N;s++){
+//    Graph& g = K.newSubgraph({STRING((int)s-(int)k_order)}) -> graph();
+//    g.newNode<uint>({"dim"}, {}, configurations(s)->q.N);
+//    g.newNode<double>({"tau"}, {}, configurations(s)->frames.first()->time);
+//  }
 
-  NodeL configs = K.list();
-  configs.remove(0);
+//  NodeL configs = K.list();
+//  configs.remove(0);
 
   //objectives
-  uint t_count=0;
+//  uint t_count=0;
   for(Objective* task : objectives){
     CHECK(task->prec.nd==1,"");
-    for(uint t=0;t<task->prec.N;t++){
-      if(task->prec(t)){
-//        Graph& g = K.newSubgraph({}, configs.sub(i+k_order-t->map->order,i+k_order)) -> graph();
-        Graph& g = K.newSubgraph({}, configs.sub(convert<uint>(task->vars[t]+(int)k_order))) -> graph();
-        g.newNode<rai::String>({"type"}, {}, STRING(task->type));
-        g.newNode<double>({"scale"}, {}, task->prec(t));
-        if(task->target.N) g.newNode<arr>({"target"}, {}, task->target);
-        g.copy(task->map->getSpec(world), true);
-        if(includeValues){
+    //        Graph& g = K.newSubgraph({}, configs.sub(i+k_order-t->map->order,i+k_order)) -> graph();
+    //        Graph& g = K.newSubgraph({}, configs.sub(convert<uint>(task->vars[t]+(int)k_order))) -> graph();
+    Graph& g = K.newSubgraph() -> graph();
+    g.isNodeOfGraph->keys.append(task->name);
+    //        g.newNode<
+    g.newNode<rai::String>({"type"}, {}, STRING(task->type));
+    g.newNode<double>({"scale"}, {}, task->prec.last());
+    if(task->target.N) g.newNode<arr>({"target"}, {}, task->target);
+    if(task->vars.N) g.newNode<intA>({"confs"}, {}, task->vars);
+    g.copy(task->map->getSpec(world), true);
+    if(includeValues){
+      arr V;
+      for(uint t=0;t<task->prec.N;t++){
+        if(task->prec(t)){
           arr y;
           task->map->phi(y, NoArr, configurations({t,t+k_order}));
-          g.newNode<arr>({"value"}, {}, y);
+          V.append(y);
         }
       }
+      if(task->type==OT_sos){
+        g.newNode<double>({"sos_value"}, {}, sumOfSqr(V));
+      }else if(task->type==OT_eq){
+        g.newNode<double>({"eq_sumOfAbs"}, {}, sumOfAbs(V));
+      }else if(task->type==OT_sos){
+        double c=0.;
+        for(double& v:V) if(v>0) c+=v;
+        g.newNode<double>({"inEq_sumOfPos"}, {}, c);
+      }
+
     }
-    t_count++;
+//    t_count++;
   }
 
   if(switches.N) HALT("not implemented for switches yet");
@@ -211,7 +232,7 @@ arr ry::KOMOpy_self::getRelPose(uint t, const rai::String& from, const rai::Stri
  * komo.setObjective({2}, OT_sos, { "vec", "object" }, { {"target", {0.,0.,1.} } );
  *
  */
-void ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, const StringA &featureSymbols, const std::map<std::string, std::vector<double>> &parameters){
+void ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, FeatureSymbol feat, const StringA &frames, const std::map<std::string, std::vector<double>> &parameters){
   arr target;
   double scale=1e1;
   if(parameters.find("scale")!=parameters.end()) scale = parameters.at("scale")[0];
@@ -221,7 +242,7 @@ void ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, const S
 //  featureSymbols(0) >>type;
 //  StringA symbols = featureSymbols({1,-1});
 
-  Objective *t = setObjective(times, type, symbols2feature(featureSymbols, parameters), target, scale);
+  Objective *t = setObjective(times, type, symbols2feature(feat, frames, parameters), target, scale);
 
   if(parameters.find("order")!=parameters.end()) t->map->order = (uint)parameters.at("order")[0];
 }
@@ -256,17 +277,17 @@ void ry::KOMOpy::addObjective(const std::vector<int>& confs, const std::vector<d
   rai::Enum<ObjectiveType> __type;
   __type = type.c_str();
 
-  StringA feat;
-  feat.append(rai::String(feature));
-  feat.append(I_conv(frames));
+  rai::Enum<FeatureSymbol> feat;
+  feat = feature.c_str();
+
   if(scale.size()) parameters["scale"] = scale;
   if(target.size()) parameters["target"] = target;
   if(timeInterval.size()){
     CHECK_EQ(confs.size(), 0, "");
-    self->setObjective(arr(timeInterval), __type, feat, parameters);
+    self->setObjective(arr(timeInterval), __type, feat, I_conv(frames), parameters);
   }else{
     CHECK_EQ(timeInterval.size(), 0, "");
-    self->setObjective(convert<double>(intA(confs)), __type, feat, parameters);
+    self->setObjective(convert<double>(intA(confs)), __type, feat, I_conv(frames), parameters);
   }
 }
 
@@ -302,23 +323,26 @@ void ry::KOMOpy::addObjectives(const I_features& features){
     rai::Enum<ObjectiveType> type;
     type = symbols.popFirst();
 
+    rai::Enum<FeatureSymbol> feat;
+    feat = symbols.popFirst();
+
     std::map<std::string, std::vector<double>> parameters;
     for (const auto& x : std::get<2>(feature)) {
       parameters.insert(std::make_pair(x.first, conv_stdvec2arr(x.second)));
     }
 
-    self->setObjective(times, type, symbols, parameters);
+    self->setObjective(times, type, feat, symbols, parameters);
   }
 }
 
 void ry::KOMOpy::add_grasp(int conf, const char* gripper, const char* object){
-  addObjective({conf}, {}, "eq", "dist", {gripper, object});
+  addObjective({conf}, {}, "eq", "distance", {gripper, object});
 }
 
 void ry::KOMOpy::add_place(int conf, const char* object, const char* table){
-  addObjective({conf}, {}, "ineq", "above", {table, object});
-  addObjective({conf}, {}, "eq", "aboveZ", {table, object});
-  addObjective({conf}, {}, "sos", "vec", {object}, {}, {0.,0.,1.}, {{"v1",{0.,0.,1.}}});
+  addObjective({conf}, {}, "ineq", "aboveBox", {table, object});
+  addObjective({conf}, {}, "eq", "standingAbove", {table, object});
+  addObjective({conf}, {}, "sos", "vectorZ", {object}, {}, {0.,0.,1.});
 }
 
 void ry::KOMOpy::add_StableRelativePose(const std::vector<int>& confs, const char* gripper, const char* object){
@@ -365,4 +389,25 @@ void ry::KOMOpy::getConfiguration(int t){
   self->kin->K.set()->setFrameState(self->configurations(t+self->k_order)->getFrameState());
   self->kin->K.set()->copyProxies( *self->configurations(t+self->k_order) );
   for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy configuration " <<t));
+}
+
+//std::string ry::KOMOpy::getReport(){
+//  Graph specs = self->getProblemGraph(true);
+//  std::stringstream str;
+//  str <<specs;
+//  return str.str();
+//}
+
+Graph ry::KOMOpy::getProblemGraph(){
+  return self->getProblemGraph(true);
+}
+
+double ry::KOMOpy::getConstraintViolations(){
+  Graph R = self->getReport(false);
+  return R.get<double>("constraints");
+}
+
+double ry::KOMOpy::getCosts(){
+  Graph R = self->getReport(false);
+  return R.get<double>("sqrCosts");
 }

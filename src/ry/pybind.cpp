@@ -6,6 +6,61 @@
 
 namespace py = pybind11;
 
+
+py::dict graph2dict(const Graph& G){
+  py::dict dict;
+  for(Node *n:G){
+    rai::String key;
+    if(n->keys.N) key=n->keys.last();
+    else key <<n->index;
+
+    //-- write value
+    if(n->isGraph()) {
+      dict[key.p] = graph2dict(n->get<Graph>());
+    } else if(n->isOfType<rai::String>()) {
+      dict[key.p] = n->get<rai::String>().p;
+    } else if(n->isOfType<arr>()) {
+      dict[key.p] = conv_arr2stdvec( n->get<arr>() );
+    } else if(n->isOfType<double>()) {
+      dict[key.p] = n->get<double>();
+    } else if(n->isOfType<int>()) {
+      dict[key.p] = n->get<int>();
+    } else if(n->isOfType<uint>()) {
+      dict[key.p] = n->get<uint>();
+    } else if(n->isOfType<bool>()) {
+      dict[key.p] = n->get<bool>();
+    } else {
+    }
+
+  }
+  return dict;
+}
+
+py::list graph2list(const Graph& G){
+  py::list list;
+  for(Node *n:G){
+    //-- write value
+    if(n->isGraph()) {
+      list.append( graph2dict(n->get<Graph>()) );
+    } else if(n->isOfType<rai::String>()) {
+      list.append( n->get<rai::String>().p );
+    } else if(n->isOfType<arr>()) {
+      list.append( conv_arr2stdvec( n->get<arr>() ) );
+    } else if(n->isOfType<double>()) {
+      list.append( n->get<double>() );
+    } else if(n->isOfType<int>()) {
+      list.append( n->get<int>() );
+    } else if(n->isOfType<uint>()) {
+      list.append( n->get<uint>() );
+    } else if(n->isOfType<bool>()) {
+      list.append( n->get<bool>() );
+    } else {
+    }
+
+  }
+  return list;
+}
+
 PYBIND11_MODULE(libry, m) {
   py::class_<ry::Configuration>(m, "Configuration")
       .def(py::init<>())
@@ -18,7 +73,7 @@ PYBIND11_MODULE(libry, m) {
       .def("getJointNames", &ry::Configuration::getJointNames)
       .def("getJointState", &ry::Configuration::getJointState, "",
            py::arg("joints") = ry::I_StringA())
-      .def("setJointState", (void (ry::Configuration::*)(pybind11::array& q, const ry::I_StringA& joints)) &ry::Configuration::setJointState, "",
+      .def("setJointState", &ry::Configuration::setJointState, "",
            py::arg("q"),
            py::arg("joints") = ry::I_StringA() )
 
@@ -78,6 +133,13 @@ PYBIND11_MODULE(libry, m) {
 
       .def("optimize", &ry::KOMOpy::optimize)
       .def("getConfiguration", &ry::KOMOpy::getConfiguration)
+      .def("getReport",
+           [](ry::KOMOpy& self) -> py::list{
+             Graph G = self.getProblemGraph();
+             return graph2list(G);
+           } )
+      .def("getConstraintViolations", &ry::KOMOpy::getConstraintViolations)
+      .def("getCosts", &ry::KOMOpy::getCosts)
       ;
 
   py::class_<ry::LGPpy>(m, "LGPpy")

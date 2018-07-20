@@ -11,7 +11,6 @@
 
 /* TODO:
  *
- * delFrame
  * arguments should always be I_arr, not ny.array
  * IK.optimize()  should not push back -> getResult
  */
@@ -39,13 +38,12 @@ namespace ry{
     //-- set/get state
     I_StringA getJointNames();
     pybind11::array getJointState(const I_StringA& joints);
-    void setJointState(pybind11::array& q, const I_StringA& joints);
-    void setJointState(const I_arr& q, const I_StringA& joints);
+    void setJointState(const std::vector<double>& q, const I_StringA& joints);
 
     I_StringA getFrameNames();
     pybind11::array getFrameState();
     pybind11::array getFrameState(const char* frame);
-    void setFrameState(pybind11::array& X, const I_StringA& frames, bool calc_q_from_X);
+    void setFrameState(const std::vector<double>& X, const I_StringA& frames, bool calc_q_from_X=true);
 
     void stash();
     void pop();
