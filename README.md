@@ -4,6 +4,8 @@ This is a container repo, exposing some functionality of the RAI code. See https
 
 ## Quick Start
 
+This assumes a standard Ubuntu 16.04 machine.
+
 ```
 git clone git@github.com:MarcToussaint/rai-python.git
 cd rai-python
