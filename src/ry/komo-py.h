@@ -13,6 +13,7 @@ namespace ry{
     Configuration* kin=0;
     bool denseMode = true;
     Graph features;
+    Skeleton S;
 
     KOMOpy_self(Configuration* _kin, uint T);
     KOMOpy_self(Configuration* _kin, double phases, uint stepsPerPhase=20, double timePerPhase=5.);
@@ -44,7 +45,9 @@ namespace ry{
 
     //--
     void makeObjectsFree(const I_StringA& objs);
-    void setCollionPairs(const std::vector<std::pair<std::string, std::string>>& collision_pairs);
+    void activateCollisionPairs(const std::vector<std::pair<std::string, std::string>>& collision_pairs);
+    void deactivateCollisionPairs(const std::vector<std::pair<std::string, std::string>>& collision_pairs);
+    void timeOptimization();
 
     void clearObjectives();
 
@@ -60,10 +63,16 @@ namespace ry{
     void add_resting(int conf1, int conf2, const char* object);
     void add_restingRelative(int conf1, int conf2, const char* object, const char* tableOrGripper);
 
+    //-- basis of LGP
+    void addSkeleton(const std::vector<double>& times, I_StringA symbols);
+    void setSkeleton();
+    void skeleton2bound();
+
     //-- optimize
     void optimize();
 
     //-- get results
+    int getT();
     void getConfiguration(int t);
 //    std::string getReport();
     Graph getProblemGraph();

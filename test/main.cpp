@@ -100,7 +100,7 @@ void test_camera(){
   auto C = K.camera("camera");
   C.update(true);
 
-  K.setJointState(I_conv(arr({1.})), {"head_pan_joint"});
+  K.setJointState({1.}, {"head_pan_joint"});
   C.update(false);
   D.update(true);
 
@@ -115,7 +115,7 @@ void test_constraints(){
   K.addFile("../test/kitchen.g");
 //  auto x0 = K.getFrameState();
   K.addFrame("goal", "", "shape:marker size:[.3] color:[.5 1 1]" );
-  K.setFrameState(I_conv(arr({1,1,1,1,0,0,0})), {"goal"});
+  K.setFrameState({1,1,1,1,0,0,0}, {"goal"});
   D.update(true);
 }
 
@@ -141,7 +141,7 @@ void test_pickAndPlace(){
   int T=6;
   auto komo = K.komo_CGO(T);
 
-  komo.setCollionPairs({{obj1, obj2}});
+  komo.activateCollisionPairs({{obj1, obj2}});
   komo.addObjective({}, {}, "eq", "coll");
   komo.addObjective({}, {}, "ineq", "limits");
 
@@ -173,6 +173,84 @@ void test_pickAndPlace(){
   }
 }
 
+//===========================================================================
+
+void test_skeleton(){
+
+  auto K = ry::Configuration();
+  auto D = K.camera();
+
+  K.addFile("lgp-example.g");
+  D.update();
+
+  auto komo = K.komo_path(1.);
+
+  //we're creating the same skeleton that'd be created by the decision sequence
+  //(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)
+  //which is a standard demo in the RSS'18 paper
+
+  //(grasp baxterR stick)
+  komo.addSkeleton({1,1}, {"touch", "baxterR", "stick"} );
+  komo.addSkeleton({1,1}, {"stable", "baxterR", "stick"} );
+  komo.addSkeleton({1,1}, {"liftDownUp", "baxterR"} );
+
+  //(handover baxterR stick baxterL)
+  komo.addSkeleton({2,2}, {"touch", "baxterL", "stick"} );
+  komo.addSkeleton({2,4}, {"stable", "baxterL", "stick"} );
+
+  //(hitSlide stickTip redBall table1)
+  komo.addSkeleton({3,3}, {"touch", "stickTip", "redBall"} );
+  komo.addSkeleton({3,3}, {"impulse", "stickTip", "redBall"} );
+  komo.addSkeleton({3,3}, {"dynamicOn", "table1", "redBall"} );
+
+  //(graspSlide baxterR redBall table1)
+  komo.addSkeleton({4,4}, {"graspSlide", "baxterR", "redBall", "table1"} );
+
+  komo.skeleton2bound();
+
+  komo.optimize();
+
+  for(int t=-1;t<komo.getT();t++){
+    komo.getConfiguration(t);
+    D.update(true);
+  }
+}
+
+//===========================================================================
+
+void test_skeleton2(){
+
+  auto K = ry::Configuration();
+  auto D = K.camera();
+
+  K.addFile("boxProblem.g");
+  D.update();
+
+  auto komo = K.komo_path(1., 50, 2.);
+
+  //-- this is all yet 'magic' -> clearer interface
+  komo.timeOptimization();
+  komo.deactivateCollisionPairs({{"boxBo", "boxLe"}, {"boxBo", "boxBa"}, {"boxLe", "boxBa"}});
+  komo.makeObjectsFree({"ballR"});
+  komo.addObjective({}, {.05, -1.}, "eq", "physics", {"ballR"}, {1e-1});
+  komo.addObjective({}, {.05, -1.}, "ineq", "energy", {}, {1e-1});
+  komo.addObjective({}, {}, "sos", "accumulatedCollisions", {}, {1.});
+  komo.addObjective({}, {}, "eq", "contactConstraints", {}, {3e1});
+
+  //-- this is the skeleton
+  komo.addSkeleton({.4, .4}, {"contact", "boxBo", "ballR"} );
+  komo.addSkeleton({.6, .6}, {"contact", "boxBo", "ballR"} );
+  komo.addSkeleton({.8, .8}, {"contact", "boxBo", "ballR"} );
+  komo.addSkeleton({1., 1.}, {"touch", "target", "ballR"} );
+  komo.setSkeleton();
+
+  komo.optimize();
+
+  for(int t=-1;t<komo.getT();t++){
+    komo.getConfiguration(t);
+    D.update(true);
+  }
+}
 
 //===========================================================================
 
@@ -196,7 +274,9 @@ int main(int argc,char** argv){
 //  test();
 //  test_camera();
 //  test_pickAndPlace();
-  test_constraints();
+//  test_constraints();
+//  test_skeleton();
+  test_skeleton2();
 //  test_lgp();
 
   return 0;

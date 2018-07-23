@@ -93,7 +93,10 @@ PYBIND11_MODULE(libry, m) {
 
       .def("camera", &ry::Configuration::camera, "bla", py::arg("frame")="", py::arg("renderInBackground") = false)
       .def("komo_IK", &ry::Configuration::komo_IK)
-      .def("komo_path", &ry::Configuration::komo_path)
+      .def("komo_path", &ry::Configuration::komo_path, "",
+           py::arg("phases"),
+           py::arg("stepsPerPhase")=20,
+           py::arg("timePerPhase")=5. )
       .def("komo_CGO", &ry::Configuration::komo_CGO)
       .def("lgp", &ry::Configuration::lgp);
 
@@ -109,6 +112,9 @@ PYBIND11_MODULE(libry, m) {
 
   py::class_<ry::KOMOpy>(m, "KOMOpy")
       .def("makeObjectsFree", &ry::KOMOpy::makeObjectsFree)
+      .def("activateCollisionPairs", &ry::KOMOpy::activateCollisionPairs)
+      .def("deactivateCollisionPairs", &ry::KOMOpy::deactivateCollisionPairs)
+      .def("timeOptimization", &ry::KOMOpy::timeOptimization)
 
       .def("clearObjectives", &ry::KOMOpy::clearObjectives)
       .def("addObjective", &ry::KOMOpy::addObjective, "core method to add an objective",
@@ -131,7 +137,13 @@ PYBIND11_MODULE(libry, m) {
       .def("add_resting", &ry::KOMOpy::add_resting)
       .def("add_restingRelative", &ry::KOMOpy::add_restingRelative)
 
+      .def("addSkeleton", &ry::KOMOpy::addSkeleton)
+      .def("setSkeleton", &ry::KOMOpy::setSkeleton)
+      .def("skeleton2bound", &ry::KOMOpy::skeleton2bound)
+
+
       .def("optimize", &ry::KOMOpy::optimize)
+      .def("getT", &ry::KOMOpy::getT)
       .def("getConfiguration", &ry::KOMOpy::getConfiguration)
       .def("getReport",
            [](ry::KOMOpy& self) -> py::list{

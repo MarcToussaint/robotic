@@ -10,6 +10,9 @@
 #include <Kin/TM_transition.h>
 #include <Kin/TM_qLimits.h>
 #include <Kin/proxy.h>
+#include <Kin/TM_time.h>
+
+#include <LGP/bounds.h>
 
 double shapeSize(const rai::KinematicWorld& K, const char* name, uint i=2);
 
@@ -36,7 +39,8 @@ ry::KOMOpy_self::KOMOpy_self(ry::Configuration* _kin, double phases, uint stepsP
   world.calc_q();
 
   denseMode = false;
-  setPathOpt(phases, stepsPerPhase, timePerPhase);
+//  setPathOpt(phases, stepsPerPhase, timePerPhase);
+  setTiming(phases, stepsPerPhase, timePerPhase, 2);
 }
 
 ry::KOMOpy_self::~KOMOpy_self(){
@@ -66,7 +70,7 @@ Objective *ry::KOMOpy_self::setObjective(const arr& times, ObjectiveType type, F
   Objective *task = addObjective(-1.,-1., map, type);
   if(!denseMode){
     if(!times.N){
-      task->setCostSpecs(-1, -1, target, scale);
+      task->setCostSpecs(0, T-1, target, scale);
     }else if(times.N==1){
       task->setCostSpecs(times(0), times(0), stepsPerPhase, T, target, scale);
     }else{
@@ -207,8 +211,8 @@ Graph ry::KOMOpy_self::getProblemGraph(bool includeValues){
 //    t_count++;
   }
 
-  if(switches.N) HALT("not implemented for switches yet");
-  if(flags.N) HALT("not implemented for flags yet");
+  if(switches.N) RAI_MSG("not implemented for switches yet");
+  if(flags.N) RAI_MSG("not implemented for flags yet");
 
   return K;
 }
@@ -263,10 +267,24 @@ void ry::KOMOpy::makeObjectsFree(const I_StringA& objs){
   self->world.makeObjectsFree(I_conv(objs));
 }
 
-void ry::KOMOpy::setCollionPairs(const std::vector<std::pair<std::string, std::string> >& collision_pairs){
+void ry::KOMOpy::activateCollisionPairs(const std::vector<std::pair<std::string, std::string> >& collision_pairs){
   for (const auto&  pair : collision_pairs) {
     self->activateCollisions(rai::String(pair.first), rai::String(pair.second));
   }
+}
+
+void ry::KOMOpy::deactivateCollisionPairs(const std::vector<std::pair<std::string, std::string> >& collision_pairs){
+  for (const auto&  pair : collision_pairs) {
+    self->deactivateCollisions(rai::String(pair.first), rai::String(pair.second));
+  }
+}
+
+void ry::KOMOpy::timeOptimization(){
+  auto *jt = new rai::Joint(*self->world["world"]);
+  jt->type = rai::JT_time;
+  jt->H = 0.;
+  self->addObjective(0., -1., new TM_Time(), OT_sos, {}, 1e1, 1); //smooth time evolution
+  self->addObjective(0., -1., new TM_Time(), OT_sos, {self->tau}, 1e-1, 0); //prior on timing
 }
 
 void ry::KOMOpy::clearObjectives(){
@@ -365,6 +383,19 @@ void ry::KOMOpy::add_restingRelative(int conf1, int conf2, const char* object, c
   addObjective({conf1, conf2}, {}, "eq", "poseDiff", {tableOrGripper, object});
 }
 
+void ry::KOMOpy::addSkeleton(const std::vector<double>& times, ry::I_StringA symbols){
+  CHECK_EQ(times.size(), 2, "");
+  self->S.append(SkeletonEntry(I_conv(symbols), times[0], times[1]));
+}
+
+void ry::KOMOpy::setSkeleton(){
+  self->setSkeleton(self->S);
+}
+
+void ry::KOMOpy::skeleton2bound(){
+  ::skeleton2Bound(*self, BD_path, self->S, self->world, self->world);
+}
+
 void ry::KOMOpy::add_resting(int conf1, int conf2, const char* object){
   addObjective({conf1, conf2}, {}, "eq", "pose", {object});
 }
@@ -380,14 +411,21 @@ void ry::KOMOpy::optimize(){
   cout <<self->getReport(false) <<endl; // Enables plot
 //  while(self->displayTrajectory());
 
+//  self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
+//  for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy::optimization end pose"));
+}
 
-  self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
-  for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy::optimization end pose"));
+int ry::KOMOpy::getT(){
+  return self->T;
 }
 
 void ry::KOMOpy::getConfiguration(int t){
-  self->kin->K.set()->setFrameState(self->configurations(t+self->k_order)->getFrameState());
-  self->kin->K.set()->copyProxies( *self->configurations(t+self->k_order) );
+  self->kin->K.writeAccess();
+  arr X = self->configurations(t+self->k_order)->getFrameState();
+  if(X.d0 > self->kin->K().frames.N) X.resizeCopy(self->kin->K().frames.N,7);
+  self->kin->K().setFrameState(X);
+  self->kin->K().copyProxies( *self->configurations(t+self->k_order) );
+  self->kin->K.deAccess();
   for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy configuration " <<t));
 }
 
