@@ -1,6 +1,10 @@
 # python bindings to rai
 
-This is a container repo, exposing some functionality of the RAI code. See https://github.com/MarcToussaint/rai for a README of the RAI code.
+This repo exposes some functionality of the RAI code in python bindings. See https://github.com/MarcToussaint/rai for a README of the RAI code.
+
+The current focus of the development is to provide simpler interfaces to Logic-Geometric Programming. The repo https://github.com/MarcToussaint/18-RSS-PhysicalManipulation stores the original code for the experiments in the RSS'18 paper. Here the aim are clean user interfaces and tutorials (both, C++ and python).
+
+If you're interested to contribute in development or testing, consider joining the "LGP code" mailing list https://groups.google.com/forum/#!forum/lgp-code.
 
 ## Quick Start
 
@@ -24,7 +28,7 @@ jupyter-notebook docs/1-basics.ipynb
 
 ## Tutorials
 
-Please see the [docs/](docs/) path. So far only one. The plan is:
+Only a few of the tutorials exist yet. Please see the also [docs/](docs/) path. The plan is:
 
 1. [Basics:](docs/1-basics.ipynb) Configurations, Views, basic editing
 1. [IK:](docs/2-constraints.ipynb) Learn about the language to set optimization constraints, first with just Inverse Kinematics; grabbing results
