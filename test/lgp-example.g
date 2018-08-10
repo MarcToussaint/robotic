@@ -1,4 +1,4 @@
-Include = '../../rai-robotModels/baxter/baxter.g'
+Include = '../rai-robotModels/baxter/baxter.g'
 
 Edit base { X=<T t(0 0 .7)> } # for kuka
 Edit base_footprint { X=<T t(-.4 0 0)> } # for baxter

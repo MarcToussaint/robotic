@@ -14,6 +14,10 @@ This assumes a standard Ubuntu 16.04 machine.
 git clone git@github.com:MarcToussaint/rai-python.git
 cd rai-python
 
+# skip the following if you have ssh authorization to github
+git config --file=.gitmodules submodule.rai.url https://github.com/MarcToussaint/rai.git
+git config --file=.gitmodules submodule.rai-robotModels.url https://github.com/MarcToussaint/rai-robotModels.git
+
 git submodule init
 git submodule update
 
