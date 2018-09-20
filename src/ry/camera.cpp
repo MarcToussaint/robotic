@@ -3,90 +3,26 @@
 
 #include <GL/gl.h>
 
-
-ry::Camera_self::Camera_self(ry::Configuration* _kin) : kin(_kin) {
-//  LOG(0) <<"create " <<this;
-  kin->cameras.append(this);
-}
-
-ry::Camera_self::~Camera_self(){
-//  LOG(0) <<"destroy " <<this;
-  if(kin) kin->cameras.removeValue(this);
-}
-
-void ry::Camera_self::update(const char* txt){
-  if(txt) gl.text = txt;
-
-  if(backgroundImage.N) gl.background = backgroundImage;
-
-  if(frame){
-    cam.X = frame->X;
-    gl.camera = cam;
-  }
-
-  if(!renderInBackground){
-    gl.update(NULL, true, true, true);
-  }else{
-    gl.renderInBack(true, true, width, height);
-  }
-}
-
 ry::Camera::Camera(Configuration* _kin, const rai::String& frame, bool _renderInBackground)
-  : self(make_shared<Camera_self>(_kin)){
+  : self(make_shared<KinViewer>(_kin->K, -1, frame)){
+}
 
-  if(frame.N){
-    self->frame = self->kin->K.get()->getFrameByName(frame, true);
-  }
-  self->renderInBackground = _renderInBackground;
-
-  double d;
-  arr z;
-  if(self->frame){
-    if(self->frame->ats.get<double>(d,"focalLength")) self->cam.setFocalLength(d);
-    if(self->frame->ats.get<double>(d,"width")) self->width = (uint)d;
-    if(self->frame->ats.get<double>(d,"height")) self->height = (uint)d;
-    if(self->frame->ats.get<arr>(z,"zrange")) self->cam.setZRange(z(0), z(1));
-  }else{
-    self->cam.setDefault();
-    self->gl.camera = self->cam;
-  }
-
-  self->gl.add(*self);
-
-  self->gl.text = STRING("Camera '" <<(frame.N?frame:"<user>") <<"'");
-  if(!self->renderInBackground){
-    update();
-  }
+ry::Camera::~Camera(){
 }
 
 void ry::Camera::set(uint width, uint height, double focalLength, double zNear, double zFar){
-  self->width = width;
-  self->height = height;
-  self->cam.setFocalLength(focalLength);
-  self->cam.setZRange(zNear, zFar);
-  self->gl.text = STRING("Camera set");
-  update();
+  NIY;
 }
 
 void ry::Camera::update(std::string txt, bool wait){
-  self->update(txt.c_str());
-  if(wait) self->gl.watch();
+  self->gl->text = txt;
+  update(wait);
 }
 
 void ry::Camera::update(bool wait){
-  self->update(NULL);
-  if(wait) self->gl.watch();
+  self->threadStep();
 }
 
-void ry::Camera_self::glDraw(OpenGL& gl){
-  glStandardScene(NULL);
-  kin->K.set()->glDraw(gl);
-
-  captureImage.resize(height, width, 3);
-  glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, captureImage.p);
-  captureDepth.resize(height, width);
-  glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, captureDepth.p);
-}
 
 #if 0
 

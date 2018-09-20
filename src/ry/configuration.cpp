@@ -10,22 +10,14 @@ ry::Configuration::Configuration(){
 
 ry::Configuration::~Configuration(){
 //  LOG(0) <<"destroy " <<this;
-  for(auto& d:cameras) d->kin=NULL;
-}
-
-void ry::Configuration::clear(){
-  K.set()->clear();
-  for(auto& d:cameras) d->update(STRING("clear"));
 }
 
 void ry::Configuration::addFile(const std::string& file){
   K.set()->addFile(file.c_str());
-  for(auto& d:cameras) d->update(STRING("addFile '" <<file <<"'"));
 }
 
 void ry::Configuration::addFrame(const std::string& name, const std::string& parent, const std::string& args){
   K.set()->addFrame(name.c_str(), parent.c_str(), args.c_str());
-  for(auto& d:cameras) d->update(STRING("addFrame '" <<name <<'(' <<parent <<")'"));
 }
 
 void ry::Configuration::delFrame(const std::string& name){
@@ -33,7 +25,6 @@ void ry::Configuration::delFrame(const std::string& name){
   rai::Frame *p = K().getFrameByName(name.c_str(), true);
   if(p) delete p;
   K.deAccess();
-  for(auto& d:cameras) d->update(STRING("delFrame '" <<name <<"'"));
 }
 
 void ry::Configuration::editorFile(const std::string& filename){
@@ -71,7 +62,6 @@ void ry::Configuration::setJointState(const std::vector<double>& q, const I_Stri
   }
   rai::String str = "setJointState";
   _q.write(str,"\n");
-  for(auto& d:cameras) d->update(str);
 }
 
 ry::I_StringA ry::Configuration::getFrameNames(){
@@ -96,7 +86,6 @@ void ry::Configuration::setFrameState(const std::vector<double>& X, const I_Stri
   arr _X = conv_stdvec2arr(X);
   _X.reshape(_X.N/7, 7);
   K.set()->setFrameState(_X, I_conv(frames), calc_q_from_X);
-  for(auto& d:cameras) d->update(STRING("setFrameState"));
 }
 
 void ry::Configuration::stash(){
@@ -109,7 +98,6 @@ void ry::Configuration::pop(){
   arr X = stack[-1];
   stack.resizeCopy(stack.d0-1, stack.d1, stack.d2);
   K.set()->setFrameState(X);
-  for(auto& d:cameras) d->update(STRING("pop"));
 }
 
 void ry::Configuration::useJointGroups(const ry::I_StringA& jointGroups){
@@ -147,7 +135,6 @@ double ry::Configuration::getPairDistance(const char* frameA, const char* frameB
   proxy.posB = P2;
 
   K.deAccess();
-  for(auto& d:cameras) d->update(STRING("getPairDistance " <<frameA <<' ' <<frameB <<" = " <<-y.scalar()));
   return -y.scalar();
 }
 

@@ -8,7 +8,7 @@
 //#include <Kin/TM_default.h>
 //#include <Kin/TM_linTrans.h>
 
-#include <Operate/pathValidate.h>
+#include <Operate/path.h>
 
 #include <ry/configuration.h>
 #include <Operate/robotio.h>
@@ -94,19 +94,21 @@ void test_camera(){
 
   auto K = ry::Configuration();
   auto D = K.camera();
-  D.update("empty configuration\n -- hit ENTER here to continue", true);
+  rai::wait();
 
   K.addFile("../rai-robotModels/pr2/pr2.g");
   K.addFile("kitchen.g");
-  D.update(true);
+  rai::wait();
 
-  K.addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5");
+  K.addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5 width:300 height:200");
   auto C = K.camera("camera");
   C.update(true);
+  rai::wait();
 
   K.setJointState({1.}, {"head_pan_joint"});
   C.update(false);
   D.update(true);
+  rai::wait();
 
 }
 
@@ -352,7 +354,7 @@ int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
 //  test();
-//  test_camera();
+  test_camera();
 //  test_pickAndPlace();
 //  test_constraints();
 //  test_skeleton();
@@ -360,7 +362,7 @@ int main(int argc,char** argv){
 //  test_skeleton2();
 //  test_lgp();
 
-  test_realGrasp();
+//  test_realGrasp();
 
   return 0;
 }

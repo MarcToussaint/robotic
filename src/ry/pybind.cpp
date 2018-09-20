@@ -62,17 +62,46 @@ py::list graph2list(const Graph& G){
 }
 
 PYBIND11_MODULE(libry, m) {
+
+  py::class_<ry::FrameNames>(m, "FrameNames", py::dynamic_attr())
+      .def(py::init<>());
+
+  //===========================================================================
+
   py::class_<ry::Configuration>(m, "Configuration")
       .def(py::init<>())
 
-      .def("clear", &ry::Configuration::clear)
-      .def("addFile", &ry::Configuration::addFile)
-      .def("addFrame", &ry::Configuration::addFrame)
-      .def("delFrame", &ry::Configuration::delFrame)
+  .def_readwrite("frameNames", &ry::Configuration::frameNames)
 
-      .def("getJointNames", &ry::Configuration::getJointNames)
-      .def("getJointState", &ry::Configuration::getJointState, "",
-           py::arg("joints") = ry::I_StringA())
+  .def("clear", [](ry::Configuration& self) {
+    self.K.set()->clear();
+  } )
+
+  .def("addFile", [&m](ry::Configuration& self, const std::string& file) {
+    self.K.set()->addFile(file.c_str());
+    auto lock=self.K.get();
+//    this->attr("frameNames").attr("HOLLA") = 1;
+//    for(rai::Frame *f : self.K().frames) self.framenames[f->name.p] = f->ID;
+  } )
+
+  .def("addFrame", [](ry::Configuration& self, const std::string& name, const std::string& parent, const std::string& args) {
+    return self.K.set()->addFrame(name.c_str(), parent.c_str(), args.c_str())->ID;
+  } )
+
+  .def("delFrame", [](ry::Configuration& self, const std::string& name) {
+    auto Kset = self.K.set();
+    rai::Frame *p = Kset->getFrameByName(name.c_str(), true);
+    if(p) delete p;
+  } )
+
+  .def("getJointNames", [](ry::Configuration& self) {
+    return I_conv(self.K.get()->getJointNames());
+  } )
+
+  .def("getJointState", &ry::Configuration::getJointState, "",
+       py::arg("joints") = ry::I_StringA())
+
+
       .def("setJointState", &ry::Configuration::setJointState, "",
            py::arg("q"),
            py::arg("joints") = ry::I_StringA() )
@@ -84,6 +113,16 @@ PYBIND11_MODULE(libry, m) {
            py::arg("X"),
            py::arg("frames") = ry::I_StringA(),
            py::arg("calc_q_from_X") = true )
+
+  .def("evalFeature", [](ry::Configuration& self, FeatureSymbol fs, const ry::I_StringA& frames) {
+    auto Kget = self.K.get();
+    arr y,J;
+    Kget->evalFeature(y, J, fs, I_conv(frames));
+    pybind11::tuple ret(2);
+    ret[0] = pybind11::array(y.dim(), y.p);
+    ret[1] = pybind11::array(J.dim(), J.p);
+    return ret;
+  } )
 
       .def("getPairDistance", &ry::Configuration::getPairDistance)
 
@@ -104,11 +143,15 @@ PYBIND11_MODULE(libry, m) {
 //      .def("update", (void (ry::Display::*)(bool)) &ry::Display::update)
 //      .def("update", (void (ry::Display::*)(std::string, bool)) &ry::Display::update);
 
+  //===========================================================================
+
   py::class_<ry::Camera>(m, "Camera")
       .def("set", &ry::Camera::set)
       .def("update", (void (ry::Camera::*)(bool)) &ry::Camera::update,
            py::arg("wait")=false)
       .def("update", (void (ry::Camera::*)(std::string, bool)) &ry::Camera::update);
+
+  //===========================================================================
 
   py::class_<ry::KOMOpy>(m, "KOMOpy")
       .def("makeObjectsFree", &ry::KOMOpy::makeObjectsFree)
@@ -157,4 +200,55 @@ PYBIND11_MODULE(libry, m) {
   py::class_<ry::LGPpy>(m, "LGPpy")
       .def("optimizeFixedSequence", &ry::LGPpy::optimizeFixedSequence)
       ;
+
+  //===========================================================================
+
+#define ENUMVAL(x) .value(#x, x)
+  py::enum_<FeatureSymbol>(m, "FeatureSymbol")
+      ENUMVAL(FS_none)
+      ENUMVAL(FS_position)
+      ENUMVAL(FS_positionDiff)
+      ENUMVAL(FS_positionRel)
+      ENUMVAL(FS_quaternion)
+      ENUMVAL(FS_quaternionDiff)
+      ENUMVAL(FS_quaternionRel)
+      ENUMVAL(FS_pose)
+      ENUMVAL(FS_poseDiff)
+      ENUMVAL(FS_poseRel)
+      ENUMVAL(FS_vectorX)
+      ENUMVAL(FS_vectorXDiff)
+      ENUMVAL(FS_vectorXRel)
+      ENUMVAL(FS_vectorY)
+      ENUMVAL(FS_vectorYDiff)
+      ENUMVAL(FS_vectorYRel)
+      ENUMVAL(FS_vectorZ)
+      ENUMVAL(FS_vectorZDiff)
+      ENUMVAL(FS_vectorZRel)
+      ENUMVAL(FS_scalarProductXX)
+      ENUMVAL(FS_scalarProductXY)
+      ENUMVAL(FS_scalarProductXZ)
+      ENUMVAL(FS_scalarProductYX)
+      ENUMVAL(FS_scalarProductYY)
+      ENUMVAL(FS_scalarProductYZ)
+      ENUMVAL(FS_scalarProductZZ)
+      ENUMVAL(FS_gazeAt)
+
+      ENUMVAL(FS_accumulatedCollisions)
+      ENUMVAL(FS_jointLimits)
+      ENUMVAL(FS_distance)
+
+      ENUMVAL(FS_qItself)
+
+      ENUMVAL(FS_aboveBox)
+      ENUMVAL(FS_insideBox)
+
+      ENUMVAL(FS_standingAbove)
+
+      ENUMVAL(FS_physics)
+      ENUMVAL(FS_contactConstraints)
+      ENUMVAL(FS_energy)
+
+      .export_values();
+#undef ENUMVAL
+
 }

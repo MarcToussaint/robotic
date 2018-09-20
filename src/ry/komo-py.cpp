@@ -321,8 +321,8 @@ void ry::KOMOpy::setSkeleton(){
   self->setSkeleton(self->S);
 }
 
-void ry::KOMOpy::skeleton2bound(){
-  ::skeleton2Bound(*self, BD_path, self->S, self->world, self->world);
+void ry::KOMOpy::skeleton2bound(bool collision){
+  ::skeleton2Bound(*self, BD_path, self->S, self->world, self->world, collision);
 }
 
 void ry::KOMOpy::add_resting(int conf1, int conf2, const char* object){
@@ -344,7 +344,7 @@ void ry::KOMOpy::getConfiguration(int t){
   self->kin->K().setFrameState(X);
   self->kin->K().copyProxies( *self->configurations(t+self->k_order) );
   self->kin->K.deAccess();
-  for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy configuration " <<t));
+//  for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy configuration " <<t));
 }
 
 //std::string ry::KOMOpy::getReport(){

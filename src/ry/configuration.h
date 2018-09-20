@@ -17,10 +17,12 @@
 
 namespace ry{
 
+  struct FrameNames { int bla; };
+
   struct Configuration{
     Var<rai::KinematicWorld> K;
-    rai::Array<Camera_self*> cameras;
     arr stack;
+    FrameNames frameNames;
 
     Configuration();
     ~Configuration();
@@ -29,7 +31,6 @@ namespace ry{
     Configuration copy();
 
     //-- editing
-    void clear();
     void addFile(const std::string& file);
     void addFrame(const std::string& name, const std::string& parent, const std::string& args);
     void delFrame(const std::string& name);

@@ -25,8 +25,6 @@ namespace ry{
     /// set an objective
     void setObjective(const arr& times, ObjectiveType type, FeatureSymbol feat, const StringA& frames, const std::map<std::string, std::vector<double> >& parameters={});
 
-    Graph getProblemGraph(bool includeValues=false);
-
     /// getting output after the optimization
     arr getPose(uint t, const rai::String& name);
     arr getRelPose(uint t, const rai::String& from, const rai::String& to);
@@ -69,7 +67,7 @@ namespace ry{
     //-- basis of LGP
     void addSkeleton(const std::vector<double>& times, I_StringA symbols);
     void setSkeleton();
-    void skeleton2bound();
+    void skeleton2bound(bool collision=true);
 
     //-- optimize
     void optimize();

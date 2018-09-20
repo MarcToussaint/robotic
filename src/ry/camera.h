@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Kin/kin.h>
+#include <Kin/kinViewer.h>
 #include <Gui/opengl.h>
 #include <pybind11/numpy.h>
 
@@ -14,27 +15,11 @@ namespace ry{
 
   struct Configuration;
 
-  struct Camera_self : GLDrawer, NonCopyable {
-    Camera_self(Configuration* _kin);
-    ~Camera_self();
-    Configuration *kin=0;
-    rai::Frame *frame=0;
-    OpenGL gl;
-    rai::Camera cam;
-    uint width=640, height=480;
-    byteA backgroundImage;
-    byteA captureImage;
-    floatA captureDepth;
-    bool renderInBackground;
-    void update(const char* txt);
-    void glDraw(OpenGL &);
-  };
-
   struct Camera {
-    ptr<Camera_self> self;
+    ptr<KinViewer> self;
 
     Camera(Configuration* _kin, const rai::String& frame={}, bool _renderInBackground=false);
-    ~Camera(){}
+    ~Camera();
 
     //-- set camera parameters (the pose is given by the frame)
     void set(uint width, uint height, double focalLength=1., double zNear=.1, double zFar=10.);
