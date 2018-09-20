@@ -14,6 +14,7 @@ namespace ry{
     bool denseMode = true;
     Graph features;
     Skeleton S;
+    ptr<OpenGL> gl;
 
     KOMOpy_self(Configuration* _kin, uint T);
     KOMOpy_self(Configuration* _kin, double phases, uint stepsPerPhase=20, double timePerPhase=5.);
@@ -24,7 +25,6 @@ namespace ry{
     /// set an objective
     void setObjective(const arr& times, ObjectiveType type, FeatureSymbol feat, const StringA& frames, const std::map<std::string, std::vector<double> >& parameters={});
 
-    /// output the defined problem as a generic graph, that can also be displayed, saved and loaded
     Graph getProblemGraph(bool includeValues=false);
 
     /// getting output after the optimization
@@ -55,6 +55,9 @@ namespace ry{
     void addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames={}, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
     void addObjectives(const I_features& features);
 
+    //-- standard motion problems
+    void setMotionTo(const arr &q, const StringA& joints, const char* endeff, double up, double down);
+
     //-- macros
     void add_grasp(int conf, const char* gripper, const char* object);
     void add_place(int conf, const char* object, const char* table);
@@ -71,6 +74,9 @@ namespace ry{
     //-- optimize
     void optimize();
 
+    KOMO* operator->() { return &*self; }
+    KOMO* operator()() { return &*self; }
+
     //-- get results
     int getT();
     void getConfiguration(int t);
@@ -78,6 +84,10 @@ namespace ry{
     Graph getProblemGraph();
     double getConstraintViolations();
     double getCosts();
+
+    //-- display
+    void display();
+    void validate();
   };
 
 }

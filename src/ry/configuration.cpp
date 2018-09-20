@@ -19,25 +19,12 @@ void ry::Configuration::clear(){
 }
 
 void ry::Configuration::addFile(const std::string& file){
-  K.set()->addModel(file.c_str());
+  K.set()->addFile(file.c_str());
   for(auto& d:cameras) d->update(STRING("addFile '" <<file <<"'"));
 }
 
 void ry::Configuration::addFrame(const std::string& name, const std::string& parent, const std::string& args){
-  K.writeAccess();
-  rai::Frame *f = new rai::Frame(K());
-  f->name = name;
-
-  if(parent.size()){
-    rai::Frame *p = K().getFrameByName(parent.c_str());
-    if(p) f->linkFrom(p);
-  }
-
-  rai::String(args) >>f->ats;
-  f->read(f->ats);
-
-  if(f->parent) f->X = f->parent->X * f->Q;
-  K.deAccess();
+  K.set()->addFrame(name.c_str(), parent.c_str(), args.c_str());
   for(auto& d:cameras) d->update(STRING("addFrame '" <<name <<'(' <<parent <<")'"));
 }
 
@@ -53,7 +40,7 @@ void ry::Configuration::editorFile(const std::string& filename){
   cout <<"Edit the configuration in the editor. Whenever you save, the display will update. Wrong syntax errors will be displayed here. Hit SPACE in the window to animate, ENTER to force reload after error, q to exit this mode." <<endl;
   K.writeAccess();
   K().clear();
-  K().addModel(filename.c_str());
+  K().addFile(filename.c_str());
   rai::system(STRING("emacs " <<filename <<" &"));
   {
     OpenGL gl;
@@ -127,6 +114,7 @@ void ry::Configuration::pop(){
 
 void ry::Configuration::useJointGroups(const ry::I_StringA& jointGroups){
   K.set()->useJointGroups(I_conv(jointGroups), true, true);
+  K.set()->calc_q();
 }
 
 void ry::Configuration::setActiveJoints(const ry::I_StringA& joints) {

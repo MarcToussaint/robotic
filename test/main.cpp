@@ -2,12 +2,16 @@
 #include <Kin/frame.h>
 #include <Gui/opengl.h>
 #include <KOMO/komo.h>
-#include <Kin/TM_ContactConstraints.h>
+#include <KOMO/komo-ext.h>
+//#include <Kin/TM_ContactConstraints.h>
 //#include <KOMOcsail/komo-CSAIL.h>
-#include <Kin/TM_default.h>
+//#include <Kin/TM_default.h>
+//#include <Kin/TM_linTrans.h>
+
+#include <Operate/pathValidate.h>
 
 #include <ry/configuration.h>
-
+#include <Operate/robotio.h>
 
 //===========================================================================
 
@@ -142,8 +146,8 @@ void test_pickAndPlace(){
   auto komo = K.komo_CGO(T);
 
   komo.activateCollisionPairs({{obj1, obj2}});
-  komo.addObjective({}, {}, "eq", "coll");
-  komo.addObjective({}, {}, "ineq", "limits");
+  komo.addObjective({}, {}, "eq", "accumulatedCollisions");
+  komo.addObjective({}, {}, "ineq", "jointLimits");
 
   komo.add_StableRelativePose({0, 1}, arm, obj1);
   komo.add_StableRelativePose({2, 3}, arm, obj2);
@@ -268,6 +272,82 @@ void test_lgp(){
 
 //===========================================================================
 
+std::pair<arr,arr> computePath(ry::Configuration& K, const arr& target_q, const StringA& target_joints, const char* endeff, double up, double down){
+  KOMO komo;
+  komo.setModel(K.K.get(), true, true);
+  komo.setPathOpt(1., 20, 3.);
+
+  addMotionTo(komo, target_q, target_joints, endeff, up, down);
+  komo.optimize();
+
+  arr path = komo.getPath(target_joints);
+  path[path.d0-1] = target_q; //overwrite last config
+  arr tau = komo.getPath_times();
+  cout <<validatePath(K.K.get(), K->getJointState(), target_joints, path, tau) <<endl;
+  bool go = komo.displayPath(true);//;/komo.display();
+  if(!go){
+    cout <<"ABORT!" <<endl;
+    return {arr(), arr()};
+  }
+  return {path, tau};
+}
+
+void test_realGrasp(){
+  auto K = ry::Configuration();
+  auto D = K.camera();
+
+  K.addFile("../rai-robotModels/pr2/pr2.g");
+  K.addFile("kitchen.g");
+
+  K.addFrame("item1", "sink1", "type:ssBox Q:<t(-.1 -.1 .52)> size:[.1 .1 .25 .02] color:[1. 0. 0.], contact, joint:rigid" );
+  K.addFrame("item2", "sink1", "type:ssBox Q:<t(.1 .1 .52)> size:[.1 .1 .25 .02] color:[1. 1. 0.], contact" );
+  K.addFrame("tray", "stove1", "type:ssBox Q:<t(.0 .0 .42)> size:[.2 .2 .05 .02] color:[0. 1. 0.], contact" );
+
+  RobotIO R(K.K.get(), ROB_sim);
+
+  const char* endeff="pr2R";
+  const char* object="item1";
+
+  arr s0 = K->getFrameState();
+
+  K.useJointGroups({"armR","base"});
+  StringA armBase = K->getJointNames();
+
+  chooseBoxGrasp(K.K.set(), endeff, object);
+  arr grasp = K->getJointState();
+
+  D.update(true);
+
+  K->setFrameState(s0);
+
+  auto path = computePath(K, grasp, armBase, endeff, .0, .8);
+
+  R.execGripper("pr2R", .1);
+  R.waitForCompletion();
+
+  R.executeMotion(armBase, path.first, path.second, .5);
+  R.waitForCompletion();
+
+  R.execGripper("pr2R", .0);
+  R.waitForCompletion();
+
+  R.attach(endeff, object);
+
+  arr q_now = R.getJointPositions(armBase);
+  K.setJointState(q_now);
+  D.update(true);
+
+  path = computePath(K, zeros(grasp.N), armBase, endeff, .2, .8);
+  R.executeMotion(armBase, path.first, path.second, .5);
+  R.waitForCompletion();
+
+
+  rai::wait();
+
+}
+
+//===========================================================================
+
 int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
@@ -276,8 +356,11 @@ int main(int argc,char** argv){
 //  test_pickAndPlace();
 //  test_constraints();
 //  test_skeleton();
-  test_skeleton2();
+
+//  test_skeleton2();
 //  test_lgp();
+
+  test_realGrasp();
 
   return 0;
 }

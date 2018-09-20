@@ -37,8 +37,8 @@ namespace ry{
 
     //-- set/get state
     I_StringA getJointNames();
-    pybind11::array getJointState(const I_StringA& joints);
-    void setJointState(const std::vector<double>& q, const I_StringA& joints);
+    pybind11::array getJointState(const I_StringA& joints={});
+    void setJointState(const std::vector<double>& q, const I_StringA& joints={});
 
     I_StringA getFrameNames();
     pybind11::array getFrameState();
@@ -82,6 +82,9 @@ namespace ry{
 
     //track - OptiTrack only for now
     
+    rai::KinematicWorld *operator->() { return &K.set()(); }
+    rai::KinematicWorld *operator()() { return &K.set()(); }
+
   };
 
 }

@@ -146,77 +146,6 @@ Feature *ry::KOMOpy_self::symbols2feature(FeatureSymbol feat, const StringA &fra
 #endif
 }
 
-Graph ry::KOMOpy_self::getProblemGraph(bool includeValues){
-  Graph K;
-  //header
-#if 0
-  Graph& g = K.newSubgraph({"KOMO_specs"}) -> graph();
-  g.newNode<uint>({"x_dim"}, {}, x.N);
-  g.newNode<uint>({"T"}, {}, T);
-  g.newNode<uint>({"k_order"}, {}, k_order);
-  g.newNode<double>({"tau"}, {}, tau);
-//  uintA dims(configurations.N);
-//  for(uint i=0; i<configurations.N; i++) dims(i)=configurations(i)->q.N;
-//  g.newNode<uintA>({"q_dims"}, {}, dims);
-//  arr times(configurations.N);
-//  for(uint i=0; i<configurations.N; i++) times(i)=configurations(i)->frames.first()->time;
-//  g.newNode<double>({"times"}, {}, times);
-  g.newNode<bool>({"useSwift"}, {}, useSwift);
-#endif
-
-  //nodes for each configuration
-//  for(uint s=0;s<configurations.N;s++){
-//    Graph& g = K.newSubgraph({STRING((int)s-(int)k_order)}) -> graph();
-//    g.newNode<uint>({"dim"}, {}, configurations(s)->q.N);
-//    g.newNode<double>({"tau"}, {}, configurations(s)->frames.first()->time);
-//  }
-
-//  NodeL configs = K.list();
-//  configs.remove(0);
-
-  //objectives
-//  uint t_count=0;
-  for(Objective* task : objectives){
-    CHECK(task->prec.nd==1,"");
-    //        Graph& g = K.newSubgraph({}, configs.sub(i+k_order-t->map->order,i+k_order)) -> graph();
-    //        Graph& g = K.newSubgraph({}, configs.sub(convert<uint>(task->vars[t]+(int)k_order))) -> graph();
-    Graph& g = K.newSubgraph() -> graph();
-    g.isNodeOfGraph->keys.append(task->name);
-    //        g.newNode<
-    g.newNode<rai::String>({"type"}, {}, STRING(task->type));
-    g.newNode<double>({"scale"}, {}, task->prec.last());
-    if(task->target.N) g.newNode<arr>({"target"}, {}, task->target);
-    if(task->vars.N) g.newNode<intA>({"confs"}, {}, task->vars);
-    g.copy(task->map->getSpec(world), true);
-    if(includeValues){
-      arr V;
-      for(uint t=0;t<task->prec.N;t++){
-        if(task->prec(t)){
-          arr y;
-          task->map->phi(y, NoArr, configurations({t,t+k_order}));
-          V.append(y);
-        }
-      }
-      if(task->type==OT_sos){
-        g.newNode<double>({"sos_value"}, {}, sumOfSqr(V));
-      }else if(task->type==OT_eq){
-        g.newNode<double>({"eq_sumOfAbs"}, {}, sumOfAbs(V));
-      }else if(task->type==OT_sos){
-        double c=0.;
-        for(double& v:V) if(v>0) c+=v;
-        g.newNode<double>({"inEq_sumOfPos"}, {}, c);
-      }
-
-    }
-//    t_count++;
-  }
-
-  if(switches.N) RAI_MSG("not implemented for switches yet");
-  if(flags.N) RAI_MSG("not implemented for flags yet");
-
-  return K;
-}
-
 arr ry::KOMOpy_self::getPose(uint t, const rai::String& name){
   return configurations(t+k_order)->getFrameByName(name)->X.getArr7d();
 }
@@ -288,7 +217,7 @@ void ry::KOMOpy::timeOptimization(){
 }
 
 void ry::KOMOpy::clearObjectives(){
-  self->clearTasks();
+  self->clearObjectives();
 }
 
 void ry::KOMOpy::addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames, const std::vector<double>& scale, const std::vector<double>& target, I_args parameters){
@@ -401,18 +330,7 @@ void ry::KOMOpy::add_resting(int conf1, int conf2, const char* object){
 }
 
 void ry::KOMOpy::optimize(){
-  self->reset();
-  self->reportProblem();
-
-  self->run(self->denseMode);
-
-  Graph specs = self->getProblemGraph();
-  cout <<specs <<endl;
-  cout <<self->getReport(false) <<endl; // Enables plot
-//  while(self->displayTrajectory());
-
-//  self->kin->K.set()->setFrameState(self->configurations(-1)->getFrameState());
-//  for(auto& d:self->kin->cameras) d->gl.update(STRING("KOMOpy::optimization end pose"));
+  self->optimize();
 }
 
 int ry::KOMOpy::getT(){
@@ -448,4 +366,10 @@ double ry::KOMOpy::getConstraintViolations(){
 double ry::KOMOpy::getCosts(){
   Graph R = self->getReport(false);
   return R.get<double>("sqrCosts");
+}
+
+void ry::KOMOpy::display(){
+  self->gl->clear();
+  NIY; //self->gl->add(*self);
+  self->gl->update();
 }
