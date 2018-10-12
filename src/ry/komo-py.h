@@ -2,22 +2,23 @@
 
 #include "types.h"
 
+#include <Core/thread.h>
 #include <KOMO/komo.h>
 #include <pybind11/numpy.h>
 
 namespace ry{
 
-  struct Configuration;
+  typedef Var<rai::KinematicWorld> Configuration;
 
   struct KOMOpy_self : KOMO{
-    Configuration* kin=0;
+    Configuration& kin;
     bool denseMode = true;
     Graph features;
     Skeleton S;
     ptr<OpenGL> gl;
 
-    KOMOpy_self(Configuration* _kin, uint T);
-    KOMOpy_self(Configuration* _kin, double phases, uint stepsPerPhase=20, double timePerPhase=5.);
+    KOMOpy_self(Configuration& _kin, uint T);
+    KOMOpy_self(Configuration& _kin, double phases, uint stepsPerPhase=20, double timePerPhase=5.);
     ~KOMOpy_self();
 
     void setDiscreteOpt(uint k);
@@ -37,8 +38,8 @@ namespace ry{
   struct KOMOpy{
     ptr<KOMOpy_self> self;
 
-    KOMOpy(Configuration* _kin, uint T);
-    KOMOpy(Configuration* _kin, double phases, uint stepsPerPhase, double timePerPhase);
+    KOMOpy(Configuration& _kin, uint T);
+    KOMOpy(Configuration& _kin, double phases, uint stepsPerPhase, double timePerPhase);
     ~KOMOpy();
 
     //--
@@ -50,7 +51,7 @@ namespace ry{
     void clearObjectives();
 
     //-- core methods to add objectives
-    void addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const std::string& type, const std::string& feature, const I_StringA& frames={}, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
+    void addObjective(const std::vector<int>& confs, const std::vector<double>& timeInterval, const ObjectiveType& type, const FeatureSymbol& feature, const I_StringA& frames={}, const std::vector<double>& scale={}, const std::vector<double>& target={}, I_args parameters={});
     void addObjectives(const I_features& features);
 
     //-- standard motion problems

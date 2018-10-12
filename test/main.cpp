@@ -312,7 +312,7 @@ void test_realGrasp(){
 
   arr s0 = K->getFrameState();
 
-  K.useJointGroups({"armR","base"});
+  K.selectJointsByGroup({"armR","base"});
   StringA armBase = K->getJointNames();
 
   chooseBoxGrasp(K.K.set(), endeff, object);
