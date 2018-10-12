@@ -4,8 +4,8 @@ import sys
 sys.path.append('../src/ry')
 from libry import *
 
-K = Configuration()
-D = K.camera()
+K = Config()
+D = K.view()
 K.addFile('../test/kitchen.g')
 K.addFile('../rai-robotModels/pr2/pr2.g')
 
@@ -23,9 +23,9 @@ T = 6
 komo = K.komo_CGO(T)
 #komo.makeObjectsFree([obj1, obj2])
 
-komo.addObjective(confs=[3], type='ineq', feature='distance', frames=[obj1, obj2], target=[-.05]) # distance between objects!
-komo.addObjective(type='eq', feature='accumulatedCollisions')
-komo.addObjective(type='ineq', feature='jointLimits')
+komo.addObjective(confs=[3], type=OT.ineq, feature=FS.distance, frames=[obj1, obj2], target=[-.05]) # distance between objects!
+komo.addObjective(type=OT.eq, feature=FS.accumulatedCollisions)
+komo.addObjective(type=OT.ineq, feature=FS.jointLimits)
 
 komo.add_StableRelativePose(confs=[0, 1], gripper=arm, object=obj1)
 komo.add_StableRelativePose(confs=[2, 3], gripper=arm, object=obj2)
@@ -61,4 +61,4 @@ komo.optimize()
 
 for t in range(-1, T):
     komo.getConfiguration(t)
-    D.update(True)
+    input("Press Enter to continue...")
