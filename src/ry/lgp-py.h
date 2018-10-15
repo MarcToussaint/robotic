@@ -7,21 +7,21 @@
 
 namespace ry{
 
-  typedef Var<rai::KinematicWorld> Configuration;
+  typedef Var<rai::KinematicWorld> Config;
 
   struct LGPpy_self : LGP_Tree{
-    Configuration& kin;
+    Config& kin;
     rai::KinematicWorld K;
     FOL_World L;
 
-    LGPpy_self(Configuration& _kin, const std::string& folFileName);
+    LGPpy_self(Config& _kin, const std::string& folFileName);
     ~LGPpy_self();
   };
 
   struct LGPpy{
     ptr<LGPpy_self> self;
 
-    LGPpy(Configuration& _kin, const std::string& folFileName);
+    LGPpy(Config& _kin, const std::string& folFileName);
     ~LGPpy();
 
     void optimizeFixedSequence(const std::string& seq);

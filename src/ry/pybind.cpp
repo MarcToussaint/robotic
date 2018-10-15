@@ -1,11 +1,8 @@
-#include <Kin/kin.h>
+#include "pybind.h"
+
 #include <Core/graph.h>
-#include <Core/thread.h>
 #include <Kin/frame.h>
-#include <Kin/kinViewer.h>
 #include "types.h"
-#include "komo-py.h"
-#include "lgp-py.h"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -77,14 +74,6 @@ py::list uintA2tuple(const uintA& tup){
 #define METHOD_set(method) .def(#method, [](ry::Config& self) { self.set()->method(); } )
 #define METHOD_set1(method, arg1) .def(#method, [](ry::Config& self) { self.set()->method(arg1); } )
 
-namespace ry{
-
-  typedef Var<rai::KinematicWorld> Config;
-
-  struct ConfigView { ptr<KinViewer> view; };
-
-  struct RyFeature { Feature *feature=0; };
-}
 
 PYBIND11_MODULE(libry, m) {
 
@@ -105,7 +94,10 @@ PYBIND11_MODULE(libry, m) {
 
   .def("addFrame", [](ry::Config& self, const std::string& name, const std::string& parent, const std::string& args) {
     return self.set()->addFrame(name.c_str(), parent.c_str(), args.c_str())->ID;
-  } )
+  }, "",
+    py::arg("name"),
+    py::arg("parent") = std::string(),
+    py::arg("args") = std::string() )
 
   .def("delFrame", [](ry::Config& self, const std::string& name) {
     auto Kset = self.set();
@@ -306,16 +298,13 @@ PYBIND11_MODULE(libry, m) {
 
       .def("clearObjectives", &ry::KOMOpy::clearObjectives)
       .def("addObjective", &ry::KOMOpy::addObjective, "core method to add an objective",
-           py::arg("confs")=std::vector<int>(),
            py::arg("timeInterval")=std::vector<double>(),
            py::arg("type"),
            py::arg("feature"),
            py::arg("frames")=ry::I_StringA(),
            py::arg("scale")=std::vector<double>(),
            py::arg("target")=std::vector<double>(),
-           py::arg("params")=std::map<std::string, std::vector<double>>() )
-
-      .def("addObjectives", &ry::KOMOpy::addObjectives)
+           py::arg("order")=-1 )
 
       .def("add_StableRelativePose", &ry::KOMOpy::add_StableRelativePose, "", py::arg("confs"), py::arg("gripper"), py::arg("object"))
       .def("add_StablePose", &ry::KOMOpy::add_StablePose, "", py::arg("confs"), py::arg("object"))
@@ -324,11 +313,6 @@ PYBIND11_MODULE(libry, m) {
       .def("add_place", &ry::KOMOpy::add_place)
       .def("add_resting", &ry::KOMOpy::add_resting)
       .def("add_restingRelative", &ry::KOMOpy::add_restingRelative)
-
-      .def("addSkeleton", &ry::KOMOpy::addSkeleton)
-      .def("setSkeleton", &ry::KOMOpy::setSkeleton)
-      .def("skeleton2bound", &ry::KOMOpy::skeleton2bound)
-
 
       .def("optimize", &ry::KOMOpy::optimize)
       .def("getT", &ry::KOMOpy::getT)
