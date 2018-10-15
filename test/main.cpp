@@ -10,7 +10,7 @@
 
 #include <Operate/path.h>
 
-#include <ry/pybind.h>
+#include <ry/ry.h>
 #include <Operate/robotio.h>
 
 //===========================================================================
@@ -55,7 +55,7 @@ void test(){
   K.set()->addFrame("hand", "pr2L", "shape:ssBox size:[.3 .2 .1 .01] color:[1 1 0] Q:<t(0 0 0)>" );
 
   {
-    auto komo = ry::KOMOpy(K,0);
+    auto komo = ry::RyKOMO(K,0);
     komo.addObjective2({}, OT_eq, FS_positionDiff, {"pr2L", "ball"});
 //    komo.addObjectives2( { "feature:[eq posDiff pr2L ball]" } );
     komo.optimize();
@@ -71,7 +71,7 @@ void test(){
 
   K.set()->setJointState(q);
   {
-    auto komo = ry::KOMOpy(K, 1., 20, 5.);
+    auto komo = ry::RyKOMO(K, 1., 20, 5.);
 //    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
 //                          "time:[1.], feature:[eq qRobot], order:1",
 //                        } );
@@ -142,7 +142,7 @@ void test_pickAndPlace(){
   auto table = "_12";
 
   int T=6;
-  auto komo = ry::KOMOpy(K, T);
+  auto komo = ry::RyKOMO(K, T);
 
   komo.activateCollisionPairs({{obj1, obj2}});
   komo.addObjective2({}, OT_eq, FS_accumulatedCollisions);
@@ -185,7 +185,7 @@ void test_skeleton(){
 
   K.set()->addFile("lgp-example.g");
 
-  auto komo = ry::KOMOpy(K, 1., 20, 5.);
+  auto komo = ry::RyKOMO(K, 1., 20, 5.);
 
   //we're creating the same skeleton that'd be created by the decision sequence
   //(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)
@@ -211,7 +211,7 @@ void test_skeleton(){
 
 //  komo.self->setSkeleton(S);
 //  komo.self->skeleton2bound();
-  skeleton2Bound(*komo.self, BD_path, S, komo.self->world, komo.self->world, false);
+  skeleton2Bound(*komo.komo, BD_path, S, komo.komo->world, komo.komo->world, false);
 
   komo.optimize();
   komo.display();
@@ -231,7 +231,7 @@ void test_skeleton2(){
 
   K.set()->addFile("boxProblem.g");
 
-  auto komo = ry::KOMOpy(K, 1., 50, 2.);
+  auto komo = ry::RyKOMO(K, 1., 50, 2.);
 
   //-- this is all yet 'magic' -> clearer interface
   komo.timeOptimization();
@@ -247,7 +247,7 @@ void test_skeleton2(){
   S.append({.6, .6, {"contact", "boxBo", "ballR"} });
   S.append({.8, .8, {"contact", "boxBo", "ballR"} });
   S.append({1., 1., {"touch", "target", "ballR"} });
-  komo.self->setSkeleton(S, true);
+  komo.komo->setSkeleton(S, true);
 
   komo.optimize();
 

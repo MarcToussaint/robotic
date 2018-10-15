@@ -1,4 +1,4 @@
-#include "pybind.h"
+#include "ry.h"
 
 #include <Core/graph.h>
 #include <Kin/frame.h>
@@ -9,7 +9,6 @@
 #include <pybind11/numpy.h>
 
 namespace py = pybind11;
-
 
 py::dict graph2dict(const Graph& G){
   py::dict dict;
@@ -69,6 +68,20 @@ py::list uintA2tuple(const uintA& tup){
   py::tuple tuple;
   for(uint i=0;i<tup.N;i++) tuple[i] = tup(i);
   return tuple;
+}
+
+arr numpy2arr(const pybind11::array& X){
+  arr Y;
+  uintA dim(X.ndim());
+  for(uint i=0;i<dim.N;i++) dim(i)=X.shape()[i];
+  Y.resize(dim);
+  auto ref = X.unchecked<double>();
+  if(Y.nd==2){
+    for(uint i=0;i<Y.d0;i++) for(uint j=0;j<Y.d1;j++) Y(i,j) = ref(i,j);
+    return Y;
+  }
+  NIY;
+  return Y;
 }
 
 #define METHOD_set(method) .def(#method, [](ry::Config& self) { self.set()->method(); } )
@@ -193,6 +206,15 @@ PYBIND11_MODULE(libry, m) {
     py::arg("frames") = ry::I_StringA(),
     py::arg("calc_q_from_X") = true )
 
+  .def("setFrameState", [](ry::Config& self, const pybind11::array& X, const ry::I_StringA& frames, bool calc_q_from_X){
+    arr _X = numpy2arr(X);
+    _X.reshape(_X.N/7, 7);
+    self.set()->setFrameState(_X, I_conv(frames), calc_q_from_X);
+  }, "",
+    py::arg("X"),
+        py::arg("frames") = ry::I_StringA(),
+        py::arg("calc_q_from_X") = true )
+
   .def("feature", [](ry::Config& self, FeatureSymbol fs, const ry::I_StringA& frames) {
     auto Kget = self.get();
     ry::RyFeature F;
@@ -225,20 +247,29 @@ PYBIND11_MODULE(libry, m) {
     py::arg("frame")="")
 
   .def("komo_IK", [](ry::Config& self){
-      return ry::KOMOpy(self, 0);
+    ry::RyKOMO komo;
+    komo.komo = make_shared<KOMO>(self.get());
+    komo.komo->setIKOpt();
+    return komo;
+  } )
+
+  .def("komo_CGO", [](ry::Config& self, uint numConfigs){
+    CHECK_GE(numConfigs, 1, "");
+    ry::RyKOMO komo;
+    komo.komo = make_shared<KOMO>(self.get());
+    komo.komo->setDiscreteOpt(numConfigs);
+    return komo;
   } )
 
   .def("komo_path",  [](ry::Config& self, double phases, uint stepsPerPhase, double timePerPhase){
-      return ry::KOMOpy(self, phases, stepsPerPhase, timePerPhase);
+    ry::RyKOMO komo;
+    komo.komo = make_shared<KOMO>(self.get());
+    komo.komo->setPathOpt(phases, stepsPerPhase, timePerPhase);
+    return komo;
   }, "",
     py::arg("phases"),
     py::arg("stepsPerPhase")=20,
     py::arg("timePerPhase")=5. )
-
-  .def("komo_CGO", [](ry::Config& self, uint numConfigs){
-      CHECK_GE(numConfigs, 1, "");
-      return ry::KOMOpy(self, numConfigs);
-  } )
 
   .def("lgp", [](ry::Config& self, const std::string& folFileName){
       return ry::LGPpy(self, folFileName);
@@ -290,41 +321,110 @@ PYBIND11_MODULE(libry, m) {
 
   //===========================================================================
 
-  py::class_<ry::KOMOpy>(m, "KOMOpy")
-      .def("makeObjectsFree", &ry::KOMOpy::makeObjectsFree)
-      .def("activateCollisionPairs", &ry::KOMOpy::activateCollisionPairs)
-      .def("deactivateCollisionPairs", &ry::KOMOpy::deactivateCollisionPairs)
-      .def("timeOptimization", &ry::KOMOpy::timeOptimization)
+  py::class_<ry::RyKOMO>(m, "KOMOpy")
+  .def("makeObjectsFree", [](ry::RyKOMO& self, const ry::I_StringA& objs){
+    self.komo->world.makeObjectsFree(I_conv(objs));
+  } )
 
-      .def("clearObjectives", &ry::KOMOpy::clearObjectives)
-      .def("addObjective", &ry::KOMOpy::addObjective, "core method to add an objective",
-           py::arg("timeInterval")=std::vector<double>(),
-           py::arg("type"),
-           py::arg("feature"),
-           py::arg("frames")=ry::I_StringA(),
-           py::arg("scale")=std::vector<double>(),
-           py::arg("target")=std::vector<double>(),
-           py::arg("order")=-1 )
+  .def("activateCollisionPairs", [](ry::RyKOMO& self, const std::vector<std::pair<std::string, std::string> >& collision_pairs){
+    for (const auto&  pair : collision_pairs) {
+      self.komo->activateCollisions(rai::String(pair.first), rai::String(pair.second));
+    }
+  } )
 
-      .def("add_StableRelativePose", &ry::KOMOpy::add_StableRelativePose, "", py::arg("confs"), py::arg("gripper"), py::arg("object"))
-      .def("add_StablePose", &ry::KOMOpy::add_StablePose, "", py::arg("confs"), py::arg("object"))
+  .def("deactivateCollisionPairs", [](ry::RyKOMO& self, const std::vector<std::pair<std::string, std::string> >& collision_pairs){
+    for (const auto&  pair : collision_pairs) {
+      self.komo->deactivateCollisions(rai::String(pair.first), rai::String(pair.second));
+    }
+  } )
 
-      .def("add_grasp", &ry::KOMOpy::add_grasp)
-      .def("add_place", &ry::KOMOpy::add_place)
-      .def("add_resting", &ry::KOMOpy::add_resting)
-      .def("add_restingRelative", &ry::KOMOpy::add_restingRelative)
+  .def("timeOptimization", [](ry::RyKOMO& self){
+    self.komo->setTimeOptimization();
+  } )
 
-      .def("optimize", &ry::KOMOpy::optimize)
-      .def("getT", &ry::KOMOpy::getT)
-      .def("getConfiguration", &ry::KOMOpy::getConfiguration)
-      .def("getReport",
-           [](ry::KOMOpy& self) -> py::list{
-             Graph G = self.getProblemGraph();
-             return graph2list(G);
-           } )
-      .def("getConstraintViolations", &ry::KOMOpy::getConstraintViolations)
-      .def("getCosts", &ry::KOMOpy::getCosts)
-      ;
+  .def("clearObjectives", [](ry::RyKOMO& self){
+    self.komo->clearObjectives();
+  } )
+
+  .def("addObjective", [](ry::RyKOMO& self, const std::vector<double>& timeInterval, const ObjectiveType& type, const FeatureSymbol& feature, const ry::I_StringA& frames, const std::vector<double>& scale, const std::vector<double>& target, int order){
+    self.komo->addObjective(arr(timeInterval), type, feature, I_conv(frames), arr(scale), arr(target), order);
+  },"", py::arg("timeInterval")=std::vector<double>(),
+      py::arg("type"),
+      py::arg("feature"),
+      py::arg("frames")=ry::I_StringA(),
+      py::arg("scale")=std::vector<double>(),
+      py::arg("target")=std::vector<double>(),
+      py::arg("order")=-1 )
+
+  .def("add_StableRelativePose", [](ry::RyKOMO& self, const std::vector<int>& confs, const char* gripper, const char* object){
+      for(uint i=1;i<confs.size();i++)
+        self.komo->addObjective(ARR(confs[0], confs[1]), OT_eq, FS_poseDiff, {gripper, object});
+      //  for(uint i=0;i<confs.size();i++) self.self->configurations(self.self->k_order+confs[i]) -> makeObjectsFree({object});
+      self.komo->world.makeObjectsFree({object});
+  },"", py::arg("confs"),
+      py::arg("gripper"),
+      py::arg("object") )
+
+  .def("add_StablePose", [](ry::RyKOMO& self, const std::vector<int>& confs, const char* object){
+    for(uint i=1;i<confs.size();i++)
+      self.komo->addObjective(ARR(confs[0], confs[1]), OT_eq, FS_pose, {object});
+    //  for(uint i=0;i<confs.size();i++) self.self->configurations(self.self->k_order+confs[i]) -> makeObjectsFree({object});
+    self.komo->world.makeObjectsFree({object});
+  },"", py::arg("confs"),
+      py::arg("object") )
+
+  .def("add_grasp", [](ry::RyKOMO& self, int conf, const char* gripper, const char* object){
+    self.komo->addObjective(ARR(conf), OT_eq, FS_distance, {gripper, object});
+  } )
+
+  .def("add_place", [](ry::RyKOMO& self, int conf, const char* object, const char* table){
+    self.komo->addObjective(ARR(conf), OT_ineq, FS_aboveBox, {table, object});
+    self.komo->addObjective(ARR(conf), OT_eq, FS_standingAbove, {table, object});
+    self.komo->addObjective(ARR(conf), OT_sos, FS_vectorZ, {object}, {}, {0.,0.,1.});
+  } )
+
+  .def("add_resting", [](ry::RyKOMO& self, int conf1, int conf2, const char* object){
+    self.komo->addObjective(ARR(conf1, conf2), OT_eq, FS_pose, {object});
+  } )
+
+  .def("add_restingRelative", [](ry::RyKOMO& self, int conf1, int conf2, const char* object, const char* tableOrGripper){
+    self.komo->addObjective(ARR(conf1, conf2), OT_eq, FS_poseDiff, {tableOrGripper, object});
+  } )
+
+  .def("optimize", [](ry::RyKOMO& self){
+    self.komo->optimize();
+  } )
+
+  .def("getT", [](ry::RyKOMO& self){
+    return self.komo->T;
+  } )
+
+  .def("getConfiguration", [](ry::RyKOMO& self, int t){
+    arr X = self.komo->configurations(t+self.komo->k_order)->getFrameState();
+    return pybind11::array(X.dim(), X.p);
+  } )
+
+  .def("getReport", [](ry::RyKOMO& self){
+    Graph G = self.komo->getProblemGraph(true);
+    return graph2list(G);
+  } )
+
+  .def("getConstraintViolations", [](ry::RyKOMO& self){
+    Graph R = self.komo->getReport(false);
+    return R.get<double>("constraints");
+  } )
+
+  .def("getCosts", [](ry::RyKOMO& self){
+    Graph R = self.komo->getReport(false);
+    return R.get<double>("sqrCosts");
+  } )
+
+  .def("display", [](ry::RyKOMO& self){
+    self.komo->displayPath(true, true);
+  } )
+  ;
+
+  //===========================================================================
 
   py::class_<ry::LGPpy>(m, "LGPpy")
       .def("optimizeFixedSequence", &ry::LGPpy::optimizeFixedSequence)
