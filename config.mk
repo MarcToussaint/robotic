@@ -12,5 +12,6 @@ PHYSX = 0
 G4 = 0
 PCL = 0
 GTK = 0
-#ROS = 0
+BULLET = 0
+ROS = 0
 ROS_VERSION = kinetic
