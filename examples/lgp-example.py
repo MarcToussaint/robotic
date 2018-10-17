@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-sys.path.append('../src/ry')
+sys.path.append('../ry')
 from libry import *
 
 K = Config()
