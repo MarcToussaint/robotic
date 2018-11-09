@@ -1,4 +1,4 @@
-frame world{}
+frame base{}
 
 ### box
 box { X=<t(.0 0 .5)> }

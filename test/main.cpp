@@ -7,6 +7,7 @@
 //#include <KOMOcsail/komo-CSAIL.h>
 //#include <Kin/TM_default.h>
 //#include <Kin/TM_linTrans.h>
+#include <LGP/bounds.h>
 
 #include <Operate/path.h>
 
@@ -14,6 +15,8 @@
 #include <Operate/robotio.h>
 
 //===========================================================================
+
+#if 0
 
 void test(){
 
@@ -175,6 +178,7 @@ void test_pickAndPlace(){
     rai::wait();
   }
 }
+#endif
 
 //===========================================================================
 
@@ -213,11 +217,13 @@ void test_skeleton(){
 //  komo.self->skeleton2bound();
   skeleton2Bound(*komo.komo, BD_path, S, komo.komo->world, komo.komo->world, false);
 
-  komo.optimize();
-  komo.display();
+  auto view = KinPoseViewer(komo.config, komo.path, .1);
+  komo.komo->optimize();
+  komo.path.set() = komo.komo->getPath_frames();
+  komo.komo->displayTrajectory();
 
-  for(int t=-1;t<komo.getT();t++){
-    komo.getConfiguration(t);
+  for(int t=-1;t<(int)komo.komo->T;t++){
+    komo.komo->getConfiguration(t);
     rai::wait();
   }
 }
@@ -234,12 +240,12 @@ void test_skeleton2(){
   auto komo = ry::RyKOMO(K, 1., 50, 2.);
 
   //-- this is all yet 'magic' -> clearer interface
-  komo.timeOptimization();
-  komo.deactivateCollisionPairs({{"boxBo", "boxLe"}, {"boxBo", "boxBa"}, {"boxLe", "boxBa"}});
-  komo.makeObjectsFree({"ballR"});
-  komo.addObjective({.05, -1.}, OT_eq, FS_physics, {"ballR"}, {1e-1});
-  komo.addObjective({.05, -1.}, OT_ineq, FS_energy, {}, {1e-1});
-  komo.addObjective({}, OT_sos, FS_accumulatedCollisions, {}, {1.});
+  komo.komo->setTimeOptimization();
+//  komo.komo->deactivateCollisions({{"boxBo", "boxLe"}, {"boxBo", "boxBa"}, {"boxLe", "boxBa"}});
+  komo.komo->world.makeObjectsFree({"ballR"});
+  komo.komo->addObjective({.05, -1.}, OT_eq, FS_physics, {"ballR"}, {1e-1});
+  komo.komo->addObjective({.05, -1.}, OT_ineq, FS_energy, {}, {1e-1});
+  komo.komo->addObjective({}, OT_sos, FS_accumulatedCollisions, {}, {1.});
 
   //-- this is the skeleton
   Skeleton S;
@@ -249,16 +255,17 @@ void test_skeleton2(){
   S.append({1., 1., {"touch", "target", "ballR"} });
   komo.komo->setSkeleton(S, true);
 
-  komo.optimize();
+  komo.komo->optimize();
 
-  for(int t=-1;t<komo.getT();t++){
-    komo.getConfiguration(t);
+  for(int t=-1;t<(int)komo.komo->T;t++){
+    komo.komo->getConfiguration(t);
     rai::wait();
   }
 }
 
 //===========================================================================
 
+#if 0
 void test_lgp(){
   auto K = ry::Config();
   auto D = KinViewer(K); //K.view();
@@ -269,6 +276,7 @@ void test_lgp(){
 
   lgp.optimizeFixedSequence("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
 }
+#endif
 
 //===========================================================================
 
@@ -354,9 +362,10 @@ int main(int argc,char** argv){
 //  test_camera();
 //  test_pickAndPlace();
 //  test_constraints();
-  test_skeleton();
 
-//  test_skeleton2();
+//  test_skeleton();
+
+  test_skeleton2();
 //  test_lgp();
 
 //  test_realGrasp();
