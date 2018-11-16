@@ -126,6 +126,7 @@ void test_constraints(){
 }
 
 //===========================================================================
+#endif
 
 void test_pickAndPlace(){
   auto K = ry::Config();
@@ -144,12 +145,12 @@ void test_pickAndPlace(){
   auto arm = "pr2L";
   auto table = "_12";
 
-  int T=6;
-  auto komo = ry::RyKOMO(K, T);
+  KOMO komo(K.get());
+  komo.setDiscreteOpt(6);
 
-  komo.activateCollisionPairs({{obj1, obj2}});
-  komo.addObjective2({}, OT_eq, FS_accumulatedCollisions);
-  komo.addObjective2({}, OT_ineq, FS_jointLimits);
+  komo.activateCollisions(obj1, obj2);
+  komo.addObjective({}, OT_eq, FS_accumulatedCollisions);
+  komo.addObjective({}, OT_ineq, FS_jointLimits);
 
   komo.add_StableRelativePose({0, 1}, arm, obj1);
   komo.add_StableRelativePose({2, 3}, arm, obj2);
@@ -173,12 +174,42 @@ void test_pickAndPlace(){
 
   komo.optimize();
 
-  for(int t=-1;t<T;t++){
-    komo.getConfiguration(t);
-    rai::wait();
-  }
+  komo.displayPath();
+  komo.displayTrajectory(1., true, false);
 }
-#endif
+
+//===========================================================================
+
+void test_path(){
+  auto K = ry::Config();
+  auto D = KinViewer(K); //K.view();
+
+  K.set()->addFile("../rai-robotModels/pr2/pr2.g");
+  K.set()->addFile("kitchen.g");
+
+  K.set()->addFrame("item1", "sink1", "type:ssBox Q:<t(-.1 -.1 .52)> size:[.1 .1 .25 .02] color:[1. 0. 0.], contact" );
+  K.set()->addFrame("item2", "sink1", "type:ssBox Q:<t(.1 .1 .52)> size:[.1 .1 .25 .02] color:[1. 1. 0.], contact" );
+  K.set()->addFrame("tray", "stove1", "type:ssBox Q:<t(.0 .0 .42)> size:[.2 .2 .05 .02] color:[0. 1. 0.], contact" );
+
+  auto obj1 = "item1";
+  auto arm = "pr2R";
+
+  KOMO komo(K.get());
+  komo.setPathOpt(1.,20, 10.);
+
+  komo.addObjective({}, OT_sos, FS_transAccelerations, {}, {1.});
+  komo.addObjective({}, OT_eq, FS_accumulatedCollisions);
+  komo.addObjective({}, OT_ineq, FS_jointLimits);
+  komo.addObjective({1.}, OT_eq, FS_distance, {arm, obj1});
+  komo.addObjective({.9,1.}, OT_sos, FS_positionDiff, {"endeffWorkspace", obj1}, {1e0});
+  komo.addObjective({1.}, OT_eq, FS_qItself, {}, {}, {}, 1);
+
+
+  komo.optimize();
+
+  komo.displayPath();
+  komo.displayTrajectory(1., true, false);
+}
 
 //===========================================================================
 
@@ -361,11 +392,12 @@ int main(int argc,char** argv){
 //  test();
 //  test_camera();
 //  test_pickAndPlace();
+  test_path();
 //  test_constraints();
 
 //  test_skeleton();
 
-  test_skeleton2();
+//  test_skeleton2();
 //  test_lgp();
 
 //  test_realGrasp();
