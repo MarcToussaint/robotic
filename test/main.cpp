@@ -228,7 +228,7 @@ void test_skeleton(){
 
   //(grasp baxterR stick)
   Skeleton S;
-  S.append({1.,1., {"touch", "baxterR", "stick"} });
+  S.append({1,1, {"touch", "baxterR", "stick"} });
   S.append({1,1, {"stable", "baxterR", "stick"} });
   S.append({1,1, {"liftDownUp", "baxterR"} });
 
@@ -392,10 +392,10 @@ int main(int argc,char** argv){
 //  test();
 //  test_camera();
 //  test_pickAndPlace();
-  test_path();
+//  test_path();
 //  test_constraints();
 
-//  test_skeleton();
+  test_skeleton();
 
 //  test_skeleton2();
 //  test_lgp();
