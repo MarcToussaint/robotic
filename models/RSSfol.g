@@ -93,7 +93,7 @@ REWARD {
 DecisionRule grasp {
   X, Y
   { (gripper X) (object Y) (busy X)! (held Y)! (INFEASIBLE grasp X Y)! }
-  { (grasped X Y) (held Y) (animate Y) (busy X) komo(flagClear Y) komo(touch X Y) (stable X Y) (dynamic Y)! (dynamicOn ANY Y)! (stableOn ANY Y)! komo(liftDownUp X) } #komo(grasp X Y) } #komo(lift X)
+  { (grasped X Y) (held Y) (animate Y) (busy X) komo(flagClear Y) komo(touch X Y) (dynamic Y)! (dynamicOn ANY Y)! (stable ANY Y)! (stableOn ANY Y)! (stable X Y) komo(liftDownUp X) } #komo(grasp X Y) } #komo(lift X)
 }
 
 #####################################################################
@@ -101,7 +101,7 @@ DecisionRule grasp {
 DecisionRule handover {
   X, Y, Z
   { (INFEASIBLE handover X Y Z)! (grasped X Y) (gripper X) (gripper Z) (object Y) (busy Z)! }
-  { (grasped X Y)! (grasped Z Y) (busy X)! (busy Z) komo(flagClear Y) komo(touch Z Y) (stable Z Y) (dynamic Y)! (dynamicOn ANY Y)! (stableOn ANY Y)! } #komo(handover X Y Z) }
+  { (grasped X Y)! (grasped Z Y) (busy X)! (busy Z) komo(flagClear Y) komo(touch Z Y) (dynamic Y)! (dynamicOn ANY Y)! (stable ANY Y)! (stableOn ANY Y)! (stable Z Y) } #komo(handover X Y Z) }
 }
 
 #####################################################################

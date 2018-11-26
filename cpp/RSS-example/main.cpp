@@ -43,7 +43,7 @@ void solve1(){
 //  lgp.optFixedSequence("(grasp baxterR stick) (handover baxterR stick baxterL) (hit stickTip redBall) (grasp baxterR redBall) ", BD_path);
 //  lgp.optFixedSequence("(grasp baxterR stick) (throw baxterR stick) (hit stickTip redBall) (grasp baxterR redBall) ", BD_path);
 //  lgp.optFixedSequence("(grasp baxterR stick) (throw baxterR stick) (hitSlide stickTip redBall table1) (grasp baxterR redBall) ", BD_path);
-  lgp.optFixedSequence("(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)", BD_seq);
+  lgp.optFixedSequence("(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)", BD_path);
 //  lgp.optFixedSequence("(grasp baxterR stick) (handover baxterR stick baxterL) (push stickTip redBall table1) (graspSlide baxterR redBall table1)", BD_path);
 //  lgp.optFixedSequence("(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (grasp baxterR redBall)", BD_path);
 //  lgp.optFixedSequence("(graspSlide baxterR stick table1) (hitSlide stickTip redBall table1) (grasp baxterL redBall) ", BD_path);
