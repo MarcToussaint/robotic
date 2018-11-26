@@ -438,6 +438,52 @@ void boxProblem(){
 
 //===========================================================================
 
+void boxProblemSkeleton(){
+  rai::KinematicWorld K("boxProblem.g");
+
+  KOMO komo;
+  komo.setModel(K, true);
+  komo.setPathOpt(4., 10., .2);
+  komo.setTimeOptimization();
+
+  rai::String obj = "ballR"; //"block"; //
+
+  komo.addObjective({}, OT_sos, FS_accumulatedCollisions, {});
+
+  Skeleton S = {
+    { 0., .5, SY_magic, {obj} },
+    { .7, 4., SY_dynamicTrans, {obj} },
+    { 1., 1., SY_bounce, {"boxBo", obj} },
+    { 2., 2., SY_bounce, {"boxBo", obj} },
+    { 3., 3., SY_bounce, {"boxBo", obj} },
+    { 4., 4., SY_touch, {"target", obj} }
+  };
+  komo.setSkeleton(S);
+
+  komo.animateOptimization=true;
+  komo.verbose=2;
+  komo.optimize();
+//  cout <<komo.getContacts() <<endl;
+
+  arr taus = komo.getPath_tau();
+  FILE("z.tau") <<~~taus;
+//  gnuplot("plot 'z.dat' us 0:1");
+  cout <<"TIMES: total=" <<sum(taus) <<taus <<endl;
+  cout <<"ENERGIES: " <<komo.getPath_energies() <<endl;
+  komo.checkGradients();
+
+//  while(komo.displayTrajectory(-1., true));
+
+//  komo.displayTrajectory(1., false, true, "z.vid/");
+
+  for(;;){
+    rai::wait();
+    komo.optimize(true);
+  }
+}
+
+//===========================================================================
+
 void blocks(){
   rai::KinematicWorld K("boxProblem.g");
 //  K.optimizeTree(false);
@@ -508,7 +554,8 @@ int MAIN(int argc,char **argv){
   case 2: jumpingBall(); break;
   case 3: rollingBall(); break;
   case 4: hittingBall(); break;
-  case 5: boxProblem(); break;
+//  case 5: boxProblem(); break;
+    case 5: boxProblemSkeleton(); break;
   case 6: blocks(); break;
   }
 
