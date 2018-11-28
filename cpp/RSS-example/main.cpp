@@ -6,9 +6,9 @@
 #include <KOMO/komo.h>
 
 void solve(uint i){
-  rai::KinematicWorld K(STRING("problem-0"<<i<<".g"));
+  rai::KinematicWorld K(STRING("../../models/RSSproblem-0"<<i<<".g"));
   K.optimizeTree();
-  FOL_World L(FILE("fol.g"));
+  FOL_World L(FILE("../../models/RSSfol.g"));
   initFolStateFromKin(L, K);
 
   LGP_Tree lgp(K, L);
@@ -36,6 +36,9 @@ void solve1(){
 
 //  lgp.updateDisplay();
 //  lgp.player();
+
+//  lgp.optFixedSequence("(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)", BD_seq);
+//  rai::wait(); return;
 
 //  lgp.optFixedSequence("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ", BD_path);
 //  lgp.optFixedSequence("(grasp baxterR stick) (hit stickTip redBall) (grasp baxterL redBall) ", BD_path);
@@ -67,6 +70,40 @@ void solve1(){
 //  lgp.renderToVideo();
 }
 
+void solve1_seq_explicit(){
+  rai::KinematicWorld K("../../models/RSSproblem-01.g");
+  K.optimizeTree();
+  K.makeObjectsFree({"stick"});
+
+  KOMO komo;
+  komo.setModel(K, false);
+
+#if 0 //this is equivalent if 1 stepsPerPhase~
+  komo.setDiscreteOpt(3);
+#else
+  komo.setTiming(3., 1, 1., 1);
+  komo.setSquaredQuaternionNorms();
+#endif
+  komo.setSquaredQVelocities(0.,-1.,1e-1);
+//  komo.setHoming(0., -1., 1e-2);
+
+//  komo.add_StablePose({-1,0}, "stick");
+  komo.addObjective(-1.,1., symbols2feature(FS_pose, {"stick"}, K), OT_eq, {}, 1e1, 1);
+
+  komo.add_touch(1., 1., "baxterR", "stick");
+
+//  komo.add_StableRelativePose({0,1}, "baxterR", "stick");
+  komo.addObjective(1.,2., symbols2feature(FS_poseRel, {"baxterR", "stick"}, K), OT_eq, {}, 1e1, 1, +1);
+
+  komo.add_touch(2., 2., "baxterL", "stick");
+
+  //  komo.add_StableRelativePose({1,2}, "baxterR", "stick");
+  komo.addObjective(2.,3., symbols2feature(FS_poseRel, {"baxterL", "stick"}, K), OT_eq, {}, 1e1, 1, +1);
+
+  komo.optimize();
+
+  while(komo.displayTrajectory()) {}
+}
 
 
 void solve5(){
@@ -105,8 +142,9 @@ int MAIN(int argc,char **argv){
     return 0;
   }
 
-  solve1();
-//  solve5();
+//  solve1_seq_explicit();
+//  solve1();
+  solve5();
 
   return 0;
 }
