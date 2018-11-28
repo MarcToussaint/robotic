@@ -36,6 +36,16 @@ python3 -m pip install jupyter
 jupyter-notebook docs/1-basics.ipynb 
 ```
 
+## Updating after a pulling a new version
+
+```
+git submodule update
+make -C rai dependAll
+make -j4
+```
+If for some reason that doesn't work, hopefully `make clean && make -j4` will do.
+
+
 ## Tutorials
 
 Only a few of the tutorials exist yet. Please see the also [docs/](docs/) path. The plan is:
@@ -48,9 +58,9 @@ Only a few of the tutorials exist yet. Please see the also [docs/](docs/) path. 
 1. [Physx:](docs/9-physx.ipynb) Access to the Physx physical simulation engine
 1. [Bullet:](docs/10-bullet.ipynb) Access to the Physx physical simulation engine
 
-## Examples
+## Cpp references
 
-Check the [examples/](examples/) path
+Check the [cpp/](cpp/) path
 
 ## Older/messy docs
 
