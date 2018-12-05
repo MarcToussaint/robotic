@@ -194,7 +194,7 @@ void plan(){
   komo.setModel(K, true);
   komo.setTiming(1., 10, 1., 2);
   komo.setSquaredQuaternionNorms();
-  komo.setTimeOptimization();
+//  komo.setTimeOptimization();
 
 //  komo.addSwitch_dynamic(.2, -1., K.frames.first()->name, "block");
   komo.addObjective(.0, -1., new TM_NewtonEuler(komo.world, "block"), OT_eq, NoArr, 1e-1, 2);
@@ -203,12 +203,12 @@ void plan(){
 
   //  Task *te = komo.setTask(-1, -1., new TM_Energy(), OT_ineq, NoArr, 1e-1, 2);
 
-  komo.add_collision(false);
+//  komo.add_collision(false);
 
 //  komo.addObjective(-1., -1., new TM_ContactConstraints(), OT_eq, NoArr, 1e1);
 
 //  komo.addContact_Complementary(-1., -1., "table1", "block" );
-  komo.addContact_elasticBounce(.4, "table1", "block" );
+  komo.addContact_elasticBounce(.4, "table1", "block", .4 );
 
   komo.verbose=2;
   komo.reset();

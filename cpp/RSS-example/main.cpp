@@ -143,8 +143,8 @@ int MAIN(int argc,char **argv){
   }
 
 //  solve1_seq_explicit();
-//  solve1();
-  solve5();
+  solve1();
+//  solve5();
 
   return 0;
 }

@@ -90,6 +90,9 @@ void testBounds(){
   LGP_Node *node = lgp.walkToNode("(grasp pr2R obj0) (grasp pr2L obj3) (place pr2R obj0 tray)");
   cout <<"Node Info:\n" <<node->getInfo() <<endl;
 
+  auto S = node->getSkeleton();
+  writeSkeleton(S,getSwitchesFromSkeleton(S));
+
 //  node = node->parent->parent;
 //  node->computeEndKinematics();
 //  node->effKinematics.glAnimate();
@@ -100,11 +103,11 @@ void testBounds(){
 //  node->komoProblem(bound)->displayTrajectory(-1., true, false);
 
   bound = BD_seq;
-  node->optBound(bound, true);
-//  node->komoProblem(bound)->displayTrajectory(-1., true, false);
+  node->optBound(bound, true, 4);
+  node->komoProblem(bound)->displayTrajectory(-1., true, false);
 
   bound = BD_seqPath;
-  node->optBound(bound, true,2);
+  node->optBound(bound, true, 4);
   node->komoProblem(bound)->displayTrajectory(.1, true, false);
 
   cout <<"Node Info:\n" <<node->getInfo() <<endl;
