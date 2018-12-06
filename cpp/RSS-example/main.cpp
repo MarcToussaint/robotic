@@ -8,7 +8,7 @@
 void solve(uint i){
   rai::KinematicWorld K(STRING("../../models/RSSproblem-0"<<i<<".g"));
   K.optimizeTree();
-  FOL_World L(FILE("../../models/RSSfol.g"));
+  FOL_World L("../../models/RSSfol.g");
   initFolStateFromKin(L, K);
 
   LGP_Tree lgp(K, L);
@@ -20,7 +20,7 @@ void solve(uint i){
 void solve1(){
   rai::KinematicWorld K("../../models/RSSproblem-01.g");
   K.optimizeTree();
-  FOL_World L(FILE("../../models/RSSfol.g"));
+  FOL_World L("../../models/RSSfol.g");
   initFolStateFromKin(L, K);
 //  cout <<"INITIAL LOGIC STATE = " <<*L.start_state <<endl;
 
@@ -108,7 +108,7 @@ void solve1_seq_explicit(){
 
 void solve5(){
   rai::KinematicWorld K("../../models/RSSproblem-05.g");
-  FOL_World L(FILE("../../models/RSSfol.g"));
+  FOL_World L("../../models/RSSfol.g");
   initFolStateFromKin(L, K);
 
   LGP_Tree lgp(K, L);
