@@ -103,11 +103,11 @@ void testBounds(){
 //  node->komoProblem(bound)->displayTrajectory(-1., true, false);
 
   bound = BD_seq;
-  node->optBound(bound, true, 4);
+  node->optBound(bound, true, 2);
   node->komoProblem(bound)->displayTrajectory(-1., true, false);
 
   bound = BD_seqPath;
-  node->optBound(bound, true, 4);
+  node->optBound(bound, true, 2);
   node->komoProblem(bound)->displayTrajectory(.1, true, false);
 
   cout <<"Node Info:\n" <<node->getInfo() <<endl;
@@ -117,8 +117,8 @@ int MAIN(int argc,char **argv){
   rai::initCmdLine(argc, argv);
   rnd.clockSeed();
 
-//  solve();
-  testBounds();
+  solve();
+//  testBounds();
 
   return 0;
 }

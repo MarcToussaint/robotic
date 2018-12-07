@@ -112,42 +112,72 @@ void angularVel(){
 
 void passive_elasticBounce(){
   rai::KinematicWorld K;
-  K.addObject("floor", rai::ST_ssBox, {1., 1., .1, .02}, {}, -1., NULL, {0.,0.,.1}, {1., .1, 0., 0.});
-  K.addObject("ball",  rai::ST_ssBox, {.0, .4, .1, .05}, {}, -.1, NULL, {.0, .6, .55});
+  K.addFrame("base");
+  K.addObject("floor", rai::ST_ssBox, {1., 1., .1, .02}, {}, -1., NULL, {0.,-.6,.5}, {1., .1, 0., 0.});
+  K.addObject("ball",  rai::ST_ssBox, {.0, .4, .1, .05}, {}, -.1, NULL, {.0, .0, 1.05});
 //  (new rai::Inertia(*K["ball"])) -> defaultInertiaByShape();
 
   KOMO komo(K);
   komo.setTiming(1., 20, 1., 2);
   komo.setSquaredQuaternionNorms();
+#if 0
   komo.setTimeOptimization();
   komo.addSwitch_dynamic(.2, -1., K.frames.first()->name, "ball");
 
   komo.addContact_elasticBounce( .4, "floor", "ball", .5, .5);
+#else
+  komo.addSwitch_magicTrans(-1., .1, K.frames.first()->name, "ball", 1e-5);
+  komo.addSwitch_dynamic(.1, -1., K.frames.first()->name, "ball");
+  komo.addContact_elasticBounce( .5, "floor", "ball", .5, .5);
+#endif
 
-  komo.reset();
-  komo.reportProblem();
-  komo.run();
-  komo.getReport(true);
-  cout <<komo.getContacts() <<endl;
+  komo.optimize();
   komo.checkGradients();
 
-  while(komo.displayTrajectory(-.1, true));
+  while(komo.displayTrajectory(-.1, true, true, "z.vid/"));
+}
+
+//===========================================================================
+
+void passive_elasticBounce2(){
+  rai::KinematicWorld K;
+  K.addFrame("base");
+  K.addObject("floor", rai::ST_ssBox, {1., 1., .1, .02}, {}, -1., NULL, {0., .0,.5});
+  K.addObject("ball",  rai::ST_sphere, {}, {}, .05, NULL, {.0, .0, 1.});
+//  (new rai::Inertia(*K["ball"])) -> defaultInertiaByShape();
+
+  KOMO komo;
+  komo.setModel(K, false);
+  komo.setPathOpt(4.5, 10., .2);
+  komo.setTimeOptimization();
+
+  komo.addSwitch_dynamic(.1, -1., K.frames.first()->name, "ball");
+  komo.addContact_elasticBounce( 1., "floor", "ball", .8);
+  komo.addContact_elasticBounce( 2., "floor", "ball", .8);
+  komo.addContact_elasticBounce( 3., "floor", "ball", .8);
+  komo.addContact_elasticBounce( 4., "floor", "ball", .8);
+
+  komo.optimize();
+  komo.checkGradients();
+
+  while(komo.displayTrajectory(-.1, true, false, "z.vid/"));
 }
 
 //===========================================================================
 
 void passive_slidePermanent(){
   rai::KinematicWorld K;
-  K.addObject("floor", rai::ST_ssBox, {1., 1., .1, .02}, {}, -1., NULL, {0.,0.,.1}, {1., .3, 0., 0.});
-  K.addObject("ball",  rai::ST_ssBox, {.0, .2, .4, .05}, {}, -.1, NULL, {.0, .0, .55});
+  K.addObject("floor", rai::ST_ssBox, {1., 1., .1, .02}, {}, -1., NULL, {0.,.5,.5}, {1., .1, 0., 0.});
+  K.addObject("ball",  rai::ST_ssBox, {.4, .4, .2, .05}, {}, -.1, NULL, {.0, .0, .62}, {1., .1, 0., .1});
 
   KOMO komo(K);
-  komo.setTiming(1., 20, 1., 2);
+  komo.setTiming(.9, 20, 1., 2);
   komo.setSquaredQuaternionNorms();
-  komo.setTimeOptimization();
-  komo.addSwitch_dynamic(0, -1., K.frames.first()->name, "ball");
+//  komo.setTimeOptimization();
 
-  komo.addContact_slide( .2, -1., "floor", "ball");
+  komo.addSwitch_dynamic(0, -1., K.frames.first()->name, "ball");
+  komo.addContact_noFriction(.1, -1., "floor", "ball");
+//  komo.addContact_Complementary(0., -1., "floor", "ball");
 
   komo.reset();
   komo.reportProblem();
@@ -156,32 +186,29 @@ void passive_slidePermanent(){
   cout <<komo.getContacts() <<endl;
   komo.checkGradients();
 
-  while(komo.displayTrajectory(-.1, true));
+  while(komo.displayTrajectory(-.1, true, false, "z.vid/"));
 }
 
 //===========================================================================
 
 void passive_stickyPermanent(){
   rai::KinematicWorld K;
-  K.addObject("floor", rai::ST_ssBox, {1., 1., .1, .02}, {}, -1., NULL, {0.,0.,.1}, {1., .3, 0., 0.});
-  K.addObject("ball",  rai::ST_ssBox, {.0, .2, .4, .05}, {}, -.1, NULL, {.0, .0, .55});
+  K.addObject("floor", rai::ST_ssBox, {1., 1., .1, .02}, {}, -1., NULL, {0.,0., .5}, {1., .3, 0., 0.});
+  K.addObject("ball",  rai::ST_ssBox, {.4, .2, .4, .05}, {}, -.1, NULL, {.0, .0, 1.1}, {1., 0., 0., .3});
 
   KOMO komo(K);
   komo.setTiming(1., 20, 1., 2);
   komo.setSquaredQuaternionNorms();
-  komo.setTimeOptimization();
+//  komo.setTimeOptimization();
+
   komo.addSwitch_dynamic(0, -1., K.frames.first()->name, "ball");
+  komo.addContact_stick( .21, -1., "floor", "ball");
 
-  komo.addContact_stick( .2, -1., "floor", "ball");
-
-  komo.reset();
-  komo.reportProblem();
-  komo.run();
-  komo.getReport(true);
-  cout <<komo.getContacts() <<endl;
+  komo.verbose=2;
+  komo.optimize();
   komo.checkGradients();
 
-  while(komo.displayTrajectory(-.1, true));
+  while(komo.displayTrajectory(-.1, true, false, "z.vid/"));
 }
 
 //===========================================================================
@@ -442,19 +469,19 @@ void boxProblemSkeleton(){
   rai::KinematicWorld K("boxProblem.g");
 
   KOMO komo;
-  komo.setModel(K, true);
+  komo.setModel(K, false);
   komo.setPathOpt(4., 10., .2);
   komo.setTimeOptimization();
 
-  rai::String obj = "ballR"; //"block"; //
+  rai::String obj = "ball"; //"block"; //
 
-  komo.addObjective({}, OT_sos, FS_accumulatedCollisions, {});
+//  komo.addObjective({}, OT_sos, FS_accumulatedCollisions, {});
 
   Skeleton S = {
     { 0., .5, SY_magic, {obj} },
     { .7, 4., SY_dynamicTrans, {obj} },
     { 1., 1., SY_bounce, {"boxBo", obj} },
-    { 2., 2., SY_bounce, {"boxBo", obj} },
+    { 2., 2., SY_bounce, {"boxLe", obj} },
     { 3., 3., SY_bounce, {"boxBo", obj} },
     { 4., 4., SY_touch, {"target", obj} }
   };
@@ -472,14 +499,14 @@ void boxProblemSkeleton(){
   cout <<"ENERGIES: " <<komo.getPath_energies() <<endl;
   komo.checkGradients();
 
-//  while(komo.displayTrajectory(-1., true));
+  while(komo.displayTrajectory(-1., true, true, "z.vid/"));
 
 //  komo.displayTrajectory(1., false, true, "z.vid/");
 
-  for(;;){
-    rai::wait();
-    komo.optimize(true);
-  }
+//  for(;;){
+//    rai::wait();
+//    komo.optimize(true);
+//  }
 }
 
 //===========================================================================
@@ -547,8 +574,9 @@ int MAIN(int argc,char **argv){
   switch(mode){
     case 0: angularVel(); break;
     case 7: passive_elasticBounce(); break;
-    case 8: passive_slidePermanent(); break;
-    case 9: passive_stickyPermanent(); break;
+    case 8: passive_elasticBounce2(); break;
+    case 9: passive_slidePermanent(); break;
+    case 10: passive_stickyPermanent(); break;
 //  case 0: testQuat(); break;
   case 1: plan(); break;
   case 2: jumpingBall(); break;
