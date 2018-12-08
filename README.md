@@ -6,6 +6,10 @@ The current focus of the development is to provide simpler interfaces to Logic-G
 
 If you're interested to contribute in development or testing, consider joining the "LGP code" mailing list https://groups.google.com/forum/#!forum/lgp-code.
 
+## Demo videos
+
+https://ipvs.informatik.uni-stuttgart.de/mlr/lgp/
+
 ## Quick Start
 
 This assumes a standard Ubuntu 16.04 machine.

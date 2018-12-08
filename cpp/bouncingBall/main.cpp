@@ -171,19 +171,16 @@ void passive_slidePermanent(){
   K.addObject("ball",  rai::ST_ssBox, {.4, .4, .2, .05}, {}, -.1, NULL, {.0, .0, .62}, {1., .1, 0., .1});
 
   KOMO komo(K);
-  komo.setTiming(.9, 20, 1., 2);
+  komo.setTiming(1., 40, 1., 2);
   komo.setSquaredQuaternionNorms();
 //  komo.setTimeOptimization();
 
   komo.addSwitch_dynamic(0, -1., K.frames.first()->name, "ball");
-  komo.addContact_noFriction(.1, -1., "floor", "ball");
-//  komo.addContact_Complementary(0., -1., "floor", "ball");
+//  komo.addContact_noFriction(.1, -1., "floor", "ball");
+  komo.addContact_Complementary(0., -1., "floor", "ball");
 
-  komo.reset();
-  komo.reportProblem();
-  komo.run();
-  komo.getReport(true);
-  cout <<komo.getContacts() <<endl;
+  komo.verbose=2;
+  komo.optimize();
   komo.checkGradients();
 
   while(komo.displayTrajectory(-.1, true, false, "z.vid/"));
@@ -199,7 +196,7 @@ void passive_stickyPermanent(){
   KOMO komo(K);
   komo.setTiming(1., 20, 1., 2);
   komo.setSquaredQuaternionNorms();
-//  komo.setTimeOptimization();
+  komo.setTimeOptimization();
 
   komo.addSwitch_dynamic(0, -1., K.frames.first()->name, "ball");
   komo.addContact_stick( .21, -1., "floor", "ball");
