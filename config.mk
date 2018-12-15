@@ -6,7 +6,7 @@
 # etc
 #
 
-#OPTIM=fast
+OPTIM=fast
 ODE = 0
 PHYSX = 0
 G4 = 0
