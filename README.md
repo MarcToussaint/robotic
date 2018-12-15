@@ -47,7 +47,7 @@ git submodule update
 make -C rai dependAll
 make -j4
 ```
-If for some reason that doesn't work, hopefully `make clean && make -j4` will do.
+This avoids a full make clean -- but if that doesn't work, hopefully `make clean && make -j4` will do.
 
 
 ## Tutorials
@@ -55,12 +55,13 @@ If for some reason that doesn't work, hopefully `make clean && make -j4` will do
 Only a few of the tutorials exist yet. Please see the also [docs/](docs/) path. The plan is:
 
 1. [Basics:](docs/1-basics.ipynb) Configurations, Features & Jacobians
-1. [IK:](docs/2-constraints.ipynb) Learn about the language to set optimization constraints, first with just Inverse Kinematics; grabbing results
-1. [KOMO:](docs/3-KOMO.ipynb) Interface to KOMO, the motion optimization method; learn to set constraints
-1. [LGP:](docs/4-LGP.ipynb) The low-level skeleton interface to solving LGP problems
-1. [Contacts:](docs/8-contacts.ipynb) Access to various methods to compute detailed collision geometries or compute stable force/wrench configurations, all static
-1. [Physx:](docs/9-physx.ipynb) Access to the Physx physical simulation engine
-1. [Bullet:](docs/10-bullet.ipynb) Access to the Physx physical simulation engine
+1. [Features:](docs/2-features.ipynb) Learn about the language to define and query features and their Jacobians. Including querying collision features (whether and which objects are in collision).
+1. [IK:](docs/3-IK-optimization.ipynb) The simplest use of KOMO is for inverse kinematics - learn how to add features to an optimization problem
+1. [KOMO:](docs/4-path-optimization.ipynb) Proper path optimization examples
+1. [CGO:](docs/5-cgo-optimization.ipynb) KOMO can also used in "dense" mode, where it optimize as constraint graph
+1. [Skeletons:](docs/6-KOMO-skeleton.ipynb) Instead of specifying features low-level, you can specify a skeleton and query a pre-defined bound for that skeleton (path, or sequence). This is kind of a higher level language to set objectives. (But not as general as low-level features. You can mix both.)
+1. [Robot Models:](docs/9-robotModels.ipynb) Some info on which scene/robot models are available and how to convert from URDF
+1. [LGP:](docs/lgp1-pickAndPlace.ipynb) The first full LGP demo - for now only for pickAndPlace
 
 ## Cpp references
 
