@@ -25,6 +25,7 @@ void solve1(){
 //  cout <<"INITIAL LOGIC STATE = " <<*L.start_state <<endl;
 
   LGP_Tree lgp(K, L);
+  lgp.displayBound = BD_path;
 
 //  lgp.verbose = 0;
 //  rai::timerStart();
@@ -112,6 +113,7 @@ void solve5(){
   initFolStateFromKin(L, K);
 
   LGP_Tree lgp(K, L);
+  lgp.displayBound = BD_path;
 
 //  lgp.player();
 
@@ -143,8 +145,8 @@ int MAIN(int argc,char **argv){
   }
 
 //  solve1_seq_explicit();
-  solve1();
-//  solve5();
+//  solve1();
+  solve5();
 
   return 0;
 }

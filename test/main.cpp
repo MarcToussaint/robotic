@@ -228,21 +228,21 @@ void test_skeleton(){
 
   //(grasp baxterR stick)
   Skeleton S;
-  S.append({1,1, {"touch", "baxterR", "stick"} });
-  S.append({1,1, {"stable", "baxterR", "stick"} });
-  S.append({1,1, {"liftDownUp", "baxterR"} });
+  S.append({1,1, SY_touch, {"baxterR", "stick"} });
+  S.append({1,1, SY_stable, {"baxterR", "stick"} });
+  S.append({1,1, SY_liftDownUp, {"baxterR"} });
 
   //(handover baxterR stick baxterL)
-  S.append({2,2, {"touch", "baxterL", "stick"} });
-  S.append({2,4, {"stable", "baxterL", "stick"} });
+  S.append({2,2, SY_touch, {"baxterL", "stick"} });
+  S.append({2,4, SY_stable, {"baxterL", "stick"} });
 
   //(hitSlide stickTip redBall table1)
-  S.append({3,3, {"touch", "stickTip", "redBall"} });
-  S.append({3,3, {"impulse", "stickTip", "redBall"} });
-  S.append({3,3, {"dynamicOn", "table1", "redBall"} });
+  S.append({3,3, SY_touch, {"stickTip", "redBall"} });
+  S.append({3,3, SY_impulse, {"stickTip", "redBall"} });
+  S.append({3,3, SY_dynamicOn, {"table1", "redBall"} });
 
   //(graspSlide baxterR redBall table1)
-  S.append({4,4, {"graspSlide", "baxterR", "redBall", "table1"} });
+  S.append({4,4, SY_graspSlide, {"baxterR", "redBall", "table1"} });
 
 //  komo.self->setSkeleton(S);
 //  komo.self->skeleton2bound();
@@ -280,10 +280,10 @@ void test_skeleton2(){
 
   //-- this is the skeleton
   Skeleton S;
-  S.append({.4, .4, {"contact", "boxBo", "ballR"} });
-  S.append({.6, .6, {"contact", "boxBo", "ballR"} });
-  S.append({.8, .8, {"contact", "boxBo", "ballR"} });
-  S.append({1., 1., {"touch", "target", "ballR"} });
+  S.append({.4, .4, SY_contact, {"boxBo", "ballR"} });
+  S.append({.6, .6, SY_contact, {"boxBo", "ballR"} });
+  S.append({.8, .8, SY_contact, {"boxBo", "ballR"} });
+  S.append({1., 1., SY_touch, {"target", "ballR"} });
   komo.komo->setSkeleton(S, true);
 
   komo.komo->optimize();
@@ -313,7 +313,7 @@ void test_lgp(){
 
 std::pair<arr,arr> computePath(ry::Config& K, const arr& target_q, const StringA& target_joints, const char* endeff, double up, double down){
   KOMO komo;
-  komo.setModel(K.get(), true, true);
+  komo.setModel(K.get(), true);
   komo.setPathOpt(1., 20, 3.);
 
   addMotionTo(komo, target_q, target_joints, endeff, up, down);

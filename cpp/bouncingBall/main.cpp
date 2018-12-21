@@ -465,14 +465,6 @@ void boxProblem(){
 void boxProblemSkeleton(){
   rai::KinematicWorld K("boxProblem.g");
 
-  {
-    Graph G;
-    K.write(G);
-    FILE("z.g") <<G;
-    return;
-  }
-
-
   KOMO komo;
   komo.setModel(K, false);
   komo.setPathOpt(4., 10., .2);
