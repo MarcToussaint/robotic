@@ -1,7 +1,7 @@
 BASE = rai
 BASE2 = src
 
-default: build bin
+target: build bin
 
 DEPEND = Core Algo Geo Plot Kin Gui KOMO LGP ry
 

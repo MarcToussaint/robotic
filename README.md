@@ -37,8 +37,16 @@ source setupPython.sh
 python3 -m pip install --upgrade pip
 python3 -m pip install jupyter
 
-jupyter-notebook docs/1-basics.ipynb 
+jupyter-notebook docs/ #perhaps start with 6-KOMO-skeleton
 ```
+
+Also test the cpp versions:
+```
+cd cpp/pickAndPlace
+make
+./x.exe
+```
+
 
 ## Updating after a pulling a new version
 
