@@ -283,12 +283,12 @@ void jumpingBall(){
   komo.addObjective(0., -1., new TM_Time(), OT_sos, {komo.tau}, 1e-1, 0); //prior on timing
 
   Objective *t = komo.addObjective(0., -1., new TM_NewtonEuler(komo.world, "ball"), OT_sos, NoArr, 1e-1, 2);
-  t->prec(0) = 0.;
-  t->prec(1) = 0.;
+  t->vars(0) = 0.;
+  t->vars(1) = 0.;
 
 //  Task *te = komo.setTask(-1., -1., new TM_Energy(), OT_ineq, NoArr, 1e1, 2);
-//  te->prec(0) = 0.;
-//  te->prec(1) = 0.;
+//  te->vars(0) = 0.;
+//  te->vars(1) = 0.;
 
   komo.add_collision(false);
 
@@ -330,12 +330,12 @@ void rollingBall(){
 
 
   Objective *t = komo.addObjective(0., -1., new TM_NewtonEuler(komo.world, "ball"), OT_sos, NoArr, 1e-1, 2);
-  t->prec(0) = 0.;
-  t->prec(1) = 0.;
+  t->vars(0) = 0.;
+  t->vars(1) = 0.;
 
   Objective *te = komo.addObjective(.4, .7, new TM_Energy(), OT_ineq, NoArr, 1e1, 2);
-//  te->prec(0) = 0.;
-//  te->prec(1) = 0.;
+//  te->vars(0) = 0.;
+//  te->vars(1) = 0.;
 
   komo.add_collision(false);
 
@@ -375,9 +375,9 @@ void hittingBall(){
   komo.setTimeOptimization();
 
   Objective *t = komo.addObjective(0., -1., new TM_NewtonEuler(komo.world, "ball", true), OT_eq, NoArr, 1e-1, 2);
-  t->prec(0) = 0.;
+  t->vars(0) = 0.;
   t = komo.addObjective(0., -1., new TM_NewtonEuler(komo.world, "ball2", true), OT_eq, NoArr, 1e-1, 2);
-  t->prec(0) = 0.;
+  t->vars(0) = 0.;
 
   komo.add_collision(false);
 
