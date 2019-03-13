@@ -8,9 +8,16 @@ K = Config()
 D = K.view()
 
 K.addFile('../test/lgp-example.g');
+K.makeObjectsConvex()
 
 lgp = K.lgp("../test/fol.g");
 
-lgp.optimizeFixedSequence("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
+lgp.walkToNode("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
+print(lgp.nodeInfo())
+
+lgp.optBound(BT.path, True);
+
+komo = lgp.getKOMOforBound(BT.path)
+komo.display()
 
 input("Press Enter to continue...")

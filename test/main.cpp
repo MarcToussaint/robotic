@@ -126,7 +126,6 @@ void test_constraints(){
 }
 
 //===========================================================================
-#endif
 
 void test_pickAndPlace(){
   auto K = ry::Config();
@@ -212,6 +211,7 @@ void test_path(){
 }
 
 //===========================================================================
+#endif
 
 void test_skeleton(){
 
@@ -261,10 +261,29 @@ void test_skeleton(){
 
 //===========================================================================
 
+void test_lgp(){
+  auto K = ry::Config();
+  auto D = KinViewer(K); //K.view();
+
+  K.set()->addFile("lgp-example.g");
+  makeConvexHulls(K.set()->frames);
+
+  LGP_Tree_Thread lgp(K.set(), "fol.g");
+
+//  lgp.walkToNode("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
+  lgp.walkToNode("(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)");
+
+  lgp.focusNode->optBound(BD_path, true);
+  lgp.focusNode->komoProblem(BD_path)->displayTrajectory(.02, false, false);
+}
+
+//===========================================================================
+
+#if 0
 void test_skeleton2(){
 
   auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
+  auto D = KinViewer(K); //K`view();
 
   K.set()->addFile("boxProblem.g");
 
@@ -293,21 +312,6 @@ void test_skeleton2(){
     rai::wait();
   }
 }
-
-//===========================================================================
-
-#if 0
-void test_lgp(){
-  auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
-
-  K.set()->addFile("lgp-example.g");
-
-  auto lgp = ry::LGPpy(K, "fol.g");
-
-  lgp.optimizeFixedSequence("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
-}
-#endif
 
 //===========================================================================
 
@@ -383,6 +387,7 @@ void test_realGrasp(){
   rai::wait();
 
 }
+#endif
 
 //===========================================================================
 
@@ -395,10 +400,10 @@ int main(int argc,char** argv){
 //  test_path();
 //  test_constraints();
 
-  test_skeleton();
+//  test_skeleton();
 
 //  test_skeleton2();
-//  test_lgp();
+  test_lgp();
 
 //  test_realGrasp();
 

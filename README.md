@@ -29,6 +29,8 @@ git config --file=.gitmodules submodule.rai-robotModels.url https://github.com/M
 git submodule init
 git submodule update
 
+#see below how to enable bullet
+
 make -j1 initUbuntuPackages  # calls sudo apt-get install; you can always interrupt
 make -j4                     # builds libs and tests
 
@@ -47,6 +49,13 @@ make
 ./x.exe
 ```
 
+To enable bullet, before you compile rai-python, first install bullet locally following
+https://github.com/MarcToussaint/rai-maintenance/blob/master/help/localSourceInstalls.md
+Then, in 'rai-python/', call
+```
+echo "BULLET = 1" >> config.mk
+```
+Then compile.
 
 ## Updating after a pulling a new version
 
