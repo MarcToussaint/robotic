@@ -266,15 +266,20 @@ void test_lgp(){
   auto D = KinViewer(K); //K.view();
 
   K.set()->addFile("lgp-example.g");
-  makeConvexHulls(K.set()->frames);
+  makeConvexHulls(K.set()->frames, true);
+//  K.set()->stepSwift();
+//  cout <<"TOTAL INITIAL PENETRATION: " <<K.set()->totalContactPenetration() <<endl;
+//  K.set()->reportProxies();
 
   LGP_Tree_Thread lgp(K.set(), "fol.g");
 
-//  lgp.walkToNode("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
-  lgp.walkToNode("(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)");
+  lgp.walkToNode("(grasp baxterR stick) (push stickTip redBall table1) (grasp baxterL redBall) ");
+//  lgp.walkToNode("(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)");
 
-  lgp.focusNode->optBound(BD_path, true);
+  lgp.focusNode->optBound(BD_path, true, 2);
   lgp.focusNode->komoProblem(BD_path)->displayTrajectory(.02, false, false);
+
+  rai::wait();
 }
 
 //===========================================================================
