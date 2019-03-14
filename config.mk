@@ -8,11 +8,4 @@
 
 OPTIM = fast
 PYBIND = 1
-ODE = 0
-PHYSX = 0
-G4 = 0
-PCL = 0
-GTK = 0
 BULLET = 0
-ROS = 0
-ROS_VERSION = kinetic
