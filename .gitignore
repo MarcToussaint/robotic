@@ -1,4 +1,4 @@
-share/gofMake/config.mk
+/config.mk
 
 %% compile temporaries
 *.o

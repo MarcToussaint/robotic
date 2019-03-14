@@ -6,7 +6,8 @@
 # etc
 #
 
-OPTIM=fast
+OPTIM = fast
+PYBIND = 1
 ODE = 0
 PHYSX = 0
 G4 = 0
