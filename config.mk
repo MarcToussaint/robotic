@@ -6,6 +6,18 @@
 # etc
 #
 
+# only UNCOMMENT some of the following lines
+# (they are already set =1 in the components that refer to them)
+
 OPTIM = fast
-PYBIND = 1
+FCL = 0
+ODE = 0
+PHYSX = 0
 BULLET = 0
+G4 = 0
+PCL = 0
+#PYBIND = 0
+OPENCV = 0
+GTK = 0
+ROS = 0
+ROS_VERSION = kinetic
