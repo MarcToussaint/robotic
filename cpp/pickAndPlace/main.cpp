@@ -51,7 +51,7 @@ void generateProblem(rai::KinematicWorld& K){
 void solve(){
   rai::KinematicWorld K;
   generateProblem(K);
-//  K.addFile("model2.g");
+  //  K.addFile("model2.g");
   K.selectJointsByGroup({"base","armL","armR"}, true, true);
   K.optimizeTree();
 
@@ -117,8 +117,8 @@ int MAIN(int argc,char **argv){
   rai::initCmdLine(argc, argv);
   rnd.clockSeed();
 
-  solve();
-//  testBounds();
+//  solve();
+  testBounds();
 
   return 0;
 }

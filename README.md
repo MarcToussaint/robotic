@@ -31,7 +31,7 @@ git submodule update
 
 #see below how to enable bullet
 
-make -j1 initUbuntuPackages  # calls sudo apt-get install; you can always interrupt
+make -j1 installUbuntuAll  # calls sudo apt-get install; you can always interrupt
 make -j4                     # builds libs and tests
 
 source setupPython.sh
@@ -69,20 +69,8 @@ This avoids a full make clean -- but if that doesn't work, hopefully `make clean
 
 ## Tutorials
 
-Only a few of the tutorials exist yet. Please see the also [docs/](docs/) path. The plan is:
-
-1. [Basics:](docs/1-basics.ipynb) Configurations, Features & Jacobians
-1. [Features:](docs/2-features.ipynb) Learn about the language to define and query features and their Jacobians. Including querying collision features (whether and which objects are in collision).
-1. [IK:](docs/3-IK-optimization.ipynb) The simplest use of KOMO is for inverse kinematics - learn how to add features to an optimization problem
-1. [KOMO:](docs/4-path-optimization.ipynb) Proper path optimization examples
-1. [CGO:](docs/5-cgo-optimization.ipynb) KOMO can also used in "dense" mode, where it optimize as constraint graph
-1. [Skeletons:](docs/6-KOMO-skeleton.ipynb) Instead of specifying features low-level, you can specify a skeleton and query a pre-defined bound for that skeleton (path, or sequence). This is kind of a higher level language to set objectives. (But not as general as low-level features. You can mix both.)
-1. [Robot Models:](docs/9-robotModels.ipynb) Some info on which scene/robot models are available and how to convert from URDF
-1. [LGP:](docs/lgp1-pickAndPlace.ipynb) The first full LGP demo - for now only for pickAndPlace
-
-## Cpp references
-
-Check the [cpp/](cpp/) path
+* [Python examples](docs/)
+* [A few cpp examples](cpp/)
 
 ## Older/messy docs
 

@@ -408,7 +408,7 @@ int main(int argc,char** argv){
 //  test_skeleton();
 
 //  test_skeleton2();
-  test_lgp();
+//  test_lgp();
 
 //  test_realGrasp();
 

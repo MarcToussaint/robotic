@@ -9,9 +9,9 @@ build: $(DEPEND:%=inPath_makeLib/%)
 bin:
 	+make -C rai bin
 
-initUbuntuPackages: $(DEPEND:%=inPath_installUbuntu/%)
+installUbuntuAll: $(DEPEND:%=inPath_installUbuntu/%)
 
-printUbuntu: $(DEPEND:%=inPath_printUbuntuPackages/%) printUbuntuPackages
+printUbuntuAll: $(DEPEND:%=inPath_printUbuntu/%) printUbuntu
 
 clean: $(DEPEND:%=inPath_clean/%)
 
