@@ -8,6 +8,8 @@
 //#include <Kin/TM_default.h>
 //#include <Kin/TM_linTrans.h>
 #include <LGP/bounds.h>
+#include <Kin/kin_bullet.h>
+#include <Kin/kin_physx.h>
 
 #include <Operate/path.h>
 
@@ -16,19 +18,17 @@
 
 //===========================================================================
 
-#if 0
-
 void test(){
 
-  auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
+  auto C = ry::Config();
+  auto D = KinViewer(C); //K.view();
 
-  K.set()->addFile("../rai-robotModels/pr2/pr2.g");
-  K.set()->addFile("kitchen.g");
-  cout <<"joint names: " << K.get()->getJointNames() <<endl;
-  cout <<"frame names: " << K.get()->getFrameNames() <<endl;
+  C.set()->addFile("../rai-robotModels/pr2/pr2.g");
+  C.set()->addFile("kitchen.g");
+  cout <<"joint names: " << C.get()->getJointNames() <<endl;
+  cout <<"frame names: " << C.get()->getFrameNames() <<endl;
 
-  auto q = K.get()->getJointState();
+  auto q = C.get()->getJointState();
 
   //  K.editorFile("../rai-robotModels/baxter/baxter.g");
 
@@ -53,38 +53,38 @@ void test(){
 //  K.addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5");
 //  auto C = K.camera("camera");
 
-  K.set()->addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(.8 .8 1.5)>" );
+  C.set()->addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(.8 .8 1.5)>" );
 
-  K.set()->addFrame("hand", "pr2L", "shape:ssBox size:[.3 .2 .1 .01] color:[1 1 0] Q:<t(0 0 0)>" );
+  C.set()->addFrame("hand", "pr2L", "shape:ssBox size:[.3 .2 .1 .01] color:[1 1 0] Q:<t(0 0 0)>" );
 
   {
-    auto komo = ry::RyKOMO(K,0);
-    komo.addObjective2({}, OT_eq, FS_positionDiff, {"pr2L", "ball"});
+    auto komo = ry::RyKOMO(C,0);
+    komo.komo->addObjective({}, OT_eq, FS_positionDiff, {"pr2L", "ball"});
 //    komo.addObjectives2( { "feature:[eq posDiff pr2L ball]" } );
-    komo.optimize();
-    komo.getConfiguration(0);
+    komo.komo->optimize();
+    komo.komo->getConfiguration(0);
     rai::wait();
 
-    komo.clearObjectives();
-    komo.addObjective2({}, OT_eq, FS_positionDiff, {"pr2L", "ball"}, {}, {.1,.1,.1});
-    komo.optimize();
-    komo.getConfiguration(0);
+    komo.komo->clearObjectives();
+    komo.komo->addObjective({}, OT_eq, FS_positionDiff, {"pr2L", "ball"}, {}, {.1,.1,.1});
+    komo.komo->optimize();
+    komo.komo->getConfiguration(0);
     rai::wait();
   }
 
-  K.set()->setJointState(q);
+  C.set()->setJointState(q);
   {
-    auto komo = ry::RyKOMO(K, 1., 20, 5.);
+    auto komo = ry::RyKOMO(C, 1., 20, 5., false);
 //    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
 //                          "time:[1.], feature:[eq qRobot], order:1",
 //                        } );
-    komo.addObjective({1.}, OT_eq, FS_positionDiff, {"pr2L", "ball"});
-    komo.addObjective({1.}, OT_eq, FS_qItself, {}, {}, {}, 1); //zero q-velocity at goal
+    komo.komo->addObjective({1.}, OT_eq, FS_positionDiff, {"pr2L", "ball"});
+    komo.komo->addObjective({1.}, OT_eq, FS_qItself, {}, {}, {}, 1); //zero q-velocity at goal
 
-    komo.optimize();
+    komo.komo->optimize();
 
     for(int t=-1;t<20;t++){
-      komo.getConfiguration(t);
+      komo.komo->getConfiguration(t);
       rai::wait();
     }
   }
@@ -96,19 +96,19 @@ void test(){
 
 void test_camera(){
 
-  auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
+  auto C = ry::Config();
+  auto D = KinViewer(C); //K.view();
   rai::wait();
 
-  K.set()->addFile("../rai-robotModels/pr2/pr2.g");
-  K.set()->addFile("kitchen.g");
+  C.set()->addFile("../rai-robotModels/pr2/pr2.g");
+  C.set()->addFile("kitchen.g");
   rai::wait();
 
-  K.set()->addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5 width:300 height:200");
-  auto C = KinViewer(K, -1., "camera"); //K.camera("camera");
+  C.set()->addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5 width:300 height:200");
+  auto V = KinViewer(C, -1., "camera"); //K.camera("camera");
   rai::wait();
 
-  K.set()->setJointState({1.}, {"head_pan_joint"});
+  C.set()->setJointState({1.}, {"head_pan_joint"});
   rai::wait();
 
 }
@@ -116,27 +116,26 @@ void test_camera(){
 //===========================================================================
 
 void test_constraints(){
-  auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
-  K.set()->addFile("../rai-robotModels/pr2/pr2.g");
-  K.set()->addFile("../test/kitchen.g");
-  K.set()->addObject("goal", rai::ST_sphere, {.1}, {.5, 1., 1.});
-  K.set()->setFrameState({1,1,1,1,0,0,0}, {"goal"});
+  auto C = ry::Config();
+  auto D = KinViewer(C); //K.view();
+  C.set()->addFile("../rai-robotModels/pr2/pr2.g");
+  C.set()->addFile("../test/kitchen.g");
+  C.set()->addObject("goal", NULL, rai::ST_sphere, {.1}, {.5, 1., 1.}, {1.,1.,1.});
   rai::wait();
 }
 
 //===========================================================================
 
 void test_pickAndPlace(){
-  auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
+  auto C = ry::Config();
+  auto D = KinViewer(C); //K.view();
 
-  K.set()->addFile("../rai-robotModels/pr2/pr2.g");
-  K.set()->addFile("kitchen.g");
+  C.set()->addFile("../rai-robotModels/pr2/pr2.g");
+  C.set()->addFile("kitchen.g");
 
-  K.set()->addFrame("item1", "sink1", "type:ssBox Q:<t(-.1 -.1 .52)> size:[.1 .1 .25 .02] color:[1. 0. 0.], contact" );
-  K.set()->addFrame("item2", "sink1", "type:ssBox Q:<t(.1 .1 .52)> size:[.1 .1 .25 .02] color:[1. 1. 0.], contact" );
-  K.set()->addFrame("tray", "stove1", "type:ssBox Q:<t(.0 .0 .42)> size:[.2 .2 .05 .02] color:[0. 1. 0.], contact" );
+  C.set()->addObject("item1", "sink1", rai::ST_ssBox, {.1, .1, .25, .02}, {1., 0., 0.}, {-.1, -.1, .52});
+  C.set()->addObject("item2", "sink1", rai::ST_ssBox, {.1, .1, .25, .02}, {1., 1., 0.}, {.1, .1, .52});
+  C.set()->addObject("tray", "stove1", rai::ST_ssBox, {.2, .2, .05, .02}, {0., 1., 0.}, {.0, .0, .42});
 
   auto obj1 = "item2";
   auto obj2 = "item1";
@@ -144,7 +143,7 @@ void test_pickAndPlace(){
   auto arm = "pr2L";
   auto table = "_12";
 
-  KOMO komo(K.get());
+  KOMO komo(C.get());
   komo.setDiscreteOpt(6);
 
   komo.activateCollisions(obj1, obj2);
@@ -180,20 +179,20 @@ void test_pickAndPlace(){
 //===========================================================================
 
 void test_path(){
-  auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
+  auto C = ry::Config();
+  auto D = KinViewer(C); //K.view();
 
-  K.set()->addFile("../rai-robotModels/pr2/pr2.g");
-  K.set()->addFile("kitchen.g");
+  C.set()->addFile("../rai-robotModels/pr2/pr2.g");
+  C.set()->addFile("kitchen.g");
 
-  K.set()->addFrame("item1", "sink1", "type:ssBox Q:<t(-.1 -.1 .52)> size:[.1 .1 .25 .02] color:[1. 0. 0.], contact" );
-  K.set()->addFrame("item2", "sink1", "type:ssBox Q:<t(.1 .1 .52)> size:[.1 .1 .25 .02] color:[1. 1. 0.], contact" );
-  K.set()->addFrame("tray", "stove1", "type:ssBox Q:<t(.0 .0 .42)> size:[.2 .2 .05 .02] color:[0. 1. 0.], contact" );
+  C.set()->addObject("item1", "sink1", rai::ST_ssBox, {.1, .1, .25, .02}, {1., 0., 0.}, {-.1, -.1, .52});
+  C.set()->addObject("item2", "sink1", rai::ST_ssBox, {.1, .1, .25, .02}, {1., 1., 0.}, {.1, .1, .52});
+  C.set()->addObject("tray", "stove1", rai::ST_ssBox, {.2, .2, .05, .02}, {0., 1., 0.}, {.0, .0, .42});
 
   auto obj1 = "item1";
   auto arm = "pr2R";
 
-  KOMO komo(K.get());
+  KOMO komo(C.get());
   komo.setPathOpt(1.,20, 10.);
 
   komo.addObjective({}, OT_sos, FS_transAccelerations, {}, {1.});
@@ -211,16 +210,15 @@ void test_path(){
 }
 
 //===========================================================================
-#endif
 
 void test_skeleton(){
 
-  auto K = ry::Config();
-  auto D = KinViewer(K); //K.view();
+  auto C = ry::Config();
+  auto D = KinViewer(C); //K.view();
 
-  K.set()->addFile("lgp-example.g");
+  C.set()->addFile("lgp-example.g");
 
-  auto komo = ry::RyKOMO(K, 1., 20, 5.);
+  auto komo = ry::RyKOMO(C, 1., 20, 5., false);
 
   //we're creating the same skeleton that'd be created by the decision sequence
   //(grasp baxterR stick) (handover baxterR stick baxterL) (hitSlide stickTip redBall table1) (graspSlide baxterR redBall table1)
@@ -347,9 +345,9 @@ void test_realGrasp(){
   K.set()->addFile("../rai-robotModels/pr2/pr2.g");
   K.set()->addFile("kitchen.g");
 
-  K.set()->addFrame("item1", "sink1", "type:ssBox Q:<t(-.1 -.1 .52)> size:[.1 .1 .25 .02] color:[1. 0. 0.], contact, joint:rigid" );
-  K.set()->addFrame("item2", "sink1", "type:ssBox Q:<t(.1 .1 .52)> size:[.1 .1 .25 .02] color:[1. 1. 0.], contact" );
-  K.set()->addFrame("tray", "stove1", "type:ssBox Q:<t(.0 .0 .42)> size:[.2 .2 .05 .02] color:[0. 1. 0.], contact" );
+  C.set()->addObject("item1", "sink1", rai::ST_ssBox, {.1, .1, .25, .02}, {1., 0., 0.}, {-.1, -.1, .52});
+  C.set()->addObject("item2", "sink1", rai::ST_ssBox, {.1, .1, .25, .02}, {1., 1., 0.}, {.1, .1, .52});
+  C.set()->addObject("tray", "stove1", rai::ST_ssBox, {.2, .2, .05, .02}, {0., 1., 0.}, {.0, .0, .42});
 
   RobotIO R(K.get(), ROB_sim);
 
@@ -396,6 +394,52 @@ void test_realGrasp(){
 
 //===========================================================================
 
+void test_bullet(){
+
+  auto C = ry::Config();
+  auto D = KinViewer(C);
+
+  C.set()->addFrame("world");
+  C.set()->addObject("block", NULL, rai::ST_ssBox, {.2,.3,.5,.02}, {1,0,0}, {.0,.0,.5});
+  auto *finger = C.set()->addObject("finger", "world", rai::ST_ssBox, {.3, .1, .1, .02}, {1.,1.,1.,.3}, {1., 0., .45});
+
+  rai::wait();
+
+  auto B = PhysXInterface(C.get());
+  arr x = finger->getPosition();
+  arr V,X;
+
+  for(int i=0;i<100;i++){
+    x(0) -= .01;
+    finger->setPosition(x);
+    B.pushKinematicStates(C.get()->frames);
+    B.step();
+    B.pullDynamicStates(C.set()->frames, V);
+
+    rai::wait(0.01);
+  }
+
+  X = C.get()->getFrameState();
+
+  for(uint k=0;k<3;k++){
+    C.set()->setFrameState(X);
+    x = finger->getPosition();
+    B.pushFullState(C.get()->frames, V);
+
+    for(int i=0;i<100;i++){
+      x(0) -= .01;
+      finger->setPosition(x);
+      B.pushKinematicStates(C.get()->frames);
+      B.step();
+      B.pullDynamicStates(C.set()->frames, V);
+
+      rai::wait(0.01);
+    }
+  }
+}
+
+//===========================================================================
+
 int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
@@ -411,6 +455,8 @@ int main(int argc,char** argv){
 //  test_lgp();
 
 //  test_realGrasp();
+
+  test_bullet();
 
   return 0;
 }
