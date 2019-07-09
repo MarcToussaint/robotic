@@ -91,7 +91,7 @@ void testBounds(){
   cout <<"Node Info:\n" <<node->getInfo() <<endl;
 
   auto S = node->getSkeleton();
-  writeSkeleton(S,getSwitchesFromSkeleton(S));
+  writeSkeleton(cout, S, getSwitchesFromSkeleton(S));
 
 //  node = node->parent->parent;
 //  node->computeEndKinematics();
@@ -115,10 +115,10 @@ void testBounds(){
 
 int MAIN(int argc,char **argv){
   rai::initCmdLine(argc, argv);
-  rnd.clockSeed();
+  //rnd.clockSeed();
 
-//  solve();
-  testBounds();
+  solve();
+  //testBounds();
 
   return 0;
 }
