@@ -12,8 +12,8 @@
 OPTIM = fast_debug
 FCL = 0
 ODE = 0
-#PHYSX = 0
-#BULLET = 0
+PHYSX = 0
+BULLET = 0
 G4 = 0
 PCL = 0
 OPENCV = 0

@@ -16,10 +16,33 @@
 #include <ry/ry.h>
 #include <Operate/robotio.h>
 
+void miniTest(){
+  rai::Configuration C;
+  C.addFile("../rai-robotModels/pr2/pr2.g");
+  C.addFile("kitchen.g");
+  C.watch(true);
+
+  arr X0 = C.getFrameState();
+  arr X1 = X0 + .1;
+
+  cout <<X1[0] <<endl;
+
+  C.setFrameState(X1);
+  C.watch(true);
+
+  arr X2 = C.getFrameState();
+
+  cout <<X2[0] <<endl;
+  cout <<X1[0] - X2[0] <<endl;
+
+  C.setFrameState(X0);
+  C.watch(true);
+}
+
+
 //===========================================================================
 
 void test(){
-
   auto C = ry::Config();
   auto D = KinViewer(C); //K.view();
 
@@ -27,8 +50,58 @@ void test(){
   C.set()->addFile("kitchen.g");
   cout <<"joint names: " << C.get()->getJointNames() <<endl;
   cout <<"frame names: " << C.get()->getFrameNames() <<endl;
+  rai::wait();
+
+  auto ball = C.set()->addFrame("ball");
+  ball->setShape(rai::ST_sphere, {.1});
+  ball->setPosition({.8,.8,1.5});
+  ball->setColor({1,1,0});
+  C.set(); //forces the display to update...
+  rai::wait();
+
+  auto hand = C.set()->addFrame("hand", "pr2L");
+  hand->setShape(rai::ST_ssBox, {.2,.2,.1,.02});
+  hand->setRelativePosition({0,0,-.1});
+  hand->setColor({1,1,0});
+  C.set();
+  rai::wait();
+
+  auto q0 = C.get()->getJointState();
+  cout <<"joint names: " <<C.get()->getJointNames() <<endl;
+  cout <<"joint state: " <<q0 <<endl;
+  rai::wait();
+
+  q0(2) = q0(2) + 1.;
+  C.set()->setJointState(q0);
+  rai::wait();
+
+  FILE("z.kin1") <<C.get()() <<endl;
+
+  auto X0 = C.get()->getFrameState();
+  cout <<"frame state: " <<X0 <<endl;
+  rai::wait();
+
+  auto X = X0 + .1;
+  C.set()->setFrameState(X);
+  auto X2 = C.get()->getFrameState();
+  cout <<X - X2 <<endl;
+  rai::wait();
 
   auto q = C.get()->getJointState();
+  cout <<"q: " <<q <<endl;
+  C.set()->setJointState(q);
+  rai::wait();
+
+  C.set()->setFrameState(X0);
+  rai::wait();
+
+  FILE("z.kin2") <<C.get()() <<endl;
+
+  q = C.get()->getJointState();
+  cout <<"q0: " <<q0 <<endl;
+  cout <<"q: " <<q <<endl;
+  C.set()->setJointState(q);
+  rai::wait();
 
   //  K.editorFile("../rai-robotModels/baxter/baxter.g");
 
@@ -53,9 +126,6 @@ void test(){
 //  K.addFrame("camera", "head_tilt_link", "Q:<d(-90 1 0 0) d(180 0 0 1)> focalLength:.5");
 //  auto C = K.camera("camera");
 
-  C.set()->addFrame("ball", "", "shape:sphere size:[0 0 0 .1] color:[1 1 0] X:<t(.8 .8 1.5)>" );
-
-  C.set()->addFrame("hand", "pr2L", "shape:ssBox size:[.3 .2 .1 .01] color:[1 1 0] Q:<t(0 0 0)>" );
 
   {
     auto komo = ry::RyKOMO(C,0);
@@ -72,7 +142,7 @@ void test(){
     rai::wait();
   }
 
-  C.set()->setJointState(q);
+  C.set()->setJointState(q0);
   {
     auto komo = ry::RyKOMO(C, 1., 20, 5., false);
 //    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
@@ -110,7 +180,6 @@ void test_camera(){
 
   C.set()->setJointState({1.}, {"head_pan_joint"});
   rai::wait();
-
 }
 
 //===========================================================================
@@ -194,8 +263,9 @@ void test_path(){
 
   KOMO komo(C.get());
   komo.setPathOpt(1.,20, 10.);
+  komo.setSquaredQAccVelHoming();
 
-  komo.addObjective({}, OT_sos, FS_transAccelerations, {}, {1.});
+//  komo.addObjective({}, OT_sos, FS_transAccelerations, {}, {1.});
   komo.addObjective({}, OT_eq, FS_accumulatedCollisions);
   komo.addObjective({}, OT_ineq, FS_jointLimits);
   komo.addObjective({1.}, OT_eq, FS_distance, {arm, obj1});
@@ -204,6 +274,11 @@ void test_path(){
 
 
   komo.optimize();
+
+  Var<arr> path;
+  path.set() = komo.getPath_frames();
+  KinPoseViewer komoV(C, path, .1);
+  rai::wait();
 
   komo.displayPath();
   komo.displayTrajectory(1., true, false);
@@ -443,10 +518,11 @@ void test_bullet(){
 int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
+//  miniTest();
 //  test();
 //  test_camera();
 //  test_pickAndPlace();
-//  test_path();
+  test_path();
 //  test_constraints();
 
 //  test_skeleton();
@@ -456,7 +532,7 @@ int main(int argc,char** argv){
 
 //  test_realGrasp();
 
-  test_bullet();
+//  test_bullet();
 
   return 0;
 }

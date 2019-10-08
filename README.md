@@ -12,11 +12,19 @@ https://ipvs.informatik.uni-stuttgart.de/mlr/lgp/
 
 ## Quick Start
 
-This assumes a standard Ubuntu 16.04 machine.
+This assumes a standard Ubuntu 18.04 (or 16.04) machine.
 
 WE DIDN'T GET TO RUN THIS WITH ANACONDA PYTHON. I you have Anaconda
 installed, please remove it from the PATH in .bashrc. The setup below will
 install the standard Ubuntu python3 and jupyter notebook.
+
+```
+# install python3 and jupyter, if you haven't already
+sudo apt-get install python3 python3-pip
+pip3 install --user --upgrade pip
+pip3 install --user jupyter 
+```
+
 
 ```
 git clone git@github.com:MarcToussaint/rai-python.git
@@ -34,8 +42,6 @@ git submodule update
 make -j1 installUbuntuAll  # calls sudo apt-get install; you can always interrupt
 make -j4                     # builds libs and tests
 
-source setupPython.sh
-
 python3 -m pip install --upgrade pip
 python3 -m pip install jupyter
 
@@ -44,15 +50,16 @@ jupyter-notebook docs/ #perhaps start with 6-KOMO-skeleton
 
 Also test the cpp versions:
 ```
-cd cpp/pickAndPlace
+cd rai/test/LGP/pickAndPlace
 make
 ./x.exe
 ```
 
-To enable bullet, before you compile rai-python, first install bullet locally following
+To enable the PhysX or bullet physical enginges, before you compile rai-python, first install bullet locally following
 https://github.com/MarcToussaint/rai-maintenance/blob/master/help/localSourceInstalls.md
 Then, in 'rai-python/', call
 ```
+echo "PHYSX = 1" >> config.mk
 echo "BULLET = 1" >> config.mk
 ```
 Then compile.
@@ -70,7 +77,6 @@ This avoids a full make clean -- but if that doesn't work, hopefully `make clean
 ## Tutorials
 
 * [Python examples](docs/)
-* [A few cpp examples](cpp/)
 
 ## Older/messy docs
 
