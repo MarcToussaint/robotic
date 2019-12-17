@@ -10,6 +10,9 @@
 #include <LGP/bounds.h>
 #include <Kin/kin_bullet.h>
 #include <Kin/kin_physx.h>
+#include <Kin/kinViewer.h>
+#include <LGP/LGP_tree.h>
+#include <RosCom/rosCamera.h>
 
 #include <Operate/path.h>
 
@@ -129,14 +132,14 @@ void test(){
 
   {
     auto komo = ry::RyKOMO(C,0);
-    komo.komo->addObjective({}, OT_eq, FS_positionDiff, {"pr2L", "ball"});
+    komo.komo->addObjective({}, FS_positionDiff, {"pr2L", "ball"}, OT_eq);
 //    komo.addObjectives2( { "feature:[eq posDiff pr2L ball]" } );
     komo.komo->optimize();
     komo.komo->getConfiguration(0);
     rai::wait();
 
     komo.komo->clearObjectives();
-    komo.komo->addObjective({}, OT_eq, FS_positionDiff, {"pr2L", "ball"}, {}, {.1,.1,.1});
+    komo.komo->addObjective({}, FS_positionDiff, {"pr2L", "ball"}, OT_eq, {}, {.1,.1,.1});
     komo.komo->optimize();
     komo.komo->getConfiguration(0);
     rai::wait();
@@ -148,8 +151,8 @@ void test(){
 //    komo.addObjectives2( { "time:[1.], feature:[eq posDiff pr2L ball]",
 //                          "time:[1.], feature:[eq qRobot], order:1",
 //                        } );
-    komo.komo->addObjective({1.}, OT_eq, FS_positionDiff, {"pr2L", "ball"});
-    komo.komo->addObjective({1.}, OT_eq, FS_qItself, {}, {}, {}, 1); //zero q-velocity at goal
+    komo.komo->addObjective({1.}, FS_positionDiff, {"pr2L", "ball"}, OT_eq);
+    komo.komo->addObjective({1.}, FS_qItself, {}, OT_eq, {}, {}, 1); //zero q-velocity at goal
 
     komo.komo->optimize();
 
@@ -216,8 +219,8 @@ void test_pickAndPlace(){
   komo.setDiscreteOpt(6);
 
   komo.activateCollisions(obj1, obj2);
-  komo.addObjective({}, OT_eq, FS_accumulatedCollisions);
-  komo.addObjective({}, OT_ineq, FS_jointLimits);
+  komo.addObjective({}, FS_accumulatedCollisions, {}, OT_eq);
+  komo.addObjective({}, FS_jointLimits, {}, OT_ineq);
 
   komo.add_StableRelativePose({0, 1}, arm, obj1);
   komo.add_StableRelativePose({2, 3}, arm, obj2);
@@ -266,11 +269,11 @@ void test_path(){
   komo.setSquaredQAccVelHoming();
 
 //  komo.addObjective({}, OT_sos, FS_transAccelerations, {}, {1.});
-  komo.addObjective({}, OT_eq, FS_accumulatedCollisions);
-  komo.addObjective({}, OT_ineq, FS_jointLimits);
-  komo.addObjective({1.}, OT_eq, FS_distance, {arm, obj1});
-  komo.addObjective({.9,1.}, OT_sos, FS_positionDiff, {"endeffWorkspace", obj1}, {1e0});
-  komo.addObjective({1.}, OT_eq, FS_qItself, {}, {}, {}, 1);
+  komo.addObjective({}, FS_accumulatedCollisions, {}, OT_eq);
+  komo.addObjective({}, FS_jointLimits, {}, OT_ineq);
+  komo.addObjective({1.}, FS_distance, {arm, obj1}, OT_eq);
+  komo.addObjective({.9,1.}, FS_positionDiff, {"endeffWorkspace", obj1}, OT_sos, {1e0});
+  komo.addObjective({1.}, FS_qItself, {}, OT_eq, {}, {}, 1);
 
 
   komo.optimize();
@@ -357,7 +360,6 @@ void test_lgp(){
 
 //===========================================================================
 
-#if 0
 void test_skeleton2(){
 
   auto K = ry::Config();
@@ -365,15 +367,15 @@ void test_skeleton2(){
 
   K.set()->addFile("boxProblem.g");
 
-  auto komo = ry::RyKOMO(K, 1., 50, 2.);
+  auto komo = ry::RyKOMO(K, 1., 20, 5., false);
 
   //-- this is all yet 'magic' -> clearer interface
   komo.komo->setTimeOptimization();
 //  komo.komo->deactivateCollisions({{"boxBo", "boxLe"}, {"boxBo", "boxBa"}, {"boxLe", "boxBa"}});
   komo.komo->world.makeObjectsFree({"ballR"});
-  komo.komo->addObjective({.05, -1.}, OT_eq, FS_physics, {"ballR"}, {1e-1});
-  komo.komo->addObjective({.05, -1.}, OT_ineq, FS_energy, {}, {1e-1});
-  komo.komo->addObjective({}, OT_sos, FS_accumulatedCollisions, {}, {1.});
+  komo.komo->addObjective({.05, -1.}, FS_physics, {"ballR"}, OT_eq, {1e-1});
+  komo.komo->addObjective({.05, -1.}, FS_energy, {}, OT_ineq, {1e-1});
+  komo.komo->addObjective({}, FS_accumulatedCollisions, {}, OT_sos, {1.});
 
   //-- this is the skeleton
   Skeleton S;
@@ -393,6 +395,7 @@ void test_skeleton2(){
 
 //===========================================================================
 
+#if 0
 std::pair<arr,arr> computePath(ry::Config& K, const arr& target_q, const StringA& target_joints, const char* endeff, double up, double down){
   KOMO komo;
   komo.setModel(K.get(), true);
@@ -519,10 +522,10 @@ int main(int argc,char** argv){
   rai::initCmdLine(argc,argv);
 
 //  miniTest();
-//  test();
+  test();
 //  test_camera();
 //  test_pickAndPlace();
-  test_path();
+//  test_path();
 //  test_constraints();
 
 //  test_skeleton();
