@@ -1,4 +1,4 @@
-/config.mk
+/build
 
 %% compile temporaries
 *.o
