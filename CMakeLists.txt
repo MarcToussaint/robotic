@@ -2,25 +2,28 @@ cmake_minimum_required(VERSION 3.4)
 
 project(RaiPython)
 
+add_subdirectory(pybind11)
+
 add_compile_options(
-  -O3 -g -Wall -fPIC -std=c++14 -Wno-terminate
+  -O3 -g -Wall -fPIC -std=c++14 -Wno-terminate -Wno-pragmas
   )
 
 add_definitions(
   -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
-  -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD -DRAI_GL
-  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION
+  -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
+  -DRAI_GL
+  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG
   -DRAI_SWIFT -DRAI_GJK -DRAI_FCL -DRAI_CCD
-  -DRAI_PYBIND
+  #-DRAI_OPENCV
+  -DRAI_PYBIND -DRAI_BIND_KOMO
   #-DRAI_PHYSX -D_DEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX #physx
-  #-DRAI_BULLET -DBT_USE_DOUBLE_PRECISION #bullet
+  #-DRAI_BULLET #bullet
   )
-
-add_subdirectory(pybind11)
 
 include_directories(
   rai/rai
   /usr/include/eigen3
+  #${BULLET_INCLUDE_DIRS}
   #$ENV{HOME}/opt/physx3.4/include $ENV{HOME}/opt/physx3.4/include/physx
   #$ENV{HOME}/opt/include/bullet/
   )
@@ -61,15 +64,18 @@ add_library(rai SHARED
   ${SRC_KOMO}
   ${SRC_Logic}
   ${SRC_LGP}
-  ${SRC_RosCom}
+  #${SRC_RosCom}
   ${SRC_Perception}
   ${SRC_Control}
-  ${SRC_Operate}
-  #  ${SRC_ry}
+  #${SRC_Operate}
+  #${SRC_ry}
   )
 
 target_link_libraries(rai
-  jsoncpp lapack blas assimp fcl ann glfw GLEW glut GLU GL X11 qhull pthread rt
+  jsoncpp lapack blas pthread rt X11
+  assimp fcl ann glfw GLEW glut GLU GL png qhull
+  #${OpenCV_LIBS}
+  #${BULLET_LIBRARIES}
   #PhysX3Extensions PhysX3_x64 PhysX3Cooking_x64 PhysX3Common_x64 PxFoundation_x64
   #BulletSoftBody BulletDynamics BulletCollision LinearMath 
   )

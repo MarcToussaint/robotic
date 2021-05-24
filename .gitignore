@@ -1,6 +1,6 @@
-/build
 
 %% compile temporaries
+/build
 *.o
 *.a
 *.so
@@ -38,7 +38,7 @@ tags
 # PYTHON
 *.pyc
 _*.py
-
+.ipynb_checkpoints
 
 # EXECUTION
 core

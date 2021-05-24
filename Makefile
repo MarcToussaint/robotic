@@ -2,11 +2,11 @@ BASE = rai
 
 target: build bin
 
-DEPEND = Core Algo Geo Plot Kin Gui Optim KOMO LGP RosCom Operate Perception ry
+DEPEND = Core Algo Geo Plot Kin Gui Optim KOMO ry
 
 build: $(DEPEND:%=inPath_makeLib/%)
 
-bin:
+bin: force
 	+make -C rai bin
 
 installUbuntuAll: $(DEPEND:%=inPath_installUbuntu/%)
