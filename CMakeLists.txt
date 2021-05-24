@@ -17,13 +17,13 @@ add_definitions(
   #-DRAI_OPENCV
   -DRAI_PYBIND -DRAI_BIND_KOMO
   #-DRAI_PHYSX -D_DEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX #physx
-  #-DRAI_BULLET #bullet
+  -DRAI_BULLET #bullet
   )
 
 include_directories(
   rai/rai
   /usr/include/eigen3
-  #${BULLET_INCLUDE_DIRS}
+  ${BULLET_INCLUDE_DIRS}
   #$ENV{HOME}/opt/physx3.4/include $ENV{HOME}/opt/physx3.4/include/physx
   #$ENV{HOME}/opt/include/bullet/
   )
@@ -75,9 +75,8 @@ target_link_libraries(rai
   jsoncpp lapack blas pthread rt X11
   assimp fcl ann glfw GLEW glut GLU GL png qhull
   #${OpenCV_LIBS}
-  #${BULLET_LIBRARIES}
+  ${BULLET_LIBRARIES}
   #PhysX3Extensions PhysX3_x64 PhysX3Cooking_x64 PhysX3Common_x64 PxFoundation_x64
-  #BulletSoftBody BulletDynamics BulletCollision LinearMath 
   )
 
 pybind11_add_module(libry SHARED
