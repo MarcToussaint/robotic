@@ -1,6 +1,17 @@
 # python bindings to rai
 
-This repo exposes some functionality of the RAI code in python bindings. See https://github.com/MarcToussaint/rai for a README of the RAI code.
+This repo exposes some functionality of the RAI code in python
+bindings. See https://github.com/MarcToussaint/rai for a README of the
+RAI code.
+
+## Documentation
+
+Although very incomplete, the best intro to the code is found as part
+of the
+[robotics-course documentation](https://marctoussaint.github.io/robotics-course/). Jupyter
+notebooks that demonstrate the use are found in the
+[rai tests](https://github.com/MarcToussaint/rai/tree/master/test/ry)
+and in [tutorials/](tree/master/tutorials/).
 
 ## Installation
 
@@ -44,4 +55,8 @@ make runTests
 
 ## Docker
 
-The install was tested in the [mini20 docker](https://github.com/MarcToussaint/rai-maintenance/tree/master/docker/mini20). There is also a 
+The install was tested in the
+[mini20 docker](https://github.com/MarcToussaint/rai-maintenance/tree/master/docker/mini20). There
+is also a
+[full20](https://github.com/MarcToussaint/rai-maintenance/tree/master/docker/full20)
+docker that contains a compiled rai version.
