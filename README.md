@@ -1,10 +1,12 @@
 # python bindings to rai
 
-This repo exposes some functionality of the RAI code in python
-bindings. See https://github.com/MarcToussaint/rai for a README of the
-RAI code.
-
-The python bindings and code are already defined within rai. This repo adds a minimalistic cmake file to exemplify how to build the bindings, and some examples in tutorials (that have large overlap with the tests in rai/test/ry).
+This repo is an example of how you can setup your own repository with
+[rai](https://github.com/MarcToussaint/rai) as a submodule, cmake
+build, and exposing some functionality of the RAI code in python
+bindings. The python bindings are already defined within rai. This
+repo adds a minimalistic cmake file to exemplify how to build the
+bindings, and some examples in tutorials (that have large overlap with
+the tests in rai/test/ry).
 
 
 ## Documentation
@@ -26,13 +28,13 @@ git clone --recursive https://github.com/MarcToussaint/rai-python.git
 cd rai-python
 ```
 
-* Install all necessary Ubuntu packages. The following should do this automatically; if you don't like this, call `make -j1 printUbuntuAll` to see which code components depend on which Ubuntu packages, and install by hand.
+* Install Ubuntu packages. The following should do this automatically; if you don't like this, call `make -j1 printUbuntuAll` to see which code components depend on which Ubuntu packages, and install by hand.
 ```
 sudo apt-get update
 make -j1 installUbuntuAll  # calls sudo apt-get install; you can always interrupt
 ```
 
-* Python installs, including pybind:
+* Install Python packages, including pybind:
 ```
 echo 'export PATH="${PATH}:$HOME/.local/bin"' >> ~/.bashrc   #add this to your .bashrc, if not done already
 sudo apt-get install python3 python3-dev python3-numpy python3-pip python3-distutils
