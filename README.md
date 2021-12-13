@@ -4,6 +4,9 @@ This repo exposes some functionality of the RAI code in python
 bindings. See https://github.com/MarcToussaint/rai for a README of the
 RAI code.
 
+The python bindings and code are already defined within rai. This repo adds a minimalistic cmake file to exemplify how to build the bindings, and some examples in tutorials (that have large overlap with the tests in rai/test/ry).
+
+
 ## Documentation
 
 Although very incomplete, the best intro to the code is found as part
@@ -11,7 +14,7 @@ of the
 [robotics-course documentation](https://marctoussaint.github.io/robotics-course/). Jupyter
 notebooks that demonstrate the use are found in the
 [rai tests](https://github.com/MarcToussaint/rai/tree/master/test/ry)
-and in [tutorials/](tree/master/tutorials/).
+and in [tutorials/](tutorials/).
 
 ## Installation
 
@@ -22,29 +25,34 @@ This assumes a standard Ubuntu 18.04 (or 16.04) machine.
 git clone --recursive https://github.com/MarcToussaint/rai-python.git
 cd rai-python
 ```
+
 * Install all necessary Ubuntu packages. The following should do this automatically; if you don't like this, call `make -j1 printUbuntuAll` to see which code components depend on which Ubuntu packages, and install by hand.
 ```
 sudo apt-get update
 make -j1 installUbuntuAll  # calls sudo apt-get install; you can always interrupt
 ```
-* Compile using cmake. (The non-cmake build system allows more configuration in config.mk -- but not recommended for external users.)
+
+* Python installs, including pybind:
+```
+echo 'export PATH="${PATH}:$HOME/.local/bin"' >> ~/.bashrc   #add this to your .bashrc, if not done already
+sudo apt-get install python3 python3-dev python3-numpy python3-pip python3-distutils
+pip3 install --user --upgrade pip
+pip3 install --user jupyter nbconvert matplotlib pybind11
+```
+
+* Compile using cmake. (Use `ccmake` to configure options, such as linking to bullet.)
 ```
 mkdir build
 cd build
 cmake ..
 make -j $(command nproc)
 ```
-* Basic python installs - you might have installed this already:
-```
-# export PATH="${PATH}:$HOME/.local/bin"   #add this to your .bashrc, if not done already
-sudo apt-get install python3 python3-pip
-pip3 install --user --upgrade pip
-pip3 install --user jupyter nbconvert matplotlib
-```
+
 * Test a first notebook, then checkout all notebooks in `tutorials/` and `rai/test/ry`
 ```
 jupyter-notebook tutorials/1-basics.ipynb
 ```
+
 * If you like, you can also run the C++-library tests:
 ```
 cd rai
