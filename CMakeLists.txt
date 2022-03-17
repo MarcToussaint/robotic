@@ -9,7 +9,7 @@ option(USE_BULLET "link to bullet" OFF)
 option(USE_OPENCV "link to opencv" OFF)
 
 add_compile_options(
-  -O3 -g -Wall -fPIC -std=c++14 -Wno-terminate -Wno-pragmas
+  -O3 -g -Wall -Wpedantic -fPIC -std=c++14 -Wno-terminate
   )
 
 ################################################################################
