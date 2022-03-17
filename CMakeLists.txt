@@ -79,8 +79,8 @@ target_link_libraries(rai
 
 ################################################################################
 
-find_package (Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIRS})
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+target_link_libraries (rai Eigen3::Eigen)
 
 if(USE_BULLET)
   find_package(PkgConfig)
