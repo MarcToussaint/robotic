@@ -26,7 +26,6 @@ add_definitions(
 
 include_directories(
   rai/rai
-  /usr/include/eigen3
   $ENV{HOME}/opt/include
   )
 
@@ -79,6 +78,9 @@ target_link_libraries(rai
   )
 
 ################################################################################
+
+find_package (Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIRS})
 
 if(USE_BULLET)
   find_package(PkgConfig)
