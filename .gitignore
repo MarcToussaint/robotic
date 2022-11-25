@@ -1,3 +1,6 @@
+CMakeLists.txt
+dist/
+robotic.egg-info/
 
 %% compile temporaries
 /build
@@ -37,7 +40,6 @@ tags
 
 # PYTHON
 *.pyc
-_*.py
 .ipynb_checkpoints
 
 # EXECUTION
