@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
 option(USE_PYBIND "build python bindings" ON)
 option(USE_BULLET "link to bullet" OFF)
 option(USE_OPENCV "link to opencv" OFF)
+option(USE_REALSENSE "link to realsense2 driver library" OFF)
+option(USE_LIBFRANKA "link to libfranka" OFF)
+#set(PYBIND11_PYTHON_VERSION 3.7 CACHE STRING "python version")
 
 add_compile_options(
   -O3 -g -Wall -Wpedantic -fPIC -std=c++14 -Wno-terminate
@@ -19,7 +22,7 @@ add_definitions(
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
   -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
-  -DRAI_SWIFT -DRAI_GJK -DRAI_FCL -DRAI_CCD
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL #-DRAI_SWIFT
   )
 
 ################################################################################
@@ -33,43 +36,22 @@ link_directories(
   $ENV{HOME}/opt/lib
   )
 
-file(GLOB SRC_Core rai/rai/Core/*.cpp)
-file(GLOB SRC_Optim rai/rai/Optim/*.cpp)
-file(GLOB SRC_Geo rai/rai/Geo/*.cpp)
 file(GLOB SRC_GeoGJK rai/rai/Geo/GJK/*.c)
 file(GLOB SRC_GeoPly rai/rai/Geo/ply/*.c)
-file(GLOB SRC_Algo rai/rai/Algo/*.cpp)
-file(GLOB SRC_Plot rai/rai/Plot/*.cpp)
-file(GLOB SRC_Gui rai/rai/Gui/*.cpp)
-file(GLOB SRC_Kin rai/rai/Kin/*.cpp)
-file(GLOB SRC_KinSwift rai/rai/Kin/SWIFT/*.cpp)
-file(GLOB SRC_KOMO rai/rai/KOMO/*.cpp)
-file(GLOB SRC_Logic rai/rai/Logic/*.cpp)
-file(GLOB SRC_LGP rai/rai/LGP/*.cpp)
-file(GLOB SRC_RosCom rai/rai/RosCom/*.cpp)
-file(GLOB SRC_Perception rai/rai/Perception/*.cpp)
-file(GLOB SRC_Control rai/rai/Control/*.cpp)
-file(GLOB SRC_Operate rai/rai/Operate/*.cpp)
-file(GLOB SRC_ry rai/rai/ry/*.cpp)
+file(GLOB SRC_GeoLewiner rai/rai/Geo/Lewiner/*.cpp)
 
 add_library(rai SHARED
-  ${SRC_Core}
-  ${SRC_Optim}
-  ${SRC_Geo}
+  rai/rai/Core/unity.cxx
+  rai/rai/Optim/unity.cxx
+  rai/rai/Geo/unity.cxx
   ${SRC_GeoGJK}
   ${SRC_GeoPly}
-  ${SRC_Algo}
-  ${SRC_Plot}
-  ${SRC_Gui}
-  ${SRC_Kin}
-  ${SRC_KinSwift}
-  ${SRC_KOMO}
-  ${SRC_Logic}
-  ${SRC_LGP}
-  #${SRC_RosCom}
-  ${SRC_Perception}
-  ${SRC_Control}
-  #${SRC_Operate}
+  ${SRC_GeoLewiner}
+  rai/rai/Algo/unity.cxx
+  rai/rai/Gui/unity.cxx
+  rai/rai/Kin/unity.cxx
+  rai/rai/KOMO/unity.cxx
+  rai/rai/Logic/unity.cxx
   )
 
 target_link_libraries(rai
@@ -89,17 +71,20 @@ if(USE_BULLET)
   add_definitions(-DRAI_BULLET)
   include_directories(${BULLET_INCLUDE_DIRS})
   target_link_libraries(rai ${BULLET_LIBRARIES})
+  message(STATUS "[rai] using bullet libs:" ${BULLET_LIBRARIES})
 endif()
 
 if(USE_OPENCV)
   find_package(OpenCV REQUIRED)
   add_definitions(-DRAI_OPENCV)
   target_link_libraries(rai ${OpenCV_LIBS})
+  message(STATUS "[rai] using OpenCV libs:" ${OpenCV_LIBS})
 endif()
 
 if(USE_REALSENSE)
   add_definitions(-DRAI_REALSENSE)
   target_link_libraries(rai realsense2)
+  message(STATUS "[rai] using realsense libs")
 endif()
 
 ################################################################################
@@ -110,17 +95,18 @@ if(USE_PYBIND)
     COMMAND bash "-c" "python3 -m pybind11 --cmakedir" 
     OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE pybind11_DIR
   )
+  message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR} )
+  
   find_package(pybind11)
   add_definitions(-DRAI_PYBIND)
 
   pybind11_add_module(libry SHARED
-    ${SRC_ry}
+    rai/rai/ry/unity.cxx
   )
 
   target_link_libraries(libry PRIVATE
     rai
   )
-
 endif()
 
 ################################################################################

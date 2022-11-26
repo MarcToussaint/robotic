@@ -1,9 +1,10 @@
 #/bin/sh
 
+rm -f CMakeLists.txt
 ln -s build_utils/CMakeLists-docker.txt CMakeLists.txt
-make -C rai cleanAll
-make -C rai unityAll
+make -C rai -j1 unityAll
 mkdir build
+
 cd build
 cmake -DPYBIND11_PYTHON_VERSION=3.7 ..
 make libry
@@ -27,5 +28,4 @@ for wheel in $(find dist -iname "*.whl") ; do
   mv $wheel $(echo $wheel | sed 's/-linux_/-manylinux2010_/')
 done
 
-twine upload dist/*.whl
-
+#twine upload dist/*.whl

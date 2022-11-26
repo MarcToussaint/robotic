@@ -1,4 +1,4 @@
-from . import libry
+from . import libry as ry
 
 from pathlib import Path
-libry.setRaiPath( str(Path.home()) + '/.local/rai-robotModels' )
+ry.setRaiPath( str(Path.home()) + '/.local/rai-robotModels' )

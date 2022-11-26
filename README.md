@@ -1,13 +1,7 @@
 # python bindings to rai
 
-This repo is an example of how you can setup your own repository with
-[rai](https://github.com/MarcToussaint/rai) as a submodule, cmake
-build, and exposing some functionality of the RAI code in python
-bindings. The python bindings are already defined within rai. This
-repo adds a minimalistic cmake file to exemplify how to build the
-bindings, and some examples in tutorials (that have large overlap with
-the tests in rai/test/ry).
-
+This repo builds python bindings to
+[rai](https://github.com/MarcToussaint/rai), including a Pypi wheel.
 
 ## Documentation
 
@@ -20,7 +14,7 @@ and in [tutorials/](tutorials/).
 
 ## Installation
 
-This assumes a standard Ubuntu 18.04 (or 16.04) machine.
+This assumes a standard Ubuntu 20.04 (or 18.04) machine.
 
 * Clone the repo:
 ```
@@ -31,10 +25,10 @@ cd rai-python
 * Install Ubuntu packages. The following should do this automatically; if you don't like this, call `make -j1 printUbuntuAll` to see which code components depend on which Ubuntu packages, and install by hand.
 ```
 sudo apt-get update
-make -j1 installUbuntuAll  # calls sudo apt-get install; you can always interrupt
+make -C rai -j1 installUbuntuAll  # calls sudo apt-get install; you can always interrupt
 ```
 
-* Install Python packages, including pybind:
+* Install python packages, including pybind:
 ```
 echo 'export PATH="${PATH}:$HOME/.local/bin"' >> ~/.bashrc   #add this to your .bashrc, if not done already
 sudo apt-get install python3 python3-dev python3-numpy python3-pip python3-distutils
@@ -44,6 +38,9 @@ pip3 install --user jupyter nbconvert matplotlib pybind11
 
 * Compile using cmake. (Use `ccmake` to configure options, such as linking to bullet.)
 ```
+ln -s build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
+make -C rai cleanAll
+make -C rai unityAll
 mkdir build
 cd build
 cmake ..
@@ -63,10 +60,33 @@ make runTests
 ```
 .. or call them individually: `cd rai/test/LGP/pickAndPlace; make; ./x.exe`
 
-## Docker
+## Building a wheel within a manylinux docker
 
-The install was tested in the
-[mini20 docker](https://github.com/MarcToussaint/rai-maintenance/tree/master/docker/mini20). There
-is also a
-[full20](https://github.com/MarcToussaint/rai-maintenance/tree/master/docker/full20)
-docker that contains a compiled rai version.
+* Build the docker
+```
+cd build_utils
+./build-docker.sh
+```
+
+* Run docker and compile wheels inside
+```
+./run-docker.sh
+## inside docker:
+cd local #this mounts rai-python/
+build_utils/build-wheel.sh
+exit
+```
+
+* Outside of docker, install locally with pip or push wheels to pypi
+```
+python3.7 -m pip install dist/robotic-*cp37*.whl --force-reinstall
+python3.10 -m pip install dist/robotic-*cp310*.whl --force-reinstall
+# or
+twine upload dist/*.whl
+```
+
+* After pip install, test in python
+```
+from robotic import ry
+ry.test.RndScene()
+```
