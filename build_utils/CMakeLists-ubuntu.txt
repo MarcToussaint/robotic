@@ -36,27 +36,40 @@ link_directories(
   $ENV{HOME}/opt/lib
   )
 
+file(GLOB SRC_Core rai/rai/Core/*.cpp)
+file(GLOB SRC_Optim rai/rai/Optim/*.cpp)
+file(GLOB SRC_Geo rai/rai/Geo/*.cpp)
 file(GLOB SRC_GeoGJK rai/rai/Geo/GJK/*.c)
 file(GLOB SRC_GeoPly rai/rai/Geo/ply/*.c)
 file(GLOB SRC_GeoLewiner rai/rai/Geo/Lewiner/*.cpp)
+file(GLOB SRC_Algo rai/rai/Algo/*.cpp)
+file(GLOB SRC_Gui rai/rai/Gui/*.cpp)
+file(GLOB SRC_Kin rai/rai/Kin/*.cpp)
+file(GLOB SRC_KinSwift rai/rai/Kin/SWIFT/*.cpp)
+file(GLOB SRC_KOMO rai/rai/KOMO/*.cpp)
+file(GLOB SRC_Logic rai/rai/Logic/*.cpp)
+file(GLOB SRC_LGP rai/rai/LGP/*.cpp)
+file(GLOB SRC_Perception rai/rai/Perception/*.cpp)
+file(GLOB SRC_Control rai/rai/Control/*.cpp)
+file(GLOB SRC_ry rai/rai/ry/*.cpp)
 
 add_library(rai SHARED
-  rai/rai/Core/unity.cxx
-  rai/rai/Optim/unity.cxx
-  rai/rai/Geo/unity.cxx
+  ${SRC_Core}
+  ${SRC_Optim}
+  ${SRC_Geo}
   ${SRC_GeoGJK}
   ${SRC_GeoPly}
   ${SRC_GeoLewiner}
-  rai/rai/Algo/unity.cxx
-  rai/rai/Gui/unity.cxx
-  rai/rai/Kin/unity.cxx
-  rai/rai/KOMO/unity.cxx
-  rai/rai/Logic/unity.cxx
+  ${SRC_Algo}
+  ${SRC_Gui}
+  ${SRC_Kin}
+  ${SRC_KOMO}
+  ${SRC_Logic}
   )
 
 target_link_libraries(rai
   jsoncpp lapack blas pthread rt X11
-  assimp fcl ann glfw GLEW glut GLU GL png qhull
+  assimp ccd fcl ann glfw GLEW glut GLU GL png qhull
   )
 
 ################################################################################
@@ -101,7 +114,7 @@ if(USE_PYBIND)
   add_definitions(-DRAI_PYBIND)
 
   pybind11_add_module(libry SHARED
-    rai/rai/ry/unity.cxx
+    ${SRC_ry}
   )
 
   target_link_libraries(libry PRIVATE
