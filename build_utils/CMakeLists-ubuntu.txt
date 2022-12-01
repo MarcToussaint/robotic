@@ -22,13 +22,14 @@ add_definitions(
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
   -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
-  -DRAI_GJK -DRAI_CCD -DRAI_FCL #-DRAI_SWIFT
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DFCL_STATIC_DEFINE #-DRAI_SWIFT 
   )
 
 ################################################################################
 
 include_directories(
   rai/rai
+  /usr/include/eigen3
   $ENV{HOME}/opt/include
   )
 
@@ -74,8 +75,8 @@ target_link_libraries(rai
 
 ################################################################################
 
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-target_link_libraries (rai Eigen3::Eigen)
+#find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+#target_link_libraries (rai Eigen3::Eigen)
 
 if(USE_BULLET)
   find_package(PkgConfig)
@@ -104,8 +105,9 @@ endif()
 
 if(USE_PYBIND)
   set(PYTHON_EXECUTABLE "python3")
+  message(STATUS "[rai] using python executable " ${PYTHON_EXECUTABLE} )
   execute_process(
-    COMMAND bash "-c" "python3 -m pybind11 --cmakedir" 
+    COMMAND bash "-c" "${PYTHON_EXECUTABLE} -m pybind11 --cmakedir" 
     OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE pybind11_DIR
   )
   message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR} )

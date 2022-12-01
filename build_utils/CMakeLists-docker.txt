@@ -77,16 +77,19 @@ if(USE_OPENCV)
   find_package(OpenCV REQUIRED)
   add_definitions(-DRAI_OPENCV)
   target_link_libraries(rai ${OpenCV_LIBS})
+  message(STATUS "[rai] using OpenCV libs:" ${OpenCV_LIBS})
 endif()
 
 if(USE_REALSENSE)
   add_definitions(-DRAI_REALSENSE)
   target_link_libraries(rai realsense2)
+  message(STATUS "[rai] using realsense libs")
 endif()
 
 if(USE_LIBFRANKA)
   add_definitions(-DRAI_FRANKA)
   target_link_libraries(rai franka)
+  message(STATUS "[rai] using libfranka")
 endif()
 
 ################################################################################
