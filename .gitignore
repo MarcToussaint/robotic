@@ -21,6 +21,7 @@ callgrind.out.*
 *.exe
 
 %% IDE temporaries
+.idea
 *.kdev4
 vc60.idb
 .*.config
