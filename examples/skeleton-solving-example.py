@@ -2,6 +2,7 @@ import sys
 sys.path.append('../build')
 import time
 import numpy as np
+#from robotic import ry
 import libry as ry
 
 ## create a configuration

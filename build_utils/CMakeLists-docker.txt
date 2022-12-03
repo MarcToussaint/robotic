@@ -21,7 +21,7 @@ add_definitions(
   -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
-  -DRAI_GLFW -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
+  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
   -DRAI_GJK -DRAI_CCD -DRAI_FCL #-DRAI_SWIFT
   -DRAI_NO_STB_IMPL
   )
@@ -53,6 +53,7 @@ add_library(rai STATIC
   ${SRC_GeoPly}
   ${SRC_GeoLewiner}
   rai/rai/Algo/unity.cxx
+  rai/rai/PathAlgos/unity.cxx
   rai/rai/Gui/unity.cxx
   rai/rai/Kin/unity.cxx
   rai/rai/KOMO/unity.cxx
@@ -113,7 +114,7 @@ if(USE_PYBIND)
   target_link_libraries(libry PRIVATE
     rai
     libjsoncpp.a lapack libcblas.a pthread rt X11 libatlas.a
-    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libccd.a libfcl.a
+    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
     #${BULLET_LIBRARIES}
     libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a
     libBullet3Collision.a   libBullet3Dynamics.a  libBullet3OpenCL_clew.a  libBulletDynamics.a   libBulletSoftBody.a

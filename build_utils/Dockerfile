@@ -37,8 +37,18 @@ RUN cd $HOME/git/assimp; mkdir -p build; cd build; cmake -DASSIMP_BUILD_ZLIB=ON 
 RUN cd $HOME/git/bullet3; mkdir -p build; cd build; \
   cmake -E env CFLAGS="-fPIC" CXXFLAGS="-fPIC" cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_UNIT_TESTS=OFF -DBUILD_OPENGL3_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF ..; make install
 
+RUN python3.6 -m pip install pybind11
 RUN python3.7 -m pip install pybind11
+RUN python3.8 -m pip install pybind11
+RUN python3.9 -m pip install pybind11
 RUN python3.10 -m pip install pybind11
+
+##########################################################
+
+RUN cd $HOME/git && \
+git clone --single-branch https://github.com/daveb-dev/libANN.git
+
+RUN cd $HOME/git/libANN; make clean; make -C src targets "ANNLIB=libANN.a" "C++ = g++" "CFLAGS=-O3 -fPIC" "MAKELIB=ar ruv" "RANLIB=true"; cp lib/libANN.a /usr/local/lib; cp -R include/ANN /usr/local/include
 
 ##########################################################
 
