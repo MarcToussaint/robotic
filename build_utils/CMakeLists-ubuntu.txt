@@ -72,7 +72,7 @@ add_library(rai SHARED
 
 target_link_libraries(rai
   jsoncpp lapack blas pthread rt X11
-  assimp ccd fcl ann glfw GLEW glut GLU GL png qhull
+  assimp ccd fcl qhull ann glfw GLEW glut GLU GL png 
   )
 
 ################################################################################

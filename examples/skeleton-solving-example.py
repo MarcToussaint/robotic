@@ -28,10 +28,10 @@ S.addEntry([3.,4.], ry.SY.stableOn, ['tray', 'obj0'])
 
 ## solve for waypoints: create a komo instance, create nlp instance, then call generic solver
 komo = S.getKomo_waypoints(C, 1e-1, 1e-2)
-nlp = komo.get_nlp()
+nlp = komo.nlp()
 sol = ry.NLP_Solver()
 sol.setProblem(nlp)
-sol.setOptions( sol.getOptions() .set_stopTolerance(1e-1) .set_stopGTolerance(1e-2) )
+sol.setOptions( stopTolerance=1e-2 )
 ret = sol.solve()
 waypoints = komo.getPath_qAll()
 # report on result, view, and play
@@ -73,10 +73,10 @@ komo.view(True, "init with waypoints only")
 for t in range(0,int(m)):
     komo.initPhaseWithDofsPath(t, rrt_dofs[t], rrt_paths[t], True)
     komo.view(True, "init with RRT phase " + str(t))
-nlp = komo.get_nlp()
+nlp = komo.nlp()
 sol = ry.NLP_Solver()
 sol.setProblem(nlp)
-sol.setOptions(sol.getOptions() .set_stopTolerance(1e-1) .set_stopGTolerance(1e-2))
+sol.setOptions( stopTolerance=1e-2 )
 ret = sol.solve()
 # report on result, view, and play
 print(ret)
