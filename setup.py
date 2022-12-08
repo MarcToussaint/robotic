@@ -40,7 +40,7 @@ setup(
     long_description_content_type="text/markdown",
 
     distclass=BinaryDistribution,
-    version='0.0.3',
+    version='0.0.4',
     url='https://www.user.tu-berlin.de/mtoussai/',
     author='Marc Toussaint',
     author_email='toussaint@tu-berlin.de',
