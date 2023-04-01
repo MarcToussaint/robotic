@@ -36,6 +36,13 @@ wget https://github.com/MarcToussaint/rai-python/raw/master/examples/skeleton-so
 python3 skeleton-solving-example.py
 ```
 
+## tested within a ubuntu:latest docker:
+```
+sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
+python3 -m pip install robotic numpy scipy
+python3 -c 'from robotic import ry; ry.setRaiPath("/root/home/.local/rai-robotModels"); ry.test.RndScene()'
+```
+
 
 ## Installation from source
 

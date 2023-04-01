@@ -6,9 +6,11 @@ set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
 
 option(USE_PYBIND "build python bindings" ON)
 option(USE_BULLET "link to bullet" ON)
+option(USE_PHYSX "link to physx" ON)
 option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
+option(USE_PCL "link to pcl library" OFF)
 set(PYBIND11_PYTHON_VERSION 3.7 CACHE STRING "python version")
 
 add_compile_options(
@@ -22,14 +24,13 @@ add_definitions(
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
   -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
-  -DRAI_GJK -DRAI_CCD -DRAI_FCL #-DRAI_SWIFT
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner #-DRAI_SWIFT
   -DRAI_NO_STB_IMPL
   )
 
 ################################################################################
 
 include_directories(
-  src/
   rai/rai
   /usr/local/include/eigen3
   /usr/include/eigen3
@@ -39,10 +40,12 @@ include_directories(
 link_directories(
   $ENV{HOME}/opt/lib
   /usr/lib64/atlas
+  /opt/PhysX/bin/linux.clang/release
   )
 
 file(GLOB SRC_GeoGJK rai/rai/Geo/GJK/*.c)
 file(GLOB SRC_GeoPly rai/rai/Geo/ply/*.c)
+file(GLOB SRC_GeoCcd rai/rai/Geo/ccd/*.c)
 file(GLOB SRC_GeoLewiner rai/rai/Geo/Lewiner/*.cpp)
 
 add_library(rai STATIC
@@ -51,8 +54,10 @@ add_library(rai STATIC
   rai/rai/Geo/unity.cxx
   ${SRC_GeoGJK}
   ${SRC_GeoPly}
+  ${SRC_GeoCcd}
   ${SRC_GeoLewiner}
   rai/rai/Algo/unity.cxx
+  rai/rai/Search/unity.cxx
   rai/rai/PathAlgos/unity.cxx
   rai/rai/Gui/unity.cxx
   rai/rai/Kin/unity.cxx
@@ -72,6 +77,13 @@ if(USE_BULLET)
   include_directories(${BULLET_INCLUDE_DIRS})
 #  target_link_libraries(rai ${BULLET_LIBRARIES})
   message(STATUS "[rai] using bullet libs:" ${BULLET_LIBRARIES})
+endif()
+
+if(USE_PHYSX)
+  add_definitions(-DRAI_PHYSX -D_DEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX)
+  include_directories(/opt/PhysX/include)
+  target_link_libraries(rai PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
+  message(STATUS "[rai] using physx libs from /opt/Physx:")
 endif()
 
 if(USE_OPENCV)
@@ -113,7 +125,7 @@ if(USE_PYBIND)
 
   target_link_libraries(libry PRIVATE
     rai
-    libjsoncpp.a lapack libcblas.a pthread rt X11 libatlas.a
+    libjsoncpp.a lapack pthread rt X11 libatlas.a
     libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
     #${BULLET_LIBRARIES}
     libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a

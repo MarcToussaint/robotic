@@ -22,6 +22,7 @@ docker run -it \
        --env="DISPLAY" \
        --network host \
        --device /dev/input \
+       --device /dev/dri \
        rai-manylinux /bin/bash -C $1
 
 #       -v $XSOCK:$XSOCK \

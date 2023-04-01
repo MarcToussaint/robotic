@@ -28,7 +28,7 @@ cp -f build/libry*39*.so robotic/libry.so && python3.9 setup.py bdist_wheel
 cp -f build/libry*310*.so robotic/libry.so && python3.10 setup.py bdist_wheel 
 
 for wheel in $(find dist -iname "*.whl") ; do 
-  mv $wheel $(echo $wheel | sed 's/-linux_/-manylinux2010_/')
+  mv $wheel $(echo $wheel | sed 's/-linux_/-manylinux2014_/')
 done
 
 #twine upload dist/*.whl
