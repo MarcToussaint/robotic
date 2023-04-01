@@ -20,27 +20,34 @@ sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
 ```
 * pip-install robotic and dependencies (numpy, scipy)
 ```
-python3 -m pip install robotic numpy scipy
+python3 -m pip install --user robotic numpy scipy
 ```
 * Test:
 ```
 python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
-If the `rai-robotModels` path fails, try something like
+If the `rai-robotModels` path fails, find rai-robotModels and try something like
 ```
 python3 -c 'from robotic import ry; ry.setRaiPath("/usr/local/rai-robotModels"); ry.test.RndScene()'
 ```
+When rai-robotModels is still messed up, try cloning it completely:
+```
+cd ~/.local; rm -Rf rai-robotModels;
+git clone https://github.com/MarcToussaint/rai-robotModels.git
+```
+<!--
 * You can download other examples and test:
 ```
 wget https://github.com/MarcToussaint/rai-python/raw/master/examples/skeleton-solving-example.py
 python3 skeleton-solving-example.py
 ```
+-->
 
 ## tested within a ubuntu:latest docker:
 ```
-sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
-python3 -m pip install robotic numpy scipy
-python3 -c 'from robotic import ry; ry.setRaiPath("/root/home/.local/rai-robotModels"); ry.test.RndScene()'
+sudo apt install --yes liblapack3 freeglut3 libglew-dev python3 python3-pip
+python3 -m pip install --user robotic numpy scipy
+python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
 
 
@@ -109,8 +116,8 @@ exit
 
 * Outside of docker, install locally with pip or push wheels to pypi
 ```
-python3.7 -m pip install dist/robotic-*cp37*.whl --force-reinstall
-python3.10 -m pip install dist/robotic-*cp310*.whl --force-reinstall
+python3.7 -m pip install --user dist/robotic-*cp37*.whl --force-reinstall
+python3.10 -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
 # or
 twine upload dist/*.whl
 ```

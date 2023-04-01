@@ -27,11 +27,11 @@ CERES = 0
 
 ## we use the following collision/physics libraries by default, but can be disabled
 #FCL = 0
-BULLET = 0
+#BULLET = 0
 
 ## below are more libs, which we could use, but are disabled by default
 OPENCV = 0
-GRAPHVIZ = 0
+#GRAPHVIZ = 0
 GTK = 0
 G4 = 0
 #PNG = 0
