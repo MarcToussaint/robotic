@@ -1,27 +1,34 @@
 from setuptools import setup, dist
-from setuptools.command.install import install
+#from setuptools.command.install import install
+from setuptools.command.build_ext import build_ext
 import setuptools
 import os
 import glob
+import subprocess
+import platform
 
 class BinaryDistribution(dist.Distribution):
     def has_ext_modules(foo):
         return True
 
-#try:
-#    from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-#    class bdist_wheel(_bdist_wheel):
-#        def finalize_options(self):
-#            _bdist_wheel.finalize_options(self)
-#            self.root_is_pure = False
-#except ImportError:
-#    bdist_wheel = None
-    
+class CustomCommand(build_ext):
+    """Customized setuptools build_ext command"""
+    def run(self):
+        version = platform.python_version_tuple()[0] + platform.python_version_tuple()[1]
+        print('[rai] custom copy lib, python version tag:', version)
+        subprocess.check_call('cp -f build/libry*'+version+'*.so robotic/libry.so', shell=True)
+        subprocess.check_call('strip --strip-unneeded robotic/libry.so', shell=True)
+        build_ext.run(self)
+
+
 setup(
     name='robotic',
     packages=['robotic'],
     package_data={'robotic': ['libry.so']},
     include_package_data=True,
+    cmdclass={
+        'build_ext': CustomCommand,
+    },
 
     data_files=[
         ('rai-robotModels/objects/',  glob.glob('rai-robotModels/objects/*.g')),
