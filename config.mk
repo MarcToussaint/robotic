@@ -13,6 +13,8 @@
 #OPTIM = fast
 #OPTIM = fast_debug
 
+#RAI_CMAKE = 1
+
 ## by default we use OpenGL a lot, but can be disabled
 #GL = 0
 
@@ -37,7 +39,7 @@ G4 = 0
 #PNG = 0
 PCL = 0
 ODE = 0
-PHYSX = 0
+#PHYSX = 0
 ROS = 0
 ROS_VERSION = melodic
 

@@ -74,6 +74,7 @@ sudo apt-get install python3 python3-dev python3-numpy python3-pip python3-distu
 pip3 install --user --upgrade pip
 pip3 install --user jupyter nbconvert matplotlib pybind11
 ```
+(If tab-autocomplete for jupyter does not work, try `pip3 install --user jedi==0.17.2` )
 
 * Compile using cmake:
 ```
