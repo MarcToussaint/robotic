@@ -9,7 +9,10 @@ ENV MAKEFLAGS="-j3"
 
 RUN yum -y install gcc wget \
     atlas-devel f2c-devel glut-devel zlib-devel \
-    libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel
+    libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel \
+    clang lapack-static atlas-static
+
+RUN cd /usr/lib64; ln -s libstdc++.so.6.0.19 libstdc++.so
 
 RUN \
 mkdir -p $HOME/git && \
@@ -19,7 +22,7 @@ git clone --single-branch -b 1.9.5 https://github.com/open-source-parsers/jsoncp
 git clone --single-branch -b libpng16 https://github.com/glennrp/libpng.git && \
 git clone --single-branch -b v7.3.2 https://github.com/qhull/qhull.git && \
 git clone --single-branch -b v2.1 https://github.com/danfis/libccd.git && \
-git clone --single-branch -b 0.5.0 https://github.com/flexible-collision-library/fcl.git && \
+git clone --single-branch -b fcl-0.5 https://github.com/flexible-collision-library/fcl.git && \
 git clone --single-branch -b v5.2.5 https://github.com/assimp/assimp.git && \
 git clone --single-branch -b 3.3-stable https://github.com/glfw/glfw.git && \
 git clone --single-branch -b 3.08 https://github.com/bulletphysics/bullet3.git && \
@@ -39,6 +42,7 @@ RUN cd $HOME/git/assimp; mkdir -p build; cd build; cmake -DASSIMP_BUILD_ZLIB=ON 
 RUN cd $HOME/git/bullet3; mkdir -p build; cd build; \
   cmake -E env CFLAGS="-fPIC" CXXFLAGS="-fPIC" cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_UNIT_TESTS=OFF -DBUILD_OPENGL3_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF ..; make install
 RUN cd $HOME/git/libANN; make clean; make -C src targets "ANNLIB=libANN.a" "C++ = g++" "CFLAGS=-O3 -fPIC" "MAKELIB=ar ruv" "RANLIB=true"; cp lib/libANN.a /usr/local/lib; cp -R include/ANN /usr/local/include
+RUN cd $HOME/git/PhysX/physx; ./generate_projects.sh linux; cd compiler/linux-release/; cmake ../../compiler/public -DPX_BUILDPVDRUNTIME=OFF -DPX_BUILDSNIPPETS=OFF -DCMAKE_INSTALL_PREFIX=/opt/PhysX; make install
 
 RUN python3.6 -m pip install pybind11
 RUN python3.7 -m pip install pybind11
@@ -48,9 +52,7 @@ RUN python3.10 -m pip install pybind11
 
 ##########################################################
 
-RUN yum -y install clang lapack-static atlas-static
-RUN cd /usr/lib64; ln -s libstdc++.so.6.0.19 libstdc++.so
-RUN cd $HOME/git/PhysX/physx; ./generate_projects.sh linux; cd compiler/linux-release/; cmake ../../compiler/public -DPX_BUILDPVDRUNTIME=OFF -DPX_BUILDSNIPPETS=OFF -DCMAKE_INSTALL_PREFIX=/opt/PhysX; make install
+#RUN yum -y install boost boost-system
 
 ##########################################################
 

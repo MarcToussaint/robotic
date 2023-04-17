@@ -14,7 +14,9 @@ option(USE_PCL "link to pcl library" OFF)
 set(PYBIND11_PYTHON_VERSION 3.7 CACHE STRING "python version")
 
 add_compile_options(
-  -O3 -g -w -fPIC -std=c++14 -Wno-terminate
+  -O3 -g -w -fPIC
+  $<$<COMPILE_LANGUAGE:CXX>:-std=c++14>
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-terminate>
   )
 
 ################################################################################
@@ -32,6 +34,7 @@ add_definitions(
 
 include_directories(
   rai/rai
+  botop/src
   /usr/local/include/eigen3
   /usr/include/eigen3
   $ENV{HOME}/opt/include
@@ -48,6 +51,13 @@ file(GLOB SRC_GeoPly rai/rai/Geo/ply/*.c)
 file(GLOB SRC_GeoCcd rai/rai/Geo/ccd/*.c)
 file(GLOB SRC_GeoLewiner rai/rai/Geo/Lewiner/*.cpp)
 
+file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
+file(GLOB SRC_Franka botop/src/Franka/*.cpp)
+file(GLOB SRC_OptiTrack botop/src/OptiTrack/*.cpp)
+file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
+file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
+file(GLOB SRC_Audio botop/src/Audio/*.cpp)
+
 add_library(rai STATIC
   rai/rai/Core/unity.cxx
   rai/rai/Optim/unity.cxx
@@ -63,6 +73,13 @@ add_library(rai STATIC
   rai/rai/Kin/unity.cxx
   rai/rai/KOMO/unity.cxx
   rai/rai/Logic/unity.cxx
+  rai/rai/Control/unity.cxx
+  ${SRC_BotOp}
+  ${SRC_Franka}
+  ${SRC_OptiTrack}
+  ${SRC_RealSense}
+  ${SRC_Robotiq}
+  ${SRC_Audio}
   )
 
 ################################################################################
@@ -121,6 +138,7 @@ if(USE_PYBIND)
 
   pybind11_add_module(libry SHARED
     rai/rai/ry/unity.cxx
+    botop/src/BotOp/pyBot.cxx
   )
 
   target_link_libraries(libry PRIVATE

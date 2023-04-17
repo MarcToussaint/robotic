@@ -111,7 +111,7 @@ cd build_utils
 ./run-docker.sh
 ## inside docker:
 cd local #this mounts rai-python/
-build_utils/build-wheel.sh
+build_utils/build-wheels.sh
 exit
 ```
 
