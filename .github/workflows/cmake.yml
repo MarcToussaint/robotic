@@ -23,6 +23,7 @@ jobs:
     - name: install ubuntu dependencies
       run: |
         APTGETYES=1 make -C rai -j1 installUbuntuAll
+        sudo apt-get install libboost-system-dev
 
     - name: install python dependencies
       run: |

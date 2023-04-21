@@ -18,6 +18,20 @@ strip --strip-unneeded libry*39*.so
 strip --strip-unneeded libry*310*.so
 cd ..
 
+cd robotic
+rm -Rf rai-robotModels
+mkdir rai-robotModels; cd rai-robotModels
+mkdir -p objects; cp ../../rai-robotModels/objects/*.g objects
+mkdir -p panda; cp ../../rai-robotModels/panda/*.g panda
+  cp -R ../../rai-robotModels/panda/meshes panda
+mkdir -p pr2; cp ../../rai-robotModels/pr2/*.g pr2
+  cp -R ../../rai-robotModels/pr2/meshes pr2
+mkdir -p robotiq; cp ../../rai-robotModels/robotiq/*.g robotiq
+  cp -R ../../rai-robotModels/robotiq/meshes robotiq
+mkdir -p scenarios; cp ../../rai-robotModels/scenarios/*.g scenarios
+mkdir -p tests; cp ../../rai-robotModels/tests/*.g tests
+cd ../..
+
 rm -Rf robotic/*.so* dist/ build/bdist* build/lib robotic.egg-info
 unalias cp
 

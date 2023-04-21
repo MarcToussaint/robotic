@@ -122,3 +122,27 @@ python3.10 -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
 # or
 twine upload dist/*.whl
 ```
+
+
+## Use of the wheel binary in C++
+
+* Get the binary lib by installing the pip package:
+```
+python3 -m pip install --user robotic
+```
+* Get the sources by cloning this repo recursively:
+```
+cd $HOME/git; git clone --recursive https://github.com/MarcToussaint/rai-python.git
+```
+* Copy things into an include and link folder (like 'make install') CHANGE PYTHON VERSION:
+```
+mkdir -p $HOME/opt/include/rai $HOME/opt/lib
+cp $HOME/.local/lib/python3.6/site-packages/robotic/libry.so -f $HOME/opt/lib/libry.cpython-36m-x86_64-linux-gnu.so
+cp $HOME/git/rai-python/rai/rai/* -Rf $HOME/opt/include/rai
+cp $HOME/git/rai-python/botop/src/* -Rf $HOME/opt/include/rai
+```
+* Compile your main
+```
+gcc script2-IK.cpp -I$HOME/opt/include/rai -L$HOME/opt/lib -lry.cpython-36m-x86_64-linux-gnu -lstdc++ `python3-config --ldflags`
+```
+
