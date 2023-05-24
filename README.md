@@ -111,13 +111,15 @@ cd build_utils
 ./run-docker.sh
 ## inside docker:
 cd local #this mounts rai-python/
+make -C rai -j1 unityAll
 build_utils/build-wheels.sh
 exit
 ```
 
 * Outside of docker, install locally with pip or push wheels to pypi
 ```
-python3.7 -m pip install --user dist/robotic-*cp37*.whl --force-reinstall
+# e.g.
+python3.6 -m pip install --user dist/robotic-*cp36*.whl --force-reinstall
 python3.10 -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
 # or
 twine upload dist/*.whl

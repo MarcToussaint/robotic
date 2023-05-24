@@ -48,7 +48,7 @@ link_directories(
 
 file(GLOB SRC_GeoGJK rai/rai/Geo/GJK/*.c)
 file(GLOB SRC_GeoPly rai/rai/Geo/ply/*.c)
-file(GLOB SRC_GeoCcd rai/rai/Geo/ccd/*.c)
+file(GLOB SRC_GeoCcd rai/rai/Geo/ccd_rai/*.c)
 file(GLOB SRC_GeoLewiner rai/rai/Geo/Lewiner/*.cpp)
 
 file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
@@ -100,7 +100,7 @@ if(USE_PHYSX)
   add_definitions(-DRAI_PHYSX -D_DEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX)
   include_directories(/opt/PhysX/include)
   target_link_libraries(rai PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
-  message(STATUS "[rai] using physx libs from /opt/Physx:")
+  message(STATUS "[rai] using physx libs from /opt/PhysX:")
 endif()
 
 if(USE_OPENCV)

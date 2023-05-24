@@ -1,6 +1,7 @@
 CMakeLists.txt
 dist/
 robotic.egg-info/
+rai-robotModels
 
 %% compile temporaries
 /build
