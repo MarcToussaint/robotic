@@ -7,6 +7,10 @@ import glob
 import subprocess
 import platform
 
+myversion = {}
+with open("robotic/version.py") as fp:
+    exec(fp.read(), myversion)
+
 class BinaryDistribution(dist.Distribution):
     def has_ext_modules(foo):
         return True
@@ -24,7 +28,7 @@ class CustomCommand(build_ext):
 setup(
     name='robotic',
     packages=['robotic'],
-    package_data={'robotic': ['libry.so', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*']},
+    package_data={'robotic': ['libry.so', 'libry.pyi', 'version.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*']},
     include_package_data=True,
     cmdclass={
         'build_ext': CustomCommand,
@@ -55,7 +59,7 @@ setup(
     long_description_content_type="text/markdown",
 
     distclass=BinaryDistribution,
-    version='0.0.15',
+    version=myversion['__version__'],
     url='https://www.user.tu-berlin.de/mtoussai/',
     author='Marc Toussaint',
     author_email='toussaint@tu-berlin.de',

@@ -119,7 +119,7 @@ exit
 * Outside of docker, install locally with pip or push wheels to pypi
 ```
 # e.g.
-python3.6 -m pip install --user dist/robotic-*cp36*.whl --force-reinstall
+python3.8 -m pip install --user dist/robotic-*cp38*.whl --force-reinstall
 python3.10 -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
 # or
 twine upload dist/*.whl

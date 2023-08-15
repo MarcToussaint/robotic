@@ -3,15 +3,17 @@ cmake_minimum_required(VERSION 3.4)
 project(RaiPython)
 
 set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
+set(PYBIND11_PYTHON_VERSION 3.8 CACHE STRING "python version")
 
+option(CMAKE_INSTALL_PREFIX "install directory" "$ENV{HOME}/opt")
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 option(USE_PYBIND "build python bindings" ON)
-option(USE_BULLET "link to bullet" ON)
+option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
 option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
 option(USE_PCL "link to pcl library" OFF)
-#set(PYBIND11_PYTHON_VERSION 3.7 CACHE STRING "python version")
 
 add_compile_options(
   -O3 -g -Wall -Wpedantic -fPIC
@@ -55,7 +57,7 @@ file(GLOB SRC_Search rai/rai/Search/unity.cxx)
 file(GLOB SRC_PathAlgos rai/rai/PathAlgos/unity.cxx)
 file(GLOB SRC_Gui rai/rai/Gui/unity.cxx)
 file(GLOB SRC_Kin rai/rai/Kin/unity.cxx)
-#file(GLOB SRC_KinSwift rai/rai/Kin/SWIFT/*.cpp)
+#file(GLOB SRC_KinSwift rai/rai/Kin/SWIFT/unity.cxx)
 file(GLOB SRC_KOMO rai/rai/KOMO/unity.cxx)
 file(GLOB SRC_Logic rai/rai/Logic/unity.cxx)
 file(GLOB SRC_LGP rai/rai/LGP/unity.cxx)
@@ -101,9 +103,12 @@ target_link_libraries(rai
   )
 
 ################################################################################
+#
+# include external libraries
 
 #find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 #target_link_libraries (rai Eigen3::Eigen)
+find_package(PkgConfig REQUIRED)
 
 if(USE_BULLET)
   find_package(Bullet REQUIRED)
@@ -115,9 +120,9 @@ endif()
 
 if(USE_PHYSX)
   add_definitions(-DRAI_PHYSX -D_DEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX)
-  include_directories($ENV{HOME}/opt/PhysX5/include)
-  target_link_libraries(rai PhysXExtensions_static_64 PhysX_64 PhysXCooking_64 PhysXCommon_64 PhysXFoundation_64)
-  message(STATUS "[rai] using physx libs from ~/opt:")
+  link_directories($ENV{HOME}/opt/bin/linux.clang/release)
+  target_link_libraries(rai PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
+  message(STATUS "[rai] using physx libs from ~/opt")
 endif()
 
 if(USE_OPENCV)
@@ -125,6 +130,13 @@ if(USE_OPENCV)
   add_definitions(-DRAI_OPENCV)
   target_link_libraries(rai ${OpenCV_LIBS})
   message(STATUS "[rai] using OpenCV libs:" ${OpenCV_LIBS})
+endif()
+
+if(USE_OPENCV_LOCAL)
+  add_definitions(-DRAI_OPENCV)
+  include_directories($ENV{HOME}/opt/include/opencv4)
+  target_link_libraries(rai opencv_core opencv_highgui opencv_imgproc opencv_videoio)
+  message(STATUS "[rai] using OpenCV libs from ~/opt")
 endif()
 
 if(USE_REALSENSE)
@@ -142,7 +154,7 @@ endif()
 ################################################################################
 
 if(USE_PYBIND)
-  set(PYTHON_EXECUTABLE "python3")
+  set(PYTHON_EXECUTABLE "python${PYBIND11_PYTHON_VERSION}")
   message(STATUS "[rai] using python executable " ${PYTHON_EXECUTABLE} )
   execute_process(
     COMMAND bash "-c" "${PYTHON_EXECUTABLE} -m pybind11 --cmakedir" 
@@ -166,7 +178,31 @@ endif()
 
 ################################################################################
 
+get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
+message(STATUS "[rai] compiler flags: " "${_defs}")
+
+################################################################################
+
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
 target_link_libraries(kinEdit rai)
 
+################################################################################
+
+install(
+  DIRECTORY rai/rai
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+  FILES_MATCHING
+  PATTERN "*.h"
+  PATTERN "*.hxx" PATTERN "*.ipp"
+  PATTERN "retired" EXCLUDE
+  )
+
+install(
+  TARGETS rai libry
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+  COMPONENT pkgconfig)
+
+install(
+  TARGETS kinEdit
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 

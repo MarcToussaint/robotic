@@ -44,11 +44,11 @@ RUN cd $HOME/git/bullet3; mkdir -p build; cd build; \
 RUN cd $HOME/git/libANN; make clean; make -C src targets "ANNLIB=libANN.a" "C++ = g++" "CFLAGS=-O3 -fPIC" "MAKELIB=ar ruv" "RANLIB=true"; cp lib/libANN.a /usr/local/lib; cp -R include/ANN /usr/local/include
 RUN cd $HOME/git/PhysX/physx; ./generate_projects.sh linux; cd compiler/linux-release/; cmake ../../compiler/public -DPX_BUILDPVDRUNTIME=OFF -DPX_BUILDSNIPPETS=OFF -DCMAKE_INSTALL_PREFIX=/opt/PhysX; make install
 
-RUN python3.6 -m pip install pybind11
-RUN python3.7 -m pip install pybind11
-RUN python3.8 -m pip install pybind11
-RUN python3.9 -m pip install pybind11
-RUN python3.10 -m pip install pybind11
+RUN python3.6 -m pip install pybind11 pybind11-stubgen numpy
+RUN python3.7 -m pip install pybind11 pybind11-stubgen numpy
+RUN python3.8 -m pip install pybind11 pybind11-stubgen numpy
+RUN python3.9 -m pip install pybind11 pybind11-stubgen numpy
+RUN python3.10 -m pip install pybind11 pybind11-stubgen numpy
 
 ##########################################################
 
