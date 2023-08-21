@@ -28,7 +28,7 @@ add_definitions(
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
   -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
-  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DFCL_STATIC_DEFINE #-DRAI_SWIFT
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DFCL_STATIC_DEFINE
   -BOOST_ERROR_CODE_HEADER_ONLY
   )
 
@@ -147,7 +147,7 @@ endif()
 
 if(USE_LIBFRANKA)
   add_definitions(-DRAI_FRANKA)
-  target_link_libraries(rai franka)
+  target_link_libraries(rai franka PocoNet PocoFoundation)
   message(STATUS "[rai] using libfranka")
 endif()
 
@@ -192,8 +192,7 @@ install(
   DIRECTORY rai/rai
   DESTINATION ${CMAKE_INSTALL_PREFIX}/include
   FILES_MATCHING
-  PATTERN "*.h"
-  PATTERN "*.hxx" PATTERN "*.ipp"
+  PATTERN "*.h" PATTERN "*.hxx" PATTERN "*.ipp"
   PATTERN "retired" EXCLUDE
   )
 
