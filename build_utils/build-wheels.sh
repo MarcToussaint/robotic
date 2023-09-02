@@ -6,7 +6,7 @@ ln -s build_utils/CMakeLists-docker.txt CMakeLists.txt
 mkdir -p build
 
 ### delete old 
-rm -Rf robotic/*libry* robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
+rm -Rf robotic/*ry.* robotic/*~ robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
 unalias cp
 
 ### copy robotModels files
@@ -31,14 +31,14 @@ export PYTHONPATH=.
 for ver in 8 9 10 6 7; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cd build
-    cmake -DPYBIND11_PYTHON_VERSION=3.$ver .. && make libry
-    strip --strip-unneeded libry*3$ver*.so
+    cmake -DPYBIND11_PYTHON_VERSION=3.$ver .. && make ry
+    strip --strip-unneeded ry.*3$ver*.so
     echo -e "\n\n======== documenting (python version " $ver ") ========"
-    /opt/_internal/cpython-3.$ver.*/bin/pybind11-stubgen --ignore-invalid=all libry
+    /opt/_internal/cpython-3.$ver.*/bin/pybind11-stubgen --ignore-invalid=all ry
     cd ..
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
-    cp -f build/libry*3$ver*.so robotic/libry.so
-    cp -f build/stubs/libry-stubs/__init__.pyi robotic/libry.pyi
+    cp -f build/ry.*3$ver*.so robotic/ry.so
+    cp -f build/stubs/ry-stubs/__init__.pyi robotic/ry.pyi
     python3.$ver setup.py bdist_wheel
     #break
 done

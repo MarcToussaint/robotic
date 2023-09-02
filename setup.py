@@ -20,15 +20,15 @@ class CustomCommand(build_ext):
     def run(self):
         version = platform.python_version_tuple()[0] + platform.python_version_tuple()[1]
         print('[rai] custom copy lib, python version tag:', version)
-        subprocess.check_call('cp -f build/libry*'+version+'*.so robotic/libry.so', shell=True)
-        subprocess.check_call('strip --strip-unneeded robotic/libry.so', shell=True)
+        subprocess.check_call('cp -f build/ry.*'+version+'*.so robotic/ry.so', shell=True)
+        subprocess.check_call('strip --strip-unneeded robotic/ry.so', shell=True)
         build_ext.run(self)
 
 
 setup(
     name='robotic',
     packages=['robotic'],
-    package_data={'robotic': ['libry.so', 'libry.pyi', 'version.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*']},
+    package_data={'robotic': ['ry.so', 'ry.pyi', 'version.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*']},
     include_package_data=True,
     cmdclass={
         'build_ext': CustomCommand,

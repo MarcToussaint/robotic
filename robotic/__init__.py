@@ -1,4 +1,4 @@
-from . import libry as ry
+from . import ry
 
 from .version import __version__
 ry.__version__ = __version__

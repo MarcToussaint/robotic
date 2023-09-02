@@ -14,44 +14,33 @@ RUN yum -y install gcc wget \
 
 RUN cd /usr/lib64; ln -s libstdc++.so.6.0.19 libstdc++.so
 
-RUN \
-mkdir -p $HOME/git && \
-cd $HOME/git && \
-git clone --single-branch -b 3.4.0 https://gitlab.com/libeigen/eigen.git && \
-git clone --single-branch -b 1.9.5 https://github.com/open-source-parsers/jsoncpp.git && \
-git clone --single-branch -b libpng16 https://github.com/glennrp/libpng.git && \
-git clone --single-branch -b v7.3.2 https://github.com/qhull/qhull.git && \
-git clone --single-branch -b v2.1 https://github.com/danfis/libccd.git && \
-git clone --single-branch -b fcl-0.5 https://github.com/flexible-collision-library/fcl.git && \
-git clone --single-branch -b v5.2.5 https://github.com/assimp/assimp.git && \
-git clone --single-branch -b 3.3-stable https://github.com/glfw/glfw.git && \
-git clone --single-branch -b 3.08 https://github.com/bulletphysics/bullet3.git && \
-git clone --single-branch https://github.com/daveb-dev/libANN.git && \
-git clone --single-branch -b release/104.1 https://github.com/NVIDIA-Omniverse/PhysX.git
+RUN wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
 
-RUN cd $HOME/git/eigen; mkdir -p build; cd build; cmake ..; make install
-RUN cd $HOME/git/jsoncpp; mkdir -p build; cd build; cmake ..; make install
-RUN cd $HOME/git/libpng; ./configure CFLAGS='-fPIC'; make install
-RUN cd $HOME/git/qhull; mkdir -p tmp; cd tmp; env CFLAGS="-fPIC" CXXFLAGS="-fPIC" cmake ..; make install; cd /usr/local/lib; ln -s libqhullstatic.a libqhull.a; cd /usr/local/include; ln -s libqhull qhull
-RUN cd $HOME/git/libccd; mkdir -p build; cd build; env CFLAGS="-fPIC" cmake -DBUILD_SHARED_LIBS=ON ..; make; make install
-RUN cd $HOME/git/libccd/build; env CFLAGS="-fPIC" cmake -DBUILD_SHARED_LIBS=OFF ..; make install  #compile shared AND static versions!
-RUN cd $HOME/git/fcl; mkdir -p build; cd build; cmake -DFCL_STATIC_LIBRARY=ON ..; make install
-RUN cd $HOME/git; wget https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz; tar xvzf glew-2.2.0.tgz; cd glew-2.2.0; make install
-RUN cd $HOME/git/glfw; mkdir -p build; cd build; cmake ..; make install
-RUN cd $HOME/git/assimp; mkdir -p build; cd build; cmake -DASSIMP_BUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF ..; make install
-RUN cd $HOME/git/bullet3; mkdir -p build; cd build; env CFLAGS="-fPIC" CXXFLAGS="-fPIC" cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_UNIT_TESTS=OFF -DBUILD_OPENGL3_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF ..; make install
-RUN cd $HOME/git/libANN; make clean; make -C src targets "ANNLIB=libANN.a" "C++ = g++" "CFLAGS=-O3 -fPIC" "MAKELIB=ar ruv" "RANLIB=true"; cp lib/libANN.a /usr/local/lib; cp -R include/ANN /usr/local/include
-RUN cd $HOME/git/PhysX/physx; ./generate_projects.sh linux; cd compiler/linux-release/; cmake ../../compiler/public -DPX_BUILDPVDRUNTIME=OFF -DPX_BUILDSNIPPETS=OFF -DCMAKE_INSTALL_PREFIX=/opt/PhysX; make install
+RUN ./install.sh -gc jsoncpp
+RUN ./install.sh -gc libpng
+RUN ./install.sh -gc glew
+RUN ./install.sh -gc glfw
 
-RUN python3.6 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.7 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.8 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.9 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.10 -m pip install pybind11 pybind11-stubgen numpy
+RUN ./install.sh -gc eigen
+RUN ./install.sh -gc libann
+RUN ./install.sh -gc qhull
+RUN ./install.sh -gc libccd
+RUN ./install.sh -gc fcl
+RUN ./install.sh -gc assimp
 
-##########################################################
+RUN ./install.sh -gc bullet
+RUN ./install.sh -gc physx
 
-#RUN yum -y install boost boost-system
+#RUN wget  https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
+#RUN yum -y install openssl-devel poco-devel libusbx-devel
+#RUN ./install.sh -g librealsense
+#RUN ./install.sh -g libfranka
+
+RUN python3.6 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
+RUN python3.7 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
+RUN python3.8 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
+RUN python3.9 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
+RUN python3.10 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 
 ##########################################################
 

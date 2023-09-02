@@ -34,7 +34,7 @@ jobs:
       run: |
         make -C rai -j1 unityAll
         ln -s build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
-        cd $HOME && mkdir -p opt/include && cd opt/include && ln -s /usr/include/libqhull qhull
+        cd $HOME && mkdir -p .local/include && cd .local/include && ln -s /usr/include/libqhull qhull
 
     - name: cmake configure
       run: |

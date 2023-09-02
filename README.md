@@ -24,6 +24,7 @@ python3 -m pip install --user robotic numpy scipy
 ```
 * Test:
 ```
+python3 -c 'from robotic import ry; print("ry version:", ry.__version__, ry.compiled());'
 python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
 If the `rai-robotModels` path fails, find rai-robotModels and try something like
