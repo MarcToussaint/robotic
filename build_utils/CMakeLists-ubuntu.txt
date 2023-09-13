@@ -1,16 +1,21 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.5)
 
 project(RaiPython)
 
+## first time call: generate unity sources
+if(NOT DEFINED CMAKE_CACHE_MAJOR_VERSION)
+  execute_process(COMMAND make -j1 -C ${CMAKE_CURRENT_SOURCE_DIR}/rai unityAll)
+endif()
+
+## variable default values
 set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
 set(PYBIND11_PYTHON_VERSION 3.8 CACHE STRING "python version")
-
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
-  execute_process(COMMAND make -j1 -C ${CMAKE_CURRENT_SOURCE_DIR}/rai unityAll)
 endif()
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
+## options
 option(USE_PYBIND "build python bindings" ON)
 option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
@@ -19,6 +24,7 @@ option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
 option(USE_PCL "link to pcl library" OFF)
 
+## compile options
 add_compile_options(
   -O3 -g -Wall -Wpedantic -fPIC
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++14>
@@ -31,8 +37,8 @@ add_definitions(
   -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
-  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
-  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DFCL_STATIC_DEFINE
+  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner
   -BOOST_ERROR_CODE_HEADER_ONLY
   -DRAI_BotOp
   )
@@ -48,6 +54,7 @@ include_directories(
 
 link_directories(
   $ENV{HOME}/.local/lib
+  $ENV{HOME}/.local/lib/PhysX
   )
 
 file(GLOB SRC_GeoGJK rai/rai/Geo/GJK/*.c)
@@ -110,7 +117,6 @@ endif()
 
 if(USE_PHYSX)
   add_definitions(-DRAI_PHYSX -DNDEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX)
-  link_directories($ENV{HOME}/.local/bin/linux.clang/release)
   target_link_libraries(rai PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
   message(STATUS "[rai] using physx libs from ~/.local")
 endif()
@@ -181,20 +187,31 @@ target_link_libraries(kinEdit rai)
 
 ################################################################################
 
-install(
-  DIRECTORY rai/rai
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-  FILES_MATCHING
-  PATTERN "*.h" PATTERN "*.hxx" PATTERN "*.ipp"
-  PATTERN "retired" EXCLUDE
-  )
+execute_process(
+  COMMAND "${PYTHON_EXECUTABLE}" -c "if True:
+    from distutils import sysconfig as sc
+    print(sc.get_python_lib(prefix='', plat_specific=True))"
+  OUTPUT_VARIABLE PYTHON_SITE
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+message(STATUS "[rai] installing in python path " ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic )
 
 install(
-  TARGETS rai ry
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-  COMPONENT pkgconfig)
+  TARGETS ry
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
+
+install(
+  FILES robotic/__init__.py robotic/version.py
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
+
+install(
+  DIRECTORY robotic/rai-robotModels
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
+
+install(
+  TARGETS rai
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 install(
   TARGETS kinEdit
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-

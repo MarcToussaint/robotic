@@ -12,7 +12,7 @@ notebooks that demonstrate the use are found in the
 [rai tests](https://github.com/MarcToussaint/rai/tree/master/test/ry)
 and in [tutorials/](tutorials/).
 
-## Installation via pip
+## Installation via pip (without real Franka & realsense support)
 
 * The pip package was compiled for python3.6 .. 3.10, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
 ```
@@ -27,6 +27,7 @@ python3 -m pip install --user robotic numpy scipy
 python3 -c 'from robotic import ry; print("ry version:", ry.__version__, ry.compiled());'
 python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
+<!--
 If the `rai-robotModels` path fails, find rai-robotModels and try something like
 ```
 python3 -c 'from robotic import ry; ry.setRaiPath("/usr/local/rai-robotModels"); ry.test.RndScene()'
@@ -36,7 +37,6 @@ When rai-robotModels is still messed up, try cloning it completely:
 cd ~/.local; rm -Rf rai-robotModels;
 git clone https://github.com/MarcToussaint/rai-robotModels.git
 ```
-<!--
 * You can download other examples and test:
 ```
 wget https://github.com/MarcToussaint/rai-python/raw/master/examples/skeleton-solving-example.py
@@ -44,7 +44,7 @@ python3 skeleton-solving-example.py
 ```
 -->
 
-## tested within a ubuntu:latest docker:
+### tested within a ubuntu:latest docker:
 ```
 sudo apt install --yes liblapack3 freeglut3 libglew-dev python3 python3-pip
 python3 -m pip install --user robotic numpy scipy
@@ -52,52 +52,49 @@ python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
 
 
-## Installation from source
+## Installation from source with real Franka & realsense support
 
 This assumes a standard Ubuntu 20.04 (or 18.04) machine.
 
-* Clone the repo:
+* Install Ubuntu and python packages:
 ```
-git clone --recursive https://github.com/MarcToussaint/rai-python.git
-cd rai-python
-```
+sudo apt install --yes \
+  g++ clang make gnupg cmake git wget \
+  liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev libccd-dev \
+  libjsoncpp-dev libyaml-cpp-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
+  libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
+  python3-dev python3 python3-pip
 
-* Install Ubuntu packages. The following should do this automatically; if you don't like this, call `make -j1 printUbuntuAll` to see which code components depend on which Ubuntu packages, and install by hand.
-```
-sudo apt-get update
-make -C rai -j1 installUbuntuAll  # calls sudo apt-get install; you can always interrupt
-```
-
-* Install python packages, including pybind:
-```
 echo 'export PATH="${PATH}:$HOME/.local/bin"' >> ~/.bashrc   #add this to your .bashrc, if not done already
-sudo apt-get install python3 python3-dev python3-numpy python3-pip python3-distutils
-pip3 install --user --upgrade pip
-pip3 install --user jupyter nbconvert matplotlib pybind11
+python3 -m pip install --user numpy matplotlib jupyter nbconvert pybind11
 ```
 (If tab-autocomplete for jupyter does not work, try `pip3 install --user jedi==0.17.2` )
 
-* Compile using cmake:
+* Install some external libs by source. You can skip librealsense and libfranka if you disable below. (To not duplicate instructions, we use the same script as the docker here):
 ```
-ln -s build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
-make -C rai cleanAll
-make -C rai unityAll
-mkdir build
-cd build
-cmake ..
-make -j $(command nproc)
+wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
+./install.sh fcl
+./install.sh physx
+./install.sh librealsense
+./install.sh libfranka
 ```
 
-* Test a first notebook, then checkout all notebooks in `notebooks/` and `rai/test/ry`
+* Clone, compile and install this repo (note the USE_REALSENSE and USE_LIBFRANKA options!):
 ```
-jupyter-notebook tutorials/1-basics.ipynb
+cd $HOME/git
+git clone --recursive https://github.com/MarcToussaint/rai-python.git
+cp rai-python/build_utils/CMakeLists-ubuntu.txt rai-python/CMakeLists.txt
+export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
+cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON rai-python -B rai-python/build
+make -C rai-python/build install
 ```
 
-* Other tests
+* This should install everything in .local/lib/python*/site-packages/robotic. Test:
 ```
-cd examples
-python3 skeleton-solving-example.py
+python3 -c 'from robotic import ry; print("ry version:", ry.__version__, ry.compiled());'
+python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
+
 
 ## Building a wheel within a manylinux docker
 
@@ -112,7 +109,6 @@ cd build_utils
 ./run-docker.sh
 ## inside docker:
 cd local #this mounts rai-python/
-make -C rai -j1 unityAll
 build_utils/build-wheels.sh
 exit
 ```
@@ -127,6 +123,7 @@ twine upload dist/*.whl
 ```
 
 
+<!--
 ## Use of the wheel binary in C++
 
 * Get the binary lib by installing the pip package:
@@ -148,4 +145,4 @@ cp $HOME/git/rai-python/botop/src/* -Rf $HOME/opt/include/rai
 ```
 gcc script2-IK.cpp -I$HOME/opt/include/rai -L$HOME/opt/lib -lry.cpython-36m-x86_64-linux-gnu -lstdc++ `python3-config --ldflags`
 ```
-
+-->
