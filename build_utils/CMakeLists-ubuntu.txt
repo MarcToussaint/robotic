@@ -182,8 +182,11 @@ message(STATUS "[rai] compiler flags: " "${_defs}")
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
 target_link_libraries(kinEdit rai)
 
-#add_executable(bot bin/bot/main.cpp)
-#target_link_libraries(bot rai)
+add_executable(meshTool rai/bin/src_meshTool/main.cpp)
+target_link_libraries(meshTool rai)
+
+add_executable(bot botop/bin/bot/main.cpp)
+target_link_libraries(bot rai)
 
 ################################################################################
 
@@ -213,5 +216,5 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 install(
-  TARGETS kinEdit
+  TARGETS kinEdit meshTool bot
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

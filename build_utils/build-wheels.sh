@@ -2,7 +2,6 @@
 
 rm -f CMakeLists.txt
 ln -s build_utils/CMakeLists-docker.txt CMakeLists.txt
-#make -C rai -j1 unityAll
 mkdir -p build
 
 ### delete old 
