@@ -119,7 +119,7 @@ exit
 python3.8 -m pip install --user dist/robotic-*cp38*.whl --force-reinstall
 python3.10 -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
 # or
-twine upload dist/*.whl
+twine upload dist/*.whl --repository robotic
 ```
 
 
