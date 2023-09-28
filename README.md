@@ -1,9 +1,20 @@
-# python bindings to rai
+# Robotic Control Interface & Manipulation Planning Library
 
-This repo builds python bindings to
-[rai](https://github.com/MarcToussaint/rai), including a Pypi wheel.
+A python library to operate a real or simulated robot, work with
+robot/world configurations, compute differentiable features, formulate
+and solve constrained optimization problems (for inverse kinematics,
+path optimization, and manipulation planning), and interfacing to
+various physical simulation engines.
+
+These python bindings were developed for easier access to the underlying
+[C++](https://github.com/MarcToussaint/rai) code base, esp. for teaching and students. This code base is how we, in
+the (Learning & Intelligent Systems
+Lab)[https://argmin.lis.tu-berlin.de/], operate our robots.
+
 
 ## Documentation
+
+Please follow the documentation and tutorials here: https://marctoussaint.github.io/robotics-course/
 
 Although very incomplete, the best intro to the code is found as part
 of the

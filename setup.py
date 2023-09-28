@@ -15,52 +15,32 @@ class BinaryDistribution(dist.Distribution):
     def has_ext_modules(foo):
         return True
 
-class CustomCommand(build_ext):
-    """Customized setuptools build_ext command"""
-    def run(self):
-        version = platform.python_version_tuple()[0] + platform.python_version_tuple()[1]
-        print('[rai] custom copy lib, python version tag:', version)
-        subprocess.check_call('cp -f build/ry.*'+version+'*.so robotic/ry.so', shell=True)
-        subprocess.check_call('strip --strip-unneeded robotic/ry.so', shell=True)
-        build_ext.run(self)
+# class CustomCommand(build_ext):
+#     """Customized setuptools build_ext command"""
+#     def run(self):
+#         version = platform.python_version_tuple()[0] + platform.python_version_tuple()[1]
+#         print('[rai] custom copy lib, python version tag:', version)
+#         subprocess.check_call('cp -f build/ry.*'+version+'*.so robotic/ry.so', shell=True)
+#         subprocess.check_call('strip --strip-unneeded robotic/ry.so', shell=True)
+#         build_ext.run(self)
 
+from pathlib import Path
+long_description = (Path(__file__).parent / "README.md").read_text()
 
 setup(
     name='robotic',
     packages=['robotic'],
     package_data={'robotic': ['ry.so', 'ry.pyi', 'version.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*']},
     include_package_data=True,
-    cmdclass={
-        'build_ext': CustomCommand,
-    },
+    # cmdclass={ 'build_ext': CustomCommand },
 
-    # data_files=[
-    #     ('rai-robotModels/objects/',  glob.glob('rai-robotModels/objects/*.g')),
-    #     ('rai-robotModels/panda/',  glob.glob('rai-robotModels/panda/*.g')),
-    #     ('rai-robotModels/panda/meshes/', glob.glob('rai-robotModels/panda/meshes/*.ply')),
-    #     ('rai-robotModels/pr2/', glob.glob('rai-robotModels/pr2/*.g')),
-    #     ('rai-robotModels/pr2/meshes/', glob.glob('rai-robotModels/pr2/meshes/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/forearm_v0/', glob.glob('rai-robotModels/pr2/meshes/forearm_v0/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/head_v0/', glob.glob('rai-robotModels/pr2/meshes/head_v0/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/shoulder_v0/', glob.glob('rai-robotModels/pr2/meshes/shoulder_v0/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/torso_v0/', glob.glob('rai-robotModels/pr2/meshes/torso_v0/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/base_v0/', glob.glob('rai-robotModels/pr2/meshes/base_v0/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/gripper_v0/', glob.glob('rai-robotModels/pr2/meshes/gripper_v0/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/tilting_laser_v0/', glob.glob('rai-robotModels/pr2/meshes/tilting_laser_v0/*.ply')),
-    #     ('rai-robotModels/pr2/meshes/upper_arm_v0/', glob.glob('rai-robotModels/pr2/meshes/upper_arm_v0/*.ply')),
-    #     ('rai-robotModels/robotiq/', glob.glob('rai-robotModels/robotiq/*.g')),
-    #     ('rai-robotModels/robotiq/meshes/visual/', glob.glob('rai-robotModels/robotiq/meshes/visual/*.ply')),
-    #     ('rai-robotModels/scenarios/', glob.glob('rai-robotModels/scenarios/*.g')),
-    #     ('rai-robotModels/tests/', glob.glob('rai-robotModels/tests/*.g')),
-    # ],
-    
-    description="Robotic AI basics",
-    long_description="Robotic AI basics, see https://github.com/MarcToussaint/rai",
+    description="Robotic Control Interface & Manipulation Planning Library",
+    long_description=long_description,
     long_description_content_type="text/markdown",
 
     distclass=BinaryDistribution,
     version=myversion['__version__'],
-    url='https://www.user.tu-berlin.de/mtoussai/',
+    url='https://github.com/MarcToussaint/rai-python/',
     author='Marc Toussaint',
     author_email='toussaint@tu-berlin.de',
 )
