@@ -8,22 +8,15 @@ various physical simulation engines.
 
 These python bindings were developed for easier access to the underlying
 [C++](https://github.com/MarcToussaint/rai) code base, esp. for teaching and students. This code base is how we, in
-the (Learning & Intelligent Systems
-Lab)[https://argmin.lis.tu-berlin.de/], operate our robots.
+the [Learning & Intelligent Systems
+Lab](https://argmin.lis.tu-berlin.de/), operate our robots.
 
 
 ## Documentation
 
 Please follow the documentation and tutorials here: https://marctoussaint.github.io/robotics-course/
 
-Although very incomplete, the best intro to the code is found as part
-of the
-[robotics-course documentation](https://marctoussaint.github.io/robotics-course/). Jupyter
-notebooks that demonstrate the use are found in the
-[rai tests](https://github.com/MarcToussaint/rai/tree/master/test/ry)
-and in [tutorials/](tutorials/).
-
-## Installation via pip (without real Franka & realsense support)
+## Installation via pip (simulation only, no real Franka & realsense support)
 
 * The pip package was compiled for python3.6 .. 3.10, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
 ```
@@ -55,13 +48,6 @@ python3 skeleton-solving-example.py
 ```
 -->
 
-### tested within a ubuntu:latest docker:
-```
-sudo apt install --yes liblapack3 freeglut3 libglew-dev python3 python3-pip
-python3 -m pip install --user robotic numpy scipy
-python3 -c 'from robotic import ry; ry.test.RndScene()'
-```
-
 
 ## Installation from source with real Franka & realsense support
 
@@ -76,18 +62,16 @@ sudo apt install --yes \
   libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
   python3-dev python3 python3-pip
 
-echo 'export PATH="${PATH}:$HOME/.local/bin"' >> ~/.bashrc   #add this to your .bashrc, if not done already
 python3 -m pip install --user numpy matplotlib jupyter nbconvert pybind11
 ```
-(If tab-autocomplete for jupyter does not work, try `pip3 install --user jedi==0.17.2` )
 
-* Install some external libs by source. You can skip librealsense and libfranka if you disable below. (To not duplicate instructions, we use the same script as the docker here):
+* Install some external libs by source. You can skip librealsense and libfranka if you disable below. To standardize installations, I use a basic script:
 ```
 wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
 ./install.sh fcl
 ./install.sh physx
 ./install.sh librealsense
-./install.sh libfranka
+./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.7.1 libfranka
 ```
 
 * Clone, compile and install this repo (note the USE_REALSENSE and USE_LIBFRANKA options!):
@@ -111,13 +95,12 @@ python3 -c 'from robotic import ry; ry.test.RndScene()'
 
 * Build the docker
 ```
-cd build_utils
-./build-docker.sh
+build_utils/build-docker.sh
 ```
 
 * Run docker and compile wheels inside
 ```
-./run-docker.sh
+build_utils/run-docker.sh
 ## inside docker:
 cd local #this mounts rai-python/
 build_utils/build-wheels.sh
@@ -126,7 +109,6 @@ exit
 
 * Outside of docker, install locally with pip or push wheels to pypi
 ```
-# e.g.
 python3.8 -m pip install --user dist/robotic-*cp38*.whl --force-reinstall
 python3.10 -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
 # or

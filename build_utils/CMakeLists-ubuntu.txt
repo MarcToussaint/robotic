@@ -173,11 +173,18 @@ if(USE_PYBIND)
 endif()
 
 ################################################################################
+#
+# verbosity: info on eventual compiler flags
 
 get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 message(STATUS "[rai] compiler flags: " "${_defs}")
 
 ################################################################################
+
+add_custom_target(docstrings ALL
+  DEPENDS ry
+  COMMAND pybind11-stubgen --ignore-invalid=all ry
+  COMMAND mv stubs/ry-stubs/__init__.pyi ry.pyi)
 
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
 target_link_libraries(kinEdit rai)
@@ -204,7 +211,7 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py
+  FILES robotic/__init__.py robotic/version.py ${CMAKE_BINARY_DIR}/ry.pyi
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(

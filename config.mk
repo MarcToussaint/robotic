@@ -13,7 +13,7 @@
 #OPTIM = fast
 #OPTIM = fast_debug
 
-#RAI_CMAKE = 1
+RAI_CMAKE = 1
 
 ## by default we use OpenGL a lot, but can be disabled
 #GL = 0

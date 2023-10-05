@@ -30,9 +30,10 @@ long_description = (Path(__file__).parent / "README.md").read_text()
 setup(
     name='robotic',
     packages=['robotic'],
-    package_data={'robotic': ['ry.so', 'ry.pyi', 'version.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*']},
+    package_data={'robotic': ['ry.so', 'ry.pyi', 'version.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*', 'rai-robotModels/*/*/*/*/*', 'rai-robotModels/*/*/*/*/*/*']},
     include_package_data=True,
     # cmdclass={ 'build_ext': CustomCommand },
+    scripts=['rai/bin/urdf2rai.py'],
 
     description="Robotic Control Interface & Manipulation Planning Library",
     long_description=long_description,

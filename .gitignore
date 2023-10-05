@@ -2,6 +2,7 @@ CMakeLists.txt
 dist/
 robotic.egg-info/
 rai-robotModels
+ry.pyi
 
 %% compile temporaries
 /build
