@@ -1,7 +1,7 @@
 #/bin/sh
 
 rm -f CMakeLists.txt
-ln -s build_utils/CMakeLists-docker.txt CMakeLists.txt
+ln -s _build_utils/CMakeLists-docker.txt CMakeLists.txt
 mkdir -p build
 
 ### delete old 
@@ -14,14 +14,10 @@ rm -Rf rai-robotModels
 mkdir rai-robotModels
 cd rai-robotModels
 mkdir -p objects; cp ../../rai-robotModels/objects/*.g objects
-mkdir -p panda; cp ../../rai-robotModels/panda/*.g panda
-  cp -R ../../rai-robotModels/panda/meshes panda
-mkdir -p pr2; cp ../../rai-robotModels/pr2/*.g pr2
-  cp -R ../../rai-robotModels/pr2/meshes pr2
-mkdir -p baxter; cp ../../rai-robotModels/baxter/*.g baxter
-  cp -R ../../rai-robotModels/baxter/*_description baxter
-mkdir -p robotiq; cp ../../rai-robotModels/robotiq/*.g robotiq
-  cp -R ../../rai-robotModels/robotiq/meshes robotiq
+mkdir -p panda; cp ../../rai-robotModels/panda/*.g panda;  cp -R ../../rai-robotModels/panda/meshes panda
+mkdir -p pr2; cp ../../rai-robotModels/pr2/*.g pr2;  cp -R ../../rai-robotModels/pr2/meshes pr2
+mkdir -p baxter; cp ../../rai-robotModels/baxter/*.g baxter;  cp -R ../../rai-robotModels/baxter/*_description baxter
+mkdir -p robotiq; cp ../../rai-robotModels/robotiq/*.g robotiq;  cp -R ../../rai-robotModels/robotiq/meshes robotiq
 mkdir -p scenarios; cp ../../rai-robotModels/scenarios/*.g scenarios
 mkdir -p tests; cp ../../rai-robotModels/tests/*.g tests
 cd ../..

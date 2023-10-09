@@ -78,7 +78,7 @@ wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x 
 ```
 cd $HOME/git
 git clone --recursive https://github.com/MarcToussaint/rai-python.git
-cp rai-python/build_utils/CMakeLists-ubuntu.txt rai-python/CMakeLists.txt
+cp rai-python/_build_utils/CMakeLists-ubuntu.txt rai-python/CMakeLists.txt
 export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
 cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON rai-python -B rai-python/build
 make -C rai-python/build install
@@ -95,15 +95,15 @@ python3 -c 'from robotic import ry; ry.test.RndScene()'
 
 * Build the docker
 ```
-build_utils/build-docker.sh
+_build_utils/build-docker.sh
 ```
 
 * Run docker and compile wheels inside
 ```
-build_utils/run-docker.sh
+_build_utils/run-docker.sh
 ## inside docker:
 cd local #this mounts rai-python/
-build_utils/build-wheels.sh
+_build_utils/build-wheels.sh
 exit
 ```
 
