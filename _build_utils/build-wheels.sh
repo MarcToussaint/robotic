@@ -6,7 +6,6 @@ mkdir -p build
 
 ### delete old 
 rm -Rf robotic/*ry.* robotic/*~ robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
-unalias cp
 
 ### copy robotModels files
 cd robotic
@@ -31,13 +30,13 @@ for ver in 8 9 10 6 7; do
     cmake -DPYBIND11_PYTHON_VERSION=3.$ver .. && make ry
     strip --strip-unneeded ry.*3$ver*.so
     echo -e "\n\n======== documenting (python version " $ver ") ========"
-    /opt/_internal/cpython-3.$ver.*/bin/pybind11-stubgen --ignore-invalid=all ry
+    /opt/_internal/cpython-3.$ver.*/bin/pybind11-stubgen ry
     cd ..
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
     cp -f build/ry.*3$ver*.so robotic/ry.so
-    cp -f build/stubs/ry-stubs/__init__.pyi robotic/ry.pyi
+    cp -f build/stubs/ry*/__init__.pyi robotic/ry.pyi
     python3.$ver setup.py bdist_wheel
-    #break
+    break
 done
 
 echo -e "\n\n======== renaming wheels ========"

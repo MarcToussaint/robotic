@@ -181,7 +181,7 @@ message(STATUS "[rai] compiler flags: " "${_defs}")
 
 ################################################################################
 
-add_custom_target(docstrings ALL
+add_custom_target(docstrings #ALL
   DEPENDS ry
   COMMAND pybind11-stubgen ry
   COMMAND mv stubs/ry*/__init__.pyi ry.pyi)

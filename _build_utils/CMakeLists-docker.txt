@@ -106,7 +106,7 @@ if(USE_BULLET)
   find_package(Bullet REQUIRED)
   add_definitions(-DRAI_BULLET)
   include_directories(${BULLET_INCLUDE_DIRS})
-#  target_link_libraries(rai ${BULLET_LIBRARIES})
+  target_link_libraries(rai ${BULLET_LIBRARIES})
   message(STATUS "[rai] using bullet libs:" ${BULLET_LIBRARIES})
 endif()
 
@@ -168,8 +168,16 @@ endif()
 
 ################################################################################
 
-#add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
-#target_link_libraries(kinEdit rai)
+add_executable(raiView rai/bin/src_kinEdit/main.cpp)
+target_link_libraries(raiView PRIVATE
+  rai
+  dl libjsoncpp.a lapack pthread rt X11 libatlas.a
+    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
+    #${BULLET_LIBRARIES}
+    libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a
+    libBullet3Collision.a   libBullet3Dynamics.a  libBullet3OpenCL_clew.a  libBulletDynamics.a   libBulletSoftBody.a
+    libLinearMath.a 
+  )
 
 #add_executable(testSim rai/test/Kin/simulation/main.cpp)
 #target_link_libraries(testSim rai)
