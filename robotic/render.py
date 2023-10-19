@@ -48,6 +48,7 @@ class NvisiiRenderer:
         # nvisii.disable_dome_light_sampling()
 
     def __del__(self):
+        print('-- shutting down Nvisii')
         nvisii.deinitialize()
 
     def addConfig(self, C):
@@ -65,12 +66,12 @@ class NvisiiRenderer:
                 col = F['color']
                 if len(col) == 4:
                     continue
-                if len(col) == 1:
-                    col = [col[0], col[0], col[0]]
                 pos = f.getPosition()
                 quat = f.getQuaternion()
 
                 if not 'temperature' in F:
+                    if len(col) == 1:
+                        col = [col[0], col[0], col[0]]
                     if col == None:
                         col = [.8, .5, .3]
                     obj = nvisii.entity.create(
@@ -92,7 +93,10 @@ class NvisiiRenderer:
                         transform = nvisii.transform.create(name=name, position=pos, rotation=flipQuat(quat)),
                         light = nvisii.light.create(f'{name}_light')
                     )
-                    light.get_light().set_intensity(1.)
+                    if len(col) == 1:
+                        light.get_light().set_intensity(col[0])
+                    else:
+                        light.get_light().set_intensity(1.)
                     light.get_light().set_exposure(3)
                     # light.get_light().set_color(col)
                     light.get_light().set_temperature(F['temperature'])
