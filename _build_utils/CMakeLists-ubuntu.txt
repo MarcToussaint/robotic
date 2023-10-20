@@ -183,7 +183,7 @@ message(STATUS "[rai] compiler flags: " "${_defs}")
 
 add_custom_target(docstrings #ALL
   DEPENDS ry
-  COMMAND pybind11-stubgen ry
+  COMMAND pybind11-stubgen --ignore-invalid=all ry
   COMMAND mv stubs/ry*/__init__.pyi ry.pyi)
 
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
