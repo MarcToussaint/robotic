@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CameraView, Offscreen (headless), and Realistic Rendering &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Path finding example" href="rrt-example.html" />
+    <link rel="prev" title="Direct Simulation Interface" href="simulation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#basics-on-configurations-botop-komo">Basics on Configurations, BotOp &amp; KOMO</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#in-depth">In Depth</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="configurationEditing.html">Importing, Editing &amp; Manipulating Configurations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="komo-reporting.html">KOMO: Reporting &amp; Explaining Convergence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation.html">Direct Simulation Interface</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">CameraView, Offscreen (headless), and Realistic Rendering</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Grabbing-images-and-depth-from-the-view-window">Grabbing images and depth from the view window</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Saving-pngs-for-video-generation">Saving pngs for video generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Offscreen-(headless)-CameraView">Offscreen (headless) CameraView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Point-Cloud">Point Cloud</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Physics-based-Rendering-using-Nvidia-NVISII">Physics-based Rendering using Nvidia NVISII</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rrt-example.html">Path finding example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nlp-solver.html">Optimization (NLP formulation and solving)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rai.html">rai python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">CameraView, Offscreen (headless), and Realistic Rendering</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/rendering.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="CameraView,-Offscreen-(headless),-and-Realistic-Rendering">
+<h1>CameraView, Offscreen (headless), and Realistic Rendering<a class="headerlink" href="#CameraView,-Offscreen-(headless),-and-Realistic-Rendering" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">view</span></code> is realized using very basic OpenGL rendering. It is straight-forward to grab the image (and, e.g., make a video from such images), as well as the depth (e.g. to simulate a depth camera).</p>
+<p>However, grabbing from the actual view window is brittle, as it depends on the window manager and might give weird results if the window is not visible. The package provides an offscreen (headless) implementation of the OpenGL rendering, which allows to compute images and depth (also object segmentation labels) without window or X.</p>
+<p>The simple OpenGL rendering is ok for depth camera simulation, but not visually realistic. An interface to Nvidia’s NVISSI physics-based rendering enables very flexible realistic rendering.</p>
+<section id="Grabbing-images-and-depth-from-the-view-window">
+<h2>Grabbing images and depth from the view window<a class="headerlink" href="#Grabbing-images-and-depth-from-the-view-window" title="Link to this heading"></a></h2>
+<p>The view is internally implemented using glfw and most basic opengl. It’s simple to grab the rgb and depth buffers.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+import numpy as np
+import matplotlib.pyplot as plt
+print(ry.__version__, ry.compiled())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.0.23 compile time: Oct 20 2023 14:36:37
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb = C.view_getRgb()
+depth = C.view_getDepth()
+print(rgb.shape, depth.shape)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(400, 400, 3) (400, 400)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
+fig.add_subplot(1,2,1)
+plt.imshow(rgb)
+fig.add_subplot(1,2,2)
+plt.imshow(depth)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_rendering_5_0.png" src="../_images/tutorials_rendering_5_0.png" />
+</div>
+</div>
+<p>The camera pose can be set to be at a particular frame. (Create a dedicated frame, if you want freedom to set the camera). Also camera intrinsics (focalLength, width, height) can be set with frame attributes. Our scene has a <code class="docutils literal notranslate"><span class="pre">cameraTop</span></code> predefined:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.getFrame(&#39;cameraTop&#39;)
+f.setAttribute(&#39;focalLength&#39;, .5) # wide angle
+f.setAttribute(&#39;width&#39;, 200) # super wide angle
+f.setAttribute(&#39;height&#39;, 200) # super wide angle
+C.view_setCamera(f)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Saving-pngs-for-video-generation">
+<h2>Saving pngs for video generation<a class="headerlink" href="#Saving-pngs-for-video-generation" title="Link to this heading"></a></h2>
+<p>There might be many better ways to generate a video. But a simple one it to write many numered pngs and call ffmpeg on shell. For instance:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># first ensure a folder
+import os
+os.system(&#39;mkdir -p z.vid&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>q = C.getJointState()
+
+for t in range(30):
+    q = q + .02
+    C.setJointState(q)
+    C.view()
+    C.view_savePng(&#39;z.vid/&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>os.system(&#39;ffmpeg -v 16 -f image2 -framerate 12 -i z.vid/%04d.png -c:v libx264 -r 25 -pix_fmt yuv420p -y vid.mp4&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>…which creates an mp4 with 12 images per second.</p>
+</section>
+<section id="Offscreen-(headless)-CameraView">
+<h2>Offscreen (headless) CameraView<a class="headerlink" href="#Offscreen-(headless)-CameraView" title="Link to this heading"></a></h2>
+<p>But this way of grabbing images and depth from the view window is brittle (as it depends on the window manager) and also includes markers and non-visual objects. A much better way is to use offscreen method:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam = ry.CameraView(C)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth = cam.computeImageAndDepth(C)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
+fig.add_subplot(1,2,1)
+plt.imshow(rgb)
+fig.add_subplot(1,2,2)
+plt.imshow(depth)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_rendering_16_0.png" src="../_images/tutorials_rendering_16_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam.setCamera(&#39;cameraTop&#39;) # cameraWrist is another pre-defined frame
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;robotic.ry.CameraViewSensor at 0x7fb86c52d8b0&gt;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth = cam.computeImageAndDepth(C)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
+fig.add_subplot(1,2,1)
+plt.imshow(rgb)
+fig.add_subplot(1,2,2)
+plt.imshow(depth)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_rendering_19_0.png" src="../_images/tutorials_rendering_19_0.png" />
+</div>
+</div>
+</section>
+<section id="Point-Cloud">
+<h2>Point Cloud<a class="headerlink" href="#Point-Cloud" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+import matplotlib.pyplot as plt
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam = ry.CameraView(C)
+cam.setCamera(&#39;cameraTop&#39;)
+rgb, depth = cam.computeImageAndDepth(C)
+pcl = ry.depthImage2PointCloud(depth, cam.getFxyCxy())
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(rgb.shape, depth.shape, pcl.shape)
+print(C.view_fxycxy())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(360, 640, 3) (360, 640) (360, 640, 3)
+[1881.85195923 1881.85195923  200.          200.        ]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
+fig.add_subplot(1,2,1)
+plt.imshow(rgb)
+fig.add_subplot(1,2,2)
+plt.imshow(depth)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_rendering_25_0.png" src="../_images/tutorials_rendering_25_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.delFrame(&#39;pcl2&#39;)
+f = C.addFrame(&#39;pcl2&#39;, &#39;cameraTop&#39;)
+f.setPointCloud(pcl, [255,0,0])
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- WARNING:kin.cpp:getFrame:392(-1) cannot find frame named &#39;pcl2&#39;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+</section>
+<section id="Physics-based-Rendering-using-Nvidia-NVISII">
+<h2>Physics-based Rendering using Nvidia NVISII<a class="headerlink" href="#Physics-based-Rendering-using-Nvidia-NVISII" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+from matplotlib import pyplot as plt
+from robotic import render
+print(&#39;version&#39;, ry.compiled())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ImportError</span>                               Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_90908/164390504.py</span> in <span class="ansi-cyan-fg">?</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">from</span> robotic <span class="ansi-green-fg">import</span> ry
+<span class="ansi-green-intense-fg ansi-bold">      4</span> <span class="ansi-green-fg">from</span> matplotlib <span class="ansi-green-fg">import</span> pyplot <span class="ansi-green-fg">as</span> plt
+<span class="ansi-green-intense-fg ansi-bold">      5</span> <span class="ansi-green-fg">from</span> robotic <span class="ansi-green-fg">import</span> render
+<span class="ansi-green-intense-fg ansi-bold">      6</span> print<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;version&#39;</span><span class="ansi-blue-fg">,</span> ry<span class="ansi-blue-fg">.</span>compiled<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/.local/lib/python3.8/site-packages/robotic/render.py</span> in <span class="ansi-cyan-fg">?</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-green-fg">from</span> robotic <span class="ansi-green-fg">import</span> ry
+<span class="ansi-green-intense-fg ansi-bold">      2</span> <span class="ansi-green-fg">import</span> numpy <span class="ansi-green-fg">as</span> np
+<span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">import</span> nvisii
+<span class="ansi-green-intense-fg ansi-bold">      4</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span> <span class="ansi-green-fg">def</span> quatMult<span class="ansi-blue-fg">(</span>b<span class="ansi-blue-fg">,</span> c<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">      6</span>     a <span class="ansi-blue-fg">=</span> b<span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">;</span>
+
+<span class="ansi-green-fg">~/.local/lib/python3.8/site-packages/nvisii/__init__.py</span> in <span class="ansi-cyan-fg">?</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">     49</span>
+<span class="ansi-green-intense-fg ansi-bold">     50</span>
+<span class="ansi-green-intense-fg ansi-bold">     51</span>
+<span class="ansi-green-intense-fg ansi-bold">     52</span>
+<span class="ansi-green-fg">---&gt; 53</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">from</span> sys <span class="ansi-green-fg">import</span> version_info <span class="ansi-green-fg">as</span> _swig_python_version_info
+<span class="ansi-green-intense-fg ansi-bold">     54</span> <span class="ansi-green-fg">if</span> _swig_python_version_info <span class="ansi-blue-fg">&lt;</span> <span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">7</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     55</span>     <span class="ansi-green-fg">raise</span> RuntimeError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;Python 2.7 or later required&#34;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     56</span>
+
+<span class="ansi-red-fg">ImportError</span>: libcuda.so.1: cannot open shared object file: No such file or directory
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame(&#39;light1&#39;) .setPosition([1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.5]) .setAttribute(&#39;temperature&#39;, 6000)
+C.addFrame(&#39;light2&#39;) .setPosition([-1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.8]) .setAttribute(&#39;temperature&#39;, 6000)
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nv = render.NvisiiRenderer(600, 400, C.view_focalLength())
+nv.addConfig(C)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[24], line 1</span>
+<span class="ansi-green-fg">----&gt; 1</span> nv <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">render</span><span style="color: rgb(98,98,98)">.</span>NvisiiRenderer(<span style="color: rgb(98,98,98)">600</span>, <span style="color: rgb(98,98,98)">400</span>, C<span style="color: rgb(98,98,98)">.</span>view_focalLength())
+<span class="ansi-green-intense-fg ansi-bold">      2</span> nv<span style="color: rgb(98,98,98)">.</span>addConfig(C)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;render&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nv.setCamera(C)
+rgb = nv.render(256)
+plt.imshow(rgb)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[25], line 1</span>
+<span class="ansi-green-fg">----&gt; 1</span> <span class="ansi-yellow-bg">nv</span><span style="color: rgb(98,98,98)">.</span>setCamera(C)
+<span class="ansi-green-intense-fg ansi-bold">      2</span> rgb <span style="color: rgb(98,98,98)">=</span> nv<span style="color: rgb(98,98,98)">.</span>render(<span style="color: rgb(98,98,98)">256</span>)
+<span class="ansi-green-intense-fg ansi-bold">      3</span> plt<span style="color: rgb(98,98,98)">.</span>imshow(rgb)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;nv&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del nv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[26], line 1</span>
+<span class="ansi-green-fg">----&gt; 1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">del</span> nv
+
+<span class="ansi-red-fg">NameError</span>: name &#39;nv&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="simulation.html" class="btn btn-neutral float-left" title="Direct Simulation Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rrt-example.html" class="btn btn-neutral float-right" title="Path finding example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

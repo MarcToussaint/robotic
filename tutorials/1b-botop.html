@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BotOp (Robot Operation) interface &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="KOMO: Motion Optimization" href="1c-komo.html" />
+    <link rel="prev" title="Configurations" href="1a-configurations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#basics-on-configurations-botop-komo">Basics on Configurations, BotOp &amp; KOMO</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1a-configurations.html">Configurations</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">BotOp (Robot Operation) interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Sending-motion-based-on-IK">Sending motion based on IK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Reactive-control:-Overwriting-the-reference">Reactive control: Overwriting the reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Aborting-motion">Aborting motion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Gripper-operation">Gripper operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Camera-&amp;-Point-Could">Camera &amp; Point Could</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Shutdown">Shutdown</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Parameters">Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="1c-komo.html">KOMO: Motion Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1d-real.html">Starting with a real robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="features.html">Differentiable Features &amp; Collision Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#in-depth">In Depth</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rai.html">rai python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">BotOp (Robot Operation) interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/1b-botop.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="BotOp-(Robot-Operation)-interface">
+<h1>BotOp (Robot Operation) interface<a class="headerlink" href="#BotOp-(Robot-Operation)-interface" title="Link to this heading"></a></h1>
+<p>BotOp (=robot operation) defines a very narrow interface to control a real or simulated robot. While in initial years we tried all kinds of other interfaces (ROS-given, operational space control interfaces, controller state machines, etc), this one seems most pragmatic, simple, transparent, and compatible to our research work at the LIS research team. There is no ROS or complex IPC involved, just a few threads (communicating with hardwares) interfaced via BotOp.</p>
+<p>The interface essentially provides move methods to set/overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera.</p>
+<p>This interface quite different to a more <em>generic physical simulation</em> interface. If you’re interested in the latter (e.g. to implement a gym environment) look at the <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> tutorial. BotOp uses a <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> (optionally) as an underlying engine, but is quite different in that it is wrapped as a real-time threaded process that emulates the specific BotOp interface to a real robot – to make it swappable with a real robot. If BotOp it run in simulation mode, the simulation can be run
+in many different modes: pure kinematic (no physics for objects), a physics simulator with physics for objects but still kinematic robot, a physic simulator with PD motors for the robot.</p>
+<section id="Sending-motion-based-on-IK">
+<h2>Sending motion based on IK<a class="headerlink" href="#Sending-motion-based-on-IK" title="Link to this heading"></a></h2>
+<p>We’ll show how to make the robot move to pre-computed joint space poses, e.g. computed via IK. Later we modify this to <em>overwriting</em> the motion reference with high frequency, which essentially realizes MPC-style control.</p>
+<p>The first step (also for operating the real robot) is always to load a configuration:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+import numpy as np
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;../rai-robotModels/scenarios/pandaSingle.g&#39;))
+C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>Let’s open a BotOp interface in simulation (False). True would directly open communication to one or two pandas (depending no how many are defined in C).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot = ry.BotOp(C, useRealRobot=False)
+#note that in sim, when physx multibody is activated, arms are going down! free floating...
+</pre></div>
+</div>
+</div>
+<p>Note the simulation window, showing that the simulation is running in a thread and the given <em>control reference time</em>.</p>
+<p>Let’s define 2 trivial reference poses, q0=home and q1=(2nd joint bend), so that we can move back and forth between them:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qHome = bot.get_qHome()
+q0 = qHome.copy()
+q1 = q0.copy()
+q1[1] = q1[1] + .2
+print(q0, q1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[ 0.  -0.5  0.  -2.   0.   2.  -0.5] [ 0.  -0.3  0.  -2.   0.   2.  -0.5]
+</pre></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> is the simplest way to move the robot from current to target. It internally creates a cubic B-spline to the target with optimal timing and follows it. The call is <em>non-blocking</em>. Also, your workspace config C is not kept in sync with the real/sim. If you want to wait till the motion is finished, you need to do manually checking the <code class="docutils literal notranslate"><span class="pre">getTimeToEnd</span></code> (=time til the end of the given spline reference), and meanwhile staying sync’ed.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.moveTo(q1)
+
+while bot.getTimeToEnd()&gt;0:
+    bot.sync(C, .1)
+</pre></div>
+</div>
+</div>
+<p>We can append to the internal spline reference at any time: As <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> is non-blocking, you can append several moves like this:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;timeToEnd:&#39;, bot.getTimeToEnd())
+bot.moveTo(q0)
+print(&#39;timeToEnd:&#39;, bot.getTimeToEnd())
+bot.moveTo(q1)
+print(&#39;timeToEnd:&#39;, bot.getTimeToEnd())
+bot.moveTo(q0)
+
+while bot.getTimeToEnd()&gt;0:
+    bot.sync(C, .1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+timeToEnd: -0.09828105793499753
+timeToEnd: 1.0957189420649807
+timeToEnd: 2.191437884129961
+</pre></div></div>
+</div>
+</section>
+<section id="Reactive-control:-Overwriting-the-reference">
+<h2>Reactive control: Overwriting the reference<a class="headerlink" href="#Reactive-control:-Overwriting-the-reference" title="Link to this heading"></a></h2>
+<p>Setting splines becomes reactive, when we can smoothly overwrite the spline reference with high frequency. Technically (internally), smoothly overwriting means to take the current dynamic state (pose, velocity) and create a new cubic B-spline with current state as start and given target as end, with optimal timing.</p>
+<p>To demonstrate this let’s consider a more involved scenario, where the target is a frame that is randomly moving, and we use repeated IK in each cycle to track it.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#this reference frame only appears in your workspace C - not the simulation!
+target = C.addFrame(&#39;target&#39;, &#39;table&#39;)
+target.setShape(ry.ST.marker, [.1])
+target.setRelativePosition([0., .3, .3])
+pos = target.getPosition()
+cen = pos.copy()
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>The following defines a very basic Inverse Kinematics method – you’ll learn more about this in the next tutorial.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def IK(C, pos):
+    q0 = C.getJointState()
+    komo = ry.KOMO(C, 1, 1, 0, False) #one phase one time slice problem, with &#39;delta_t=1&#39;, order=0
+    komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], q0) #cost: close to &#39;current state&#39;
+    komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], qHome) #cost: close to qHome
+    komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;target&#39;], ry.OT.eq, [1e1]) #constraint: gripper position
+
+    ret = ry.NLP_Solver(komo.nlp(), verbose=0) .solve()
+
+    return [komo.getPath()[0], ret]
+</pre></div>
+</div>
+</div>
+<p>The following does <em>not</em> really move the robot: it is just ‘setting’ the workspace C to the IK solution. No motion is send to the real/robot:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for t in range(20):
+    time.sleep(.1)
+    pos = cen + .98 * (pos-cen) + 0.02 * np.random.randn(3)
+    target.setPosition(pos)
+
+    q_target, ret = IK(C, pos)
+    print(ret)
+    C.setJointState(q_target)
+    C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{ time: 0.002842, evals: 6, done: 1, feasible: 1, sos: 0.0067775, f: 0, ineq: 0, eq: 0.0005408 }
+{ time: 0.002032, evals: 3, done: 1, feasible: 1, sos: 0.00321675, f: 0, ineq: 0, eq: 0.000900211 }
+{ time: 0.001523, evals: 2, done: 1, feasible: 1, sos: 0.0031297, f: 0, ineq: 0, eq: 0.00110733 }
+{ time: 0.000393, evals: 3, done: 1, feasible: 1, sos: 0.0037666, f: 0, ineq: 0, eq: 0.00255867 }
+{ time: 0.003193, evals: 4, done: 1, feasible: 1, sos: 0.00455003, f: 0, ineq: 0, eq: 0.000192847 }
+{ time: 0.001693, evals: 4, done: 1, feasible: 1, sos: 0.00367259, f: 0, ineq: 0, eq: 0.00026511 }
+{ time: 0.000392, evals: 4, done: 1, feasible: 1, sos: 0.00428734, f: 0, ineq: 0, eq: 0.000144815 }
+{ time: 0.000217, evals: 4, done: 1, feasible: 1, sos: 0.00316682, f: 0, ineq: 0, eq: 0.000338487 }
+{ time: 0.002715, evals: 4, done: 1, feasible: 1, sos: 0.00339213, f: 0, ineq: 0, eq: 0.000222226 }
+{ time: 0.000955, evals: 3, done: 1, feasible: 1, sos: 0.00354052, f: 0, ineq: 0, eq: 0.00201801 }
+{ time: 0.000375, evals: 4, done: 1, feasible: 1, sos: 0.00412341, f: 0, ineq: 0, eq: 0.000264779 }
+{ time: 0.001238, evals: 3, done: 1, feasible: 1, sos: 0.00379458, f: 0, ineq: 0, eq: 0.00320893 }
+{ time: 0.003819, evals: 4, done: 1, feasible: 1, sos: 0.00381466, f: 0, ineq: 0, eq: 0.00063563 }
+{ time: 0.001351, evals: 3, done: 1, feasible: 1, sos: 0.00433728, f: 0, ineq: 0, eq: 0.00278551 }
+{ time: 0.001375, evals: 3, done: 1, feasible: 1, sos: 0.00378, f: 0, ineq: 0, eq: 0.00317554 }
+{ time: 0.001355, evals: 3, done: 1, feasible: 1, sos: 0.00385413, f: 0, ineq: 0, eq: 0.0032276 }
+{ time: 0.00047, evals: 3, done: 1, feasible: 1, sos: 0.00407101, f: 0, ineq: 0, eq: 0.00110385 }
+{ time: 0.002052, evals: 4, done: 1, feasible: 1, sos: 0.00452004, f: 0, ineq: 0, eq: 0.000197274 }
+{ time: 0.001125, evals: 3, done: 1, feasible: 1, sos: 0.0038175, f: 0, ineq: 0, eq: 0.00375235 }
+{ time: 0.000473, evals: 4, done: 1, feasible: 1, sos: 0.00390226, f: 0, ineq: 0, eq: 0.000188478 }
+</pre></div></div>
+</div>
+<p>We now generate reative motion by smoothly overwriting the spline reference. Increasing time cost makes it more agressive (penalized total duration of estimated cubic spline).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for t in range(100):
+    bot.sync(C, .1) #keep the workspace C sync&#39;ed to real/sim, and idle .1 sec
+    pos = cen + .98 * (pos-cen) + 0.02 * np.random.randn(3)
+    target.setPosition(pos)
+
+    q_target, ret = IK(C, pos)
+    bot.moveTo(q_target, timeCost=5., overwrite=True)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Aborting-motion">
+<h2>Aborting motion<a class="headerlink" href="#Aborting-motion" title="Link to this heading"></a></h2>
+<p>Good practise is to always allow a user aborting motion execution. In this example, key ‘q’ will break the loop and call a home() (which is the same as moveTo(qHome, 1., True)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for t in range(5):
+    print(t)
+    bot.moveTo(q1)
+    bot.wait(C) #same as &#39;loop sync til keypressed or endOfTime&#39;, but also raises user window
+    if bot.getKeyPressed()==ord(&#39;q&#39;):
+        print(&quot;cancelled&quot;)
+        break;
+
+    bot.moveTo(q0)
+    bot.wait(C)
+    if bot.getKeyPressed()==ord(&#39;q&#39;):
+        print(&quot;cancelled&quot;)
+        break;
+
+bot.home(C)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+cancelled
+</pre></div></div>
+</div>
+</section>
+<section id="Gripper-operation">
+<h2>Gripper operation<a class="headerlink" href="#Gripper-operation" title="Link to this heading"></a></h2>
+<p>Gripper movements also do not block:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.gripperMove(ry._left, width=.01, speed=.2)
+
+while not bot.gripperDone(ry._left):
+    bot.sync(C, .1)
+
+bot.gripperMove(ry._left, width=.075, speed=1)
+
+while not bot.gripperDone(ry._left):
+    bot.sync(C, .1)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Camera-&amp;-Point-Could">
+<h2>Camera &amp; Point Could<a class="headerlink" href="#Camera-&-Point-Could" title="Link to this heading"></a></h2>
+<p>BotOp also interfaces basic grabbing of image and depth. In simulation model, the sensor name needs to be a frame name that has camera attributed defined. On the real robot, a realsense camera is directly grabbed.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth, points = bot.getImageDepthPcl(&#39;cameraWrist&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+
+fig = plt.figure(figsize=(10,5))
+axs = fig.subplots(1, 2)
+axs[0].imshow(rgb)
+axs[1].matshow(depth)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_1b-botop_26_0.png" src="../_images/tutorials_1b-botop_26_0.png" />
+</div>
+</div>
+<p>The returned <code class="docutils literal notranslate"><span class="pre">points</span></code> are a point could, that was directly computed from the depth image and the camera intrinsics. The intrinsics are given by the focal lengths (f_x, f_y) and image center (c_x, c_y). We can also manually compute the point cloud as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fxycxy = bot.getCameraFxycxy(&quot;cameraWrist&quot;)
+points2 = ry.depthImage2PointCloud(depth, fxycxy)
+np.linalg.norm(points - points2)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.0
+</pre></div></div>
+</div>
+<p>The point cloud is given relative to the camera frame. We can display it by creating a dedicates frame, attached to the camera frame, and setting its (purely visual) shape to be the point cloud:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
+pclFrame.setPointCloud(points, rgb)
+pclFrame.setColor([1.,0.,0.]) #only to see it when overlaying with truth
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+</section>
+<section id="Shutdown">
+<h2>Shutdown<a class="headerlink" href="#Shutdown" title="Link to this heading"></a></h2>
+<p>You always need to shut down processes (e.g. communication with the real robot) properly. That’s done here by explicitly destroying the objects:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del bot
+del C
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- bot.cpp:~BotOp:112(0) shutting down BotOp...
+-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+</section>
+<section id="Parameters">
+<h2>Parameters<a class="headerlink" href="#Parameters" title="Link to this heading"></a></h2>
+<p>BotOp (and other parts of the rai code) use all kinds of internal parameters that can be configured. The best way to look which parameters actually are used/relevant is to retrospect print the list of parameters have been queried by the code so far. That gives an idea of which global parameters exist:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_print()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- ry.cpp:operator():86(0) python,
+message: &#34;this parameter was loaded from &#39;rai.cfg&#39;&#34;,
+bot/useGripper,
+bot/useRobotiq!,
+bot/useArm: left,
+botsim/hyperSpeed: 1,
+botsim/verbose: 1,
+botsim/engine: physx,
+physx/verbose: 1,
+physx/yGravity!,
+physx/softBody!,
+physx/multiBody,
+physx/multiBodyDisableGravity,
+physx/jointedBodies!,
+physx/angularDamping: 0.1,
+physx/defaultFriction: 1,
+physx/defaultRestitution: 0.1,
+physx/motorKp: 1000,
+physx/motorKd: 100,
+bot/useOptitrack!,
+bot/useAudio!,
+bot/raiseWindow!,
+KOMO/verbose: 1,
+KOMO/animateOptimization: 0,
+KOMO/mimicStable,
+KOMO/useFCL,
+KOMO/unscaleEqIneqReport!,
+KOMO/sampleRate_stable: 0,
+opt/verbose: 1,
+opt/stopTolerance: 0.01,
+opt/stopFTolerance: -1,
+opt/stopGTolerance: -1,
+opt/stopEvals: 1000,
+opt/stopIters: 1000,
+opt/stopOuters: 1000,
+opt/stopLineSteps: 10,
+opt/stopTinySteps: 10,
+opt/initStep: 1,
+opt/minStep: -1,
+opt/maxStep: 0.2,
+opt/damping: 1,
+opt/stepInc: 1.5,
+opt/stepDec: 0.5,
+opt/wolfe: 0.01,
+opt/boundedNewton,
+opt/muInit: 1,
+opt/muInc: 5,
+opt/muMax: 10000,
+opt/muLBInit: 0.1,
+opt/muLBDec: 0.2,
+opt/maxLambda: -1,
+opt/constrainedMethod: ,
+seed: 0
+</pre></div></div>
+</div>
+<p>That might tell you a lot about what happend internally.</p>
+<p>In the context of BotOp, the parameter <code class="docutils literal notranslate"><span class="pre">botsim/engine</span></code> can also be set to <code class="docutils literal notranslate"><span class="pre">kin</span></code>, which would create a simulation without physics where merely the robot moves (and grasped object can be attached/detached). The <code class="docutils literal notranslate"><span class="pre">botsim/verbose</span></code> above leads to the explicit verbosity when creating the simulator interface.</p>
+<p>Parameters can be set in a local file <code class="docutils literal notranslate"><span class="pre">rai.cfg</span></code>, or manually in python with the following calls – but that need’s to be done BEFORE BotOp is created.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({&#39;botsim/verbose&#39;: 2., &#39;physx/motorKp&#39;: 10000., &#39;physx/motorKd&#39;: 1000.})
+ry.params_add({&#39;botsim/engine&#39;: &#39;physx&#39;}) #makes a big difference!
+ry.params_add({&#39;physx/multibody&#39;: True}) #makes a big difference!
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="1a-configurations.html" class="btn btn-neutral float-left" title="Configurations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="1c-komo.html" class="btn btn-neutral float-right" title="KOMO: Motion Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

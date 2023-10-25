@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lecture Script &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="rai python API" href="../rai.html" />
+    <link rel="prev" title="Optimization (NLP formulation and solving)" href="../tutorials/nlp-solver.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lecture Script</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reference-material">Reference material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coding-getting-started">Coding Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scene-robot-description">Scene &amp; Robot Description</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#transformations">Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coordinates-and-composition-of-transformations">Coordinates and Composition of Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scene-tree-or-forest">Scene Tree or Forest</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#kinematics">Kinematics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#robots-as-parameterized-trees">Robots as Parameterized Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forward-kinematics">Forward Kinematics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jacobians">Jacobians</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rotational-joint">Rotational Joint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#translational-joint">Translational Joint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quaternion-joint">Quaternion Joint</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#general-concept-of-differentiable-features">General Concept of Differentiable Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary-implementing-a-kinematic-engine">Summary: Implementing a Kinematic Engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inverse-kinematics">Inverse Kinematics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#building-an-nlp-from-features">Building an NLP from features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classical-derivation-of-pseudo-inverse-jacobian-solution">Classical Derivation of Pseudo-Inverse Jacobian Solution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#d-transformations-rotations-quaternions">3D Transformations, Rotations, Quaternions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rotations">Rotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sectransformations">Transformations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-note-on-forward-vs-backward-of-frame-and-coordinate-transforms">A note on “forward” vs. “backward” of frame and coordinate transforms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#splines">Splines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-references">Code References</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nlp-interface">NLP interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-graph-files">Yaml-Graph Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cameras">Cameras</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#image-camera-world-coordinates">Image, Camera, &amp; World Coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#homogeneous-coordinates-camera-matrix-p">Homogeneous coordinates &amp; Camera Matrix <span class="math notranslate nohighlight">\(P\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calibration-as-estimating-p-k-r-t-from-depth-data">Calibration as Estimating <span class="math notranslate nohighlight">\(P,K,R,t\)</span> from Depth Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rai.html">rai python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lecture Script</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/script/script.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lecture-script">
+<h1>Lecture Script<a class="headerlink" href="#lecture-script" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<section id="reference-material">
+<h3>Reference material<a class="headerlink" href="#reference-material" title="Link to this heading"></a></h3>
+<p>In terms of background, please refer to the Maths for Intelligent
+Systems
+[&lt;<a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Maths.pdf">https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Maths.pdf</a>&gt;] as
+well as the Intro to Robotics
+[&lt;<a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Robotics.pdf">https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Robotics.pdf</a>&gt;]
+lecture scripts. Here a list of further teaching material:</p>
+<ul>
+<li><p>Craig, J.J.: <em>Introduction to robotics: mechanics and control</em>.
+Addison-Wesley New York, 1989. (3rd edition 2006)</p></li>
+<li><p>Steven M. LaValle: <em>Planning Algorithms</em>. Cambridge University Press,
+2006.</p>
+<p><strong>online:</strong> <a class="reference external" href="http://planning.cs.uiuc.edu/">http://planning.cs.uiuc.edu/</a></p>
+</li>
+<li><p>VideoLecture by Oussama Khatib:
+&lt;<a class="reference external" href="http://videolectures.net/oussama_khatib/">http://videolectures.net/oussama_khatib/</a>&gt;</p>
+<p>(focus on kinematics, dynamics, control)</p>
+</li>
+<li><p>Oliver Brock’s lecture
+&lt;<a class="reference external" href="http://www.robotics.tu-berlin.de/menue/teaching/">http://www.robotics.tu-berlin.de/menue/teaching/</a>&gt;</p></li>
+<li><p>Stefan Schaal’s lecture Introduction to Robotics:
+&lt;<a class="reference external" href="http://www-clmc.usc.edu/Teaching/TeachingIntroductionToRoboticsSyllabus">http://www-clmc.usc.edu/Teaching/TeachingIntroductionToRoboticsSyllabus</a>&gt;</p>
+<p>(focus on control, useful: Basic Linear Control Theory (analytic
+solution to simple dynamic model <span class="math notranslate nohighlight">\(\to\)</span> PID), chapter on
+dynamics)</p>
+</li>
+<li><p>Chris Atkeson’s “Kinematics, Dynamic Systems, and Control”
+&lt;<a class="reference external" href="http://www.cs.cmu.edu/">http://www.cs.cmu.edu/</a> cga/kdc/&gt;</p>
+<p>(uses Schaal’s slides and LaValle’s book, useful: slides on 3d
+kinematics &lt;<a class="reference external" href="http://www.cs.cmu.edu/">http://www.cs.cmu.edu/</a> cga/kdc-10/ewhitman1.pptx&gt;)</p>
+</li>
+<li><p>CMU lecture “introduction to robotics”
+&lt;<a class="reference external" href="http://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/16311/www/current/">http://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/16311/www/current/</a>&gt;</p>
+<p>(useful: PID control, simple BUGs algorithms for motion planning,
+non-holonomic constraints)</p>
+</li>
+<li><p><em>Springer Handbook of Robotics, Bruno Siciliano, Oussama Khatib</em>
+&lt;<a class="reference external" href="http://link.springer.com/book/10.1007/978-3-319-32552-1">http://link.springer.com/book/10.1007/978-3-319-32552-1</a>&gt;</p></li>
+<li><p>LaValle’s <em>Planning Algorithms</em> &lt;<a class="reference external" href="http://planning.cs.uiuc.edu/">http://planning.cs.uiuc.edu/</a>&gt;</p></li>
+</ul>
+</section>
+<section id="coding-getting-started">
+<h3>Coding Getting Started<a class="headerlink" href="#coding-getting-started" title="Link to this heading"></a></h3>
+<p>Please follow the instructions at github/robotics-course
+[&lt;<a class="reference external" href="https://marctoussaint.github.io/robotics-course/">https://marctoussaint.github.io/robotics-course/</a>&gt;] for setting up the
+python package. This includes a series of tutorials, which can also be
+downloaded here [&lt;<a class="reference external" href="https://github.com/MarcToussaint/rai-tutorials">https://github.com/MarcToussaint/rai-tutorials</a>&gt;].</p>
+</section>
+</section>
+<section id="scene-robot-description">
+<h2>Scene &amp; Robot Description<a class="headerlink" href="#scene-robot-description" title="Link to this heading"></a></h2>
+<p>Generally speaking, a scene is a collection of objects (including robot
+parts). We typically assume objects to be rigid bodies with fixed shape
+– which clearly is a simplification relative to real world. More about
+this below, in section 1.14.1.</p>
+<p>However, formally we define a scene as a collection of <strong>frames</strong>, which
+is short for coordinate frames. We can think of these frames as oriented
+locations in 3D space – and various things can be associated to these
+frames. If a rigid shape and mass is associated to a frame, then it
+makes a typical rigid body. But frames can also be associated to robot
+joint locations or virtual landmarks.</p>
+<section id="transformations">
+<h3>Transformations<a class="headerlink" href="#transformations" title="Link to this heading"></a></h3>
+<p>Let <span class="math notranslate nohighlight">\(i=1,..,m\)</span> enumerate <span class="math notranslate nohighlight">\(m\)</span> frames in a scene. Each frame
+has a <strong>pose</strong> <span class="math notranslate nohighlight">\(X_i\in SE(3)\)</span>, where
+<span class="math notranslate nohighlight">\(SE(3) = {\mathbb{R}}^3 \times SO(3)\)</span> is the group of 3D
+transformations, namely the cross-product of translations and rotations.
+We always assume a world origin to be defined and use the word <em>pose</em>
+specifically for the transformation from world origin to the object
+frame.</p>
+<p>Transformations in <span class="math notranslate nohighlight">\(A\in SE(3)\)</span> are tuples <span class="math notranslate nohighlight">\(A = (t, r)\)</span>,
+where <span class="math notranslate nohighlight">\(t\in{\mathbb{R}}^3\)</span> is a translation and <span class="math notranslate nohighlight">\(r\in SO(3)\)</span>
+a rotation – see Appendix 1.10 for more details.
+Rotations can be represented as matrix <span class="math notranslate nohighlight">\(R\)</span> (see the Maths script
+on properties of rotation matrices), and a pose as the <span class="math notranslate nohighlight">\(4\times 4\)</span>
+homogeneous transform
+<span class="math notranslate nohighlight">\(\left(\begin{array}{cc}R &amp; t \\ 0 &amp; 1\end{array}\right)\)</span>.
+However, more commonly in code we represent rotations as a 4D quaternion
+<span class="math notranslate nohighlight">\(r\in{\mathbb{R}}^4\)</span> with unit length <span class="math notranslate nohighlight">\(|r| = 1\)</span>. I always
+use the convention <span class="math notranslate nohighlight">\(r=(r_0,\bar r)\)</span>, where the first entry
+<span class="math notranslate nohighlight">\(r_0 = \cos(\theta/2)\)</span> relates to the total rotation angle
+<span class="math notranslate nohighlight">\(\theta\)</span>, and the last three entries
+<span class="math notranslate nohighlight">\(\bar r = \sin(\theta/2)~ \underline w\)</span> relate to the unit length
+rotation axis <span class="math notranslate nohighlight">\(\underline w\)</span>.</p>
+<p>Euler angles and the scaled rotation vector are alternative rotation
+representations – but never use them. The appendix
+1.10 introduces to all these representations and
+derives conversion equations to relate them.</p>
+<p>The illustrates how you can manually define frames in a configuration
+and set absolute or relative transformations.</p>
+</section>
+<section id="coordinates-and-composition-of-transformations">
+<h3>Coordinates and Composition of Transformations<a class="headerlink" href="#coordinates-and-composition-of-transformations" title="Link to this heading"></a></h3>
+<p><a href="#id2"><span class="problematic" id="id3">|image|</span></a></p>
+<p>[figTransforms] Composition of transforms.</p>
+<p>Consider Fig. [figTransforms], were we have three
+frames <span class="math notranslate nohighlight">\(1,2,3\)</span> in addition to the world origin frame <span class="math notranslate nohighlight">\(W\)</span>.
+Each frame has a global pose <span class="math notranslate nohighlight">\(X_1, X_2, X_3\)</span>, and relative
+transforms <span class="math notranslate nohighlight">\(Q_{W\to 1}, Q_{1\to 2}, Q_{2\to 3}\)</span>. We have</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+X_1 &amp;= Q_{W\to 1} \\
+X_2 &amp;= Q_{W\to 1} \circ Q_{1\to2} \\
+X_3 &amp;= Q_{W\to 1} \circ Q_{1\to2} \circ Q_{1\to3} ~.\end{aligned}\end{split}\]</div>
+<p>Note that when composing relative transforms, we concatenate (append)
+them <em>on the right</em>! Intuitively, this describes a concatenation of
+turtle commands, where a turtle is initially placed on the world origin,
+then translates, then rotations, then translates <em>relative to its own
+pose</em>, then rotations <em>relative to its own pose</em>, etc, and ends up in
+pose <span class="math notranslate nohighlight">\(X_3\)</span>.</p>
+<p>Now consider the position of a point in 3D space. It can be given in
+world coordinates <span class="math notranslate nohighlight">\(x^W\)</span>, but also in relative coordinates
+<span class="math notranslate nohighlight">\(x^1, x^2, x^3\)</span>. We have</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+x^W &amp;= Q_{W\to 1}~ Q_{1\to2}~ Q_{1\to3}~ x^3 = X_3~ x^3 ~.\end{aligned}\]</div>
+<p>Now you might want to ask: “does <span class="math notranslate nohighlight">\(Q_{1\to 2}\)</span> describe the forward
+or the backward transformation from frame <span class="math notranslate nohighlight">\(1\)</span> to frame <span class="math notranslate nohighlight">\(2\)</span>?”
+But this question is somewhat ill-posed. The situation is:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Q_{1\to 2}\)</span> describes the translation and rotation of <em>frame</em>
+<span class="math notranslate nohighlight">\(2\)</span> <em>relative</em> to <span class="math notranslate nohighlight">\(1\)</span>. So you may call it the “forward
+FRAME transformation”.</p></li>
+<li><p><span class="math notranslate nohighlight">\(Q_{1\to 2}\)</span> describes the coordinate transformation from
+<span class="math notranslate nohighlight">\(x^2\)</span> to <span class="math notranslate nohighlight">\(x^1 = Q_{1\to 2} x^2\)</span>. So you may call it the
+“backward COORDINATE transformation”.</p></li>
+</ul>
+<p>In the view of fundamental linear algebra, this should not surprise as
+basis vectors transform <em>covariant</em>, while coordinates transform
+<em>contra-variant</em>. The appendix 1.10.2.1 explains
+this again in more detail and with an explicit example.</p>
+</section>
+<section id="scene-tree-or-forest">
+<h3>Scene Tree or Forest<a class="headerlink" href="#scene-tree-or-forest" title="Link to this heading"></a></h3>
+<p>Scenes are typically represented as trees, with the world origin as a
+root, and the pose of children specified by a <em>relative</em> transformation
+from the parent. For instance, a scene with a book on a table on the
+ground on the world, would have four frames with poses
+<span class="math notranslate nohighlight">\(X_0, X_1, X_2, X_3\)</span> (of the world, ground, table, book), but the
+scene would typically be represented by relative transforms
+<span class="math notranslate nohighlight">\(Q_1, Q_2, Q_3\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[X_i = X_{i{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}} \circ Q_i ~.\]</div>
+<p>Note that every frame can only have a single parent, and we can
+abbreviate the notation <span class="math notranslate nohighlight">\(Q_i \equiv Q_{\text{parent}(i)\to i}\)</span>.</p>
+<p>Scenes can also be a forest of frames, where some frames have no parent
+and their pose <span class="math notranslate nohighlight">\(X_i\)</span> must be specified, while for non-roots the
+relative transform <span class="math notranslate nohighlight">\(Q_i\)</span> is specified. We usually only talk about
+trees, but include meaning forests.</p>
+<p>The also demonstrates how to define a fram a <em>child</em> of another, thereby
+defining a frame tree. Instead of the absolute pose <code class="docutils literal notranslate"><span class="pre">X</span></code>, you typically
+specify the relative transformation <code class="docutils literal notranslate"><span class="pre">Q</span></code> for such a child frame.</p>
+</section>
+</section>
+<section id="kinematics">
+<h2>Kinematics<a class="headerlink" href="#kinematics" title="Link to this heading"></a></h2>
+<section id="robots-as-parameterized-trees">
+<h3>Robots as Parameterized Trees<a class="headerlink" href="#robots-as-parameterized-trees" title="Link to this heading"></a></h3>
+<p>The key thing in robotics is that some relative transforms (between
+robot links) are “motorized” and can be moved. Formally, this means that
+<em>some</em> of the relative transforms <span class="math notranslate nohighlight">\(Q_i\)</span> in our scene have
+<strong>degrees of freedom</strong> (dof) <span class="math notranslate nohighlight">\(q_i \in {\mathbb{R}}^{d_i}\)</span>.</p>
+<p>For typical robots (with hinge or linear joints) each <span class="math notranslate nohighlight">\(q_i\)</span> is
+just a single number (the joint dimensionality <span class="math notranslate nohighlight">\(d_i=1\)</span>). E.g., a
+<strong>hinge</strong> joint around the (local) <span class="math notranslate nohighlight">\(x\)</span>-axis has a single dof
+<span class="math notranslate nohighlight">\(q_i\in{\mathbb{R}}\)</span> that parameterizes the relative transform</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+Q_i(q_i) =  \left(\begin{array}{cccc}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \cos(q_i) &amp; -\sin(q) &amp; 0 \\
+0 &amp;  \sin(q_i) &amp; \cos(q) &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1\end{array}\right)  ~.\end{aligned}\end{split}\]</div>
+<p>And a <strong>prismatic</strong> (or translational) joint along the (local)
+<span class="math notranslate nohighlight">\(x\)</span>-axis parameterizes</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+Q_i(q_i) =  \left(\begin{array}{cccc}
+1 &amp; 0 &amp; 0 &amp; q \\
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1\end{array}\right)  ~.\end{aligned}\end{split}\]</div>
+<p>Other joint types (universal, cylindrical) are less common.</p>
+<p>A bit special are <strong>ball (spherical) joints</strong>: They parameterize
+arbitrary rotations within <span class="math notranslate nohighlight">\(Q_i\)</span> – in principle they could be
+described as having 3 dofs (as the Lie group <span class="math notranslate nohighlight">\(SO(3)\)</span> is a 3D
+manifold), however, in code it is practice to again use quaternions to
+parameterize rotations, which means <span class="math notranslate nohighlight">\(q_i\in{\mathbb{R}}^4\)</span> for
+ball joints. However, note that this is an over parameterization: If
+<span class="math notranslate nohighlight">\(q_i\)</span> is externally “set” by a user or some algorithm, it may not
+(exactly) be normalized but <span class="math notranslate nohighlight">\(Q_i(q_i)\)</span> is defined to be the proper
+rotation that corresponds to the quaternion <span class="math notranslate nohighlight">\(q_i/|q_i|\)</span>. Note that
+if a user or algorithms sets such a quaternion parameter to zero, that’s
+a singularity and strict error.</p>
+<p>In the , when a joint is define for the first time, play around with
+alternative joint types, e.g. a <code class="docutils literal notranslate"><span class="pre">quatBall</span></code>. The tutorial also lists
+which joint types are pre-defined.</p>
+<p>In the scene tree, some of the relative transforms <span class="math notranslate nohighlight">\(Q_i\)</span> are
+parameterized by dofs, <span class="math notranslate nohighlight">\(Q_i(q_i)\)</span>. Note that
+<span class="math notranslate nohighlight">\(X_\text{parent$(i)$}\)</span> is the <strong>joint origin</strong>, i.e., determines
+the location and orientation of the joint axis, while
+<span class="math notranslate nohighlight">\(X_i = X_\text{parent$(i)$} Q_i\)</span> is the <strong>joint (output) frame</strong>.
+In a robot structure one typically has chains of alternating rigid and
+parameterized transforms, e.g.,</p>
+<p>a rigid transform <span class="math notranslate nohighlight">\(Q_{\pi(i)}\)</span> from world into the origin of joint
+<span class="math notranslate nohighlight">\(i\)</span></p>
+<p>a parameterized transform <span class="math notranslate nohighlight">\(Q_i(q_i)\)</span> representing the joint motion
+(We call this one the <em>joint frame</em>, as it hosts the joint dofs.)</p>
+<p>a rigid transform <span class="math notranslate nohighlight">\(Q_{i \to \pi(j)}\)</span> from the output of <span class="math notranslate nohighlight">\(i\)</span>
+into the origin of a following joint <span class="math notranslate nohighlight">\(j\)</span></p>
+<p>a parameterized transform <span class="math notranslate nohighlight">\(Q_j(q_j)\)</span></p>
+<p>etc</p>
+<p>There is a minimalistic convention of describing robot structures,
+called Denavit-Hartenberg convention. These describe the rigid
+transformations between joints using only 4 numbers instead of 6 (which
+pre-determines the zero calibration as well as the “lateral” positioning
+of the following joint origin). But there is no need to use this
+convention and the above notation is conceptually cleaner and leads to
+intuitive, freely user-defined joint origins.</p>
+<p>In the you find a section on interactively editing a scene description
+file <code class="docutils literal notranslate"><span class="pre">mini.g</span></code>. Using this you can try to invent your own robot and
+environment. The tutorial also shows how to load pre-define robot
+models. The appendix [secConfigFiles] provides a
+more formal specification of the yaml-style file syntax.</p>
+</section>
+<section id="forward-kinematics">
+<h3>Forward Kinematics<a class="headerlink" href="#forward-kinematics" title="Link to this heading"></a></h3>
+<p>We use the word <strong>configuration</strong> for an “articulated scene”, i.e.,
+where some relative transforms <span class="math notranslate nohighlight">\(Q_i(q_i)\)</span> are parameterized by
+dofs <span class="math notranslate nohighlight">\(q_i \in {\mathbb{R}}^{d_i}\)</span> (and also other dofs such as
+forces or timings might be represented). A configuration can include
+multiple robots – from our perspective there is no difference between
+one or multiple robots. It’s just a parameterized forest of frames.</p>
+<p>We define the <strong>joint vector</strong> <span class="math notranslate nohighlight">\(q\in{\mathbb{R}}^n\)</span> to be the
+stacking of all dofs <span class="math notranslate nohighlight">\(q_i\)</span> (all dofs of a configuration). Given
+the joint vector, we can forward chain all relative transformations in
+the scene and thereby compute the absolute pose <span class="math notranslate nohighlight">\(X_i(q)\)</span> of every
+frame as a function of <span class="math notranslate nohighlight">\(q\)</span>.</p>
+<p>This function <span class="math notranslate nohighlight">\(q \mapsto X_i(q)\)</span> is the core of <strong>forward
+kinematics</strong>. It describes how the joint vector <span class="math notranslate nohighlight">\(q\)</span> determines the
+pose of all frames in the configuration.</p>
+<p>The precise definition of the term <strong>forward kinematics</strong> varies across
+textbooks. I find the most concise definition to be the mapping from all
+dofs <span class="math notranslate nohighlight">\(q\)</span> to the full configuration state
+<span class="math notranslate nohighlight">\(\{X_i(q)\}_{i=1}^m\)</span>, which so far we described in terms of all
+frame poses. This definition is consistent with the formal description
+of <em>kinematics</em> as the theory of possible motions of a system
+configuration (see 1.14.2).</p>
+<p>But in practice, the word forward kinematics is often used simply as the
+mapping from <span class="math notranslate nohighlight">\(q\)</span> to one particular “feature” of the configuration.
+For instance, if <span class="math notranslate nohighlight">\(X_i(q)=(t_i(q),r_i(q))\)</span> is the pose of some
+frame <span class="math notranslate nohighlight">\(i\)</span> (e.g. the “end-effector”), forward kinematics can
+describe the mapping</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(q\mapsto t_i(q)\)</span>   to the position of frame <span class="math notranslate nohighlight">\(i\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(q\mapsto r_i(q) \cdot \textbf{e}_x\)</span>   to the <span class="math notranslate nohighlight">\(x\)</span>-axis of
+frame <span class="math notranslate nohighlight">\(i\)</span> (where <span class="math notranslate nohighlight">\(\textbf{e}_x = (1,0,0)^{\!\top\!}\)</span>).</p></li>
+<li><p><span class="math notranslate nohighlight">\(q\mapsto X_i(q) p\)</span>   to the world coordinate of a point
+attached to frame <span class="math notranslate nohighlight">\(i\)</span> with fixed relative offset <span class="math notranslate nohighlight">\(p\)</span>.</p></li>
+</ul>
+<p>Each of these are 3-dimensional features. Let introduce a more formal
+notation for these three basic features:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+q \mapsto \phi^{\textsf{pos}}_{i,p}(q) &amp;= X_i(q)~ p \quad\in {\mathbb{R}}^3 ~, \\
+q \mapsto \phi^{\textsf{vec}}_{i,v}(q) &amp;= r_i(q) \cdot v \quad\in {\mathbb{R}}^3 ~, \\
+q \mapsto \phi^{\textsf{quat}}_{i}(q) &amp;= r_i(q) \quad\in {\mathbb{R}}^4 ~,\end{aligned}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi^{\textsf{pos}}_{i,p}(q)\)</span> is the (world) position of a
+point attached to frame <span class="math notranslate nohighlight">\(i\)</span> with relative offset <span class="math notranslate nohighlight">\(p\)</span>,
+<span class="math notranslate nohighlight">\(\phi^{\textsf{vec}}_{i,v}(q)\)</span> is the world coordinates of a
+vector <span class="math notranslate nohighlight">\(v\)</span> attached to frame <span class="math notranslate nohighlight">\(i\)</span>, and
+<span class="math notranslate nohighlight">\(\phi^{\textsf{quat}}_{i}(q)\)</span> is the 4D quaternion orientation of
+frame <span class="math notranslate nohighlight">\(i\)</span>. From these three, many others features can be derived.</p>
+<p>E.g., also the <span class="math notranslate nohighlight">\(3\times 3\)</span> rotation matrix is a useful basic
+feature (as it is often used in equations). We can easily construct it
+by concatenating columns, <span class="math notranslate nohighlight">\(\phi^{\textsf{rot}}_i =
+(\phi^{\textsf{vec}}_{i,e_x}, \phi^{\textsf{vec}}_{i,e_y}, \phi^{\textsf{vec}}_{i,e_z}) \in {\mathbb{R}}^{3\times
+3}\)</span> for basis vectors <span class="math notranslate nohighlight">\(e_x,e_y,e_z\)</span> of frame <span class="math notranslate nohighlight">\(i\)</span>. (Note that
+the Jacobian (defined later) of this is a <span class="math notranslate nohighlight">\(3\times 3 \times n\)</span>
+tensor.)</p>
+<p>The output space of the kinematic map is also called <strong>task space</strong>.
+However, I often just call it <strong>kinematic feature</strong>.</p>
+<p>The illustrates how you get the joint vector <span class="math notranslate nohighlight">\(q\)</span> and set it. This
+way you can animate the configuration. Also the positions and
+orientations of all frames can be queried directly – realizing the most
+basic kind of forward kinematics.</p>
+</section>
+<section id="jacobians">
+<h3>Jacobians<a class="headerlink" href="#jacobians" title="Link to this heading"></a></h3>
+<p>We will use kinematic features <span class="math notranslate nohighlight">\(\phi\)</span> to formulate differentiable
+constraint and optimization problem. Therefore, we assume all kinematic
+features <span class="math notranslate nohighlight">\(\phi\)</span> are differentiable and we can efficiently compute
+the <strong>Jacobian</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+J(q) = \frac{\partial}{\partial q}\phi(q) ~.\end{aligned}\]</div>
+<p>If <span class="math notranslate nohighlight">\(y = \phi(q)\)</span>, then this Jacobian tells us how a velocity
+<span class="math notranslate nohighlight">\(\dot q\)</span> in joint space implies a velocity <span class="math notranslate nohighlight">\(\dot y\)</span> in task
+space,</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\dot y = J(q) \dot q ~.\end{aligned}\]</div>
+<p>Recall that the forward kinematics is essentially implemented by forward
+chaining the relative transforms <span class="math notranslate nohighlight">\(Q_i\)</span>. If we use an
+auto-differentiable programming language for this, we’d directly have
+the Jacobians. However, the Jacobians can also directly be expressed
+analytically and their computation turns out simpler and more efficient
+than the forward chaining itself. To implement a kinematic engine we
+essentially need to figure out how the different joint types contribute
+to the Jacobians of the three basic features above. This is covered by
+considering the following cases:</p>
+<section id="rotational-joint">
+<h4>Rotational Joint<a class="headerlink" href="#rotational-joint" title="Link to this heading"></a></h4>
+<p>Consider that somewhere on the path from world to frame <span class="math notranslate nohighlight">\(i\)</span> there
+is a rotational (hinge) joint <span class="math notranslate nohighlight">\(j\)</span> positioned at <span class="math notranslate nohighlight">\(p_j\)</span> and
+with unit axis vector <span class="math notranslate nohighlight">\(a_j\)</span> (both in world coordinates). Now
+consider a point attached to frame <span class="math notranslate nohighlight">\(i\)</span> at world coordinate
+<span class="math notranslate nohighlight">\(p\)</span>. (Note that we needed forward kinematics to determine
+<span class="math notranslate nohighlight">\(p_j, a_j\)</span>, and <span class="math notranslate nohighlight">\(p\)</span>.) Then the velocity <span class="math notranslate nohighlight">\(\dot p\)</span>
+relates to the joint angle velocity <span class="math notranslate nohighlight">\(\dot q_j\)</span> by</p>
+<div class="math notranslate nohighlight">
+\[\dot p = [a_j \times (p - p_j)]~ \dot q_j ~.\]</div>
+<p>Now assume a vector <span class="math notranslate nohighlight">\(v\)</span> attached to frame <span class="math notranslate nohighlight">\(i\)</span>. Its velocity
+is</p>
+<div class="math notranslate nohighlight">
+\[\dot v = [a_j \times v]~ \dot q_j = [-{\text{skew}}(v)~ a_j]~ \dot q_j ~.\]</div>
+<p>Now consider the quaternion <span class="math notranslate nohighlight">\(r_i\)</span> of frame <span class="math notranslate nohighlight">\(i\)</span>. Its velocity
+(much less obvious, see appendix Eq. ([eqQuatVel]))
+is</p>
+<div class="math notranslate nohighlight">
+\[\dot r_i = {\frac{1}{2}}[(0,a_j)\circ r_i]~ \dot q_j ~.\]</div>
+<p>Recall that <span class="math notranslate nohighlight">\(q\in{\mathbb{R}}^n\)</span> is the full joint vector. Let
+<span class="math notranslate nohighlight">\(j\)</span> be the dof index of our rotational joint such that
+<span class="math notranslate nohighlight">\(q_j \in {\mathbb{R}}\)</span> is the scalar joint angle. Further, let
+<span class="math notranslate nohighlight">\(p_j,a_j\)</span> be the joint position and axis, and <span class="math notranslate nohighlight">\(p\)</span> a world
+query point. We define two matrices that are zero except for the
+provided columns:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+J^{\textsf{ang}}\in {\mathbb{R}}^{3 \times n} \quad\text{with}\quad &amp;J^{\textsf{ang}}_{:,j} = a_j ~, \\
+J^{\textsf{pos}}(p) \in {\mathbb{R}}^{3 \times n} \quad\text{with}\quad &amp;J^{\textsf{pos}}_{:,j} = a_j \times (p - p_j) ~.\end{aligned}\end{split}\]</div>
+<p>With these two matrices we can rewrite the above equations as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\dot p &amp;= J^{\textsf{pos}}(p)~ \dot q \\
+\dot v &amp;= [-{\text{skew}}(v)~ J^{\textsf{ang}}(p)]~ \dot q \\
+\dot r &amp;= {\frac{1}{2}}[\text{Skew}(r)~ \bar J^{\textsf{ang}}(p)]~ \dot q \quad\text{where}\quad \text{Skew}(w,x,y,z) =
+ \left(\begin{array}{cccc}
+   +w &amp; -x &amp; -y &amp; -z \\
+   +x &amp; +w &amp; +z &amp; -y \\
+   +y &amp; -z &amp; +w &amp; +x \\
+   +z &amp; +y &amp; -x &amp; +w\end{array}\right)  ~, \label{eqQuatRate}\end{aligned}\end{split}\]</div>
+<p>where by convention the cross-product <span class="math notranslate nohighlight">\([A\times v]\)</span> for a
+<span class="math notranslate nohighlight">\(3\times n\)</span> matrix with a 3-vector takes the cross-products
+<em>row-wise</em> (could perhaps better be written <span class="math notranslate nohighlight">\([-v\times A]\)</span>). The
+last equation is derived in the appendix with
+Eq. ([eqQuatVel]), where we discuss how an angular
+velocity translates to a quaternion velocity. The bar in
+<span class="math notranslate nohighlight">\(\bar J^{\textsf{ang}}\)</span> makes this a <span class="math notranslate nohighlight">\(4\times n\)</span> matrix by
+inserting a zero top row (analogous to <span class="math notranslate nohighlight">\((0,w)\)</span> in
+([eqQuatVel])). The <span class="math notranslate nohighlight">\(\text{Skew}\)</span> is an unusual
+definition of a skew matrix for quaternions, so that quaternion
+multiplication <span class="math notranslate nohighlight">\(a \circ b\)</span> can be written linearly as
+<span class="math notranslate nohighlight">\(\text{Skew}(b)~ a\)</span>.</p>
+<p>Now, if in our scene tree we have more than one rotational joint between
+world and frame <span class="math notranslate nohighlight">\(i\)</span>, each of these joints simply contribute
+non-zero columns to our basic matrices
+<span class="math notranslate nohighlight">\(J^{\textsf{ang}}, J^{\textsf{pos}}(p)\)</span>. So this is the core of
+what we have to implement for rotational joints.</p>
+</section>
+<section id="translational-joint">
+<h4>Translational Joint<a class="headerlink" href="#translational-joint" title="Link to this heading"></a></h4>
+<p>A translational (prismatic) joint on the path from world to frame
+<span class="math notranslate nohighlight">\(i\)</span> also contribute a column to the basic matrix
+<span class="math notranslate nohighlight">\(J^{\textsf{pos}}(p)\)</span>, but contributes notion to
+<span class="math notranslate nohighlight">\(J^{\textsf{ang}}\)</span> (as it does not imply rotational velocity in
+the sub-branch). Specifically, let <span class="math notranslate nohighlight">\(a_j\)</span> the translational axis of
+the joint with dof index <span class="math notranslate nohighlight">\(j\)</span>, then it simply contributes a column</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+J^{\textsf{pos}}_{:,j} = a_j ~.\end{aligned}\]</div>
+<p>That’s it for translational joints.</p>
+</section>
+<section id="quaternion-joint">
+<h4>Quaternion Joint<a class="headerlink" href="#quaternion-joint" title="Link to this heading"></a></h4>
+<p>Trickier, but important for ball and free joints is to also know how a
+quaternion joint contributes columns to <span class="math notranslate nohighlight">\(J^{\textsf{ang}}\)</span> and
+<span class="math notranslate nohighlight">\(J^{\textsf{pos}}(p)\)</span>. Modifying a quaternion parameterization
+<span class="math notranslate nohighlight">\(q_j\in{\mathbb{R}}^4\)</span> of a relative transform <span class="math notranslate nohighlight">\(Q_j(q_j)\)</span>
+implies in some way a rotational velocity down the branch. So the effect
+should be similar to a rotational joint, but without fixed axis and
+modulated by the normalization of <span class="math notranslate nohighlight">\(q_j\)</span>. The solution is derived
+in the appendix with Eq. ([eqQuatJac]) and summarized
+here: Let <span class="math notranslate nohighlight">\(X_j\)</span> be the <em>output</em> pose of the quaternion joint.
+(Yes, output!) And let <span class="math notranslate nohighlight">\(R_j\)</span> be the <span class="math notranslate nohighlight">\(3\times 3\)</span> rotation
+matrix for the world pose <span class="math notranslate nohighlight">\(X_j\)</span>, and let
+<span class="math notranslate nohighlight">\(r_j \in {\mathbb{R}}^4\)</span> be the quaternion of the <em>relative</em> joint
+transform <span class="math notranslate nohighlight">\(Q_j\)</span>. Then</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eqQuatJoint1}
+J^{\textsf{ang}}_{:,j} = \frac{1}{|q|} R_j J(r_j) ~,\quad\text{where}\quad
+J(r)_{:,k} &amp;= -2 (e_k \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1})_{1:3} ~.\end{aligned}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(e_i\)</span> for <span class="math notranslate nohighlight">\(k=0,..,3\)</span> are the unit quaternions and the
+matrix <span class="math notranslate nohighlight">\(J(r)\in{\mathbb{R}}{3 \times 4}\)</span> describes how a variation
+of a quaternion <span class="math notranslate nohighlight">\(r\)</span> induces a 3D rotation vector relative to the
+<em>output</em> space of <span class="math notranslate nohighlight">\(r\)</span>. I call this the quaternion Jacobian. The
+derivation is found in the appendix when discussion how a quaternion
+velocity implies and angular velocity. The multiplication with
+<span class="math notranslate nohighlight">\(R_j\)</span> transforms this rotation vector to world coordinates. The
+division by <span class="math notranslate nohighlight">\(|q_j|\)</span> accounts when the dof <span class="math notranslate nohighlight">\(q_j\)</span> is not
+(exactly) normalized.</p>
+<p>As we figured out the angular vector induced by a variation of a
+quaternion joint, this also defines the column it contributes to the
+positional Jacobian:</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+J^{\textsf{pos}}_{:,j}(p) = [\frac{1}{|q|} R_j J(r_j)] \times (p - p_j) ~,\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(p_j\)</span> is the position of the quaternion joint.</p>
+<p>Note how differently we treat the quaternion <span class="math notranslate nohighlight">\(q_j\)</span> as a joint
+parameterization <span class="math notranslate nohighlight">\(Q_j(q_j)\)</span> and the quaternion <span class="math notranslate nohighlight">\(r_i\)</span> as a
+kinematic (“output”) feature of frame <span class="math notranslate nohighlight">\(i\)</span>. For instance, we can
+have the Jacobian of the quaternion <span class="math notranslate nohighlight">\(r_i\)</span> w.r.t. the quaternion
+joint parameterization <span class="math notranslate nohighlight">\(q_j\)</span>, by inserting
+([eqQuatJoint1]) into
+([eqQuatRate]). And even if all other transformation
+in the scene are identities and the output quaternion <span class="math notranslate nohighlight">\(r_i\)</span> is
+“essentially identical” to the joint quaternion <span class="math notranslate nohighlight">\(q_j\)</span>, the
+Jacobian is still not exactly identity, as it accounts for normalization
+(and potential flip of sign).</p>
+</section>
+</section>
+<section id="general-concept-of-differentiable-features">
+<h3>General Concept of Differentiable Features<a class="headerlink" href="#general-concept-of-differentiable-features" title="Link to this heading"></a></h3>
+<p>In the previous sections we focussed on the 3 mappings
+<span class="math notranslate nohighlight">\(\phi^{\textsf{pos}}_{i,p}(q), \phi^{\textsf{vec}}_{i,v}(q), \phi^{\textsf{quat}}_{i}(q)\)</span>.
+The Jacobians of these are given via <span class="math notranslate nohighlight">\(J^{\textsf{pos}}_{:,j}(p)\)</span>
+and <span class="math notranslate nohighlight">\(J^{\textsf{ang}}_{:,j}(p)\)</span>. If these are given
+(e.g. implemented by an efficient core kinematics engine), then many
+other features can be computed based on them.</p>
+<p>We assume a single configuration <span class="math notranslate nohighlight">\(q\)</span>, or a whole set of
+configurations <span class="math notranslate nohighlight">\(\{q_1,..,q_T\}\)</span>, with each
+<span class="math notranslate nohighlight">\(q_i \in\mathbb{R}\)</span> the DOFs of that configuration.</p>
+<p>In general, a (0-order) <strong>feature</strong> <span class="math notranslate nohighlight">\(\phi\)</span> is a differentiable
+mapping</p>
+<div class="math notranslate nohighlight">
+\[\phi: q \mapsto \mathbb{R}^D\]</div>
+<p>of a single configuration into some <span class="math notranslate nohighlight">\(D\)</span>-dimensional space.</p>
+<p>The introduces to features that are readily implemented in the rai code.</p>
+<p>(In C++, new features can be implemented by overloading the abstract
+Feature class. Implementing new features is typically done by first
+evaluating existing features and then “forward chaining” the computation
+of the new feature – quite similar to how models are defined in pyTorch
+or similar autodiff frameworks. The C++ code uses autodiff (which
+<em>forward</em> chains Jacobians directly at computation) for most features.)</p>
+<p>When using features in code, one can additionally specify a <code class="docutils literal notranslate"><span class="pre">target</span></code>
+and <code class="docutils literal notranslate"><span class="pre">scale</span></code>, which defines a subsequent linear transformation:</p>
+<div class="math notranslate nohighlight">
+\[\phi(q) \gets \texttt{scale} \cdot (\phi(q) - \texttt{target})\]</div>
+<p>Note that the scale can be a matrix, which projects the feature. E.g.,
+if you want to define a 2D feature which is the <span class="math notranslate nohighlight">\(xy\)</span>-position of
+frame <span class="math notranslate nohighlight">\(i\)</span>, then you can use a matrix
+<span class="math notranslate nohighlight">\(\texttt{scale}= \left(\begin{array}{ccc}1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0\end{array}\right)\)</span>.</p>
+<p>Further, a feature can also be of higher order, which by default means a
+finite difference of a 0-order features. In general, a higher-order
+features is a differentiable mapping</p>
+<div class="math notranslate nohighlight">
+\[\phi: (q_0,q_1,..,q_k) \mapsto \mathbb{R}^D\]</div>
+<p>of a <span class="math notranslate nohighlight">\((k+1)\)</span>-tuple of configurations to a <span class="math notranslate nohighlight">\(D\)</span>-dimensional
+space. This is typically used in the context of <strong>path configurations</strong>,
+which is a sequence of configurations used in path optimization.</p>
+<p>Given any 0-order feature <span class="math notranslate nohighlight">\(\phi\)</span>, by default that defines its 1st
+and 2st order feature as</p>
+<div class="math notranslate nohighlight">
+\[\phi(q_0,q_1) = \frac{1}{\tau}(\phi(q_1) - \phi(q_0))\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\phi(q_0,q_1,q_2) = \frac{1}{\tau^2}(\phi(q_2) - 2 \phi(q_1) + \phi(q_0)) ~,\]</div>
+<p>which are the finite difference approximations of the feature’s velocity
+and acceleration. However, one can also directly implement higher-order
+features, e.g. to represent dynamics constraints, or more elaborate
+acceleration/torque cost features.</p>
+</section>
+<section id="summary-implementing-a-kinematic-engine">
+<h3>Summary: Implementing a Kinematic Engine<a class="headerlink" href="#summary-implementing-a-kinematic-engine" title="Link to this heading"></a></h3>
+<p>The above provides all essentials necessary to implement a rather
+general kinematic engine. To summarize:</p>
+<ul class="simple">
+<li><p>Represent a scene configuration as a tree of frames, where for each
+frame we store the absolute pose <span class="math notranslate nohighlight">\(X\)</span> and relative transform
+<span class="math notranslate nohighlight">\(Q\)</span>. We also annotate which relative transforms <span class="math notranslate nohighlight">\(Q\)</span> have
+dofs and how many. We need to maintain an index mapping that tells us
+which entries <span class="math notranslate nohighlight">\(q_j\)</span> of the full joint vector parameterize a
+given relative transformation <span class="math notranslate nohighlight">\(Q_j(q_j)\)</span> (essentially mapping
+between <span class="math notranslate nohighlight">\(q\)</span>-indices and frame indices).</p></li>
+<li><p>An efficient implementation of forward chaining transformations:
+Given the absolute poses <span class="math notranslate nohighlight">\(X\)</span> of all root frames and all
+relative transforms <span class="math notranslate nohighlight">\(Q\)</span>, implement an efficient algorithm to
+forward chain transformations to ensure any <span class="math notranslate nohighlight">\(X_i\)</span>. Do this
+lazily on demand: Only when an absolute frame <span class="math notranslate nohighlight">\(X_i\)</span> is actually
+queried call this forward chaining for this <span class="math notranslate nohighlight">\(X_i\)</span> only.</p></li>
+<li><p>An efficient implementation of the matrices <span class="math notranslate nohighlight">\(J^{\textsf{pos}}\)</span>
+and <span class="math notranslate nohighlight">\(J^{\textsf{ang}}\)</span>, which, for any query frame <span class="math notranslate nohighlight">\(i\)</span>,
+determines which joints are on the path from <span class="math notranslate nohighlight">\(i\)</span> to a root
+frame and for each of these joints contributes the corresponding
+columns to <span class="math notranslate nohighlight">\(J^{\textsf{pos}}\)</span> and <span class="math notranslate nohighlight">\(J^{\textsf{ang}}\)</span>. To
+account for large systems (esp. path configurations, see below)
+matrices should be returned in sparse format.</p></li>
+</ul>
+<p>Based on this, one provides more convenient user functions that allow to
+query kinematic features for any frame <span class="math notranslate nohighlight">\(i\)</span>, including the pose
+<span class="math notranslate nohighlight">\(X_i\)</span>, and on demand also provide the Jacobian of that feature.</p>
+</section>
+<section id="inverse-kinematics">
+<h3>Inverse Kinematics<a class="headerlink" href="#inverse-kinematics" title="Link to this heading"></a></h3>
+<p><a href="#id4"><span class="problematic" id="id5">|image|</span></a></p>
+<p>We can “puppeteer” a robot by defining optimization problems with task
+space constraints and solve for the joint state.</p>
+<p>We introduced forward kinematics as a mapping from an
+<span class="math notranslate nohighlight">\(n\)</span>-dimensional joint vector <span class="math notranslate nohighlight">\(q\in{\mathbb{R}}^n\)</span> to some
+<span class="math notranslate nohighlight">\(d\)</span>-dimensional kinematic feature
+<span class="math notranslate nohighlight">\(y=\phi(q) \in{\mathbb{R}}^d\)</span>. Inverse kinematics roughly means to
+invert this mapping, i.e., given a desired target <span class="math notranslate nohighlight">\(y^*\)</span> in task
+space, find a joint vector <span class="math notranslate nohighlight">\(q\)</span> such that <span class="math notranslate nohighlight">\(\phi(q) = y^*\)</span>. As
+often <span class="math notranslate nohighlight">\(n&gt;d\)</span>, the inversion is under-specified (leading to what is
+called “redundancy”). But just as the pseudo-inverse of a linear
+transformation addresses this, we can generalize this to a non-linear
+<span class="math notranslate nohighlight">\(\phi\)</span> – namely in an optimality formulation.</p>
+<p>Given <span class="math notranslate nohighlight">\(\phi\)</span> and a target <span class="math notranslate nohighlight">\(y^*\)</span>, a good option is to define
+<strong>inverse kinematics</strong> as the non-linear mathematical program (NLP)</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eqIKNLP}
+q^* = \argmin_q f(q) ~~\text{s.t.}~~\phi(q) = y^* ~.\end{aligned}\]</div>
+<p>The cost term <span class="math notranslate nohighlight">\(f(q)\)</span> is called <em>regularization</em> and indicates a
+preference among all solutions that satisfy <span class="math notranslate nohighlight">\(\phi(q) = y\)</span>. One
+might typically choose it as a squared distance
+<span class="math notranslate nohighlight">\(f(q) = |\!|q-q_0|\!|^2_W\)</span> to some “default” <span class="math notranslate nohighlight">\(q_0\)</span>, which
+could be the homing state of a robot or its current state.</p>
+<p>In practice, I recommend always using a proper NLP solver to solve
+inverse kinematics. As discussing optimization is beyond this script we
+are here already done with describing inverse kinematics! It is “nothing
+more” than defining a constraint problem of the sort
+([eqIKNLP]) and passing it to a solver. In the coding
+part below I will discuss the richness in options to define such
+constraint problems with our differentiable features.</p>
+<p>Only for educational purpose we will also derive the classical
+pseudo-inverse Jacobian solution to IK below.</p>
+<section id="building-an-nlp-from-features">
+<h4>Building an NLP from features<a class="headerlink" href="#building-an-nlp-from-features" title="Link to this heading"></a></h4>
+<p>Eq. ([eqIKNLP]) describes IK as an NLP. Appendix
+1.12.1 provides a technical reference of how we define
+NLPs mathematically and in code. Essentially, an NLP is specified by
+<em>adding objectives</em>, where each objective is given by a feature function
+<span class="math notranslate nohighlight">\(\phi_i\)</span> and an indicator <span class="math notranslate nohighlight">\(\varrho_i\)</span> that defines whether
+the feature contributes a linear cost (<code class="docutils literal notranslate"><span class="pre">f</span></code>), sum-of-squares cost
+(<code class="docutils literal notranslate"><span class="pre">sos</span></code>), equality constraint (<code class="docutils literal notranslate"><span class="pre">eq</span></code>), or inequality constraint
+(<code class="docutils literal notranslate"><span class="pre">ineq</span></code>) to the NLP.</p>
+<p>The illustrates how an Inverse Kinematics problem can be specified as
+NLP. The core is the <code class="docutils literal notranslate"><span class="pre">addObjective</span></code> method, which adds a kinematic
+feature (optimally with transformed by scaling and target) as a cost or
+constraint (depending on the <code class="docutils literal notranslate"><span class="pre">f</span></code>, <code class="docutils literal notranslate"><span class="pre">sos</span></code>, <code class="docutils literal notranslate"><span class="pre">eq</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">ineq</span></code>indicator) to the NLP.</p>
+</section>
+<section id="classical-derivation-of-pseudo-inverse-jacobian-solution">
+<h4>Classical Derivation of Pseudo-Inverse Jacobian Solution<a class="headerlink" href="#classical-derivation-of-pseudo-inverse-jacobian-solution" title="Link to this heading"></a></h4>
+<p>I strongly recommend using an NLP solver and general constraint and cost
+formulations to tackle IK problems – and you can skip over this section.
+However, for completeness I provide here also the basic derivation of
+classical pseudo-inverse Jacobian solutions.</p>
+<section id="pseudo-inverse-jacobian">
+<h5>Pseudo-inverse Jacobian.<a class="headerlink" href="#pseudo-inverse-jacobian" title="Link to this heading"></a></h5>
+<p>We first simplify the problem to minimize</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eqSoft}
+f(q) = |\!|\phi(q) - y^*|\!|^2_C + |\!|q-q_0|\!|^2_W ~.\end{aligned}\]</div>
+<p>Instead of exactly ensuring <span class="math notranslate nohighlight">\(\phi(q) = y^*\)</span>, this only minimizes a
+penalty <span class="math notranslate nohighlight">\(|\!|\phi(q) - y^*|\!|^2_C\)</span>. Here <span class="math notranslate nohighlight">\(C\)</span> is the norm’s
+metric, i.e., <span class="math notranslate nohighlight">\(|\!|v|\!|^2_C = v^{\!\top\!}C v\)</span>, but you may
+instead simply assume <span class="math notranslate nohighlight">\(C\)</span> is a scalar. For finite <span class="math notranslate nohighlight">\(C\)</span> and
+<span class="math notranslate nohighlight">\(W\)</span> this approximate formulation might be undesirable. But later
+we will actually be able to investigate the limit <span class="math notranslate nohighlight">\(C\to\infty\)</span>.</p>
+<p>Since this problem is a least squares problem, the canonical approach is
+Gauss-Newton. The gradient, approximate Hessian, and Gauss-Newton step
+are</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\frac{\partial}{\partial q} f(q)
+&amp;= 2 (\phi(q)-y^*)^{\!\top\!}C J + 2 (q-q_0)^{\!\top\!}W = {\nabla_{\!\!f}}(q)^{\!\top\!}\\
+{\nabla_{\!\!f}^2}(q)
+&amp;\approx 2 (J^{\!\top\!}C J + W) \\
+\delta(q)
+&amp;= - [{\nabla_{\!\!f}^2}(q)]^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} {\nabla_{\!\!f}}(q) = (J^{\!\top\!}C J + W)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} [J^{\!\top\!}C (\phi(q)-y^*) + W (q-q_0) ]\end{aligned}\end{split}\]</div>
+<p>With some identities, this can be rewritten as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\delta(q)
+&amp;= J^\sharp (y^* - \phi(q)) + (I - J^\sharp J)~ (q_0 - q) \label{eqIK} \\
+J^\sharp
+&amp;= (J^{\!\top\!}C J + W)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} J^{\!\top\!}C = W^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} J^{\!\top\!}(J W^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} J^{\!\top\!}+ C^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1})^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}
+ \text{(Woodbury identity)}\end{aligned}\end{split}\]</div>
+<p>The matrix <span class="math notranslate nohighlight">\(J^\sharp\)</span> is also called (regularized) pseudo-inverse
+of <span class="math notranslate nohighlight">\(J\)</span>. In its second form (RHS of Woodbury), we can take the hard
+limit <span class="math notranslate nohighlight">\(C\to\infty\)</span>, where
+<span class="math notranslate nohighlight">\(J^\sharp \to W^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} J^{\!\top\!}(J W^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} J^{\!\top\!})^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}\)</span>
+or, for <span class="math notranslate nohighlight">\(W={\rm\bf I}\)</span>,
+<span class="math notranslate nohighlight">\(J^\sharp \to J^{\!\top\!}(J J^{\!\top\!})^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}\)</span>.</p>
+<p>Eq. ([eqIK]) says that, to jump to the (approx.)
+Gauss-Newton optimum, we should make a step <span class="math notranslate nohighlight">\(\delta\)</span> in joint
+space proportional to the error <span class="math notranslate nohighlight">\((y^*-\phi(q))\)</span> in task space, and
+(optionally) combined with a homing step towards <span class="math notranslate nohighlight">\(q_0\)</span> projected
+to the task null space via the projection <span class="math notranslate nohighlight">\((I - J^\sharp J)\)</span>.</p>
+<p>Performing a single step <span class="math notranslate nohighlight">\(\delta\)</span> is approximate due to the
+non-linearity of <span class="math notranslate nohighlight">\(\phi\)</span>. To solve inverse kinematics exactly we
+have to iterate Gauss-Newton steps. If lucky, we can use full stepsizes
+(<span class="math notranslate nohighlight">\(\alpha= 1\)</span> in the speak of line search) and iterate
+<span class="math notranslate nohighlight">\(q_{k{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}} \gets q_k + \delta(q_k)\)</span>
+until convergence, and will have an exact IK solution. If <span class="math notranslate nohighlight">\(\phi\)</span>
+is very non-linear, we may have to do line searches along the step
+directions to ensure convergence. If <span class="math notranslate nohighlight">\(\phi\)</span> is non-convex, we may
+converge to a local optimum that depends on the initialization.</p>
+</section>
+<section id="on-the-fly-ik">
+<h5>On the fly IK.<a class="headerlink" href="#on-the-fly-ik" title="Link to this heading"></a></h5>
+<p>Inverse kinematics is sometimes being used to generate robot motion on
+the fly. In a sense, rather than letting an optimization algorithm find
+an IK solution and then start moving the robot to it (we we’ll do it
+below), you let the robot directly move (generate a smooth path) towards
+an IK solution. This is heuristic, and I eventually don’t recommend it.
+But it’s standard practice, so let’s mention it:</p>
+<p>Let the robot be in state <span class="math notranslate nohighlight">\(q\)</span>, and we have a task space target
+<span class="math notranslate nohighlight">\(y^*\)</span>. We may compute a desired robot motion</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\dot q = \alpha\Big[ J^\sharp (y^* - \phi(q)) + (I - J^\sharp J) (q_0 - q) \Big] ~.\end{aligned}\]</div>
+<p>In a sense, this mimics performing (integrating over time) infinitesimal
+Gauss-Newton steps towards the IK solution. Often the regularization
+<span class="math notranslate nohighlight">\((I - J^\sharp J) (q_0 - q)\)</span> is also dropped, which is the same as
+saying <span class="math notranslate nohighlight">\(q_0 = q\)</span>, i.e., you always set the homing state
+<span class="math notranslate nohighlight">\(q_0\)</span> to be the current state <span class="math notranslate nohighlight">\(q\)</span>, adapting it on the fly.
+Doing this, you will loose a precise definition of where you’ll
+eventually converge to – and sometimes this leads to undesired <em>drift in
+nullspace</em>. All not recommended.</p>
+</section>
+<section id="singularity">
+<h5>Singularity.<a class="headerlink" href="#singularity" title="Link to this heading"></a></h5>
+<p>The limit <span class="math notranslate nohighlight">\(C\to\infty\)</span> mentioned above is only robust when
+<span class="math notranslate nohighlight">\(\det (J
+J^{\!\top\!}) &gt; 0\)</span>, or equivalently, when <span class="math notranslate nohighlight">\(J\)</span> has full rank
+(namely rank <span class="math notranslate nohighlight">\(d\)</span>). <span class="math notranslate nohighlight">\(J\)</span> is called singular otherwise, and the
+pseudo inverse <span class="math notranslate nohighlight">\(J^\sharp\)</span> is ill-defined.</p>
+<p>Intuitively this means that, in state <span class="math notranslate nohighlight">\(q\)</span>, certain task space
+directions cannot be generated, i.e., no motion in these task space
+directions is possible. A stretched arm that cannot extend further is a
+typical example.</p>
+<p>In the original NLP formulation, this corresponds to the case where
+<span class="math notranslate nohighlight">\(\phi(q) = y^*\)</span> is simply infeasible, and a proper NLP-solver
+should return this information.</p>
+<p>The soft problem formulation ([eqSoft]), where <span class="math notranslate nohighlight">\(C\)</span>
+is finite (not <span class="math notranslate nohighlight">\(\infty\)</span>) is one way to address a singularity: For
+finite <span class="math notranslate nohighlight">\(C\)</span>, <span class="math notranslate nohighlight">\(J^\sharp\)</span> is well defined and defines steps
+towards a optimal solution of the trade-off problem
+([eqSoft]). This is also called <strong>regularized IK</strong> or
+<strong>singularity-robust IK</strong>. But it only leads to an approximate IK
+solution.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="d-transformations-rotations-quaternions">
+<span id="apptransforms"></span><h2>3D Transformations, Rotations, Quaternions<a class="headerlink" href="#d-transformations-rotations-quaternions" title="Link to this heading"></a></h2>
+<section id="rotations">
+<h3>Rotations<a class="headerlink" href="#rotations" title="Link to this heading"></a></h3>
+<p>There are many ways to represent rotations in <span class="math notranslate nohighlight">\(SO(3)\)</span>. We restrict
+ourselves to three basic ones: rotation matrix, rotation vector, and
+quaternion. The rotation vector is also the most natural representation
+for a “rotation velocity” (angular velocities). Euler angles or
+raw-pitch-roll are an alternative, but they have singularities and I
+don’t recommend using them in practice.</p>
+<dl>
+<dt>A rotation matrix</dt><dd><p>is a matrix <span class="math notranslate nohighlight">\(R\in{\mathbb{R}}^{3\times3}\)</span> which is orthonormal
+(columns and rows are orthogonal unit vectors, implying determinant
+1). While a <span class="math notranslate nohighlight">\(3\times3\)</span> matrix has 9 degrees of freedom (DoFs),
+the constraint of orthogonality and determinant 1 constraints this:
+The set of rotation matrices has only 3 DoFs (<span class="math notranslate nohighlight">\(\sim\)</span> the local
+Lie algebra is 3-dim).</p>
+<ul class="simple">
+<li><p>The application of <span class="math notranslate nohighlight">\(R\)</span> on a vector <span class="math notranslate nohighlight">\(x\)</span> is simply the
+matrix-vector product <span class="math notranslate nohighlight">\(R x\)</span>.</p></li>
+<li><p>Concatenation of two rotations <span class="math notranslate nohighlight">\(R_1\)</span> and <span class="math notranslate nohighlight">\(R_2\)</span> is the
+normal matrix-matrix product <span class="math notranslate nohighlight">\(R_1 R_2\)</span>.</p></li>
+<li><p>Inversion is the transpose,
+<span class="math notranslate nohighlight">\(R^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} = R^{\!\top\!}\)</span>.</p></li>
+</ul>
+</dd>
+<dt>A rotation vector</dt><dd><p>is an unconstrained vector <span class="math notranslate nohighlight">\(w\in{\mathbb{R}}^3\)</span>. The vector’s
+direction <span class="math notranslate nohighlight">\(\underline w = \frac{w}{|w|}\)</span> determines the
+rotation axis, the vector’s length <span class="math notranslate nohighlight">\(|w|=\theta\)</span> determines the
+rotation angle (in radians, using the right thumb convention).</p>
+<ul>
+<li><p>The application of a rotation described by
+<span class="math notranslate nohighlight">\(w\in{\mathbb{R}}^3\)</span> on a vector <span class="math notranslate nohighlight">\(x\in{\mathbb{R}}^3\)</span>
+is given as (Rodrigues’ formula)</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+w \cdot x
+ &amp;= \cos\theta~ x
+  + \sin\theta~ (\underline w\times x)
+  + (1-\cos\theta)~ \underline w(\underline w^{\!\top\!}x)\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\theta=|w|\)</span> is the rotation angle and
+<span class="math notranslate nohighlight">\(\underline w=w/\theta\)</span> the unit length rotation axis.</p>
+</li>
+<li><p>The inverse rotation is described by the negative of the rotation
+vector.</p></li>
+<li><p>Concatenation is non-trivial in this representation and we don’t
+discuss it here. In practice, a rotation vector is first converted
+to a rotation matrix or quaternion.</p></li>
+<li><p>Conversion to a matrix: For every vector
+<span class="math notranslate nohighlight">\(w\in{\mathbb{R}}^3\)</span> we define its skew symmetric matrix as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\hat w = \text{skew}(w) =  \left(\begin{array}{ccc}0 &amp; -w_3 &amp; w_2 \\ w_3 &amp; 0 &amp; -w_1 \\-w_2 &amp; w_1 &amp; 0\end{array}\right)  ~.\end{aligned}\end{split}\]</div>
+<p>Note that such skew-symmetric matrices are related to the cross
+product: <span class="math notranslate nohighlight">\(w \times v = \hat w~ v\)</span>, where the cross product
+is rewritten as a matrix product. The rotation matrix <span class="math notranslate nohighlight">\(R(w)\)</span>
+that corresponds to a given rotation vector <span class="math notranslate nohighlight">\(w\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\label{eqRodriguez}
+R(w)
+ &amp;= \exp(\hat w) \\
+ &amp;= \cos\theta~ I + \sin\theta~ \hat w/\theta+ (1-\cos\theta)~ w w^{\!\top\!}/\theta^2\end{aligned}\end{split}\]</div>
+<p>The <span class="math notranslate nohighlight">\(\exp\)</span> function is called exponential map (generating a
+group element (=rotation matrix) via an element of the Lie algebra
+(=skew matrix)). The other equation is called Rodrigues’ equation:
+the first term is a diagonal matrix (<span class="math notranslate nohighlight">\(I\)</span> is the 3D identity
+matrix), the second terms the skew symmetric part, the last term
+the symmetric part (<span class="math notranslate nohighlight">\(w
+w^{\!\top\!}\)</span> is also called outer product).</p>
+</li>
+</ul>
+</dd>
+<dt>Angular velocity &amp; derivative of a rotation matrix:</dt><dd><p>We represent angular velocities by a vector
+<span class="math notranslate nohighlight">\(w\in{\mathbb{R}}^3\)</span>, the direction <span class="math notranslate nohighlight">\(\underline w\)</span>
+determines the rotation axis, the length <span class="math notranslate nohighlight">\(|w|\)</span> is the rotation
+velocity (in radians per second). When a body’s orientation at time
+<span class="math notranslate nohighlight">\(t\)</span> is described by a rotation matrix <span class="math notranslate nohighlight">\(R(t)\)</span> and the
+body’s angular velocity is <span class="math notranslate nohighlight">\(w\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eqDotR}
+\dot R(t) = \hat w~ R(t)~.\end{aligned}\]</div>
+<p>(That’s intuitive to see for a rotation about the <span class="math notranslate nohighlight">\(x\)</span>-axis with
+velocity 1.) Some insights from this relation: Since <span class="math notranslate nohighlight">\(R(t)\)</span>
+must always be a rotation matrix (fulfill orthogonality and
+determinant 1), its derivative <span class="math notranslate nohighlight">\(\dot R(t)\)</span> must also fulfill
+certain constraints; in particular it can only live in a
+3-dimensional sub-space. It turns out that the derivative
+<span class="math notranslate nohighlight">\(\dot R\)</span> of a rotation matrix <span class="math notranslate nohighlight">\(R\)</span> must always be a skew
+symmetric matrix <span class="math notranslate nohighlight">\(\hat w\)</span> times <span class="math notranslate nohighlight">\(R\)</span> – anything else would
+be inconsistent with the constraints of orthogonality and determinant
+1.</p>
+<p>Note also that, assuming <span class="math notranslate nohighlight">\(R(0)=I\)</span>, the solution to the
+differential equation <span class="math notranslate nohighlight">\(\dot R(t) = \hat w~ R(t)\)</span> can be written
+as <span class="math notranslate nohighlight">\(R(t)=\exp(t \hat w)\)</span>, where here the exponential function
+notation is used to denote a more general so-called exponential map,
+as used in the context of Lie groups. It also follows that
+<span class="math notranslate nohighlight">\(R(w)\)</span> from ([eqRodriguez]) is the rotation
+matrix you get when you rotate for 1 second with angular velocity
+described by <span class="math notranslate nohighlight">\(w\)</span>.</p>
+</dd>
+<dt>Quaternion</dt><dd><p>(I’m not describing the general definition, only the “quaternion to
+represent rotation” definition.) A quaternion is a unit length 4D
+vector <span class="math notranslate nohighlight">\(r\in{\mathbb{R}}^4\)</span>; the first entry <span class="math notranslate nohighlight">\(r_0\)</span> is
+related to the rotation angle <span class="math notranslate nohighlight">\(\theta\)</span> via
+<span class="math notranslate nohighlight">\(r_0=\cos(\theta/2)\)</span>, the last three entries
+<span class="math notranslate nohighlight">\(\bar r\equiv r_{1:3}\)</span> are related to the unit length rotation
+axis <span class="math notranslate nohighlight">\(\underline w\)</span> via
+<span class="math notranslate nohighlight">\(\bar r = \sin(\theta/2)~ \underline w\)</span>.</p>
+<ul>
+<li><p>The inverse of a quaternion is given by negating <span class="math notranslate nohighlight">\(\bar r\)</span>,
+<span class="math notranslate nohighlight">\(r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} =
+(r_0,-\bar r)\)</span> (or, alternatively, negating <span class="math notranslate nohighlight">\(r_0\)</span>).</p></li>
+<li><p>The concatenation of two rotations <span class="math notranslate nohighlight">\(r\)</span>, <span class="math notranslate nohighlight">\(r'\)</span> is given
+as the quaternion product</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eqQuat}
+r \circ r'
+ = (r_0 r'_0 - \bar r^{\!\top\!}\bar r',~
+    r_0 \bar r' + r'_0 \bar r + \bar r' \times \bar r)\end{aligned}\]</div>
+</li>
+<li><p>The application of a rotation quaternion <span class="math notranslate nohighlight">\(r\)</span> on a vector
+<span class="math notranslate nohighlight">\(x\)</span> can be expressed by converting the vector first to the
+quaternion <span class="math notranslate nohighlight">\((0,x)\)</span>, then computing</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+r \cdot x = (r \circ (0,x) \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1})_{1:3} ~,\end{aligned}\]</div>
+<p>I think a bit more efficient is to first convert the rotation
+quaternion <span class="math notranslate nohighlight">\(r\)</span> to the equivalent rotation matrix <span class="math notranslate nohighlight">\(R\)</span>:</p>
+</li>
+<li><p>Conversion to/from a matrix: A quaternion rotation <span class="math notranslate nohighlight">\(r\)</span>
+convertes to the rotation matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+R
+ &amp;=  \left(\begin{array}{ccc}
+    1-r_{22}-r_{33} &amp; r_{12}-r_{03} &amp;    r_{13}+r_{02} \\
+    r_{12}+r_{03} &amp;   1-r_{11}-r_{33} &amp;  r_{23}-r_{01} \\
+    r_{13}-r_{02} &amp;   r_{23}+r_{01} &amp;    1-r_{11}-r_{22}
+    \end{array}\right)  \\ &amp; ~ r_{ij} := 2 r_i r_j ~.\end{aligned}\end{split}\]</div>
+<p>(Note: In comparison to ([eqRodriguez]) this
+does not require to compute a <span class="math notranslate nohighlight">\(\sin\)</span> or <span class="math notranslate nohighlight">\(\cos\)</span>.)
+Inversely, the quaternion <span class="math notranslate nohighlight">\(r\)</span> for a given matrix <span class="math notranslate nohighlight">\(R\)</span>
+is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    r_0 &amp;= {\frac{1}{2}}\sqrt{1+{\rm tr}R}\\
+    r_3 &amp;= (R_{21}-R_{12})/(4 r_0)\\
+    r_2 &amp;= (R_{13}-R_{31})/(4 r_0)\\
+    r_1 &amp;= (R_{32}-R_{23})/(4 r_0) ~.\end{aligned}\end{split}\]</div>
+</li>
+</ul>
+</dd>
+<dt>Angular velocity <span class="math notranslate nohighlight">\(\to\)</span> quaternion velocity</dt><dd><p>Given an angular velocity <span class="math notranslate nohighlight">\(w\in{\mathbb{R}}^3\)</span> and a current
+quaternion <span class="math notranslate nohighlight">\(r(t)\in{\mathbb{R}}^4\)</span>, what is the time derivative
+<span class="math notranslate nohighlight">\(\dot r(t)\)</span> (in analogy to Eq. ([eqDotR]))? For
+simplicity, let’s first assume <span class="math notranslate nohighlight">\(|w|=1\)</span>. For a small time
+interval <span class="math notranslate nohighlight">\(\delta\)</span>, <span class="math notranslate nohighlight">\(w\)</span> generates a rotation vector
+<span class="math notranslate nohighlight">\(\delta w\)</span>, which converts to a quaternion</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\Delta r = (\cos(\delta/2), \sin(\delta/2) w) ~.\end{aligned}\]</div>
+<p>That rotation is concatenated LHS to the original quaternion,</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+r(t+\delta)
+ = \Delta r \circ r(t) ~.\end{aligned}\]</div>
+<p>Now, if we take the derivative w.r.t. <span class="math notranslate nohighlight">\(\delta\)</span> and evaluate
+it at <span class="math notranslate nohighlight">\(\delta=0\)</span>, all the <span class="math notranslate nohighlight">\(\cos(\delta/2)\)</span> terms become
+<span class="math notranslate nohighlight">\(-\sin(\delta/2)\)</span> and evaluate to zero, all the
+<span class="math notranslate nohighlight">\(\sin(\delta/2)\)</span> terms become <span class="math notranslate nohighlight">\(\cos(\delta/2)\)</span> and
+evaluate to one, and we have</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eqQuatVel}
+\dot r(t)
+&amp;= {\frac{1}{2}}( - w^{\!\top\!}\bar r,~  r_0 w + \bar r \times w )
+ = {\frac{1}{2}}(0,w) \circ r(t)\end{aligned}\]</div>
+<p>Here <span class="math notranslate nohighlight">\((0,w)\in{\mathbb{R}}^4\)</span> is a four-vector; for
+<span class="math notranslate nohighlight">\(|w|=1\)</span> it is a normalized quaternion. However, due to the
+linearity the equation holds for any <span class="math notranslate nohighlight">\(w\)</span>.</p>
+</dd>
+<dt>Quaternion velocity <span class="math notranslate nohighlight">\(\to\)</span> angular velocity</dt><dd><p>The following is relevant when taking the derivative
+w.r.t. quaternion parameters, e.g., of a ball joint represented as
+quaternion. Given <span class="math notranslate nohighlight">\(\dot r\)</span>, we have</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eq37}
+\dot r \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}
+&amp;= {\frac{1}{2}}(0,w) \circ r \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} = {\frac{1}{2}}(0,w) ~,\quad w = 2~ [\dot r \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}]_{1:3}\end{aligned}\]</div>
+<p>which allows us to read off the angular velocity <span class="math notranslate nohighlight">\(w\)</span> induced by
+a change of quaternion <span class="math notranslate nohighlight">\(\dot r\)</span>. However, the RHS zero will
+hold true only iff <span class="math notranslate nohighlight">\(\dot
+r\)</span> is orthogonal to <span class="math notranslate nohighlight">\(r\)</span> (where
+<span class="math notranslate nohighlight">\(\dot r^{\!\top\!}r = \dot r_0 r_0 + \dot{\bar
+r}{}^{\!\top\!}\bar r = 0\)</span>, see ). In case
+<span class="math notranslate nohighlight">\(\dot r^{\!\top\!}r \not=0\)</span>, the change in length of the
+quaternion does not represent any angular velocity; in typical
+kinematics engines a non-unit length is ignored. Therefore one first
+orthogonalizes <span class="math notranslate nohighlight">\(\dot
+r \gets \dot r - r(\dot r^{\!\top\!}r)\)</span>.</p>
+<p>As a special case of application, consider computing the partial
+derivative w.r.t. quaternion parameters, where <span class="math notranslate nohighlight">\(\dot r\)</span> is the
+4D unit vectors <span class="math notranslate nohighlight">\(e_0,..,e_3\)</span>. In this case, the
+orthogonalization becomes simply <span class="math notranslate nohighlight">\(\dot r \gets e_i - r r_i\)</span> and
+([eq37]) becomes</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+(e_i - r_i r) \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}
+  &amp;= e_i \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} - r_i (1,0,0,0) ~,\quad
+  w_i
+ = 2~ [e_i \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}]_{1:3} ~,\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(w_i\)</span> is the rotation vector implied by
+<span class="math notranslate nohighlight">\(\dot r = e_i\)</span>. In case the original quaternion <span class="math notranslate nohighlight">\(r\)</span>
+wasn’t normalized (which could be, if a standard optimization
+algorithm searches in the quaternion parameter space), then <span class="math notranslate nohighlight">\(r\)</span>
+actually represents the normalized quaternion
+<span class="math notranslate nohighlight">\(\bar r = \frac{1}{\sqrt{r^2}} r\)</span>, and (due to linearity of the
+above), the rotation vector implied by <span class="math notranslate nohighlight">\(\dot r = e_i\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\label{eqQuatJac}
+w_i
+&amp;= \frac{2}{\sqrt{r^2}}~ [e_i \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}]_{1:3} ~.\end{aligned}\]</div>
+<p>This defines a <span class="math notranslate nohighlight">\(3\times 4\)</span> <strong>quaternion Jacobian</strong>
+<span class="math notranslate nohighlight">\(J_{:i} = w_i\)</span> with 4 columns <span class="math notranslate nohighlight">\(w_i\)</span>, so that
+<span class="math notranslate nohighlight">\(w = J \dot r\)</span> is the angular velocity induced by a quaternion
+velocity <span class="math notranslate nohighlight">\(\dot r\)</span> (accounting for all implicit normalizations).</p>
+</dd>
+</dl>
+</section>
+<section id="sectransformations">
+<span id="id1"></span><h3>Transformations<a class="headerlink" href="#sectransformations" title="Link to this heading"></a></h3>
+<p>We can represent a transformation as:</p>
+<dl>
+<dt>A homogeneous matrix</dt><dd><p>is a <span class="math notranslate nohighlight">\(4\times 4\)</span>-matrix of the form</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+T =  \left(\begin{array}{cc}R &amp; t \\ 0 &amp; 1\end{array}\right) \end{aligned}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(R\)</span> is a <span class="math notranslate nohighlight">\(3\times 3\)</span>-matrix (rotation in our case)
+and <span class="math notranslate nohighlight">\(t\)</span> a <span class="math notranslate nohighlight">\(3\)</span>-vector (translation).</p>
+<p>In homogeneous coordinates, vectors <span class="math notranslate nohighlight">\(x\in{\mathbb{R}}^3\)</span> are
+expanded to 4D vectors
+<span class="math notranslate nohighlight">\(\left(\begin{array}{c}x\\1\end{array}\right)  \in {\mathbb{R}}^4\)</span>
+by appending a 1.</p>
+<p>Application of a transform <span class="math notranslate nohighlight">\(T\)</span> on a vector
+<span class="math notranslate nohighlight">\(x\in{\mathbb{R}}^3\)</span> is then given as the normal matrix-vector
+product</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+x' = T \cdot x
+ &amp;= T~  \left(\begin{array}{c}x \\ 1\end{array}\right)
+  =  \left(\begin{array}{cc}R &amp; t \\ 0 &amp; 1\end{array}\right) ~  \left(\begin{array}{c}x \\ 1\end{array}\right)
+  =  \left(\begin{array}{c}Rx + t \\ 1\end{array}\right)  ~.\end{aligned}\end{split}\]</div>
+<p>Concatenation is given by the ordinary 4-dim matrix-matrix product.</p>
+<p>The inverse transform is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+T^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}
+ &amp;=  \left(\begin{array}{cc}R &amp; t \\ 0 &amp; 1\end{array}\right) ^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}
+  =  \left(\begin{array}{cc}R^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} &amp; -R^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} t \\ 0 &amp; 1\end{array}\right) \end{aligned}\end{split}\]</div>
+</dd>
+<dt>Translation and quaternion:</dt><dd><p>A transformation can efficiently be stored as a pair <span class="math notranslate nohighlight">\((t,r)\)</span> of
+a translation vector <span class="math notranslate nohighlight">\(t\)</span> and a rotation quaternion <span class="math notranslate nohighlight">\(r\)</span>.
+Analogous to the above, the application of <span class="math notranslate nohighlight">\((t,r)\)</span> on a vector
+<span class="math notranslate nohighlight">\(x\)</span> is <span class="math notranslate nohighlight">\(x' = t + r\cdot x\)</span>; the inverse is
+<span class="math notranslate nohighlight">\((t,r)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} = (-r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}\cdot t, r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1})\)</span>;
+the concatenation is
+<span class="math notranslate nohighlight">\((t_1,r_1) \circ (t_2,r_2) = (t_1 + r_1\cdot t_2, r_1 \circ r_2)\)</span>.</p>
+</dd>
+<dt>Sequences of transformations</dt><dd><p>by <span class="math notranslate nohighlight">\(T_{A\to
+B}\)</span> we denote the transformation from frame <span class="math notranslate nohighlight">\(A\)</span> to frame
+<span class="math notranslate nohighlight">\(B\)</span>. The frames <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> can be thought of
+coordinate frames (tuples of an offset (in an affine space) and three
+local orthonormal basis vectors) attached to two bodies <span class="math notranslate nohighlight">\(A\)</span> and
+<span class="math notranslate nohighlight">\(B\)</span>. It holds</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+T_{A\to C} = T_{A\to B} \circ T_{B\to C}\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\circ\)</span> is the concatenation described above. Let
+<span class="math notranslate nohighlight">\(p\)</span> be a point (rigorously, in the affine space). We write
+<span class="math notranslate nohighlight">\(p^A\)</span> for the coordinates of point <span class="math notranslate nohighlight">\(p\)</span> relative to frame
+<span class="math notranslate nohighlight">\(A\)</span>; and <span class="math notranslate nohighlight">\(p^B\)</span> for the coordinates of point <span class="math notranslate nohighlight">\(p\)</span>
+relative to frame <span class="math notranslate nohighlight">\(B\)</span>. It holds</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+p^A = T_{A\to B}~ p^B ~.\end{aligned}\]</div>
+</dd>
+</dl>
+<section id="a-note-on-forward-vs-backward-of-frame-and-coordinate-transforms">
+<span id="sectransnotation"></span><h4>A note on “forward” vs. “backward” of frame and coordinate transforms<a class="headerlink" href="#a-note-on-forward-vs-backward-of-frame-and-coordinate-transforms" title="Link to this heading"></a></h4>
+<p>Instead of the notation <span class="math notranslate nohighlight">\(T_{A\to B}\)</span>, other text books often use
+notations such as <span class="math notranslate nohighlight">\(T_{AB}\)</span> or <span class="math notranslate nohighlight">\(T^A_B\)</span>. A common question
+regarding notation <span class="math notranslate nohighlight">\(T_{A\to B}\)</span> is the following:</p>
+<blockquote>
+<div><p><em>The notation :math:`T_{Ato B}` is confusing, since it transforms
+coordinates from frame :math:`B` to frame :math:`A`. Why is the
+notation not the other way around?</em></p>
+</div></blockquote>
+<p>I think the notation <span class="math notranslate nohighlight">\(T_{A\to B}\)</span> is intuitive for the following
+reasons. The core is to understand that a transformation can be thought
+of in two ways: as a transformation of the <em>coordinate frame itself</em>,
+and as transformation of the <em>coordinates relative to a coordinate
+frame</em>. I’ll first give a non-formal explanation and later more formal
+definitions of affine frames and their transformation.</p>
+<p>Think of <span class="math notranslate nohighlight">\(T_{W\to B}\)</span> as translating and rotating a real rigid
+body: First, the body is located at the world origin; then the body is
+moved by a translation <span class="math notranslate nohighlight">\(t\)</span>; then the body is rotated (around its
+own center) as described by <span class="math notranslate nohighlight">\(R\)</span>. In that sense,
+<span class="math notranslate nohighlight">\(T_{W\to B} =  \left(\begin{array}{cc}R &amp; t \\ 0
+&amp; 1\end{array}\right)\)</span> describes the “forward” transformation of the
+body. Consider that a coordinate frame <span class="math notranslate nohighlight">\(B\)</span> is attached to the
+rigid body and a frame <span class="math notranslate nohighlight">\(W\)</span> to the world origin. Given a point
+<span class="math notranslate nohighlight">\(p\)</span> in the world, we can express its coordinates relative to the
+world, <span class="math notranslate nohighlight">\(p^W\)</span>, or relative to the body <span class="math notranslate nohighlight">\(p^B\)</span>. You can
+convince yourself with simple examples that
+<span class="math notranslate nohighlight">\(p^W = T_{W\to B}~ p^B\)</span>, that is, <span class="math notranslate nohighlight">\(T_{W\to B}\)</span> <em>also</em>
+describes the “backward” transformation of body-relative-coordinates to
+world-relative-coordinates.</p>
+<p>Formally: Let <span class="math notranslate nohighlight">\((A,V)\)</span> be an affine space. A coordinate frame is a
+tuple <span class="math notranslate nohighlight">\((o,\boldsymbol e_1,..,\boldsymbol e_n)\)</span> of an origin
+<span class="math notranslate nohighlight">\(o \in A\)</span> and basis vectors <span class="math notranslate nohighlight">\(\boldsymbol e_i \in V\)</span>. Given a
+point <span class="math notranslate nohighlight">\(p\in A\)</span>, its coordinates <span class="math notranslate nohighlight">\(p_{1:n}\)</span> w.r.t. a
+coordinate frame <span class="math notranslate nohighlight">\((o,\boldsymbol e_1,..,\boldsymbol e_n)\)</span> are
+given implicitly via</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+p = o + \sum\nolimits_i p_i \boldsymbol e_i ~.\end{aligned}\]</div>
+<p>A transformation <span class="math notranslate nohighlight">\(T_{W\to B}\)</span> is a (“forward”) transformation of
+the coordinate frame itself:</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+(o^B,\boldsymbol e^B_1,..,\boldsymbol e^B_n)
+ &amp;= (o^W + t, R\boldsymbol e^W_1,..,R\boldsymbol e^W_n)\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(t\in V\)</span> is the affine translation in <span class="math notranslate nohighlight">\(A\)</span> and
+<span class="math notranslate nohighlight">\(R\)</span> the rotation in <span class="math notranslate nohighlight">\(V\)</span>. Note that the coordinates
+<span class="math notranslate nohighlight">\((\boldsymbol e^B_i)^W_{1:n}\)</span> of a basis vector
+<span class="math notranslate nohighlight">\(\boldsymbol e^B_i\)</span> relative to frame <span class="math notranslate nohighlight">\(W\)</span> are the columns of
+<span class="math notranslate nohighlight">\(R\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\boldsymbol e^B_i
+ &amp;= \sum_j (\boldsymbol e^B_i)^W_j \boldsymbol e^W_j
+  = \sum_j R_{ji} \boldsymbol e^W_j\end{aligned}\]</div>
+<p>Given this transformation of the coordinate frame itself, the
+coordinates transform as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+p &amp;= o^W + \sum_i p^W_i~ \boldsymbol e^W_i \\
+p &amp;= o^B + \sum_i p^B_i~ \boldsymbol e^B_i \\
+  &amp;= o^W + t + \sum_i p^B_i~ (R \boldsymbol e^W_i) \\
+  &amp;= o^W + \sum_i t^W_i~ e^W_i + \sum_j p^B_j~ (R \boldsymbol e^W_j) \\
+  &amp;= o^W + \sum_i t^W_i~ e^W_i + \sum_j p^B_j~ (\sum_i R_{ij}~ \boldsymbol e^W_i) \\
+  &amp;= o^W + \sum_i \Big[t^W_i + \sum_j R_{ij}~ p^B_j\Big]~ e^W_i \\
+\Rightarrow
+ &amp;~ p^W_i = t^W_i + \sum_j R_{ij}~ p^B_j ~.\end{aligned}\end{split}\]</div>
+<p>Another way to express this formally: <span class="math notranslate nohighlight">\(T_{W\to B}\)</span> maps
+<em>covariant</em> vectors (including “basis vectors”) forward, but
+<em>contra-variant</em> vectors (including “coordinates”) backward.</p>
+</section>
+</section>
+</section>
+<section id="splines">
+<h2>Splines<a class="headerlink" href="#splines" title="Link to this heading"></a></h2>
+<p>A spline is a piece-wise polynomial path
+<span class="math notranslate nohighlight">\(x:[0,T] \maps {\mathbb{R}}^n\)</span>.</p>
+<p>Let’s first clearly distinguish the use of words <strong>knot</strong>, <strong>waypoint</strong>,
+and <strong>control point</strong>:</p>
+<ul class="simple">
+<li><p>A knot <span class="math notranslate nohighlight">\(t_i\)</span> is a point in <em>time</em>, <span class="math notranslate nohighlight">\(t_i \in {\mathbb{R}}\)</span>
+(usually <span class="math notranslate nohighlight">\(t_i \in [0,T]\)</span>). The path is polynomial between
+knots. We have a non-decreasing sequence of knots <span class="math notranslate nohighlight">\(t_0,..,t_m\)</span>
+(usually with <span class="math notranslate nohighlight">\(t_0=0\)</span> and <span class="math notranslate nohighlight">\(t_m=T\)</span>) which partition the
+time interval <span class="math notranslate nohighlight">\([0,T]\)</span> into pieces
+<span class="math notranslate nohighlight">\([t_i, t_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}]\)</span> so
+that the path is just polynomial in each piece. Note that we may
+often have double or triple knots, meaning that several consecutive
+knots
+<span class="math notranslate nohighlight">\(t_i = t_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}\)</span> are
+equal, especially at the beginning and end.</p></li>
+<li><p>A waypoint <span class="math notranslate nohighlight">\(x_i\)</span> is a point on the path, typically at a knot,
+<span class="math notranslate nohighlight">\(x_i = x(t_i)\)</span>. So a path really passes through a waypoint. At
+waypoints, we often also care about velocities <span class="math notranslate nohighlight">\(v_i\)</span> (or
+accelerations), where <span class="math notranslate nohighlight">\(v_i = \dot x(t_i)\)</span>.</p></li>
+<li><p>A control point <span class="math notranslate nohighlight">\(z_j\)</span> is (usually) not a point <em>on</em> the path,
+but it indirectly defines the path as an linear combination of
+several control points. B-splines, defined below, make this explicit.</p></li>
+</ul>
+<p>In robotics, there are two main conventions to define and parameterize
+splines: Hermite splines and B-splines. Hermite splines are defined by
+the knot sequence and explicitly prescribing waypoints <span class="math notranslate nohighlight">\(x_i\)</span> and
+(for cubic) velocities <span class="math notranslate nohighlight">\(v_i\)</span> at each knot (for quintic also
+acceperations <span class="math notranslate nohighlight">\(a_i\)</span>). In contrast, B-splines are specified by the
+knot sequence and <span class="math notranslate nohighlight">\(K\)</span> control points <span class="math notranslate nohighlight">\(z_j\)</span>. As in B-splines
+we do not need to provide velocities as part of the specification, they
+are sometimes easier to use in practical robotics. However, the
+resulting path does not go (exactly) through the provided control points
+– the actual waypoints are implicit and ensuring exact prescribed
+waypoints implies solving a subproblem.</p>
+<p>Cubic splines are a common choice in robotics, as they have a still
+continuous (piece-wise linear) acceleration profile, and therefore
+limited jerk (3rd time derivative).</p>
+<p>Let’s start with Cubic Hermite splines.</p>
+</section>
+<section id="code-references">
+<h2>Code References<a class="headerlink" href="#code-references" title="Link to this heading"></a></h2>
+<section id="nlp-interface">
+<span id="secnlp"></span><h3>NLP interface<a class="headerlink" href="#nlp-interface" title="Link to this heading"></a></h3>
+<p>A general non-linear mathematical program (NLP) is of the form</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\min_{b_l\le x \le b_u}~ f(x) ~~~\text{s.t.}~~~ g(x)\le 0,~ h(x) = 0  ~,\end{aligned}\]</div>
+<p>with <span class="math notranslate nohighlight">\(x\in{\mathbb{R}}^n\)</span>,
+<span class="math notranslate nohighlight">\(f:~ {\mathbb{R}}^n \to {\mathbb{R}}\)</span>,
+<span class="math notranslate nohighlight">\(g:~ {\mathbb{R}}^n \to {\mathbb{R}}^{d_g}\)</span>,
+<span class="math notranslate nohighlight">\(h:~ {\mathbb{R}}^n \to {\mathbb{R}}^{d_h}\)</span>,
+<span class="math notranslate nohighlight">\(b_l,b_u\in{\mathbb{R}}^n\)</span>. However, we want to explicitly account
+for <strong>least squares</strong> costs (sum-of-squares), so that we extend the form
+to</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\min_{b_l\le x \le b_u}~ f(x) + r(x)^{\!\top\!}r(x) ~~~\text{s.t.}~~~ g(x)\le 0,~ h(x) = 0  ~,\end{aligned}\]</div>
+<p>with <span class="math notranslate nohighlight">\(r:~ {\mathbb{R}}^n \to {\mathbb{R}}^{d_r}\)</span>. In technical
+terms, the solver needs to be provided with:</p>
+<ul class="simple">
+<li><p>the problem “signature”: dimension <span class="math notranslate nohighlight">\(n\)</span>, dimensions
+<span class="math notranslate nohighlight">\(d_r, d_g, d_h\)</span>, bounds <span class="math notranslate nohighlight">\(b_l, b_u \in {\mathbb{R}}^n\)</span>,</p></li>
+<li><p>functions <span class="math notranslate nohighlight">\(f, r, g, h\)</span>,   Jacobians for all,   Hessian for
+<span class="math notranslate nohighlight">\(f\)</span>,</p></li>
+<li><p>typically also an initialization sampler <span class="math notranslate nohighlight">\(x_0 \sim p(x)\)</span>, that
+provides starting <span class="math notranslate nohighlight">\(x_0\)</span>.</p></li>
+</ul>
+<p>However, instead of providing a solver with separate functions
+<span class="math notranslate nohighlight">\(f, r, g, h\)</span>, we instead provide only a single differentiable
+<strong>feature</strong> function <span class="math notranslate nohighlight">\(\phi: X \to {\mathbb{R}}^K\)</span>, which stacks
+all <span class="math notranslate nohighlight">\(f,r,g,h\)</span> components to a single vector,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\phi(x) =  \left(\begin{array}{c}f_1(x) \\ r_1(x) \\ h_1(x) \\ g_1(x) \\ h_2(x) \\ \vdots\end{array}\right)
+~,\quad
+\rho =  \left(\begin{array}{c}\texttt{f}\\ \texttt{sos}\\ \texttt{eq}\\ \texttt{ineq}\\ \texttt{eq}\\ \vdots\end{array}\right)  ~,\end{aligned}\end{split}\]</div>
+<p>where the indicator vector <span class="math notranslate nohighlight">\(\rho\)</span> informs the solver which
+components of <span class="math notranslate nohighlight">\(\phi\)</span> have to be treated as linear cost (<code class="docutils literal notranslate"><span class="pre">f</span></code>),
+sum-of-squares cost (<code class="docutils literal notranslate"><span class="pre">sos</span></code>), equality constraint (<code class="docutils literal notranslate"><span class="pre">eq</span></code>), or
+inequality constraint (<code class="docutils literal notranslate"><span class="pre">ineq</span></code>). (The order of stacking does not
+matter.) In this convention, the NLP reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\min_{b_l\le x \le b_u}~ {{\bf 1}}^{\!\top\!}\phi_\texttt{f}(x) + \phi_\texttt{sos}(x)^{\!\top\!}\phi_\texttt{sos}(x)
+  ~~\text{s.t.}~~\phi_\texttt{ineq}(x) \le 0,~ \phi_\texttt{eq}(x) = 0 ~,\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi_\texttt{sos}\)</span> is the subsets of <code class="docutils literal notranslate"><span class="pre">sos</span></code>-features, etc.
+Based on these conventions, the solver needs to be provided with:</p>
+<ul class="simple">
+<li><p>the problem “signature”: dimension <span class="math notranslate nohighlight">\(n\)</span>, feature types
+<span class="math notranslate nohighlight">\(\rho\)</span>, bounds <span class="math notranslate nohighlight">\(b_l, b_u \in {\mathbb{R}}^n\)</span>,</p></li>
+<li><p>a single differentiable <strong>feature</strong> function
+<span class="math notranslate nohighlight">\(\phi: X \to {\mathbb{R}}^K\)</span>, with Jacobian function
+<span class="math notranslate nohighlight">\(J = \partial_x \phi(x)\)</span>,</p></li>
+<li><p>optionally a Hessian function for the sum of all <code class="docutils literal notranslate"><span class="pre">f</span></code>-terms,</p></li>
+<li><p>and typically also an initialization sampler <span class="math notranslate nohighlight">\(x_0 \sim p(x)\)</span>,
+that provides starting <span class="math notranslate nohighlight">\(x_0\)</span>.</p></li>
+</ul>
+<p>In the rai code, an NLP is therefore declared as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span><span class="n">signature</span>
+<span class="n">uint</span> <span class="n">dimension</span><span class="p">;</span>  <span class="n">ObjectiveTypeA</span> <span class="n">featureTypes</span><span class="p">;</span>  <span class="n">arr</span> <span class="n">bounds_lo</span><span class="p">,</span> <span class="n">bounds_up</span><span class="p">;</span>
+
+<span class="o">//</span><span class="n">essential</span> <span class="n">method</span>
+<span class="n">virtual</span> <span class="n">void</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">arr</span><span class="o">&amp;</span> <span class="n">phi</span><span class="p">,</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">J</span><span class="p">,</span> <span class="n">const</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">);</span>
+
+<span class="o">//</span><span class="n">optional</span>
+<span class="n">virtual</span> <span class="n">arr</span>  <span class="n">getInitializationSample</span><span class="p">(</span><span class="n">const</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">previousOptima</span><span class="o">=</span><span class="p">{});</span>
+<span class="n">virtual</span> <span class="n">void</span> <span class="n">getFHessian</span><span class="p">(</span><span class="n">arr</span><span class="o">&amp;</span> <span class="n">H</span><span class="p">,</span> <span class="n">const</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="yaml-graph-files">
+<span id="secyamlgraph"></span><h3>Yaml-Graph Files<a class="headerlink" href="#yaml-graph-files" title="Link to this heading"></a></h3>
+<p>We use yaml-style files throughout. These are the file representation of
+internal data structures such as dictionaries (anytype key-value maps)
+used for parameter files or other structure data, but esp. also graphs.
+The (semantic) extensions relative to yaml are:</p>
+<ul class="simple">
+<li><p>An &#64;Include&#64; node allows to hierarchically include files. This means
+that while each local file can be parsed with a standard yaml parser,
+an outer loop has to check for &#64;Include&#64; nodes and coordinate loading
+sub-files.</p></li>
+<li><p>As an implication of the above, we allow for a special &#64;path&#64; type,
+as URLs embraced by <code class="docutils literal notranslate"><span class="pre">&lt;...&gt;</span></code>. This becomes necessary as file values
+need to be interpreted relative to the path of the loading file. So
+when such a file is parsed we not only store the filename string, but
+also the path of the loading file to ensure we know its absolute
+path.</p></li>
+<li><p>We also allow &#64;Edit&#64; and &#64;Delete&#64; tags, which allow us to
+edit/overwrite the value of previously defined nodes, as well as
+delete previously defined nodes.</p></li>
+<li><p>Finally, the name of a node can include a list of parents: E.g. &#64;A (B
+C): shape: box&#64; denotes a node with key &#64;A&#64; that is a child of &#64;B&#64;
+and &#64;C&#64;. The semantics of this is that &#64;A&#64; is a (directed) edge
+between B and C. This is analogous to a dot declaration &#64;B -&gt; C [
+shape=box ]&#64;.</p></li>
+<li><p>Note that all of the above is still yaml syntax, the outer parser
+only adds additional interpretation (post-processing) of &#64;Include,
+Edit, Delete&#64; tags, &#64;&lt;..&gt;&#64; values, and &#64;(..)&#64; in names.</p></li>
+</ul>
+<p>Within rai, .g-files are used to represent parameter files, robotic
+configurations (<span class="math notranslate nohighlight">\(\sim\)</span> URDF), 1st order logic, factor graphs,
+optimization problems. The underlying data structure is used, e.g., as
+any-type container, Graph, or auto-convertion to python dictionaries.</p>
+<p>Subgraphs may contain nodes that have parents from the containing graph,
+or from other subgraphs of the containing graph. Some methods of the
+<code class="docutils literal notranslate"><span class="pre">Graph</span></code> class (to find nodes by key or type) allow to specify whether
+also nodes in subgraphs or parentgraphs are to be searched. This
+connectivity across (sub)-graphs e.g. allows to represent logic
+knowledge bases.</p>
+<p>The shows this file syntax is used to specify robot/environment
+configurations.</p>
+</section>
+</section>
+<section id="cameras">
+<h2>Cameras<a class="headerlink" href="#cameras" title="Link to this heading"></a></h2>
+<section id="image-camera-world-coordinates">
+<h3>Image, Camera, &amp; World Coordinates<a class="headerlink" href="#image-camera-world-coordinates" title="Link to this heading"></a></h3>
+<p>In this section, we use the following notation for coordinates of a 3D
+point:</p>
+<ul class="simple">
+<li><p>world coordinates <span class="math notranslate nohighlight">\(X\)</span>,</p></li>
+<li><p>camera coordinates <span class="math notranslate nohighlight">\(x\)</span> (so that <span class="math notranslate nohighlight">\(X = T x\)</span>, where
+<span class="math notranslate nohighlight">\(T\equiv T_{W\to C}\)</span> is the camera position/orientation, also
+called <strong>extrinsic parameter</strong>),</p></li>
+<li><p>image coordinates <span class="math notranslate nohighlight">\(u=(u_x,u_y,u_d)\)</span>, with the pixel coordinates
+<span class="math notranslate nohighlight">\((u_x,u_y)\)</span> and depth coordinate <span class="math notranslate nohighlight">\(u_d\)</span>, details as
+followed.</p></li>
+</ul>
+<p>The pixel coordinates <span class="math notranslate nohighlight">\((u_x,u_y)\)</span> indicate where a point appears
+on the image plane. The <span class="math notranslate nohighlight">\(x\)</span>-axis always points to the right, but
+there are two conventions for the <span class="math notranslate nohighlight">\(y\)</span>-axis:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(y\)</span>-up: The <span class="math notranslate nohighlight">\(y\)</span>-axis points upward. This is consistent to
+how a diagram is typically drawn on paper: <span class="math notranslate nohighlight">\(x\)</span>-axis right,
+<span class="math notranslate nohighlight">\(y\)</span>-axis up. However, a consequence is that the <span class="math notranslate nohighlight">\(z\)</span>-axis
+then points backward, i.e., pixels in front of the camera have
+negative depth <span class="math notranslate nohighlight">\(u_d\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(y\)</span>-down: The <span class="math notranslate nohighlight">\(y\)</span>-axis points down. This is consistent to
+how pixels are typically indexed in image data: counting rows from
+top to bottom. So when defining pixel coordinates <span class="math notranslate nohighlight">\((u_x,u_y)\)</span>
+literally to be pixel indices in image data, <span class="math notranslate nohighlight">\(y\)</span>-down is the
+natural convention. A consequence is that the <span class="math notranslate nohighlight">\(z\)</span>-axis points
+forward, i.e., pixels in front of the camera have a positive depth
+<span class="math notranslate nohighlight">\(u_d\)</span>, which might also be more intuitive.</p></li>
+</ul>
+<p>The transformation from camera coordinates <span class="math notranslate nohighlight">\(x\)</span> to image
+coordinates <span class="math notranslate nohighlight">\(u\)</span> is involves perspective projection. For better
+readability, let’s write (only in this equation)
+<span class="math notranslate nohighlight">\(x \equiv (\texttt{x},\texttt{y},\texttt{z})\)</span>. Then the mapping is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\label{eqxtou}
+u =  \left(\begin{array}{c}u_x \\ u_y \\ u_d\end{array}\right)
+&amp;=  \left(\begin{array}{c}(f_x \texttt{x}+ s \texttt{y})/\texttt{z}+ c_x\\ f_y \texttt{y}/\texttt{z}+ c_y \\ \texttt{z}\end{array}\right)  ~.\end{aligned}\end{split}\]</div>
+<p>Here, the five so-called <strong>intrinsic parameters</strong>
+<span class="math notranslate nohighlight">\(f_x,f_y,c_x,c_y,s\)</span> are the focal length <span class="math notranslate nohighlight">\(f_x,f_y\)</span>, the
+image center <span class="math notranslate nohighlight">\(c_x,c_y\)</span>, and a image skew <span class="math notranslate nohighlight">\(s\)</span> (which is
+usually zero). E.g., for an image of height <span class="math notranslate nohighlight">\(H\)</span> and width
+<span class="math notranslate nohighlight">\(W\)</span>, and vertical full view angle <span class="math notranslate nohighlight">\(\alpha\)</span>, we typically
+have an image center <span class="math notranslate nohighlight">\(c_x \approx H/2, c_y \approx W/2\)</span> and a
+focal length <span class="math notranslate nohighlight">\(f_y
+= \frac{H}{2 \tan(\alpha/2)}\)</span>, e.g., for <span class="math notranslate nohighlight">\(\alpha=90^\circ\)</span>,
+<span class="math notranslate nohighlight">\(f_y = H/2\)</span>. For a typical camera <span class="math notranslate nohighlight">\(f_x \approx f_y\)</span>.</p>
+<p>Inversely, if we have image coordinates <span class="math notranslate nohighlight">\(u\)</span> and want to convert to
+cartesian camera coordinates, we have (assuming <span class="math notranslate nohighlight">\(s=0\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+x
+&amp;=  \left(\begin{array}{c}(u_x - c_x) u_z / f_x\\ (u_y - c_y) u_z / f_y \\ u_z\end{array}\right)  ~.\end{aligned}\end{split}\]</div>
+</section>
+<section id="homogeneous-coordinates-camera-matrix-p">
+<h3>Homogeneous coordinates &amp; Camera Matrix <span class="math notranslate nohighlight">\(P\)</span><a class="headerlink" href="#homogeneous-coordinates-camera-matrix-p" title="Link to this heading"></a></h3>
+<p>First a brief definition: <em>A homogeneous coordinate
+:math:`boldsymbol x=(x_1,..,x_n,w)` is a (redundant) description of the
+:math:`n`-dim point</em></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\cal P}(\boldsymbol x)=  \left(\begin{array}{c}x_1/w \\ \vdots \\ x_n/w\end{array}\right)  ~.\end{split}\]</div>
+<p>Note that two coordinates <span class="math notranslate nohighlight">\((x_1,..,x_n,w)\)</span> and
+<span class="math notranslate nohighlight">\((\lambda x_1,..,\lambda x_n,\lambda w)\)</span> are “equivalent” in that
+they describe the same point. The operation <span class="math notranslate nohighlight">\({\cal P}\)</span> is
+<em>non-linear</em> and called <strong>perspective projection</strong>. In this section, we
+write homogeneous coordinates in bold <span class="math notranslate nohighlight">\(\boldsymbol x\)</span>.</p>
+<p>Back to our camera setting: Let <span class="math notranslate nohighlight">\(\boldsymbol x\)</span> and
+<span class="math notranslate nohighlight">\(\boldsymbol X\)</span> be homogeneous camera and world coordinates of a
+point (typically both have <span class="math notranslate nohighlight">\(w=1\)</span> as last entry). Then the pose
+transformation <span class="math notranslate nohighlight">\(T\)</span> can be written as <span class="math notranslate nohighlight">\(4\times\)</span> matrix such
+that</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol x = T^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} \boldsymbol X ~.\]</div>
+<p>Given camera coordinates <span class="math notranslate nohighlight">\(x = ``(x,y,z)''\)</span>, we can write
+([eqxtou])</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\boldsymbol u
+&amp;= K x
+=  \left(\begin{array}{c}f_x x + s y + c_x z\\ f_y y + c_y z \\ z\end{array}\right)  ~,\quad
+K =  \left(\begin{array}{ccc}f_x &amp; s &amp; c_x \\ &amp; f_y &amp; c_y \\ &amp; &amp; 1 \end{array}\right)  ~,\quad
+{\cal P}(\boldsymbol u)
+=  \left(\begin{array}{c}  (f_x x + s y)/z + c_x\\ f_y y/z + c_y \end{array}\right)  ~,\end{aligned}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol u\)</span> are homogeneous <em>pixel</em> coordinates, and
+<span class="math notranslate nohighlight">\({\cal P}(\boldsymbol u)\)</span> the actual pixel coordinates, which
+would have to be augmented with <span class="math notranslate nohighlight">\(z\)</span> again to get the <span class="math notranslate nohighlight">\(u\)</span>
+including depth coordinate.</p>
+<p>The <span class="math notranslate nohighlight">\(3\times 3\)</span> matrix <span class="math notranslate nohighlight">\(K\)</span> includes the 5 general intrinsic
+parameters. Writing the inverse transformation
+<span class="math notranslate nohighlight">\(T^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}\)</span> as a
+<span class="math notranslate nohighlight">\(3\times 4\)</span> matrix
+<span class="math notranslate nohighlight">\(\left(\begin{array}{cc}R^{\!\top\!}&amp; -R^{\!\top\!}t\end{array}\right)\)</span>
+with rotation <span class="math notranslate nohighlight">\(R\)</span> and translation <span class="math notranslate nohighlight">\(t\)</span>, we can write the
+relation between <span class="math notranslate nohighlight">\(\boldsymbol u\)</span> and homogeneous world coordinates
+<span class="math notranslate nohighlight">\(\boldsymbol X\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\boldsymbol u = P \boldsymbol X
+~,\quad\text{with~} P =  \left(\begin{array}{cc}K &amp; 0\end{array}\right) ~ T^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} =  \left(\begin{array}{cc}K &amp; 0\end{array}\right) ~  \left(\begin{array}{cc}R^{\!\top\!}&amp; -R^{\!\top\!}t \\ &amp; 1\end{array}\right)  =  \left(\begin{array}{cc}KR^{\!\top\!}&amp; -KR^{\!\top\!}t\end{array}\right)  ~,\end{aligned}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(P\)</span> is the <span class="math notranslate nohighlight">\(3\times 4\)</span> <strong>camera matrix</strong>, which
+subsumes 5 intrinsic and 6 extrinsic (3 rotation, 3 translation)
+parameters. Except for absolute scaling (the 1 in the definition of
+<span class="math notranslate nohighlight">\(K\)</span>), this fully parameterizes a general affine transform.</p>
+</section>
+<section id="calibration-as-estimating-p-k-r-t-from-depth-data">
+<h3>Calibration as Estimating <span class="math notranslate nohighlight">\(P,K,R,t\)</span> from Depth Data<a class="headerlink" href="#calibration-as-estimating-p-k-r-t-from-depth-data" title="Link to this heading"></a></h3>
+<p>Assuming we have data of pairs <span class="math notranslate nohighlight">\((\boldsymbol u, \boldsymbol X)\)</span>,
+we can use the basic equation <span class="math notranslate nohighlight">\(\boldsymbol u = P \boldsymbol X\)</span> to
+retrieve <span class="math notranslate nohighlight">\(P\)</span> in closed from, and in a second step retrieve the
+intrinsic and extrinsic camera parameters from <span class="math notranslate nohighlight">\(P\)</span>. Note that here
+we discuss the situation where we have the “right” <span class="math notranslate nohighlight">\(\boldsymbol u\)</span>
+in the data – and not only the pixel coordinates
+<span class="math notranslate nohighlight">\({\cal P}(\boldsymbol u)\)</span>! This means that we assume we have data
+entries <span class="math notranslate nohighlight">\(\boldsymbol u = (u_x u_d, u_y u_d, u_d)\)</span> which includes
+the true depth <span class="math notranslate nohighlight">\(u_d\)</span>. So this method is only applicable when we
+want to calibrate a depth camera.</p>
+<p>Given data <span class="math notranslate nohighlight">\(D = \{(\boldsymbol u_i, \boldsymbol X_i)\}_{i=1}^n\)</span>,
+we want to minimize the squared error</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\argmin_P \sum_i (\boldsymbol u_i - P \boldsymbol X_i)^2 = [U - P X]^2 ~,\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(U\)</span> and <span class="math notranslate nohighlight">\(X\)</span> are the stacked <span class="math notranslate nohighlight">\(\boldsymbol u_i\)</span>
+and <span class="math notranslate nohighlight">\(\boldsymbol X_i\)</span>, respectively. The solution is
+<span class="math notranslate nohighlight">\(P = U^{\!\top\!}X (X^{\!\top\!}X)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}\)</span>.
+Comparing with the form of <span class="math notranslate nohighlight">\(P\)</span> above, we can decompose it and
+extract explicit <span class="math notranslate nohighlight">\(K, R, t\)</span> using</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+  (K,R^{\!\top\!}) &amp;\gets \text{RQ-decomposition}(P_{1:3,:}) \\
+  t &amp;\gets -(K R^{\!\top\!})^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} P_{4,:}\end{aligned}\end{split}\]</div>
+<p>However, when defining
+<span class="math notranslate nohighlight">\(\bar u = (\boldsymbol u,1) = (u_x u_z, u_y u_z, u_z, 1)\)</span> (with
+additional 1 agumented), we can also write the inverse linear relation
+to the non-homogeneous world coordinate <span class="math notranslate nohighlight">\(X\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+X  = P^+ \bar u~,\quad\text{with~} P^+ =  \left(\begin{array}{cc}R K^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} &amp; t\end{array}\right)  \bar u~,\end{aligned}\]</div>
+<p>Using data <span class="math notranslate nohighlight">\(X\)</span> (<span class="math notranslate nohighlight">\(3\times n\)</span>) and <span class="math notranslate nohighlight">\(U\)</span>
+(<span class="math notranslate nohighlight">\(4\times n\)</span>) the optimum is
+<span class="math notranslate nohighlight">\(P^+ = X^{\!\top\!}U (U^{\!\top\!}U)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}\)</span>.
+We can decompose it using</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+  t &amp;\gets P^+_{3,:} \\
+  (K,R^{\!\top\!}) &amp;\gets \text{RQ-decomposition}( [P^+_{1:3,:}]^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} ]\end{aligned}\end{split}\]</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorials/nlp-solver.html" class="btn btn-neutral float-left" title="Optimization (NLP formulation and solving)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../rai.html" class="btn btn-neutral float-right" title="rai python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

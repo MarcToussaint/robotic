@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Differentiable Features &amp; Collision Evaluation &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Importing, Editing &amp; Manipulating Configurations" href="configurationEditing.html" />
+    <link rel="prev" title="Starting with a real robot" href="1d-real.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#basics-on-configurations-botop-komo">Basics on Configurations, BotOp &amp; KOMO</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1a-configurations.html">Configurations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1b-botop.html">BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1c-komo.html">KOMO: Motion Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1d-real.html">Starting with a real robot</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Differentiable Features &amp; Collision Evaluation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Recap-of-evaluating-features-directly">Recap of evaluating features directly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#List-of-features">List of features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Position-features">Position features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Scalar-product-features">Scalar product features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Scale-and-target-transformation">Scale and target transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Collision-features">Collision features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Enabling/disabling-collisions">Enabling/disabling collisions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#in-depth">In Depth</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rai.html">rai python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Differentiable Features &amp; Collision Evaluation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/features.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Differentiable-Features-&amp;-Collision-Evaluation">
+<h1>Differentiable Features &amp; Collision Evaluation<a class="headerlink" href="#Differentiable-Features-&-Collision-Evaluation" title="Link to this heading"></a></h1>
+<p>The <a class="reference internal" href="1a-configurations.html"><span class="doc">1st tutorial</span></a> introduced the basic concepts of features. The <a class="reference external" href="../script/script.html#general-concept-of-differentiable-featuresFeatures">lecture script section ‘Kinematics’</a> introduces this a bit more formally.</p>
+<p>This tutorial first gives an overview over available features, and then provides more details specifically on collision features.</p>
+<section id="Recap-of-evaluating-features-directly">
+<h2>Recap of evaluating features directly<a class="headerlink" href="#Recap-of-evaluating-features-directly" title="Link to this heading"></a></h2>
+<p>Let’s first recap how features are directly computed on a configuration - as introduced in the <a class="reference internal" href="1a-configurations.html"><span class="doc">1st tutorial</span></a>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+q = C.getJointState()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>[y,J] = C.eval(ry.FS.position, [&#39;gripper&#39;])
+print(&#39;feature value:&#39;, y, &#39;\nJacobian:&#39;, J)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+feature value: [2.89890247e-01 1.25455202e-16 8.05237266e-01]
+Jacobian: [[-1.25455202e-16  4.72237266e-01 -1.15172364e-16 -2.32080381e-01
+   0.00000000e+00  4.48170606e-02  0.00000000e+00  0.00000000e+00]
+ [ 2.89890247e-01  6.43685653e-17  5.54002326e-01  2.83784184e-16
+   1.63424512e-01  2.26026356e-16 -1.38777878e-17  0.00000000e+00]
+ [ 0.00000000e+00 -2.89890247e-01 -1.79370329e-16  5.11220138e-01
+   0.00000000e+00  2.32670220e-01  0.00000000e+00  0.00000000e+00]]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># the x-axis of the given frame in world coordinates
+C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([ 0.38205142, -0.70710678,  0.59500984]),
+ array([[ 7.07106781e-01,  5.95009840e-01,  3.82051424e-01,
+         -5.95009840e-01,  3.82051424e-01, -5.95009840e-01,
+         -3.82051424e-01,  0.00000000e+00],
+        [ 3.82051424e-01,  8.48324576e-17,  7.07106781e-01,
+          2.12081144e-16, -2.94260250e-01,  3.71142002e-16,
+         -7.07106781e-01,  0.00000000e+00],
+        [ 0.00000000e+00, -3.82051424e-01,  5.95009840e-01,
+          3.82051424e-01, -5.95009840e-01,  3.82051424e-01,
+         -5.95009840e-01,  0.00000000e+00]]))
+</pre></div></div>
+</div>
+<p>The signature of the <code class="docutils literal notranslate"><span class="pre">eval</span></code> method is</p>
+<ul class="simple">
+<li><p>The feature symbol (<code class="docutils literal notranslate"><span class="pre">FS.&lt;name&gt;</span></code> in python; <code class="docutils literal notranslate"><span class="pre">FS_&lt;name&gt;</span></code> in cpp)</p></li>
+<li><p>The set of frames it refers to, given as list of frame names</p></li>
+<li><p>Optionally: A scale, that can also be a matrix to down-project a feature (see below)</p></li>
+<li><p>Optionally: A target, which changes the zero-point of the features (see below)</p></li>
+</ul>
+</section>
+<section id="List-of-features">
+<h2>List of features<a class="headerlink" href="#List-of-features" title="Link to this heading"></a></h2>
+<p>Here is a full list of feature symbols:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.FS.__members__.keys()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+dict_keys([&#39;position&#39;, &#39;positionDiff&#39;, &#39;positionRel&#39;, &#39;quaternion&#39;, &#39;quaternionDiff&#39;, &#39;quaternionRel&#39;, &#39;pose&#39;, &#39;poseDiff&#39;, &#39;poseRel&#39;, &#39;vectorX&#39;, &#39;vectorXDiff&#39;, &#39;vectorXRel&#39;, &#39;vectorY&#39;, &#39;vectorYDiff&#39;, &#39;vectorYRel&#39;, &#39;vectorZ&#39;, &#39;vectorZDiff&#39;, &#39;vectorZRel&#39;, &#39;scalarProductXX&#39;, &#39;scalarProductXY&#39;, &#39;scalarProductXZ&#39;, &#39;scalarProductYX&#39;, &#39;scalarProductYY&#39;, &#39;scalarProductYZ&#39;, &#39;scalarProductZZ&#39;, &#39;gazeAt&#39;, &#39;angularVel&#39;, &#39;accumulatedCollisions&#39;, &#39;jointLimits&#39;, &#39;distance&#39;, &#39;negDistance&#39;, &#39;oppose&#39;, &#39;qItself&#39;, &#39;jointState&#39;, &#39;aboveBox&#39;, &#39;insideBox&#39;, &#39;pairCollision_negScalar&#39;, &#39;pairCollision_vector&#39;, &#39;pairCollision_normal&#39;, &#39;pairCollision_p1&#39;, &#39;pairCollision_p2&#39;, &#39;standingAbove&#39;, &#39;physics&#39;, &#39;contactConstraints&#39;, &#39;energy&#39;, &#39;transAccelerations&#39;, &#39;transVelocities&#39;])
+</pre></div></div>
+</div>
+<p>But some of these (esp later ones) are exotic or experimental. The core pre-defined features are the following:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>FS</p></th>
+<th class="head"><p>frames</p></th>
+<th class="head"><p>D</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>position</p></td>
+<td><p>[A]</p></td>
+<td><p>3</p></td>
+<td><p>3D position of A in world coordinates</p></td>
+</tr>
+<tr class="row-odd"><td><p>positionDiff</p></td>
+<td><p>[A,B]</p></td>
+<td><p>3</p></td>
+<td><p>difference of 3D positions of A and B in world coordinates</p></td>
+</tr>
+<tr class="row-even"><td><p>positionRel</p></td>
+<td><p>[A,B]</p></td>
+<td><p>3</p></td>
+<td><p>3D position of A in B-coordinates</p></td>
+</tr>
+<tr class="row-odd"><td><p>quaternion</p></td>
+<td><p>[A]</p></td>
+<td><p>4</p></td>
+<td><p>4D quaternion of A in world coordinatesfootnote[There is ways to handle the invariance w.r.t. quaternion
+sign properly.]</p></td>
+</tr>
+<tr class="row-even"><td><p>quaternionDiff</p></td>
+<td><p>[A,B]</p></td>
+<td><p>4</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>quaternionRel</p></td>
+<td><p>[A,B]</p></td>
+<td><p>4</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>pose</p></td>
+<td><p>[A]</p></td>
+<td><p>7</p></td>
+<td><p>7D pose of A in world coordinates</p></td>
+</tr>
+<tr class="row-odd"><td><p>poseDiff</p></td>
+<td><p>[A,B]</p></td>
+<td><p>7</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>poseRel</p></td>
+<td><p>[A,B]</p></td>
+<td><p>7</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>vectorX</p></td>
+<td><p>[A]</p></td>
+<td><p>3</p></td>
+<td><p>The x-basis-vector of frame A in world coordinates</p></td>
+</tr>
+<tr class="row-even"><td><p>vectorXDiff</p></td>
+<td><p>[A,B]</p></td>
+<td><p>3</p></td>
+<td><p>The difference of the above for two frames A and B</p></td>
+</tr>
+<tr class="row-odd"><td><p>vectorXRel</p></td>
+<td><p>[A,B]</p></td>
+<td><p>3</p></td>
+<td><p>The x-basis-vector of frame A in B-coordinates</p></td>
+</tr>
+<tr class="row-even"><td><p>vectorY…</p></td>
+<td></td>
+<td></td>
+<td><p>same as above</p></td>
+</tr>
+<tr class="row-odd"><td><p>scalarProductXX</p></td>
+<td><p>[A,B]</p></td>
+<td><p>1</p></td>
+<td><p>The scalar product of the x-basis-vector of frame A with the x-basis-vector of frame B</p></td>
+</tr>
+<tr class="row-even"><td><p>scalarProduct…</p></td>
+<td><p>[A,B]</p></td>
+<td></td>
+<td><p>as above</p></td>
+</tr>
+<tr class="row-odd"><td><p>angularVel</p></td>
+<td><p>[A]</p></td>
+<td><p>3</p></td>
+<td><p>The angular velocity of frame A across two configurations (must be order=1!)</p></td>
+</tr>
+<tr class="row-even"><td><p>accumulatedCollisions</p></td>
+<td><p>[]</p></td>
+<td><p>1</p></td>
+<td><p>The sum of collision penetrations; when negative/zero, nothing is colliding</p></td>
+</tr>
+<tr class="row-odd"><td><p>jointLimits</p></td>
+<td><p>[]</p></td>
+<td><p>1</p></td>
+<td><p>The sum of joint limit penetrations; when negative/zero, all joint limits are ok</p></td>
+</tr>
+<tr class="row-even"><td><p>negDistance</p></td>
+<td><p>[A,B]</p></td>
+<td><p>1</p></td>
+<td><p>The NEGATIVE distance between convex meshes A and B, positive for penetration</p></td>
+</tr>
+<tr class="row-odd"><td><p>qItself</p></td>
+<td><p>[]</p></td>
+<td><p>n</p></td>
+<td><p>The configuration joint vector</p></td>
+</tr>
+<tr class="row-even"><td><p>aboveBox</p></td>
+<td><p>[A,B]</p></td>
+<td><p>4</p></td>
+<td><p>when all negative, A is above (inside support of) the box B</p></td>
+</tr>
+<tr class="row-odd"><td><p>insideBox</p></td>
+<td><p>[A,B]</p></td>
+<td><p>6</p></td>
+<td><p>when all negative, A is inside the box B</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="Position-features">
+<h2>Position features<a class="headerlink" href="#Position-features" title="Link to this heading"></a></h2>
+<p>Let’s briefly clarify the difference between <code class="docutils literal notranslate"><span class="pre">position</span></code>, <code class="docutils literal notranslate"><span class="pre">positionDiff</span></code>, and <code class="docutils literal notranslate"><span class="pre">positionRel</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">position</span></code> is the position of a frame <code class="docutils literal notranslate"><span class="pre">A</span></code> in world coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">positionDiff</span></code> is the difference (in world coordinates) of position <code class="docutils literal notranslate"><span class="pre">B</span></code> MINUS position <code class="docutils literal notranslate"><span class="pre">A</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">positionRel</span></code> is the position of frame <code class="docutils literal notranslate"><span class="pre">A</span></code> in the RELATIVE coordinates of frame <code class="docutils literal notranslate"><span class="pre">B</span></code></p></li>
+</ul>
+<p>The best example is if <code class="docutils literal notranslate"><span class="pre">A</span></code> is a camera: Assume you would like to frame <code class="docutils literal notranslate"><span class="pre">B</span></code> to be positioned exactly at coordinate (0,0,-.3) in the coordinate frame of <code class="docutils literal notranslate"><span class="pre">A</span></code> – meaning exactly 30cm centrally in front of the camera – then the following feature would evaluate the error:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, [&#39;gripper&#39;, &#39;panda_joint1&#39;], scale=[1], target=[0, 0, .3])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([2.89890247e-01, 1.25455202e-16, 1.72237266e-01]),
+ array([[ 0.00000000e+00,  4.72237266e-01, -1.15172364e-16,
+         -2.32080381e-01,  0.00000000e+00,  4.48170606e-02,
+          0.00000000e+00,  0.00000000e+00],
+        [ 0.00000000e+00,  6.43685653e-17,  5.54002326e-01,
+          2.83784184e-16,  1.63424512e-01,  2.26026356e-16,
+         -1.38777878e-17,  0.00000000e+00],
+        [ 0.00000000e+00, -2.89890247e-01, -1.79370329e-16,
+          5.11220138e-01,  0.00000000e+00,  2.32670220e-01,
+          0.00000000e+00,  0.00000000e+00]]))
+</pre></div></div>
+</div>
+<p>Concretely, if you minimize the above feature, the <code class="docutils literal notranslate"><span class="pre">gripper</span></code> will look exactly(=centrally) at <code class="docutils literal notranslate"><span class="pre">panda_joint1</span></code> with 30cm distance.</p>
+</section>
+<section id="Scalar-product-features">
+<h2>Scalar product features<a class="headerlink" href="#Scalar-product-features" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">scalarProduct</span></code> features are also very useful to define relative between frames (e.g. for grasping). For instance, <code class="docutils literal notranslate"><span class="pre">(FS.scalarProductXX,</span> <span class="pre">{'handL',</span> <span class="pre">'handR'},</span> <span class="pre">target=[1])</span></code> says that the scalar product of the x-axes (e.g. directions of the index finger) of both hands should equal 1, which means they are aligned. And</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(FS.scalarProductXY, {&#39;handL&#39;, &#39;handR&#39;})
+(FS.scalarProductXZ, {&#39;handL&#39;, &#39;handR&#39;})
+</pre></div>
+</div>
+<p>says that the the x-axis of handL should be orthogonal (zero scalar product) to the y- and z-axis of handR. So this also describes aligning both x-axes. However, this formulation is much more robust, as it has good error gradients around the optimum.</p>
+</section>
+<section id="Scale-and-target-transformation">
+<h2>Scale and target transformation<a class="headerlink" href="#Scale-and-target-transformation" title="Link to this heading"></a></h2>
+<p>Let’s explain the <code class="docutils literal notranslate"><span class="pre">scale</span></code> and <code class="docutils literal notranslate"><span class="pre">target</span></code> in detail: Formally, specifying a target and scale redefines a feature to become</p>
+<div class="math notranslate nohighlight">
+\[\phi(x) \gets \texttt{scale} \cdot (\phi(x) - \texttt{target})\]</div>
+<p>The target needs to be a <span class="math notranslate nohighlight">\(D\)</span>-dim vector and defines the zero-point of the feature.</p>
+<p>The scale can be</p>
+<ul class="simple">
+<li><p>a scalar (just a factor),</p></li>
+<li><p>a <span class="math notranslate nohighlight">\(D\)</span>-vector (multiplying element-wise to the feature)</p></li>
+<li><p>or a <strong>matrix</strong>.</p></li>
+</ul>
+<p>We can do interesting things when <code class="docutils literal notranslate"><span class="pre">scale</span></code> is a matrix. For instance, if we only want the <span class="math notranslate nohighlight">\(xy\)</span>-position of a frame returned, we can choose a matrix <span class="math notranslate nohighlight">\(S=\begin{pmatrix}1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0\end{pmatrix}\)</span>, which multiplies to the 3D feature to return a 2D feature. In code:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.position, [&#39;gripper&#39;], [[1,0,0],[0,1,0]])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([2.89890247e-01, 1.25455202e-16]),
+ array([[-1.25455202e-16,  4.72237266e-01, -1.15172364e-16,
+         -2.32080381e-01,  0.00000000e+00,  4.48170606e-02,
+          0.00000000e+00,  0.00000000e+00],
+        [ 2.89890247e-01,  6.43685653e-17,  5.54002326e-01,
+          2.83784184e-16,  1.63424512e-01,  2.26026356e-16,
+         -1.38777878e-17,  0.00000000e+00]]))
+</pre></div></div>
+</div>
+<p>A very useful application is again if we care about a camera looking at a point: If we want frame <code class="docutils literal notranslate"><span class="pre">B</span></code> to appear centrally in the <span class="math notranslate nohighlight">\(xy\)</span>-plane of frame <code class="docutils literal notranslate"><span class="pre">A</span></code>, we can mimimize the feature:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, [&#39;gripper&#39;, &#39;panda_joint1&#39;], [[1,0,0],[0,1,0]])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([2.89890247e-01, 1.25455202e-16]),
+ array([[ 0.00000000e+00,  4.72237266e-01, -1.15172364e-16,
+         -2.32080381e-01,  0.00000000e+00,  4.48170606e-02,
+          0.00000000e+00,  0.00000000e+00],
+        [ 0.00000000e+00,  6.43685653e-17,  5.54002326e-01,
+          2.83784184e-16,  1.63424512e-01,  2.26026356e-16,
+         -1.38777878e-17,  0.00000000e+00]]))
+</pre></div></div>
+</div>
+</section>
+<section id="Collision-features">
+<h2>Collision features<a class="headerlink" href="#Collision-features" title="Link to this heading"></a></h2>
+<p>Let’s evaluate the accumulative collision scalar and its Jacobian</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coll = C.feature(ry.FS.accumulatedCollisions, [])
+
+C.computeCollisions() #collisions/proxies are not automatically computed on set...State
+coll.eval(C)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([0.]), array([[0., 0., 0., 0., 0., 0., 0., 0.]]))
+</pre></div></div>
+</div>
+<p>Let’s move into collision and redo this</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+C = ry.Config()
+C.clear()
+C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+C.addFile(ry.raiPath(&#39;panda/panda.g&#39;), &#39;r_&#39;)
+base_r = C.getFrame(&#39;r_panda_base&#39;)
+base_r.setPosition([.0, .5, .0])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;robotic.ry.Frame at 0x7fa7b82d3ab0&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([&#39;panda_joint1&#39;, &#39;panda_joint2&#39;, &#39;r_panda_joint1&#39;, &#39;r_panda_joint2&#39;])
+C.setJointState([1.,-.8,-1.,-.8])
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>The configuration is now in collision. We can evaluate between some specific shape-pairs that show this:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;palm&#39;, &#39;r_palm&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([0.13976684]),
+ array([[ 0.2021495 , -0.06471866,  0.00841045,  0.55724234]]))
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;panda_coll7&#39;, &#39;r_panda_coll7&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([0.08287262]),
+ array([[ 0.14218262,  0.43479204, -0.14218262,  0.43479204]]))
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;panda_coll6&#39;, &#39;r_panda_coll6&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([-0.05097286]),
+ array([[-0.05482199,  0.48443921, -0.12142734,  0.29574326]]))
+</pre></div></div>
+</div>
+<p>However, the above features only return penetration (=negDistance) between specific pairs of shapes. For holistic collision checking we query if any pair of shapes collides. This is called <strong>broad phase collision checking</strong>. The following does this (calling <code class="docutils literal notranslate"><span class="pre">fcl</span></code> internally):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.computeCollisions()
+C.getCollisions()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[(&#39;r_palm&#39;, &#39;palm&#39;, -0.13976683583198263),
+ (&#39;r_finger1&#39;, &#39;palm&#39;, 0.013576748081966544),
+ (&#39;r_finger2&#39;, &#39;palm&#39;, 0.014228713904190754),
+ (&#39;r_panda_coll6&#39;, &#39;palm&#39;, -0.015404140037349565),
+ (&#39;r_panda_coll5&#39;, &#39;palm&#39;, 0.04525630035427913),
+ (&#39;r_finger2&#39;, &#39;r_panda_coll5&#39;, 0.13749756426853948),
+ (&#39;r_panda_coll7&#39;, &#39;palm&#39;, -0.09280264001977123),
+ (&#39;r_panda_coll2&#39;, &#39;r_panda_coll5&#39;, 0.1945494196968938),
+ (&#39;r_panda_coll3&#39;, &#39;palm&#39;, 0.36007247820155464),
+ (&#39;r_palm&#39;, &#39;r_panda_coll3&#39;, 0.35692722195160376),
+ (&#39;r_panda_coll7&#39;, &#39;r_panda_coll4&#39;, 0.32362431478923487),
+ (&#39;panda_coll2&#39;, &#39;panda_coll5&#39;, 0.19454941969689368),
+ (&#39;panda_coll7&#39;, &#39;panda_coll4&#39;, 0.32362431478923515),
+ (&#39;r_panda_coll2&#39;, &#39;panda_coll0&#39;, 0.28717304075316374),
+ (&#39;r_panda_coll0&#39;, &#39;panda_coll1&#39;, 0.27280115353885176),
+ (&#39;r_panda_coll1&#39;, &#39;panda_coll0&#39;, 0.2728011535388518),
+ (&#39;r_panda_coll0&#39;, &#39;panda_coll0&#39;, 0.19999999999999998),
+ (&#39;r_panda_coll0b&#39;, &#39;panda_coll1&#39;, 0.22160801784824963),
+ (&#39;r_panda_coll0b&#39;, &#39;panda_coll0&#39;, 0.13131351929875237),
+ (&#39;r_panda_coll0&#39;, &#39;panda_coll2&#39;, 0.28717304075316374),
+ (&#39;r_panda_coll0b&#39;, &#39;panda_coll2&#39;, 0.2638941651174542),
+ (&#39;r_panda_coll6&#39;, &#39;panda_coll6&#39;, 0.050972864653827),
+ (&#39;r_panda_coll6&#39;, &#39;panda_coll7&#39;, 0.015315130184475917),
+ (&#39;r_panda_coll6&#39;, &#39;finger1&#39;, 0.05202028460982694),
+ (&#39;r_panda_coll6&#39;, &#39;finger2&#39;, 0.03488780676276168),
+ (&#39;r_panda_coll5&#39;, &#39;panda_coll6&#39;, 0.11164377353037033),
+ (&#39;r_panda_coll5&#39;, &#39;panda_coll7&#39;, 0.08766336859618301),
+ (&#39;r_panda_coll5&#39;, &#39;finger1&#39;, 0.12895455840607237),
+ (&#39;r_panda_coll5&#39;, &#39;finger2&#39;, 0.06147141318949159),
+ (&#39;r_panda_coll7&#39;, &#39;panda_coll6&#39;, 0.013907106655053708),
+ (&#39;r_panda_coll7&#39;, &#39;panda_coll7&#39;, -0.08287262318906746),
+ (&#39;r_panda_coll7&#39;, &#39;finger1&#39;, 0.030647107437714566),
+ (&#39;r_panda_coll7&#39;, &#39;finger2&#39;, 0.03284520763356755),
+ (&#39;r_palm&#39;, &#39;panda_coll6&#39;, -0.05737613444861561),
+ (&#39;r_finger1&#39;, &#39;panda_coll6&#39;, -0.020651551158550177),
+ (&#39;r_finger2&#39;, &#39;panda_coll6&#39;, 0.112620748583009),
+ (&#39;r_palm&#39;, &#39;panda_coll7&#39;, -0.1273471133054103),
+ (&#39;r_finger1&#39;, &#39;panda_coll7&#39;, 0.0011556581521950104),
+ (&#39;r_finger2&#39;, &#39;panda_coll7&#39;, 0.05638875573522109),
+ (&#39;r_palm&#39;, &#39;finger1&#39;, -0.02159299051272197),
+ (&#39;r_palm&#39;, &#39;finger2&#39;, -0.014663617396226986),
+ (&#39;r_finger2&#39;, &#39;finger1&#39;, 0.03712381290870001),
+ (&#39;r_finger2&#39;, &#39;finger2&#39;, 0.03836716448878992),
+ (&#39;palm&#39;, &#39;panda_coll3&#39;, 0.3569272219516041),
+ (&#39;r_palm&#39;, &#39;panda_coll3&#39;, 0.3884474823677896),
+ (&#39;r_panda_coll7&#39;, &#39;panda_coll5&#39;, 0.08262699740729021),
+ (&#39;r_palm&#39;, &#39;panda_coll5&#39;, 0.0151854277723599),
+ (&#39;r_finger1&#39;, &#39;panda_coll5&#39;, 0.037025559294402516),
+ (&#39;r_finger2&#39;, &#39;panda_coll5&#39;, 0.16135689397161754)]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getTotalPenetration()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.572477645899696
+</pre></div></div>
+</div>
+<p>The last command is useful for what is classically called binary collision check: if <code class="docutils literal notranslate"><span class="pre">totalPenetration</span></code> is zero, we have no collisions.</p>
+<p>Finally, we can get the same information in a differentiable manner, as a feature:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.accumulatedCollisions, [])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([0.57247765]),
+ array([[ 0.5810677 ,  1.0999702 , -0.74220228,  1.70678119]]))
+</pre></div></div>
+</div>
+</section>
+<section id="Enabling/disabling-collisions">
+<h2>Enabling/disabling collisions<a class="headerlink" href="#Enabling/disabling-collisions" title="Link to this heading"></a></h2>
+<p>In a typical robotic configuration we might have both, visual and (more coarse) collision shapes. Broadphase collision checking should only include the collision shapes. Further, after broadphase collision checking one typically wants to filter out some collisions: shapes of consecutive robot links should usually not be included in collision checking.</p>
+<p>In the rai code, shapes have an <em>integer</em> <code class="docutils literal notranslate"><span class="pre">contact</span></code> parameter to control this, with the following semantics:</p>
+<ul class="simple">
+<li><p>contact = 0 (default) –&gt; the shape never collides (e.g., is a visual)</p></li>
+<li><p>contact = 1 –&gt; the shape collides with all other shapes</p></li>
+<li><p>contact &lt; -k (some negative number) –&gt; the shape collides with all shapes except for those that are k-th order parents</p></li>
+</ul>
+<p>So, the latter setting is very natural in robot chains: contact=-1 means “not colliding with the parent link”. To be precise, the “k-th order parenthood” means frames between which there are k joints or less.</p>
+<p>Note <code class="docutils literal notranslate"><span class="pre">contact</span></code> needs to be set <em>before</em> the first broadphase collision checking, as it is used in the construction of the underlying collision engine.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="1d-real.html" class="btn btn-neutral float-left" title="Starting with a real robot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configurationEditing.html" class="btn btn-neutral float-right" title="Importing, Editing &amp; Manipulating Configurations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

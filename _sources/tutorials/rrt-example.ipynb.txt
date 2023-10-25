@@ -1,0 +1,520 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "48bcf763",
+   "metadata": {},
+   "source": [
+    "# Path finding example\n",
+    "* Path finding is using sample-based (RRT) methods rather than constrained optimization to find a collision free path\n",
+    "* Path finding is much easier if a final robot pose is given. We here use IK (formulated as KOMO problem) to first compute a final configuration 'qT'. (Path optimization does this jointly with optimizing the path.)\n",
+    "* Then we can pass the current state and qT to a bi-directional RRT to find a collision free path.\n",
+    "* Note that BotOp (the interface to sim/real) is opened only after we computed the motion. We simply pass the motion to be played by the sim/real."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "8e07bf36",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from robotic import ry\n",
+    "import time"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "059a8ee7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "C = ry.Config()\n",
+    "C.addFile(ry.raiPath('../rai-robotModels/scenarios/pandasTable.g'))\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "582b68ba",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "C.addFrame('boxR','table') \\\n",
+    "    .setRelativePosition([.15,0,.1]) \\\n",
+    "    .setShape(ry.ST.ssBox, size=[.1,.1,.1,.02]) \\\n",
+    "    .setColor([1,1,0])\n",
+    "C.addFrame('boxL','table') \\\n",
+    "    .setRelativePosition([-.15,0,.1]) \\\n",
+    "    .setShape(ry.ST.ssBox, size=[.1,.1,.1,.02]) \\\n",
+    "    .setColor([1,.5,0])\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "eab44514",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# store the start configuration\n",
+    "q0 = C.getJointState()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "bccb7b55",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# compute a goal configuration\n",
+    "komo = ry.KOMO()\n",
+    "komo.setConfig(C, True)\n",
+    "komo.setTiming(1., 1, 5., 0)\n",
+    "komo.addControlObjective([], 0, 1e-0)\n",
+    "komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq);\n",
+    "komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq);\n",
+    "komo.addObjective([], ry.FS.positionDiff, ['r_gripper', 'boxL'], ry.OT.eq, [1e1]);\n",
+    "komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'boxR'], ry.OT.eq, [1e1]);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "178e3d42",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "====nlp==== method:AugmentedLagrangian bounded: yes\n",
+      "{ time: 0.109363, evals: 194, done: 1, feasible: 1, sos: 4.60585, f: 0, ineq: 0, eq: 0.00676303 }\n",
+      "==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1\n",
+      "----newton---- initial point f(x):118.048 alpha:1 beta:1\n",
+      "--newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    60.0308  ACCEPT\n",
+      "--newton-- it:   2  |Delta|:        0.2  alpha:          1  evals:   3  f(y):    25.3767  ACCEPT\n",
+      "--newton-- it:   3  |Delta|:        0.2  alpha:          1  evals:   4  f(y):    13.1589  ACCEPT\n",
+      "--newton-- it:   4  |Delta|:        0.2  alpha:          1  evals:   5  f(y):    9.16313  ACCEPT\n",
+      "--newton-- it:   5  |Delta|:        0.2  alpha:          1  evals:   6  f(y):    6.03305  ACCEPT\n",
+      "--newton-- it:   6  |Delta|:        0.2  alpha:          1  evals:   7  f(y):     4.3838  ACCEPT\n",
+      "--newton-- it:   7  |Delta|:        0.2  alpha:          1  evals:   8  f(y):    3.78052  ACCEPT\n",
+      "--newton-- it:   8  |Delta|:   0.173284  alpha:          1  evals:   9  f(y):    3.59785  ACCEPT\n",
+      "--newton-- it:   9  |Delta|:   0.103234  alpha:          1  evals:  10  f(y):    3.53436  ACCEPT\n",
+      "--newton-- it:  10  |Delta|:  0.0367851  alpha:          1  evals:  11  f(y):    3.52091  ACCEPT\n",
+      "--newton-- it:  11  |Delta|:  0.0231793  alpha:          1  evals:  12  f(y):    3.51658  ACCEPT\n",
+      "--newton-- stopping: 'absMax(Delta)<options.stopTolerance'\n",
+      "==nlp== it:   0  evals:  12  A(x):    3.51658  f:    3.15532  g:          0  h:    1.45074  |x-x'|:     1.0145 \tstop:DeltaConverge\n",
+      "==nlp== it:   1  evals:  12  A(x):    5.68413  mu:5\n",
+      "--newton-- it:  12  |Delta|:   0.190575  alpha:          1  evals:  13  f(y):    4.21893  ACCEPT\n",
+      "--newton-- it:  13  |Delta|:  0.0890058  alpha:          1  evals:  14  f(y):    4.21886  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:        0.5  evals:  15  f(y):    4.18597  ACCEPT\n",
+      "--newton-- it:  14  |Delta|:   0.051237  alpha:       0.75  evals:  16  f(y):    4.17147  ACCEPT\n",
+      "--newton-- it:  15  |Delta|:  0.0603401  alpha:          1  evals:  17  f(y):    4.21253  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:        0.5  evals:  18  f(y):    4.17388  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:       0.25  evals:  19  f(y):    4.16898  ACCEPT\n",
+      "--newton-- it:  16  |Delta|:  0.0395189  alpha:      0.375  evals:  20  f(y):     4.1658  ACCEPT\n",
+      "--newton-- it:  17  |Delta|:  0.0519568  alpha:     0.5625  evals:  21  f(y):    4.17628  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:    0.28125  evals:  22  f(y):    4.16649  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:   0.140625  evals:  23  f(y):    4.16443  ACCEPT\n",
+      "--newton-- it:  18  |Delta|:  0.0374136  alpha:   0.210938  evals:  24  f(y):    4.16341  ACCEPT\n",
+      "--newton-- it:  19  |Delta|:  0.0483489  alpha:   0.316406  evals:  25  f(y):    4.16566  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:   0.158203  evals:  26  f(y):    4.16308  ACCEPT\n",
+      "--newton-- it:  20  |Delta|:  0.0377991  alpha:   0.237305  evals:  27  f(y):    4.16148  ACCEPT\n",
+      "--newton-- it:  21  |Delta|:  0.0458482  alpha:   0.355957  evals:  28  f(y):    4.16611  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:   0.177979  evals:  29  f(y):    4.16149  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:  0.0889893  evals:  30  f(y):    4.16026  ACCEPT\n",
+      "--newton-- it:  22  |Delta|:  0.0361579  alpha:   0.133484  evals:  31  f(y):    4.16043  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0667419  evals:  32  f(y):    4.15992  ACCEPT\n",
+      "--newton-- it:  23  |Delta|:  0.0429583  alpha:   0.100113  evals:  33  f(y):    4.16046  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0500565  evals:  34  f(y):    4.15982  ACCEPT\n",
+      "--newton-- it:  24  |Delta|:  0.0361587  alpha:  0.0750847  evals:  35  f(y):    4.15942  ACCEPT\n",
+      "--newton-- it:  25  |Delta|:  0.0423627  alpha:   0.112627  evals:  36  f(y):    4.16006  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0563135  evals:  37  f(y):    4.15931  ACCEPT\n",
+      "--newton-- it:  26  |Delta|:  0.0361298  alpha:  0.0844703  evals:  38  f(y):    4.15891  ACCEPT\n",
+      "--newton-- it:  27  |Delta|:  0.0417936  alpha:   0.126705  evals:  39  f(y):    4.15962  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0633527  evals:  40  f(y):    4.15875  ACCEPT\n",
+      "--newton-- it:  28  |Delta|:  0.0360645  alpha:  0.0950291  evals:  41  f(y):    4.15839  ACCEPT\n",
+      "--newton-- it:  29  |Delta|:  0.0412629  alpha:   0.142544  evals:  42  f(y):    4.15912  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0712718  evals:  43  f(y):    4.15811  ACCEPT\n",
+      "--newton-- it:  30  |Delta|:  0.0359558  alpha:   0.106908  evals:  44  f(y):    4.15787  ACCEPT\n",
+      "--newton-- it:  31  |Delta|:  0.0407831  alpha:   0.160362  evals:  45  f(y):    4.15959  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0801808  evals:  46  f(y):     4.1574  ACCEPT\n",
+      "--newton-- it:  32  |Delta|:  0.0357963  alpha:   0.120271  evals:  47  f(y):    4.15733  ACCEPT\n",
+      "--newton-- it:  33  |Delta|:  0.0403659  alpha:   0.180407  evals:  48  f(y):    4.16108  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0902034  evals:  49  f(y):     4.1566  ACCEPT\n",
+      "--newton-- it:  34  |Delta|:  0.0355789  alpha:   0.135305  evals:  50  f(y):     4.1568  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0676525  evals:  51  f(y):    4.15618  ACCEPT\n",
+      "--newton-- it:  35  |Delta|:   0.038247  alpha:   0.101479  evals:  52  f(y):    4.15933  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0507394  evals:  53  f(y):    4.15687  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:  0.0253697  evals:  54  f(y):    4.15578  ACCEPT\n",
+      "--newton-- it:  36  |Delta|:  0.0349939  alpha:  0.0380545  evals:  55  f(y):    4.15603  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0190273  evals:  56  f(y):    4.15587  reject (lineSearch:1)\n",
+      "                    (line search)        alpha: 0.00951364  evals:  57  f(y):    4.15579  reject (lineSearch:2)\n",
+      "                    (line search)        alpha: 0.00475682  evals:  58  f(y):    4.15575  ACCEPT\n",
+      "--newton-- it:  37  |Delta|:    0.03733  alpha: 0.00713523  evals:  59  f(y):    4.15587  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00356761  evals:  60  f(y):    4.15575  reject (lineSearch:1)\n",
+      "                    (line search)        alpha: 0.00178381  evals:  61  f(y):    4.15573  ACCEPT\n",
+      "--newton-- it:  38  |Delta|:  0.0349539  alpha: 0.00267571  evals:  62  f(y):    4.15574  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00133786  evals:  63  f(y):    4.15573  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:0.000668928  evals:  64  f(y):    4.15572  ACCEPT\n",
+      "--newton-- it:  39  |Delta|:  0.0372758  alpha: 0.00100339  evals:  65  f(y):    4.15573  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000501696  evals:  66  f(y):    4.15572  ACCEPT\n",
+      "--newton-- it:  40  |Delta|:  0.0349522  alpha:0.000752543  evals:  67  f(y):    4.15572  ACCEPT\n",
+      "--newton-- it:  41  |Delta|:  0.0372748  alpha: 0.00112882  evals:  68  f(y):    4.15572  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000564408  evals:  69  f(y):    4.15572  ACCEPT\n",
+      "--newton-- stopping: 'numTinyXSteps>4'\n",
+      "==nlp== it:   1  evals:  69  A(x):    4.15572  f:    3.84088  g:          0  h:   0.267447  |x-x'|:   0.223211 \tstop:TinyXSteps (bad:1)\n",
+      "==nlp== it:   2  evals:  69  A(x):    5.18756  mu:25\n",
+      "--newton-- it:  42  |Delta|:   0.176369  alpha:       0.01  evals:  70  f(y):    5.17839  ACCEPT\n",
+      "--newton-- it:  43  |Delta|:        0.2  alpha:      0.015  evals:  71  f(y):    5.16481  ACCEPT\n",
+      "--newton-- it:  44  |Delta|:        0.2  alpha:     0.0225  evals:  72  f(y):     5.1447  ACCEPT\n",
+      "--newton-- it:  45  |Delta|:        0.2  alpha:    0.03375  evals:  73  f(y):    5.11512  ACCEPT\n",
+      "--newton-- it:  46  |Delta|:        0.2  alpha:   0.050625  evals:  74  f(y):    5.07209  ACCEPT\n",
+      "--newton-- it:  47  |Delta|:        0.2  alpha:  0.0759375  evals:  75  f(y):    5.01048  ACCEPT\n",
+      "--newton-- it:  48  |Delta|:        0.2  alpha:   0.113906  evals:  76  f(y):    4.92457  ACCEPT\n",
+      "--newton-- it:  49  |Delta|:   0.188712  alpha:   0.170859  evals:  77  f(y):    4.81622  ACCEPT\n",
+      "--newton-- it:  50  |Delta|:   0.165108  alpha:   0.256289  evals:  78  f(y):    4.69728  ACCEPT\n",
+      "--newton-- it:  51  |Delta|:   0.132736  alpha:   0.384434  evals:  79  f(y):    4.58887  ACCEPT\n",
+      "--newton-- it:  52  |Delta|:  0.0929246  alpha:    0.57665  evals:  80  f(y):    4.51651  ACCEPT\n",
+      "--newton-- it:  53  |Delta|:  0.0520321  alpha:   0.864976  evals:  81  f(y):     4.4882  ACCEPT\n",
+      "--newton-- it:  54  |Delta|:   0.020298  alpha:          1  evals:  82  f(y):    4.48437  ACCEPT\n",
+      "--newton-- it:  55  |Delta|: 0.00789686  alpha:          1  evals:  83  f(y):    4.48496  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:        0.5  evals:  84  f(y):    4.48415  ACCEPT\n",
+      "--newton-- stopping: 'absMax(Delta)<options.stopTolerance'\n",
+      "==nlp== it:   2  evals:  84  A(x):    4.48415  f:    4.39496  g:          0  h:  0.0406618  |x-x'|:   0.312532 \tstop:DeltaConverge\n",
+      "==nlp== it:   3  evals:  84  A(x):    4.59103  mu:125\n",
+      "--newton-- it:  56  |Delta|:  0.0384337  alpha:       0.75  evals:  85  f(y):     4.5646  ACCEPT\n",
+      "--newton-- it:  57  |Delta|:   0.089965  alpha:          1  evals:  86  f(y):     4.9597  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:        0.5  evals:  87  f(y):    4.64576  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:       0.25  evals:  88  f(y):    4.57635  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:      0.125  evals:  89  f(y):    4.56406  ACCEPT\n",
+      "--newton-- it:  58  |Delta|:   0.104754  alpha:     0.1875  evals:  90  f(y):    4.55026  ACCEPT\n",
+      "--newton-- it:  59  |Delta|:  0.0764166  alpha:    0.28125  evals:  91  f(y):    4.61487  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:   0.140625  evals:  92  f(y):    4.57074  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:  0.0703125  evals:  93  f(y):    4.55567  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:  0.0351562  evals:  94  f(y):    4.55254  reject (lineSearch:3)\n",
+      "                    (line search)        alpha:  0.0175781  evals:  95  f(y):    4.55109  reject (lineSearch:4)\n",
+      "                    (line search)        alpha: 0.00878906  evals:  96  f(y):     4.5504  reject (lineSearch:5)\n",
+      "                    (line search)        alpha: 0.00439453  evals:  97  f(y):    4.55006  ACCEPT\n",
+      "--newton-- it:  60  |Delta|:   0.101756  alpha:  0.0065918  evals:  98  f(y):    4.54977  ACCEPT\n",
+      "--newton-- it:  61  |Delta|:  0.0762115  alpha:  0.0098877  evals:  99  f(y):    4.54978  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00494385  evals: 100  f(y):     4.5494  ACCEPT\n",
+      "--newton-- it:  62  |Delta|:   0.101565  alpha: 0.00741577  evals: 101  f(y):    4.54921  ACCEPT\n",
+      "--newton-- it:  63  |Delta|:   0.075981  alpha:  0.0111237  evals: 102  f(y):    4.54909  ACCEPT\n",
+      "--newton-- it:  64  |Delta|:   0.101236  alpha:  0.0166855  evals: 103  f(y):    4.54801  ACCEPT\n",
+      "--newton-- it:  65  |Delta|:  0.0754716  alpha:  0.0250282  evals: 104  f(y):    4.54854  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0125141  evals: 105  f(y):    4.54741  ACCEPT\n",
+      "--newton-- it:  66  |Delta|:   0.100765  alpha:  0.0187712  evals: 106  f(y):    4.54901  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00938559  evals: 107  f(y):    4.54726  ACCEPT\n",
+      "--newton-- it:  67  |Delta|:   0.104872  alpha:  0.0140784  evals: 108  f(y):     4.5488  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00703919  evals: 109  f(y):    4.54736  reject (lineSearch:1)\n",
+      "                    (line search)        alpha: 0.00351959  evals: 110  f(y):    4.54682  ACCEPT\n",
+      "--newton-- it:  68  |Delta|:  0.0748044  alpha: 0.00527939  evals: 111  f(y):     4.5477  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0026397  evals: 112  f(y):    4.54714  reject (lineSearch:1)\n",
+      "                    (line search)        alpha: 0.00131985  evals: 113  f(y):    4.54686  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:0.000659924  evals: 114  f(y):    4.54681  ACCEPT\n",
+      "--newton-- it:  69  |Delta|:   0.104926  alpha:0.000989886  evals: 115  f(y):    4.54689  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000494943  evals: 116  f(y):    4.54679  ACCEPT\n",
+      "--newton-- it:  70  |Delta|:   0.100639  alpha:0.000742415  evals: 117  f(y):    4.54687  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000371207  evals: 118  f(y):     4.5468  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:0.000185604  evals: 119  f(y):    4.54677  ACCEPT\n",
+      "--newton-- it:  71  |Delta|:   0.104931  alpha:0.000278405  evals: 120  f(y):    4.54682  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000139203  evals: 121  f(y):    4.54679  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:6.96014e-05  evals: 122  f(y):    4.54677  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:3.48007e-05  evals: 123  f(y):    4.54677  ACCEPT\n",
+      "--newton-- it:  72  |Delta|:  0.0377267  alpha: 5.2201e-05  evals: 124  f(y):    4.54676  ACCEPT\n",
+      "--newton-- stopping: 'numTinyXSteps>4'\n",
+      "==nlp== it:   3  evals: 124  A(x):    4.54676  f:    4.43017  g:          0  h:  0.0228535  |x-x'|:  0.0150234 \tstop:TinyXSteps (bad:1)\n",
+      "==nlp== it:   4  evals: 124  A(x):    4.80924  mu:625\n",
+      "--newton-- it:  73  |Delta|:  0.0710154  alpha:       0.01  evals: 125  f(y):    4.80644  ACCEPT\n",
+      "--newton-- it:  74  |Delta|:  0.0699987  alpha:      0.015  evals: 126  f(y):    4.80233  ACCEPT\n",
+      "--newton-- it:  75  |Delta|:  0.0684924  alpha:     0.0225  evals: 127  f(y):    4.79638  ACCEPT\n",
+      "--newton-- it:  76  |Delta|:  0.0662743  alpha:    0.03375  evals: 128  f(y):    4.78793  ACCEPT\n",
+      "--newton-- it:  77  |Delta|:   0.063039  alpha:   0.050625  evals: 129  f(y):    4.77624  ACCEPT\n",
+      "--newton-- it:  78  |Delta|:  0.0583878  alpha:  0.0759375  evals: 130  f(y):    4.76071  ACCEPT\n",
+      "--newton-- it:  79  |Delta|:  0.0518486  alpha:   0.113906  evals: 131  f(y):    4.74133  ACCEPT\n",
+      "--newton-- it:  80  |Delta|:  0.0429696  alpha:   0.170859  evals: 132  f(y):    4.71932  ACCEPT\n",
+      "--newton-- it:  81  |Delta|:  0.0315623  alpha:   0.256289  evals: 133  f(y):    4.69769  ACCEPT\n",
+      "--newton-- it:  82  |Delta|:  0.0226371  alpha:   0.384434  evals: 134  f(y):    4.68058  ACCEPT\n",
+      "--newton-- it:  83  |Delta|:  0.0202369  alpha:    0.57665  evals: 135  f(y):    4.67046  ACCEPT\n",
+      "--newton-- it:  84  |Delta|:  0.0221052  alpha:   0.864976  evals: 136  f(y):    4.66452  ACCEPT\n",
+      "--newton-- it:  85  |Delta|:  0.0257148  alpha:          1  evals: 137  f(y):    4.65857  ACCEPT\n",
+      "--newton-- it:  86  |Delta|:  0.0290721  alpha:          1  evals: 138  f(y):    4.68629  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:        0.5  evals: 139  f(y):    4.65255  ACCEPT\n",
+      "--newton-- it:  87  |Delta|:  0.0303274  alpha:       0.75  evals: 140  f(y):    4.71489  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:      0.375  evals: 141  f(y):    4.67536  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:     0.1875  evals: 142  f(y):     4.6587  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:    0.09375  evals: 143  f(y):    4.65115  ACCEPT\n",
+      "--newton-- it:  88  |Delta|:   0.100752  alpha:   0.140625  evals: 144  f(y):    4.65759  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:  0.0703125  evals: 145  f(y):    4.65368  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:  0.0351562  evals: 146  f(y):     4.6522  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:  0.0175781  evals: 147  f(y):    4.65157  reject (lineSearch:3)\n",
+      "                    (line search)        alpha: 0.00878906  evals: 148  f(y):    4.65129  reject (lineSearch:4)\n",
+      "                    (line search)        alpha: 0.00439453  evals: 149  f(y):    4.65115  reject (lineSearch:5)\n",
+      "                    (line search)        alpha: 0.00219727  evals: 150  f(y):    4.65108  ACCEPT\n",
+      "--newton-- it:  89  |Delta|:   0.030394  alpha:  0.0032959  evals: 151  f(y):    4.65108  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00164795  evals: 152  f(y):    4.65105  ACCEPT\n",
+      "--newton-- it:  90  |Delta|:  0.0303964  alpha: 0.00247192  evals: 153  f(y):    4.65115  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00123596  evals: 154  f(y):    4.65105  ACCEPT\n",
+      "--newton-- it:  91  |Delta|:   0.100668  alpha: 0.00185394  evals: 155  f(y):    4.65109  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000926971  evals: 156  f(y):    4.65106  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:0.000463486  evals: 157  f(y):    4.65105  ACCEPT\n",
+      "--newton-- it:  92  |Delta|:  0.0303828  alpha:0.000695229  evals: 158  f(y):    4.65104  ACCEPT\n",
+      "--newton-- it:  93  |Delta|:  0.0303838  alpha: 0.00104284  evals: 159  f(y):    4.65112  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000521421  evals: 160  f(y):    4.65108  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:0.000260711  evals: 161  f(y):    4.65106  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:0.000130355  evals: 162  f(y):    4.65105  reject (lineSearch:3)\n",
+      "                    (line search)        alpha:6.51777e-05  evals: 163  f(y):    4.65104  reject (lineSearch:4)\n",
+      "                    (line search)        alpha:3.25888e-05  evals: 164  f(y):    4.65104  reject (lineSearch:5)\n",
+      "                    (line search)        alpha:1.62944e-05  evals: 165  f(y):    4.65104  reject (lineSearch:6)\n",
+      "                    (line search)        alpha:8.14721e-06  evals: 166  f(y):    4.65104  reject (lineSearch:7)\n",
+      "                    (line search)        alpha: 4.0736e-06  evals: 167  f(y):    4.65104  ACCEPT\n",
+      "--newton-- stopping: 'numTinyXSteps>4'\n",
+      "==nlp== it:   4  evals: 167  A(x):    4.65104  f:    4.60568  g:          0  h: 0.00681487  |x-x'|:  0.0884157 \tstop:TinyXSteps (bad:2)\n",
+      "==nlp== it:   5  evals: 167  A(x):    4.71803  mu:3125\n",
+      "--newton-- it:  94  |Delta|:  0.0362186  alpha:       0.01  evals: 168  f(y):    4.71802  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:      0.005  evals: 169  f(y):    4.71802  ACCEPT\n",
+      "--newton-- it:  95  |Delta|:   0.100125  alpha:     0.0075  evals: 170  f(y):    4.71895  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:    0.00375  evals: 171  f(y):    4.71815  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:   0.001875  evals: 172  f(y):    4.71776  ACCEPT\n",
+      "--newton-- it:  96  |Delta|:  0.0361667  alpha:  0.0028125  evals: 173  f(y):    4.71748  ACCEPT\n",
+      "--newton-- it:  97  |Delta|:   0.100045  alpha: 0.00421875  evals: 174  f(y):    4.71827  reject (lineSearch:0)\n",
+      "                    (line search)        alpha: 0.00210938  evals: 175  f(y):    4.71783  reject (lineSearch:1)\n",
+      "                    (line search)        alpha: 0.00105469  evals: 176  f(y):    4.71761  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:0.000527344  evals: 177  f(y):     4.7175  reject (lineSearch:3)\n",
+      "                    (line search)        alpha:0.000263672  evals: 178  f(y):    4.71745  ACCEPT\n",
+      "--newton-- it:  98  |Delta|:  0.0361653  alpha:0.000395508  evals: 179  f(y):    4.71741  ACCEPT\n",
+      "--newton-- it:  99  |Delta|:   0.100034  alpha:0.000593262  evals: 180  f(y):    4.71752  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:0.000296631  evals: 181  f(y):    4.71746  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:0.000148315  evals: 182  f(y):    4.71743  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:7.41577e-05  evals: 183  f(y):    4.71741  reject (lineSearch:3)\n",
+      "                    (line search)        alpha:3.70789e-05  evals: 184  f(y):     4.7174  ACCEPT\n",
+      "--newton-- it: 100  |Delta|:  0.0361651  alpha:5.56183e-05  evals: 185  f(y):     4.7174  ACCEPT\n",
+      "--newton-- it: 101  |Delta|:   0.100033  alpha:8.34274e-05  evals: 186  f(y):    4.71741  reject (lineSearch:0)\n",
+      "                    (line search)        alpha:4.17137e-05  evals: 187  f(y):    4.71741  reject (lineSearch:1)\n",
+      "                    (line search)        alpha:2.08569e-05  evals: 188  f(y):     4.7174  reject (lineSearch:2)\n",
+      "                    (line search)        alpha:1.04284e-05  evals: 189  f(y):     4.7174  reject (lineSearch:3)\n",
+      "                    (line search)        alpha:5.21421e-06  evals: 190  f(y):     4.7174  reject (lineSearch:4)\n",
+      "                    (line search)        alpha:2.60711e-06  evals: 191  f(y):     4.7174  reject (lineSearch:5)\n",
+      "                    (line search)        alpha:1.30355e-06  evals: 192  f(y):     4.7174  reject (lineSearch:6)\n",
+      "                    (line search)        alpha:6.51777e-07  evals: 193  f(y):     4.7174  reject (lineSearch:7)\n",
+      "                    (line search)        alpha:3.25888e-07  evals: 194  f(y):     4.7174  ACCEPT\n",
+      "--newton-- stopping: 'numTinyXSteps>4'\n",
+      "==nlp== it:   5  evals: 194  A(x):     4.7174  f:    4.60585  g:          0  h: 0.00676303  |x-x'|:0.000155056 \tstop:TinyXSteps (bad:3)\n",
+      "==nlp== StoppingCriterion Delta<0.01\n",
+      "----newton---- final f(x):4.7174\n"
+     ]
+    }
+   ],
+   "source": [
+    "ret = ry.NLP_Solver() \\\n",
+    "    .setProblem(komo.nlp()) \\\n",
+    "    .setOptions( stopTolerance=1e-2, verbose=4 ) \\\n",
+    "    .solve()\n",
+    "print(ret)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "b727e37c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# that's the goal configuration\n",
+    "qT = komo.getPath()[0]\n",
+    "C.setJointState(qT)\n",
+    "C.view(False, \"IK solution\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "b20fc581",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<robotic.ry.PathFinder at 0x7f194802d1b0>"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#define a path finding problem\n",
+    "rrt = ry.PathFinder()\n",
+    "rrt.setProblem(C, [q0], [qT])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "b0cde20c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{ time: 0.216827, evals: 172, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }\n"
+     ]
+    }
+   ],
+   "source": [
+    "ret = rrt.solve()\n",
+    "print(ret)\n",
+    "path = ret.x"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "a615cc68",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# display the path\n",
+    "for t in range(0, path.shape[0]-1):\n",
+    "    C.setJointState(path[t])\n",
+    "    C.view()\n",
+    "    time.sleep(.1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "51d2e8e7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# run the path with botop\n",
+    "C.setJointState(q0)\n",
+    "ry.params_add({'botsim/verbose': 1., 'physx/motorKp': 10000., 'physx/motorKd': 1000.})\n",
+    "bot = ry.BotOp(C, False)\n",
+    "bot.home(C)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "f0d8e62c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "0.180939 1\n"
+     ]
+    }
+   ],
+   "source": [
+    "bot.moveAutoTimed(path, 1., 1.)\n",
+    "while bot.getTimeToEnd()>0:\n",
+    "    bot.sync(C, .1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "9c02685e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "-- bot.cpp:~BotOp:112(0) shutting down BotOp...\n",
+      "-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread\n",
+      "-- simulation.cpp:~Simulation:148(0) shutting down Simulation\n"
+     ]
+    }
+   ],
+   "source": [
+    "del bot"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "929345e5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "del rrt\n",
+    "del C"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "01b2e062",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

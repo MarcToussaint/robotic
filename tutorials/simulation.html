@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Direct Simulation Interface &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CameraView, Offscreen (headless), and Realistic Rendering" href="rendering.html" />
+    <link rel="prev" title="KOMO: Reporting &amp; Explaining Convergence" href="komo-reporting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#basics-on-configurations-botop-komo">Basics on Configurations, BotOp &amp; KOMO</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#in-depth">In Depth</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="configurationEditing.html">Importing, Editing &amp; Manipulating Configurations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="komo-reporting.html">KOMO: Reporting &amp; Explaining Convergence</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Direct Simulation Interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Minimalistic-example">Minimalistic example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Including-robots/articulated-configurations">Including robots/articulated configurations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Friction-and-bouncing-per-object">Friction and bouncing per object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Resetting-and-messing-with-state">Resetting and messing with state</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rendering.html">CameraView, Offscreen (headless), and Realistic Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rrt-example.html">Path finding example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nlp-solver.html">Optimization (NLP formulation and solving)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rai.html">rai python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Direct Simulation Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/simulation.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Direct-Simulation-Interface">
+<h1>Direct Simulation Interface<a class="headerlink" href="#Direct-Simulation-Interface" title="Link to this heading"></a></h1>
+<p>BotOp is a narrow control interface to a real or simulated robot, which is also real time and threaded (as for a real robot). However, sometimes we need a more low-level interface to a physical simulator, e.g. to implement a Reinforcement Learning environment.</p>
+<section id="Minimalistic-example">
+<h2>Minimalistic example<a class="headerlink" href="#Minimalistic-example" title="Link to this heading"></a></h2>
+<p>Let’s first create the smallest possible example: A dropping ball. All we have to do is create a configuration with a ball, create an “attached” simulation, and step it:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># minimalistic configuration
+C = ry.Config()
+C.addFrame(&#39;ball&#39;) .setShape(ry.ST.sphere, [.2]) .setMass(.1) .setPosition([0,0,1])
+C.view()
+
+S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+
+tau=.01
+for i in range(200):
+    time.sleep(tau)
+    S.step([], tau,  ry.ControlMode.none)
+    C.view()
+</pre></div>
+</div>
+</div>
+<p>Note that a Simulation is <em>directly operating on the given configuration C</em>. E.g., when you step the simulation, it changes the state of C. In that sense, the simulation is rigidly associated/attached to C. (This is different to BotOp, where the real robot (or simulation) is separate from C and you have to explicitly sync them. It’s also different from providing C in a constructor of KOMO, as KOMO creates it’s own copies of configurations. The simulation class doesn’t copy C, it operates
+directly on it.)</p>
+<p>There are a number of (global) parameters used when creating a simulation. As always, we can see which parameters were queried by <code class="docutils literal notranslate"><span class="pre">params_print</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_print()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- ry.cpp:operator():86(0) python,
+message: &#34;this parameter was loaded from &#39;rai.cfg&#39;&#34;,
+physx/verbose: 1,
+physx/yGravity!,
+physx/softBody!,
+physx/multiBody,
+physx/multiBodyDisableGravity,
+physx/jointedBodies!,
+physx/angularDamping: 0.1,
+physx/defaultFriction: 1,
+physx/defaultRestitution: 0.1,
+physx/motorKp: 1000,
+physx/motorKd: 100
+</pre></div></div>
+</div>
+<p>And <code class="docutils literal notranslate"><span class="pre">params_add</span></code> allows you to set parameters. (Actually append, which is why we first need to clear.)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_clear()
+ry.params_add({&#39;physx/defaultRestitution&#39;: 1.})
+ry.params_print()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- ry.cpp:operator():86(0) physx/defaultRestitution: 1
+</pre></div></div>
+</div>
+<p>Let’s try again:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+C.getFrame(&#39;ball&#39;) .setPosition([0,0,1])
+S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+
+tau=.01
+for i in range(200):
+    time.sleep(tau)
+    S.step([], tau,  ry.ControlMode.none)
+    C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+<p>As you can see, “restitution” means bouncing. Below is an example of how to set bounciness and friction per object.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+del C
+ry.params_clear()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+</section>
+<section id="Including-robots/articulated-configurations">
+<h2>Including robots/articulated configurations<a class="headerlink" href="#Including-robots/articulated-configurations" title="Link to this heading"></a></h2>
+<p>Let’s first give a basic example, pushing a block, which uses default settings and a predefined robot:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+import numpy as np
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.view(False)
+
+C.addFrame(&#39;box&#39;) \
+    .setShape(ry.ST.ssBox, size=[.1,.1,.1,.005]) .setColor([1,.5,0]) \
+    .setPosition([.1,.35,.9])
+
+C.addFrame(&#39;stick&#39;, &#39;l_gripper&#39;) \
+    .setShape(ry.ST.capsule, size=[.3,.02]) .setColor([.5,1,0]) \
+    .setRelativePosition([0,0,-.13])
+
+C.setJointState([.0], [&#39;l_panda_joint2&#39;]) #only cosmetics
+C.setJointState([.02], [&#39;l_panda_finger_joint1&#39;]) #only cosmetics
+
+q0 = C.getJointState()
+X0 = C.getFrameState()
+
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def move_a_bit(T=100):
+    tau = .01
+    q = q0.copy()
+    for i in range(T):
+        time.sleep(tau)
+        q[0] = q[0] - tau*1.
+        S.step(q, tau,  ry.ControlMode.position)
+        C.view()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>move_a_bit()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+C.setFrameState(X0)
+C.getFrame(&#39;box&#39;) .setMass(.1)
+S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+move_a_bit()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+C.setFrameState(X0)
+S = ry.Simulation(C, ry.SimulationEngine.kinematic, verbose=0)
+move_a_bit()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+C.setFrameState(X0)
+C.getFrame(&#39;box&#39;) .setColor([1,1,0,.5])
+S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+move_a_bit()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+C.setFrameState(X0)
+C.getFrame(&#39;box&#39;) .setColor([1,1,0,1]) .setParent(C.getFrame(&#39;table&#39;))
+S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+move_a_bit()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+-- WARNING:kin_physx.cpp:prepareLinkShapes:626(-1) computing compound inertia for object frame &#39;world&#39; -- this should have been done earlier?
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+del C
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+</section>
+<section id="Friction-and-bouncing-per-object">
+<h2>Friction and bouncing per object<a class="headerlink" href="#Friction-and-bouncing-per-object" title="Link to this heading"></a></h2>
+<p>Let’s build a configuration manually to test varying friction and bouncing (=restitution) per object:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFrame(&#39;table&#39;) .setShape(ry.ST.ssBox, [2., 1., .1, .02]) .setColor([.3]) \
+    .setPosition([0,0,.3]) .setQuaternion([1,-.25,0,0])
+
+for i in range(10):
+    f = C.addFrame(f&#39;block_{i}&#39;)
+    f.setShape(ry.ST.ssBox, [.1,.2,.1,.02]) .setColor([1,.1*i,1-.1*i])
+    f.setPosition([.7 - .15*i,-.2,1.])
+    f.setMass(1.)
+    f.setAttribute(&#39;friction&#39;, .05*i)
+
+for i in range(10):
+    f = C.addFrame(f&#39;ball_{i}&#39;)
+    f.setShape(ry.ST.sphere, [.05]) .setColor([1,.1*i,1-.1*i])
+    f.setPosition([.7 - .15*i,.2,1.])
+    f.setMass(.2)
+    f.setAttribute(&#39;restitution&#39;, .5+.1*i)
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+
+tau=.01
+for i in range(200):
+    time.sleep(tau)
+    S.step([], tau,  ry.ControlMode.none)
+    C.view()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S=0
+C=0
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+</section>
+<section id="Resetting-and-messing-with-state">
+<h2>Resetting and messing with state<a class="headerlink" href="#Resetting-and-messing-with-state" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+
+for i in range(5):
+    f = C.addFrame(f&#39;block_{i}&#39;)
+    f.setShape(ry.ST.ssBox, [.2,.3,.2,.02]) .setColor([1,.2*i,1-.2*i])
+    f.setPosition([0,0, .25*(i+1)])
+    f.setMass(.1)
+
+C.addFrame(&#39;base&#39;) .setPosition([1., 0, .5]) .addAttributes({&#39;multibody&#39;: True})
+
+C.addFrame(&#39;finger&#39;, &#39;base&#39;) .setShape(ry.ST.ssBox, [.3, .1, .1, .02]) .setColor([.9]) \
+    .setMass(.1) \
+    .setJoint(ry.JT.transX)
+
+q0 = C.getJointState()
+X0 = C.getFrameState()
+
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, 1)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def move_a_bit():
+    tau = .01
+    q = q0.copy()
+    for i in range(100):
+        time.sleep(tau)
+        q[0] = q[0] - tau*1.
+        S.step(q, tau,  ry.ControlMode.position)
+        C.view()
+
+move_a_bit()
+</pre></div>
+</div>
+</div>
+<p>We are in the middle of some action. Let’s swap two blocks (top/bottom). And also displace the bottom one:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#swap two blocks
+X = C.getFrameState()
+A = X[0,:].copy()
+X[0,:] = X[4,:]
+X[4,:] = A
+X[4,1] = .2
+C.setFrameState(X)
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>If you compare the simulation display with the configuration display, you see the difference. Now, a simulation allows you to <strong>push</strong> the configuration back into the simulation, overwriting the physical state:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S.setState(X)
+#updates the simulation window
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#recall that the position control starts from zero, leading to a hard PD jerk initially
+move_a_bit()
+</pre></div>
+</div>
+</div>
+<p>We can also recreate the initial state:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S.setState(X0, q0)
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>move_a_bit()
+</pre></div>
+</div>
+</div>
+<p>Internally, not only the frame state (pose of all dynamic objects), but also the joint state (motor states/targets) are overwritten in the physics simulator. The optional arguments to <code class="docutils literal notranslate"><span class="pre">setState</span></code> allow you to also set the current frame and joint velocities. (Frame velocities is a n-by-2-by-3 tensor, as you get it from <code class="docutils literal notranslate"><span class="pre">getState</span></code>.)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+del C
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="komo-reporting.html" class="btn btn-neutral float-left" title="KOMO: Reporting &amp; Explaining Convergence" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rendering.html" class="btn btn-neutral float-right" title="CameraView, Offscreen (headless), and Realistic Rendering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
