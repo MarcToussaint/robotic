@@ -8,38 +8,29 @@ env:
 
 jobs:
   build:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
-        # recursively checkout all submodules
         submodules: 'recursive'
-
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
     - name: install ubuntu dependencies
       run: |
         sudo apt-get install libboost-system-dev libfcl-dev
         APTGETYES=1 make -C rai -j1 installUbuntuAll
-
-    - name: install python and pybind
+    - name: install python dependencies
       run: |
-        sudo apt-get install python3 python3-dev python3-numpy python3-pip python3-distutils
-        sudo pip3 install jupyter nbconvert matplotlib pybind11
-
+        pip install numpy pybind11
     - name: setup build files
       run: |
-        make -C rai -j1 unityAll
         ln -s build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
         cd $HOME && mkdir -p .local/include && cd .local/include && ln -s /usr/include/libqhull qhull
-
     - name: cmake configure
       run: |
         export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_QHULL8=ON
-
+        ls	
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_QHULL8=ON .
     - name: cmake build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}

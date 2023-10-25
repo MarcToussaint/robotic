@@ -13,7 +13,8 @@ rm -Rf rai-robotModels
 mkdir rai-robotModels
 cd rai-robotModels
 mkdir -p objects; cp ../../rai-robotModels/objects/*.g objects
-mkdir -p panda; cp ../../rai-robotModels/panda/*.g panda;  cp -R ../../rai-robotModels/panda/meshes panda
+mkdir -p panda; cp ../../rai-robotModels/panda/*.g panda;  cp -R ../../rai-robotModels/panda/*_description panda
+mkdir -p ur10; cp ../../rai-robotModels/ur10/*.g ur10;  cp -R ../../rai-robotModels/ur10/*_description ur10
 mkdir -p pr2; cp ../../rai-robotModels/pr2/*.g pr2;  cp -R ../../rai-robotModels/pr2/meshes pr2
 mkdir -p baxter; cp ../../rai-robotModels/baxter/*.g baxter;  cp -R ../../rai-robotModels/baxter/*_description baxter
 mkdir -p robotiq; cp ../../rai-robotModels/robotiq/*.g robotiq;  cp -R ../../rai-robotModels/robotiq/meshes robotiq
