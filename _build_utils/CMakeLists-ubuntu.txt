@@ -20,8 +20,8 @@ option(USE_PYBIND "build python bindings" ON)
 option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
 option(USE_OPENCV "link to opencv" OFF)
-option(USE_REALSENSE "link to realsense2 driver library" OFF)
-option(USE_LIBFRANKA "link to libfranka" OFF)
+option(USE_REALSENSE "link to realsense2 driver library" ON)
+option(USE_LIBFRANKA "link to libfranka" ON)
 option(USE_PCL "link to pcl library" OFF)
 
 ## compile options
@@ -162,12 +162,12 @@ if(USE_PYBIND)
   add_definitions(-DRAI_PYBIND)
   include_directories(${pybind11_INCLUDE_DIRS})
   
-  pybind11_add_module(ry SHARED
+  pybind11_add_module(_robotic SHARED
     rai/src/ry/unity.cxx
     botop/src/BotOp/pyBot.cxx
   )
 
-  target_link_libraries(ry PRIVATE
+  target_link_libraries(_robotic PRIVATE
     rai
   )
 endif()
@@ -182,9 +182,9 @@ message(STATUS "[rai] compiler flags: " "${_defs}")
 ################################################################################
 
 add_custom_target(docstrings #ALL
-  DEPENDS ry
-  COMMAND pybind11-stubgen --ignore-invalid=all ry
-  COMMAND mv stubs/ry*/__init__.pyi ry.pyi)
+  DEPENDS _robotic
+  COMMAND pybind11-stubgen --ignore-invalid=all _robotic
+  COMMAND mv stubs/_robotic*/__init__.pyi _robotic.pyi)
 
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
 target_link_libraries(kinEdit rai)
@@ -209,11 +209,11 @@ set(PYTHON_SITE "lib/python${PYBIND11_PYTHON_VERSION}/site-packages")
 message(STATUS "[rai] installing python packages in " ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic )
 
 install(
-  TARGETS ry
+  TARGETS _robotic
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py robotic/render.py ${CMAKE_BINARY_DIR}/ry.pyi
+  FILES robotic/__init__.py robotic/version.py robotic/render.py ${CMAKE_BINARY_DIR}/_robotic.pyi
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
@@ -227,4 +227,8 @@ install(
 
 install(
   TARGETS kinEdit meshTool bot
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+install(
+  PROGRAMS robotic/ry-view
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

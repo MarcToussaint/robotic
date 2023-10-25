@@ -28,15 +28,15 @@ pip install robotic
 ```
 * Tests:
 ```
-python3 -c 'from robotic import ry; print("ry version:", ry.__version__, ry.compiled());'
+python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
 ```
 ```
-python3 -c 'from robotic import ry; ry.test.RndScene()'
+python3 -c 'import robotic as ry; ry.test.RndScene()'
 ```
 <!--
 If the `rai-robotModels` path fails, find rai-robotModels and try something like
 ```
-python3 -c 'from robotic import ry; ry.setRaiPath("/usr/local/rai-robotModels"); ry.test.RndScene()'
+python3 -c 'import robotic as ry; ry.setRaiPath("/usr/local/rai-robotModels"); ry.test.RndScene()'
 ```
 When rai-robotModels is still messed up, try cloning it completely:
 ```
@@ -88,8 +88,8 @@ make -C rai-python/build install
 
 * This should install everything in .local/lib/python*/site-packages/robotic. Test:
 ```
-python3 -c 'from robotic import ry; print("ry version:", ry.__version__, ry.compiled());'
-python3 -c 'from robotic import ry; ry.test.RndScene()'
+python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
+python3 -c 'import robotic as ry; ry.test.RndScene()'
 ```
 
 ## Building a wheel within a manylinux docker

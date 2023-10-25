@@ -150,12 +150,12 @@ if(USE_PYBIND)
   find_package(pybind11)
   add_definitions(-DRAI_PYBIND)
 
-  pybind11_add_module(ry SHARED
+  pybind11_add_module(_robotic SHARED
     rai/src/ry/unity.cxx
     botop/src/BotOp/pyBot.cxx
   )
 
-  target_link_libraries(ry PRIVATE
+  target_link_libraries(_robotic PRIVATE
     rai
     libjsoncpp.a lapack pthread rt X11 libatlas.a
     libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
