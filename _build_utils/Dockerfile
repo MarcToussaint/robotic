@@ -41,6 +41,7 @@ RUN python3.7 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.8 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.9 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.10 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
+RUN python3.11 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 
 ##########################################################
 

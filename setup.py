@@ -39,9 +39,11 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
 
+    install_requires=[ 'numpy' ],
+    
     distclass=BinaryDistribution,
     version=myversion['__version__'],
-    url='https://github.com/MarcToussaint/rai-python/',
+    url='https://github.com/MarcToussaint/robotic/',
     author='Marc Toussaint',
     author_email='toussaint@tu-berlin.de',
 )

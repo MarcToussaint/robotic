@@ -14,7 +14,7 @@ Lab](https://argmin.lis.tu-berlin.de/), operate our robots.
 
 ## Documentation
 
-Please follow the documentation and tutorials here: https://marctoussaint.github.io/robotics-course/
+Please follow the documentation and tutorials here: https://marctoussaint.github.io/robotic/
 
 ## Installation via pip (simulation only, no real Franka & realsense support)
 
@@ -24,11 +24,13 @@ sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
 ```
 * pip-install robotic and dependencies (numpy, scipy)
 ```
-python3 -m pip install --user robotic numpy scipy
+pip install robotic
 ```
-* Test:
+* Tests:
 ```
 python3 -c 'from robotic import ry; print("ry version:", ry.__version__, ry.compiled());'
+```
+```
 python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
 <!--
@@ -90,7 +92,6 @@ python3 -c 'from robotic import ry; print("ry version:", ry.__version__, ry.comp
 python3 -c 'from robotic import ry; ry.test.RndScene()'
 ```
 
-
 ## Building a wheel within a manylinux docker
 
 * Build the docker
@@ -102,7 +103,7 @@ _build_utils/build-docker.sh
 ```
 _build_utils/run-docker.sh
 ## inside docker:
-cd local #this mounts rai-python/
+cd local #this mounts robotic/
 _build_utils/build-wheels.sh
 exit
 ```

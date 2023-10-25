@@ -46,7 +46,7 @@ add_definitions(
 ################################################################################
 
 include_directories(
-  rai/rai
+  rai/src
   botop/src
   /usr/local/include/eigen3
   /usr/include/eigen3
@@ -58,10 +58,10 @@ link_directories(
   $ENV{HOME}/.local/lib
   )
 
-file(GLOB SRC_GeoGJK rai/rai/Geo/GJK/*.c)
-file(GLOB SRC_GeoPly rai/rai/Geo/ply/*.c)
-file(GLOB SRC_GeoCcd rai/rai/Geo/ccd_rai/*.c)
-file(GLOB SRC_GeoLewiner rai/rai/Geo/Lewiner/*.cpp)
+file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
+file(GLOB SRC_GeoPly rai/src/Geo/ply/*.c)
+file(GLOB SRC_GeoCcd rai/src/Geo/ccd_rai/*.c)
+file(GLOB SRC_GeoLewiner rai/src/Geo/Lewiner/*.cpp)
 
 file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
@@ -71,21 +71,21 @@ file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
 
 add_library(rai STATIC
-  rai/rai/Core/unity.cxx
-  rai/rai/Optim/unity.cxx
-  rai/rai/Geo/unity.cxx
+  rai/src/Core/unity.cxx
+  rai/src/Optim/unity.cxx
+  rai/src/Geo/unity.cxx
   ${SRC_GeoGJK}
   ${SRC_GeoPly}
   ${SRC_GeoCcd}
   ${SRC_GeoLewiner}
-  rai/rai/Algo/unity.cxx
-  rai/rai/Search/unity.cxx
-  rai/rai/PathAlgos/unity.cxx
-  rai/rai/Gui/unity.cxx
-  rai/rai/Kin/unity.cxx
-  rai/rai/KOMO/unity.cxx
-  rai/rai/Logic/unity.cxx
-  rai/rai/Control/unity.cxx
+  rai/src/Algo/unity.cxx
+  rai/src/Search/unity.cxx
+  rai/src/PathAlgos/unity.cxx
+  rai/src/Gui/unity.cxx
+  rai/src/Kin/unity.cxx
+  rai/src/KOMO/unity.cxx
+  rai/src/Logic/unity.cxx
+  rai/src/Control/unity.cxx
   ${SRC_BotOp}
   ${SRC_Franka}
   ${SRC_OptiTrack}
@@ -151,7 +151,7 @@ if(USE_PYBIND)
   add_definitions(-DRAI_PYBIND)
 
   pybind11_add_module(ry SHARED
-    rai/rai/ry/unity.cxx
+    rai/src/ry/unity.cxx
     botop/src/BotOp/pyBot.cxx
   )
 
