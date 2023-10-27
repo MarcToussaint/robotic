@@ -23,7 +23,7 @@ wheels:
 	docker stop ${id}
 #	_build_utils/run-docker.sh local/_build_utils/build-wheels.sh
 
-wheels-push:
+wheels-upload:
 	twine upload dist/*.whl --repository robotic
 
 wheels-local:

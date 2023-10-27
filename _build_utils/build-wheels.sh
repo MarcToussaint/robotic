@@ -4,7 +4,7 @@ cd $HOME/local
 ln -f -s _build_utils/CMakeLists-docker.txt CMakeLists.txt
 
 ### delete setup temp files
-rm -Rf robotic/*ry.* robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
+rm -Rf robotic/*_robotic.* robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
 
 ### copy robotModels files
 cd robotic
@@ -28,20 +28,20 @@ for ver in 8 9 10 11 6 7; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPYBIND11_PYTHON_VERSION=3.$ver .
     cd build_wheel
-    make ry
-    strip --strip-unneeded ry.*3$ver*.so
+    make _robotic
+    strip --strip-unneeded _robotic.*3$ver*.so
     echo -e "\n\n======== documenting (python version " $ver ") ========"
-    /opt/_internal/cpython-3.$ver.*/bin/pybind11-stubgen ry
+    /opt/_internal/cpython-3.$ver.*/bin/pybind11-stubgen _robotic
     cd ..
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
-    cp -f build_wheel/ry.*3$ver*.so robotic/ry.so
-    cp -f build_wheel/stubs/ry*/__init__.pyi robotic/ry.pyi
+    cp -f build_wheel/_robotic.*3$ver*.so robotic/_robotic.so
+    cp -f build_wheel/stubs/_robotic*/__init__.pyi robotic/_robotic.pyi
     python3.$ver setup.py bdist_wheel
     #break
 done
 
 ### delete setup temp files
-rm -Rf robotic/*ry.* robotic/__pycache__ build/bdist* build/lib robotic.egg-info
+rm -Rf robotic/*_robotic.* robotic/__pycache__ build/bdist* build/lib robotic.egg-info
 
 echo -e "\n\n======== renaming wheels ========"
 for wheel in $(find dist -iname "*.whl") ; do 
