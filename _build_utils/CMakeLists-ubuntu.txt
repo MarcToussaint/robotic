@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(RaiPython)
+project(RoboticPython)
 
 ## first time call: generate unity sources
 if(NOT DEFINED CMAKE_CACHE_MAJOR_VERSION)
@@ -20,8 +20,8 @@ option(USE_PYBIND "build python bindings" ON)
 option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
 option(USE_OPENCV "link to opencv" OFF)
-option(USE_REALSENSE "link to realsense2 driver library" OFF)
-option(USE_LIBFRANKA "link to libfranka" OFF)
+option(USE_REALSENSE "link to realsense2 driver library" ON)
+option(USE_LIBFRANKA "link to libfranka" ON)
 option(USE_PCL "link to pcl library" OFF)
 
 ## compile options
@@ -46,7 +46,7 @@ add_definitions(
 ################################################################################
 
 include_directories(
-  rai/rai
+  rai/src
   botop/src
   /usr/include/eigen3
   $ENV{HOME}/.local/include
@@ -57,10 +57,10 @@ link_directories(
   $ENV{HOME}/.local/lib/PhysX
   )
 
-file(GLOB SRC_GeoGJK rai/rai/Geo/GJK/*.c)
-file(GLOB SRC_GeoPly rai/rai/Geo/ply/*.c)
-file(GLOB SRC_GeoCcd rai/rai/Geo/ccd_rai/*.c)
-file(GLOB SRC_GeoLewiner rai/rai/Geo/Lewiner/*.cpp)
+file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
+file(GLOB SRC_GeoPly rai/src/Geo/ply/*.c)
+file(GLOB SRC_GeoCcd rai/src/Geo/ccd_rai/*.c)
+file(GLOB SRC_GeoLewiner rai/src/Geo/Lewiner/*.cpp)
 
 file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
@@ -70,21 +70,21 @@ file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
 
 add_library(rai SHARED
-  rai/rai/Core/unity.cxx
-  rai/rai/Optim/unity.cxx
-  rai/rai/Geo/unity.cxx
+  rai/src/Core/unity.cxx
+  rai/src/Optim/unity.cxx
+  rai/src/Geo/unity.cxx
   ${SRC_GeoGJK}
   ${SRC_GeoPly}
   ${SRC_GeoCcd}
   ${SRC_GeoLewiner}
-  rai/rai/Algo/unity.cxx
-  rai/rai/Search/unity.cxx
-  rai/rai/PathAlgos/unity.cxx
-  rai/rai/Gui/unity.cxx
-  rai/rai/Kin/unity.cxx
-  rai/rai/KOMO/unity.cxx
-  rai/rai/Logic/unity.cxx
-  rai/rai/Control/unity.cxx
+  rai/src/Algo/unity.cxx
+  rai/src/Search/unity.cxx
+  rai/src/PathAlgos/unity.cxx
+  rai/src/Gui/unity.cxx
+  rai/src/Kin/unity.cxx
+  rai/src/KOMO/unity.cxx
+  rai/src/Logic/unity.cxx
+  rai/src/Control/unity.cxx
   ${SRC_BotOp}
   ${SRC_Franka}
   ${SRC_OptiTrack}
@@ -162,12 +162,12 @@ if(USE_PYBIND)
   add_definitions(-DRAI_PYBIND)
   include_directories(${pybind11_INCLUDE_DIRS})
   
-  pybind11_add_module(ry SHARED
-    rai/rai/ry/unity.cxx
+  pybind11_add_module(_robotic SHARED
+    rai/src/ry/unity.cxx
     botop/src/BotOp/pyBot.cxx
   )
 
-  target_link_libraries(ry PRIVATE
+  target_link_libraries(_robotic PRIVATE
     rai
   )
 endif()
@@ -181,10 +181,10 @@ message(STATUS "[rai] compiler flags: " "${_defs}")
 
 ################################################################################
 
-add_custom_target(docstrings ALL
-  DEPENDS ry
-  COMMAND pybind11-stubgen ry
-  COMMAND mv stubs/ry*/__init__.pyi ry.pyi)
+add_custom_target(docstrings #ALL
+  DEPENDS _robotic
+  COMMAND pybind11-stubgen --ignore-invalid=all _robotic
+  COMMAND mv stubs/_robotic*/__init__.pyi _robotic.pyi)
 
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
 target_link_libraries(kinEdit rai)
@@ -206,14 +206,14 @@ target_link_libraries(bot rai)
 
 set(PYTHON_SITE "lib/python${PYBIND11_PYTHON_VERSION}/site-packages")
 
-message(STATUS "[rai] installing in python path " ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic )
+message(STATUS "[rai] installing python packages in " ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic )
 
 install(
-  TARGETS ry
+  TARGETS _robotic
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py ${CMAKE_BINARY_DIR}/ry.pyi
+  FILES robotic/__init__.py robotic/version.py robotic/render.py ${CMAKE_BINARY_DIR}/_robotic.pyi
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
@@ -222,8 +222,13 @@ install(
 
 install(
   TARGETS rai
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+  COMPONENT pkgconfig)
 
 install(
   TARGETS kinEdit meshTool bot
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+install(
+  PROGRAMS robotic/ry-view
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

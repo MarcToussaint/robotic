@@ -3,9 +3,10 @@ dist/
 robotic.egg-info/
 rai-robotModels
 ry.pyi
+build_wheel/
 
 %% compile temporaries
-/build
+build/
 *.o
 *.a
 *.so

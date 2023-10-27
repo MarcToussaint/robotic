@@ -1,0 +1,24 @@
+#!/usr/bin/python3
+
+import robotic as ry
+import argparse
+
+parser = argparse.ArgumentParser(
+    description='View a g-file (robotic model description) during editing')
+
+parser.add_argument('FILE', type=str,
+                    help='g-file name')
+parser.add_argument('-v', '--version', action='version',
+                    version=f'%(prog)s -- robotic package version: {ry.__version__}, {ry.compiled()}')
+
+def main():
+    args = parser.parse_args()
+    
+    try:
+        C = ry.Config()
+        C.watchFile(args.FILE)
+    except KeyboardInterrupt:
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
