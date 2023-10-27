@@ -101,7 +101,7 @@
              
   <section id="Differentiable-Features-&amp;-Collision-Evaluation">
 <h1>Differentiable Features &amp; Collision Evaluation<a class="headerlink" href="#Differentiable-Features-&-Collision-Evaluation" title="Link to this heading"></a></h1>
-<p>The <a class="reference internal" href="1a-configurations.html"><span class="doc">1st tutorial</span></a> introduced the basic concepts of features. The <a class="reference external" href="../script/script.html#general-concept-of-differentiable-featuresFeatures">lecture script section ‘Kinematics’</a> introduces this a bit more formally.</p>
+<p>The <a class="reference external" href="https://marctoussaint.github.io/robotics-course/tutorials/1a-configurations.html">1st tutorial</a> introduced the basic concepts of features. The <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#kinematics">lecture script section ‘Kinematics’</a> introduces this a bit more formally.</p>
 <p>This tutorial first gives an overview over available features, and then provides more details specifically on collision features.</p>
 <section id="Recap-of-evaluating-features-directly">
 <h2>Recap of evaluating features directly<a class="headerlink" href="#Recap-of-evaluating-features-directly" title="Link to this heading"></a></h2>
@@ -110,7 +110,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 </pre></div>
 </div>
 </div>
@@ -365,9 +365,9 @@ sign properly.]</p></td>
 </section>
 <section id="Scalar-product-features">
 <h2>Scalar product features<a class="headerlink" href="#Scalar-product-features" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">scalarProduct</span></code> features are also very useful to define relative between frames (e.g. for grasping). For instance, <code class="docutils literal notranslate"><span class="pre">(FS.scalarProductXX,</span> <span class="pre">{'handL',</span> <span class="pre">'handR'},</span> <span class="pre">target=[1])</span></code> says that the scalar product of the x-axes (e.g. directions of the index finger) of both hands should equal 1, which means they are aligned. And</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(FS.scalarProductXY, {&#39;handL&#39;, &#39;handR&#39;})
-(FS.scalarProductXZ, {&#39;handL&#39;, &#39;handR&#39;})
+<p>The <code class="docutils literal notranslate"><span class="pre">scalarProduct</span></code> features are also very useful to define relative between frames (e.g. for grasping). For instance, <code class="docutils literal notranslate"><span class="pre">(FS.scalarProductXX,</span> <span class="pre">['handL',</span> <span class="pre">'handR'],</span> <span class="pre">target=[1])</span></code> says that the scalar product of the x-axes (e.g. directions of the index finger) of both hands should equal 1, which means they are aligned. And</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(FS.scalarProductXY, [&#39;handL&#39;, &#39;handR&#39;])
+(FS.scalarProductXZ, [&#39;handL&#39;, &#39;handR&#39;])
 </pre></div>
 </div>
 <p>says that the the x-axis of handL should be orthogonal (zero scalar product) to the y- and z-axis of handR. So this also describes aligning both x-axes. However, this formulation is much more robust, as it has good error gradients around the optimum.</p>
@@ -461,7 +461,7 @@ coll.eval(C)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 C = ry.Config()
 C.clear()
 C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
@@ -477,7 +477,7 @@ base_r.setPosition([.0, .5, .0])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;robotic.ry.Frame at 0x7fa7b82d3ab0&gt;
+&lt;robotic._robotic.Frame at 0x7fddcb16ecf0&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">

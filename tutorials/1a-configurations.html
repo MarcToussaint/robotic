@@ -58,6 +58,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Features:-computing-geometric-properties">Features: computing geometric properties</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Joint-and-Frame-State">Joint and Frame State</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#View-interaction-and-releasing-objects">View interaction and releasing objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Cleanup">Cleanup</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="1b-botop.html">BotOp (Robot Operation) interface</a></li>
@@ -109,7 +110,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import numpy as np
 import time
 print(&#39;version:&#39;, ry.__version__, ry.compiled())
@@ -121,11 +122,11 @@ print(&#39;version:&#39;, ry.__version__, ry.compiled())
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-version: 0.0.23 compile time: Oct 20 2023 14:36:37
+version: 0.0.25 compile time: Oct 25 2023 23:46:34
 </pre></div></div>
 </div>
 <p>The following creates an empty configuration, and opens a view window for it.</p>
-<p>Tip: Make the view window appear “Always On Top” (right click on the window bar).</p>
+<p><strong>Tip:</strong> Make the view window appear “Always On Top” (right click on the window bar).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -144,7 +145,8 @@ C.view()
 0
 </pre></div></div>
 </div>
-<p>A configuration is essentially a tree (or forrest) of frames. Let’s add a frame and set positions manually. We declare it a <strong>marker</strong> frame, which means it has no real shape, but is displayed using its base vectors in the view.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">C.view()</span></code> command will open a window that shows an empty configuration.</p>
+<p>A configuration is essentially a tree (or forest) of frames. You usually add models from files, but let’s do it manually here. We declare it a <strong>marker</strong> frame, which means it has no real shape, but is displayed using its base vectors in the view.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -242,10 +244,13 @@ joint state: [0.2]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame(&#39;ball&#39;, &#39;second&#39;) .setShape(ry.ST.sphere, [.1]) .setColor([1.,.5,.0]) .setRelativePosition([-.3,.0,.2])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Add new frames: a box, a ball and a capsule
+C.addFrame(&#39;ball&#39;, &#39;second&#39;) .setShape(ry.ST.sphere, [.1]) .setColor([1.,.5,.0]) .setRelativePosition([-.3,.0,.2])
 C.addFrame(&#39;box&#39;, &#39;second&#39;) .setShape(ry.ST.ssBox, [.3,.2,.1,.02]) .setColor([.5,1.,.0]) .setRelativePosition([.0,.0,.2])
 C.addFrame(&#39;capsule&#39;, &#39;second&#39;) .setShape(ry.ST.capsule, [.3, .05]) .setColor([.0,1.,.5]) .setRelativePosition([.3,.0,.2])
-for t in range(100):
+
+# Articulate the new configuration by moving the hinge joint
+for t in range(50):
     C.setJointState([np.cos(.1*t)])
     C.view()
     time.sleep(.1)
@@ -367,7 +372,7 @@ C.view()
 0
 </pre></div></div>
 </div>
-<p>Let’s add a second panda, but to avoid frame name conflicts we prefix all frame names. That’s often important when importing multiple models into a single configuration. The can then also move the second robot simply by redefining the position of its base frame.</p>
+<p>Let’s add a second panda, but to avoid frame name conflicts we prefix all frame names. That’s often important when importing multiple models into a single configuration. We can then also move the second robot simply by redefining the position of its base frame.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -444,15 +449,15 @@ print(&#39;gripper rot:&#39;, f.getRotationMatrix())
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-gripper pos: [0.22972161 0.63675584 0.81163634]
-gripper quat: [-0.79663237 -0.24376386  0.46490269  0.29970242]
-gripper rot: [[ 0.3880879   0.25085235 -0.8868263 ]
- [-0.70415824  0.70151528 -0.10971544]
- [ 0.59459982  0.66704528  0.44888934]]
+gripper pos: [0.32409254 0.48589005 0.79238262]
+gripper quat: [-0.83021932 -0.22851984  0.34128889  0.37687725]
+gripper rot: [[ 0.48297086  0.46979898 -0.73893712]
+ [-0.78176411  0.61148444 -0.12219513]
+ [ 0.39444141  0.63669121  0.66260115]]
 </pre></div></div>
 </div>
 <p>The above provides basic forward kinematics: After <code class="docutils literal notranslate"><span class="pre">setJointState</span></code> you can query the pose of any configuration frame.</p>
-<p>However, there is a more general way to query <em>features</em> (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features">Script:Features</a>), i.e. properties of the configuration in a differentiable manner. You might not use this directly often; but defining differentiable features is the foundation of how optimization problems are formulated, which you will need a lot.</p>
+<p>However, there is a more general way to query <em>features</em> (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features">Script:Features</a>), i.e. properties of the configuration in a differentiable manner. You might not use this often; but it is important to understand as these differentiable features are the foundation of how optimization problems are formulated, which you will need a lot.</p>
 <p>Here are some example features to evaluate:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -468,17 +473,17 @@ print(&#39;position of gripper:&#39;, y, &#39;\nJacobian:&#39;, J)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-position of gripper: [0.1938467  0.05571584 0.92707862]
-Jacobian: [[-5.57158418e-02  5.93961135e-01 -1.59973178e-02 -3.74233985e-01
-   3.40893538e-03 -3.55845920e-02  4.33680869e-18  0.00000000e+00
+position of gripper: [0.20895211 0.05321322 0.90170836]
+Jacobian: [[-5.32132202e-02  5.60335571e-01 -1.10797820e-01 -3.46828691e-01
+  -2.91279033e-02 -2.67255326e-02 -3.46944695e-18  0.00000000e+00
    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
- [ 1.93846702e-01 -1.18141540e-02  6.14899795e-01  3.09760548e-02
-   1.46708625e-01  3.69133387e-02  5.55111512e-17  0.00000000e+00
+ [ 2.08952106e-01  9.72278266e-02  5.93927675e-01 -5.56770215e-02
+   1.37596543e-01 -9.15079678e-03  1.38777878e-17  0.00000000e+00
    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
- [ 0.00000000e+00 -1.92700374e-01 -5.24486684e-02  4.31994181e-01
-  -2.28855824e-02  2.31333401e-01  5.20417043e-18  0.00000000e+00
+ [ 0.00000000e+00 -2.14973282e-01 -1.48641497e-02  4.58513432e-01
+   2.04312140e-03  2.35257325e-01  0.00000000e+00  0.00000000e+00
    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]]
 </pre></div></div>
@@ -498,12 +503,12 @@ C.eval(ry.FS.negDistance, [&#39;panda_coll7&#39;, &#39;r_panda_coll7&#39;])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(array([-0.40236503]),
- array([[-2.42147163e-02,  9.94071777e-03,  5.57838017e-01,
-         -2.81537448e-02, -4.43005956e-02, -9.59797410e-05,
-          1.82288149e-16, -0.00000000e+00,  5.00697618e-03,
-         -1.37520471e-02, -5.44630216e-01,  1.79043783e-02,
-          7.34786608e-02,  1.94588018e-02, -1.88400330e-17,
+(array([-0.30031301]),
+ array([[ 5.35180513e-02,  2.00881812e-01,  5.34933052e-01,
+         -1.14742645e-01,  4.32231486e-03, -2.27396667e-02,
+          1.33100944e-17, -0.00000000e+00, -1.37647045e-01,
+         -1.18809302e-01, -5.56642704e-01,  5.61551750e-02,
+          6.14998974e-02,  2.12769101e-02,  2.45700451e-18,
          -0.00000000e+00]]))
 </pre></div></div>
 </div>
@@ -522,17 +527,17 @@ C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(array([ 0.14746986, -0.58349898,  0.79861228]),
- array([[ 0.58349898,  0.79845435,  0.29047621, -0.73479687,  0.50459046,
-         -0.69895086, -0.17492902,  0.        ,  0.        ,  0.        ,
+(array([ 0.32891926, -0.53973015,  0.7749216 ]),
+ array([[ 0.53973015,  0.76351284,  0.12853438, -0.75370142,  0.47894166,
+         -0.76588064,  0.01814401,  0.        ,  0.        ,  0.        ,
           0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
           0.        ],
-        [ 0.14746986, -0.01588162,  0.77300206, -0.01285582, -0.4321508 ,
-          0.04105352, -0.81009853,  0.        ,  0.        ,  0.        ,
+        [ 0.32891926,  0.13248257,  0.82946478, -0.13346349, -0.32894586,
+         -0.16524781, -0.816817  ,  0.        ,  0.        ,  0.        ,
           0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
           0.        ],
-        [ 0.        , -0.15904446,  0.51114844,  0.12629287, -0.40892364,
-          0.159062  , -0.55958932,  0.        ,  0.        ,  0.        ,
+        [ 0.        , -0.23180312,  0.52316224,  0.2269554 , -0.43239875,
+          0.20998727, -0.57661147,  0.        ,  0.        ,  0.        ,
           0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
           0.        ]]))
 </pre></div></div>
@@ -540,8 +545,8 @@ C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
 </section>
 <section id="Joint-and-Frame-State">
 <h2>Joint and Frame State<a class="headerlink" href="#Joint-and-Frame-State" title="Link to this heading"></a></h2>
-<p>A configuration is a tree of n frames. Every frame has a pose (position &amp; quaternion), which is represented as a 7D vector (x,y,z, qw,qx,qy,qz). The frame state is the <span class="math notranslate nohighlight">\(n\times 7\)</span> matrix, where the i-th row is the pose of the i-th frame.</p>
-<p>A configuration also defines joints, which means that the relative transfromation from a parent to a child frame is parameterized by degrees-of-freedoms (DOFs). If the configuration has in total n DOFs, the joint state is a n-dimensional vector.</p>
+<p>A configuration is a tree of <span class="math notranslate nohighlight">\(n\)</span> frames. Every frame has a pose (position &amp; quaternion), which is represented as a 7D vector <span class="math notranslate nohighlight">\((x,y,z, q_w,q_x,q_y,q_z)^T\)</span>. The frame state is the <span class="math notranslate nohighlight">\(n\times 7\)</span> matrix, where the <span class="math notranslate nohighlight">\(i\)</span>-th row is the pose of the <span class="math notranslate nohighlight">\(i\)</span>-th frame.</p>
+<p>A configuration also defines joints, which means that the relative transfromation from a parent to a child frame is parameterized by degrees-of-freedom (DOFs). If the configuration has in total <span class="math notranslate nohighlight">\(d\)</span> DOFs, the joint state is a <span class="math notranslate nohighlight">\(d\)</span>-dimensional vector.</p>
 <p>Setting the joint state implies computing all relative transformations, and then forward chaining all transformations to compute all frame poses. So setting the joint state also sets the frame state.</p>
 <p>Setting the frame state allows you to set frame poses that are inconsistent/impossible w.r.t. the joints! Setting the frame state implies computing all relative transformations from the frame poses, and then assigning the joint state to the <em>projection</em> onto the actual DOFs</p>
 <div class="nbinput docutils container">
@@ -862,7 +867,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([&#39;panda_joint1&#39;, &#39;panda_joint1&#39;])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([&#39;panda_joint1&#39;, &#39;r_panda_joint1&#39;])
 print(&#39;joint state: &#39;, C.getJointState())
 print(&#39;joint names: &#39;, C.getJointNames() )
 </pre></div>
@@ -873,15 +878,15 @@ print(&#39;joint names: &#39;, C.getJointNames() )
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-joint state:  [0.]
-joint names:  [&#39;panda_joint1&#39;]
+joint state:  [0. 0.]
+joint names:  [&#39;panda_joint1&#39;, &#39;r_panda_joint1&#39;]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([], True)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([], notThose=True)
 print(&#39;joint state: &#39;, C.getJointState())
 print(&#39;joint names: &#39;, C.getJointNames() )
 </pre></div>
@@ -927,13 +932,13 @@ C.view(pause=False, message=&#39;this is a message&#39;)
 0
 </pre></div></div>
 </div>
-<p>For user interaction it is often useful to wait for a keypress (making <code class="docutils literal notranslate"><span class="pre">view</span></code> a blocking call):</p>
+<p>For user interaction it is often useful to wait for a keypress (i.e., by making <code class="docutils literal notranslate"><span class="pre">view</span></code> a blocking call via <code class="docutils literal notranslate"><span class="pre">pause=True</span></code>):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>keypressed = C.view(True, &#39;press some key!&#39;)
-print(&#39;pressed key:&#39;, keypressed, chr(keypressed))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pressed_key = C.view(pause=True, message=&#39;press some key!&#39;)
+print(&#39;pressed key:&#39;, pressed_key, chr(pressed_key))
 </pre></div>
 </div>
 </div>
@@ -942,12 +947,12 @@ print(&#39;pressed key:&#39;, keypressed, chr(keypressed))
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-pressed key: 113 q
-</pre></div></div>
+pressed key: 0 </pre></div></div>
 </div>
-<p>You can also get a screenshot:</p>
+<p>As you can see above, <code class="docutils literal notranslate"><span class="pre">.view()</span></code> also returnes the ID of key that was pressed, which can be helpful for debugging purposes.</p>
+<p>To visualize your configuration outside of the viewer, you can also get a screenshot:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>img = C.view_getRgb()
@@ -964,7 +969,7 @@ print(type(img), img.shape)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
@@ -980,9 +985,12 @@ plt.show()
 <img alt="../_images/tutorials_1a-configurations_57_0.png" src="../_images/tutorials_1a-configurations_57_0.png" />
 </div>
 </div>
-<p>And release everything, including closing the view</p>
+</section>
+<section id="Cleanup">
+<h2>Cleanup<a class="headerlink" href="#Cleanup" title="Link to this heading"></a></h2>
+<p>Don’t forget to release everything, including closing the view</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C

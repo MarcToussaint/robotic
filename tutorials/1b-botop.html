@@ -104,7 +104,7 @@
 <p>BotOp (=robot operation) defines a very narrow interface to control a real or simulated robot. While in initial years we tried all kinds of other interfaces (ROS-given, operational space control interfaces, controller state machines, etc), this one seems most pragmatic, simple, transparent, and compatible to our research work at the LIS research team. There is no ROS or complex IPC involved, just a few threads (communicating with hardwares) interfaced via BotOp.</p>
 <p>The interface essentially provides move methods to set/overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera.</p>
 <p>This interface quite different to a more <em>generic physical simulation</em> interface. If you’re interested in the latter (e.g. to implement a gym environment) look at the <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> tutorial. BotOp uses a <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> (optionally) as an underlying engine, but is quite different in that it is wrapped as a real-time threaded process that emulates the specific BotOp interface to a real robot – to make it swappable with a real robot. If BotOp it run in simulation mode, the simulation can be run
-in many different modes: pure kinematic (no physics for objects), a physics simulator with physics for objects but still kinematic robot, a physic simulator with PD motors for the robot.</p>
+in many different modes: - pure kinematic (no physics for objects) - a physics simulator with physics for objects but still kinematic robot - a physic simulator with PD motors for the robot.</p>
 <section id="Sending-motion-based-on-IK">
 <h2>Sending motion based on IK<a class="headerlink" href="#Sending-motion-based-on-IK" title="Link to this heading"></a></h2>
 <p>We’ll show how to make the robot move to pre-computed joint space poses, e.g. computed via IK. Later we modify this to <em>overwriting</em> the motion reference with high frequency, which essentially realizes MPC-style control.</p>
@@ -113,7 +113,7 @@ in many different modes: pure kinematic (no physics for objects), a physics simu
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import numpy as np
 import time
 </pre></div>
@@ -138,7 +138,7 @@ C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATIO
 0
 </pre></div></div>
 </div>
-<p>Let’s open a BotOp interface in simulation (False). True would directly open communication to one or two pandas (depending no how many are defined in C).</p>
+<p>We open a robot interface in simulation (<code class="docutils literal notranslate"><span class="pre">False</span></code>). <code class="docutils literal notranslate"><span class="pre">True</span></code> would directly open communication to one or two pandas (depending no how many are defined in C). The <code class="docutils literal notranslate"><span class="pre">botsim/verbose</span></code> above leads to the explicit verbosity when creating the simulator interface.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -149,7 +149,7 @@ C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATIO
 </div>
 </div>
 <p>Note the simulation window, showing that the simulation is running in a thread and the given <em>control reference time</em>.</p>
-<p>Let’s define 2 trivial reference poses, q0=home and q1=(2nd joint bend), so that we can move back and forth between them:</p>
+<p>We define 2 reference poses, q0=home and q1=(2nd joint bend), so that we can move back and forth between them:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -182,7 +182,7 @@ while bot.getTimeToEnd()&gt;0:
 </pre></div>
 </div>
 </div>
-<p>We can append to the internal spline reference at any time: As <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> is non-blocking, you can append several moves like this:</p>
+<p>The internal spline reference can be appended: As <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> is non-blocking, you can append several moves like this:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -204,7 +204,7 @@ while bot.getTimeToEnd()&gt;0:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-timeToEnd: -0.09828105793499753
+timeToEnd: -0.08128105793499696
 timeToEnd: 1.0957189420649807
 timeToEnd: 2.191437884129961
 </pre></div></div>
@@ -255,7 +255,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>The following does <em>not</em> really move the robot: it is just ‘setting’ the workspace C to the IK solution. No motion is send to the real/robot:</p>
+<p>The following does <em>not</em> really move the robot: it is just ‘setting’ the workspace C to the IK solution. No motion is send to the real/simulated robot:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
@@ -277,26 +277,26 @@ C.view()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.002842, evals: 6, done: 1, feasible: 1, sos: 0.0067775, f: 0, ineq: 0, eq: 0.0005408 }
-{ time: 0.002032, evals: 3, done: 1, feasible: 1, sos: 0.00321675, f: 0, ineq: 0, eq: 0.000900211 }
-{ time: 0.001523, evals: 2, done: 1, feasible: 1, sos: 0.0031297, f: 0, ineq: 0, eq: 0.00110733 }
-{ time: 0.000393, evals: 3, done: 1, feasible: 1, sos: 0.0037666, f: 0, ineq: 0, eq: 0.00255867 }
-{ time: 0.003193, evals: 4, done: 1, feasible: 1, sos: 0.00455003, f: 0, ineq: 0, eq: 0.000192847 }
-{ time: 0.001693, evals: 4, done: 1, feasible: 1, sos: 0.00367259, f: 0, ineq: 0, eq: 0.00026511 }
-{ time: 0.000392, evals: 4, done: 1, feasible: 1, sos: 0.00428734, f: 0, ineq: 0, eq: 0.000144815 }
-{ time: 0.000217, evals: 4, done: 1, feasible: 1, sos: 0.00316682, f: 0, ineq: 0, eq: 0.000338487 }
-{ time: 0.002715, evals: 4, done: 1, feasible: 1, sos: 0.00339213, f: 0, ineq: 0, eq: 0.000222226 }
-{ time: 0.000955, evals: 3, done: 1, feasible: 1, sos: 0.00354052, f: 0, ineq: 0, eq: 0.00201801 }
-{ time: 0.000375, evals: 4, done: 1, feasible: 1, sos: 0.00412341, f: 0, ineq: 0, eq: 0.000264779 }
-{ time: 0.001238, evals: 3, done: 1, feasible: 1, sos: 0.00379458, f: 0, ineq: 0, eq: 0.00320893 }
-{ time: 0.003819, evals: 4, done: 1, feasible: 1, sos: 0.00381466, f: 0, ineq: 0, eq: 0.00063563 }
-{ time: 0.001351, evals: 3, done: 1, feasible: 1, sos: 0.00433728, f: 0, ineq: 0, eq: 0.00278551 }
-{ time: 0.001375, evals: 3, done: 1, feasible: 1, sos: 0.00378, f: 0, ineq: 0, eq: 0.00317554 }
-{ time: 0.001355, evals: 3, done: 1, feasible: 1, sos: 0.00385413, f: 0, ineq: 0, eq: 0.0032276 }
-{ time: 0.00047, evals: 3, done: 1, feasible: 1, sos: 0.00407101, f: 0, ineq: 0, eq: 0.00110385 }
-{ time: 0.002052, evals: 4, done: 1, feasible: 1, sos: 0.00452004, f: 0, ineq: 0, eq: 0.000197274 }
-{ time: 0.001125, evals: 3, done: 1, feasible: 1, sos: 0.0038175, f: 0, ineq: 0, eq: 0.00375235 }
-{ time: 0.000473, evals: 4, done: 1, feasible: 1, sos: 0.00390226, f: 0, ineq: 0, eq: 0.000188478 }
+{ time: 0.003341, evals: 6, done: 1, feasible: 1, sos: 0.00484223, f: 0, ineq: 0, eq: 0.000230709 }
+{ time: 0.000612, evals: 4, done: 1, feasible: 1, sos: 0.00368151, f: 0, ineq: 0, eq: 0.000341438 }
+{ time: 0.000416, evals: 3, done: 1, feasible: 1, sos: 0.00300955, f: 0, ineq: 0, eq: 0.00277246 }
+{ time: 0.000312, evals: 3, done: 1, feasible: 1, sos: 0.00278385, f: 0, ineq: 0, eq: 0.00376361 }
+{ time: 0.002672, evals: 4, done: 1, feasible: 1, sos: 0.00209193, f: 0, ineq: 0, eq: 0.000527333 }
+{ time: 0.001663, evals: 4, done: 1, feasible: 1, sos: 0.0015387, f: 0, ineq: 0, eq: 0.000300578 }
+{ time: 0.001316, evals: 3, done: 1, feasible: 1, sos: 0.000977189, f: 0, ineq: 0, eq: 0.000906182 }
+{ time: 0.000654, evals: 4, done: 1, feasible: 1, sos: 0.000973765, f: 0, ineq: 0, eq: 0.00049639 }
+{ time: 0.001536, evals: 4, done: 1, feasible: 1, sos: 0.00120162, f: 0, ineq: 0, eq: 0.000318051 }
+{ time: 0.002738, evals: 3, done: 1, feasible: 1, sos: 0.000722494, f: 0, ineq: 0, eq: 0.00514615 }
+{ time: 0.000702, evals: 3, done: 1, feasible: 1, sos: 0.000995347, f: 0, ineq: 0, eq: 0.00290043 }
+{ time: 0.000462, evals: 3, done: 1, feasible: 1, sos: 0.00143359, f: 0, ineq: 0, eq: 0.0028059 }
+{ time: 0.000359, evals: 3, done: 1, feasible: 1, sos: 0.00113621, f: 0, ineq: 0, eq: 0.00195429 }
+{ time: 0.000154, evals: 2, done: 1, feasible: 1, sos: 0.000910913, f: 0, ineq: 0, eq: 0.00483834 }
+{ time: 0.002365, evals: 3, done: 1, feasible: 1, sos: 0.000974754, f: 0, ineq: 0, eq: 0.00337184 }
+{ time: 0.000489, evals: 2, done: 1, feasible: 1, sos: 0.000838643, f: 0, ineq: 0, eq: 0.00741347 }
+{ time: 0.000276, evals: 3, done: 1, feasible: 1, sos: 0.00106323, f: 0, ineq: 0, eq: 0.00272726 }
+{ time: 0.000291, evals: 3, done: 1, feasible: 1, sos: 0.00103225, f: 0, ineq: 0, eq: 0.00052641 }
+{ time: 0.001628, evals: 4, done: 1, feasible: 1, sos: 0.00200254, f: 0, ineq: 0, eq: 0.000479691 }
+{ time: 0.000501, evals: 3, done: 1, feasible: 1, sos: 0.00144796, f: 0, ineq: 0, eq: 0.002733 }
 </pre></div></div>
 </div>
 <p>We now generate reative motion by smoothly overwriting the spline reference. Increasing time cost makes it more agressive (penalized total duration of estimated cubic spline).</p>
@@ -346,6 +346,9 @@ bot.home(C)
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 0
+1
+2
+3
 cancelled
 </pre></div></div>
 </div>
@@ -404,7 +407,7 @@ plt.show()
 </div>
 <p>The returned <code class="docutils literal notranslate"><span class="pre">points</span></code> are a point could, that was directly computed from the depth image and the camera intrinsics. The intrinsics are given by the focal lengths (f_x, f_y) and image center (c_x, c_y). We can also manually compute the point cloud as follows:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fxycxy = bot.getCameraFxycxy(&quot;cameraWrist&quot;)
@@ -414,7 +417,7 @@ np.linalg.norm(points - points2)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -424,7 +427,7 @@ np.linalg.norm(points - points2)
 </div>
 <p>The point cloud is given relative to the camera frame. We can display it by creating a dedicates frame, attached to the camera frame, and setting its (purely visual) shape to be the point cloud:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
@@ -435,12 +438,12 @@ C.view()
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0
+113
 </pre></div></div>
 </div>
 </section>
@@ -448,7 +451,7 @@ C.view()
 <h2>Shutdown<a class="headerlink" href="#Shutdown" title="Link to this heading"></a></h2>
 <p>You always need to shut down processes (e.g. communication with the real robot) properly. That’s done here by explicitly destroying the objects:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del bot
@@ -461,7 +464,7 @@ del C
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--- bot.cpp:~BotOp:112(0) shutting down BotOp...
+-- bot.cpp:~BotOp:114(0) shutting down BotOp...
 -- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread
 -- simulation.cpp:~Simulation:148(0) shutting down Simulation
 </pre></div></div>
@@ -471,7 +474,7 @@ del C
 <h2>Parameters<a class="headerlink" href="#Parameters" title="Link to this heading"></a></h2>
 <p>BotOp (and other parts of the rai code) use all kinds of internal parameters that can be configured. The best way to look which parameters actually are used/relevant is to retrospect print the list of parameters have been queried by the code so far. That gives an idea of which global parameters exist:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_print()
@@ -485,6 +488,8 @@ del C
 <div class="highlight"><pre>
 -- ry.cpp:operator():86(0) python,
 message: &#34;this parameter was loaded from &#39;rai.cfg&#39;&#34;,
+noInteractivity,
+bot/blockRealRobot,
 bot/useGripper,
 bot/useRobotiq!,
 bot/useArm: left,
@@ -542,7 +547,7 @@ seed: 0
 <p>In the context of BotOp, the parameter <code class="docutils literal notranslate"><span class="pre">botsim/engine</span></code> can also be set to <code class="docutils literal notranslate"><span class="pre">kin</span></code>, which would create a simulation without physics where merely the robot moves (and grasped object can be attached/detached). The <code class="docutils literal notranslate"><span class="pre">botsim/verbose</span></code> above leads to the explicit verbosity when creating the simulator interface.</p>
 <p>Parameters can be set in a local file <code class="docutils literal notranslate"><span class="pre">rai.cfg</span></code>, or manually in python with the following calls – but that need’s to be done BEFORE BotOp is created.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({&#39;botsim/verbose&#39;: 2., &#39;physx/motorKp&#39;: 10000., &#39;physx/motorKd&#39;: 1000.})

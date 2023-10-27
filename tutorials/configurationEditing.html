@@ -114,7 +114,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 </pre></div>
 </div>
 </div>
@@ -124,7 +124,7 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;The path where model files are pre-installed:\n&#39;, ry.raiPath(&#39;&#39;))
 # you could overwrite this with:
-# ry.setRaiPath(&#39;/home/mtoussai/git/rai-robotModels/&#39;)
+# ry.setRaiPath(&#39;your_path/rai-robotModels/&#39;)
 </pre></div>
 </div>
 </div>
@@ -227,7 +227,7 @@ mass inertia
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 </pre></div>
 </div>
 </div>
@@ -245,11 +245,9 @@ C.watchFile(&#39;mini.g&#39;)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--- kin.cpp:watchFile:3510(0) reloading `mini.g&#39; ...
-Configuration: q.N=1 #frames=3 #dofs=1 #shapes=3 #ucertainties=0 #proxies=0 #forces=0 #evals=107
--- kin.cpp:watchFile:3544(0) watching...
-The file z.log.global was modified.
-EXITING
+-- kin.cpp:watchFile:3517(0) reloading `mini.g&#39; ...
+Configuration: q.N=1 #frames=3 #dofs=1 #shapes=3 #ucertainties=0 #proxies=0 #forces=0 #evals=86
+-- kin.cpp:watchFile:3551(0) watching...
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -268,7 +266,7 @@ EXITING
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import numpy as np
 import time
 </pre></div>
@@ -348,31 +346,10 @@ print(model)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;panda_link0&#39;: {}, &#39;panda_link0_0(panda_link0)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link0.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint1_origin(panda_link0)&#39;: {&#39;Q&#39;: [0, 0, 0.333, 1, 0, 0, 0]}, &#39;panda_joint1(panda_joint1_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link1(panda_joint1)&#39;: {}, &#39;panda_link1_0(panda_link1)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link1.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint2_origin(panda_link1)&#39;: {&#39;Q&#39;: [0, 0, 0, 0.707107, -0.707107, 0, 0]}, &#39;panda_joint2(panda_joint2_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-1.7628, 1.7628, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link2(panda_joint2)&#39;: {}, &#39;panda_link2_0(panda_link2)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link2.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint3_origin(panda_link2)&#39;: {&#39;Q&#39;: [0, -0.316, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint3(panda_joint3_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link3(panda_joint3)&#39;: {}, &#39;panda_link3_0(panda_link3)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link3.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint4_origin(panda_link3)&#39;: {&#39;Q&#39;: [0.0825, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint4(panda_joint4_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-3.0718, -0.0698, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link4(panda_joint4)&#39;: {}, &#39;panda_link4_0(panda_link4)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link4.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint5_origin(panda_link4)&#39;: {&#39;Q&#39;: [-0.0825, 0.384, 0, 0.707107, -0.707107, 0, 0]}, &#39;panda_joint5(panda_joint5_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link5(panda_joint5)&#39;: {}, &#39;panda_link5_0(panda_link5)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link5.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint6_origin(panda_link5)&#39;: {&#39;Q&#39;: [0, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint6(panda_joint6_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-0.0175, 3.7525, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link6(panda_joint6)&#39;: {}, &#39;panda_link6_0(panda_link6)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link6.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint7_origin(panda_link6)&#39;: {&#39;Q&#39;: [0.088, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint7(panda_joint7_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link7(panda_joint7)&#39;: {}, &#39;panda_link7_0(panda_link7)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/link7.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint8_origin(panda_link7)&#39;: {&#39;Q&#39;: [0, 0, 0.107, 1, 0, 0, 0]}, &#39;panda_joint8(panda_joint8_origin)&#39;: {&#39;joint&#39;: &#39;rigid&#39;}, &#39;panda_link8(panda_joint8)&#39;: {}, &#39;panda_hand_joint_origin(panda_link8)&#39;: {&#39;Q&#39;: [0, 0, 0, 0.92388, 0, 0, -0.382683]}, &#39;panda_hand_joint(panda_hand_joint_origin)&#39;: {&#39;joint&#39;: &#39;rigid&#39;}, &#39;panda_hand(panda_hand_joint)&#39;: {}, &#39;panda_hand_0(panda_hand)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/hand.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_finger_joint1_origin(panda_hand)&#39;: {&#39;Q&#39;: [0, 0, 0.0584, 1, 0, 0, 0]}, &#39;panda_finger_joint2_origin(panda_hand)&#39;: {&#39;Q&#39;: [0, 0, 0.0584, 1, 0, 0, 0]}, &#39;panda_finger_joint1(panda_finger_joint1_origin)&#39;: {&#39;joint&#39;: &#39;transY&#39;, &#39;limits&#39;: [0, 0.04, 0.2, -1, 20], &#39;ctrl_limits&#39;: [0.2, -1, 20]}, &#39;panda_finger_joint2(panda_finger_joint2_origin)&#39;: {&#39;joint&#39;: &#39;transY&#39;, &#39;joint_scale&#39;: -1, &#39;limits&#39;: [0, 0.04, 0.2, -1, 20], &#39;mimic&#39;: &#39;panda_finger_joint1&#39;, &#39;ctrl_limits&#39;: [0.2, -1, 20]}, &#39;panda_leftfinger(panda_finger_joint1)&#39;: {}, &#39;panda_rightfinger(panda_finger_joint2)&#39;: {}, &#39;panda_leftfinger_0(panda_leftfinger)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/finger.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_rightfinger_0(panda_rightfinger)&#39;: {&#39;Q&#39;: [0, 0, 0, -1.03412e-13, 0, 0, 1], &#39;shape&#39;: &#39;mesh&#39;, &#39;color&#39;: [0.9, 0.9, 0.9], &#39;mesh&#39;: &#39;&lt;meshes/visual/finger.ply&gt;&#39;, &#39;visual&#39;: True}}
+{&#39;panda_link0&#39;: {}, &#39;panda_link0_0(panda_link0)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link0.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint1_origin(panda_link0)&#39;: {&#39;rel&#39;: [0, 0, 0.333, 1, 0, 0, 0]}, &#39;panda_joint1(panda_joint1_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link1(panda_joint1)&#39;: {}, &#39;panda_link1_0(panda_link1)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link1.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint2_origin(panda_link1)&#39;: {&#39;rel&#39;: [0, 0, 0, 0.707107, -0.707107, 0, 0]}, &#39;panda_joint2(panda_joint2_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-1.7628, 1.7628, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link2(panda_joint2)&#39;: {}, &#39;panda_link2_0(panda_link2)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link2.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint3_origin(panda_link2)&#39;: {&#39;rel&#39;: [0, -0.316, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint3(panda_joint3_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link3(panda_joint3)&#39;: {}, &#39;panda_link3_0(panda_link3)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link3.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint4_origin(panda_link3)&#39;: {&#39;rel&#39;: [0.0825, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint4(panda_joint4_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-3.0718, -0.0698, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link4(panda_joint4)&#39;: {}, &#39;panda_link4_0(panda_link4)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link4.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint5_origin(panda_link4)&#39;: {&#39;rel&#39;: [-0.0825, 0.384, 0, 0.707107, -0.707107, 0, 0]}, &#39;panda_joint5(panda_joint5_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link5(panda_joint5)&#39;: {}, &#39;panda_link5_0(panda_link5)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link5.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint6_origin(panda_link5)&#39;: {&#39;rel&#39;: [0, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint6(panda_joint6_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-0.0175, 3.7525, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link6(panda_joint6)&#39;: {}, &#39;panda_link6_0(panda_link6)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link6.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint7_origin(panda_link6)&#39;: {&#39;rel&#39;: [0.088, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint7(panda_joint7_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link7(panda_joint7)&#39;: {}, &#39;panda_link7_0(panda_link7)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link7.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint8_origin(panda_link7)&#39;: {&#39;rel&#39;: [0, 0, 0.107, 1, 0, 0, 0]}, &#39;panda_joint8(panda_joint8_origin)&#39;: {&#39;joint&#39;: &#39;rigid&#39;}, &#39;panda_link8(panda_joint8)&#39;: {}, &#39;panda_hand_joint_origin(panda_link8)&#39;: {&#39;rel&#39;: [0, 0, 0, 0.92388, 0, 0, -0.382683]}, &#39;panda_hand_joint(panda_hand_joint_origin)&#39;: {&#39;joint&#39;: &#39;rigid&#39;}, &#39;panda_hand(panda_hand_joint)&#39;: {}, &#39;panda_hand_0(panda_hand)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/hand.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_finger_joint1_origin(panda_hand)&#39;: {&#39;rel&#39;: [0, 0, 0.0584, 1, 0, 0, 0]}, &#39;panda_finger_joint2_origin(panda_hand)&#39;: {&#39;rel&#39;: [0, 0, 0.0584, 1, 0, 0, 0]}, &#39;panda_finger_joint1(panda_finger_joint1_origin)&#39;: {&#39;joint&#39;: &#39;transY&#39;, &#39;limits&#39;: [0, 0.04, 0.2, -1, 20], &#39;ctrl_limits&#39;: [0.2, -1, 20]}, &#39;panda_finger_joint2(panda_finger_joint2_origin)&#39;: {&#39;joint&#39;: &#39;transY&#39;, &#39;joint_scale&#39;: -1, &#39;limits&#39;: [0, 0.04, 0.2, -1, 20], &#39;mimic&#39;: &#39;panda_finger_joint1&#39;, &#39;ctrl_limits&#39;: [0.2, -1, 20]}, &#39;panda_leftfinger(panda_finger_joint1)&#39;: {}, &#39;panda_rightfinger(panda_finger_joint2)&#39;: {}, &#39;panda_leftfinger_0(panda_leftfinger)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/finger.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_rightfinger_0(panda_rightfinger)&#39;: {&#39;rel&#39;: [0, 0, 0, -1.03412e-13, 0, 0, 1], &#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/finger.ply&gt;&#39;, &#39;visual&#39;: True}}
 </pre></div></div>
 </div>
 <p>This dict contains all information about the configuration.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[15], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">del</span> C
-
-<span class="ansi-red-fg">NameError</span>: name &#39;C&#39; is not defined
-</pre></div></div>
-</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>

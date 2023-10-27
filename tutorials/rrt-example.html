@@ -103,7 +103,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import time
 </pre></div>
 </div>
@@ -195,7 +195,7 @@ print(ret)
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 ====nlp==== method:AugmentedLagrangian bounded: yes
-{ time: 0.109363, evals: 194, done: 1, feasible: 1, sos: 4.60585, f: 0, ineq: 0, eq: 0.00676303 }
+{ time: 0.16243, evals: 194, done: 1, feasible: 1, sos: 4.60585, f: 0, ineq: 0, eq: 0.00676303 }
 ==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1
 ----newton---- initial point f(x):118.048 alpha:1 beta:1
 --newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    60.0308  ACCEPT
@@ -448,7 +448,7 @@ rrt.setProblem(C, [q0], [qT])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;robotic.ry.PathFinder at 0x7f194802d1b0&gt;
+&lt;robotic._robotic.PathFinder at 0x7fad9954a370&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -466,7 +466,7 @@ path = ret.x
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.216827, evals: 172, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
+{ time: 0.209925, evals: 172, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -524,7 +524,7 @@ while bot.getTimeToEnd()&gt;0:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--- bot.cpp:~BotOp:112(0) shutting down BotOp...
+-- bot.cpp:~BotOp:114(0) shutting down BotOp...
 -- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread
 -- simulation.cpp:~Simulation:148(0) shutting down Simulation
 </pre></div></div>

@@ -100,14 +100,14 @@
 <h1>KOMO: Motion Optimization<a class="headerlink" href="#KOMO:-Motion-Optimization" title="Link to this heading"></a></h1>
 <p>KOMO is a framework for designing motion by formulating optimization problems. Inverse kinematics (IK) is the special case of optimizing only over a single configuration rather than a path. Formulating KOMO problems is key to realizing motion in <code class="docutils literal notranslate"><span class="pre">rai</span></code>.</p>
 <p>The <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features">Script:Inverse Kinematics</a> and the <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#nlp-interface">Appendix:NLP Interface</a> provide the mathematical background on inverse kinematics and especially the convention of how NLPs can be defined by adding objectives.</p>
-<p>This tutorial shows how IK, rough waypoint optimization, and fine path optimization can be formulated as non-linear mathematical program (NLP) using KOMO. Essentially, the <code class="docutils literal notranslate"><span class="pre">addObjective</span></code> allows to add costs or constraints over any <code class="docutils literal notranslate"><span class="pre">Feature</span></code> to the NLP (same features that can be evaluated with ‘C.eval’).</p>
+<p>This tutorial shows how IK, rough waypoint optimization, and fine path optimization can be formulated as non-linear mathematical program (NLP) using KOMO. Essentially, the <code class="docutils literal notranslate"><span class="pre">addObjective</span></code> allows to add costs or constraints over any <code class="docutils literal notranslate"><span class="pre">Feature</span></code> to the NLP (same features that can be evaluated with <code class="docutils literal notranslate"><span class="pre">C.eval</span></code>).</p>
 <section id="Minimal-IK-example">
 <h2>Minimal IK example<a class="headerlink" href="#Minimal-IK-example" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from robotic import ry
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import numpy as np
 import time
 </pre></div>
@@ -154,7 +154,7 @@ C.view()
 0
 </pre></div></div>
 </div>
-<p>The following defines an optimization problem over a single configuration. The KOMO object essentially contains (1) a copy of the configuration(s) over which we optimize, and (2) the list of objectives (=costs &amp; constraints) that define the optimization problem.</p>
+<p>The following defines an optimization problem over a single configuration. The KOMO object essentially contains: 1. Copies of the configuration(s) over which we optimize 2. The list of objectives (=costs &amp; constraints) that define the optimization problem.</p>
 <p>The constructor declares over how many configurations (single, waypoints, path..) we optimize. The addObjective methods add costs or constraints:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -163,15 +163,22 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qHome = C.getJointState()
 
 komo = ry.KOMO(C, 1, 1, 0, False)
-komo.addObjective(times=[], feature=ry.FS.jointState, frames=[], type=ry.OT.sos, scale=[1e-1], target=qHome);
-komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1]);
+komo.addObjective(
+    times=[],
+    feature=ry.FS.jointState,
+    frames=[],
+    type=ry.OT.sos,
+    scale=[1e-1],
+    target=qHome
+)
+komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1])
 </pre></div>
 </div>
 </div>
 <p>We explain the KOMO constructor arguments later. (The above defines an IK problem.)</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">addObjective</span></code> method has signature * times: the time intervals (subset of configurations in a path) over which this feature is active (irrelevant for IK) * feature: the feature symbol (see advanced <code class="docutils literal notranslate"><span class="pre">Feature</span></code> tutorial) * frames: the frames for which the feature is computed, given as list of frame names * type: whether this is a sum-of-squares (sos) cost, or eq or ineq constraint * scale: the matrix(!) by which the feature is multiplied * target: the offset which is substracted from
-the feature (before scaling)</p>
-<p>Please see more formal details &lt;here - link to script!&gt;</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">addObjective</span></code> method has signature * <code class="docutils literal notranslate"><span class="pre">times</span></code>: the time intervals (subset of configurations in a path) over which this feature is active (irrelevant for IK) * <code class="docutils literal notranslate"><span class="pre">feature</span></code>: the feature symbol (see advanced <code class="docutils literal notranslate"><span class="pre">Feature</span></code> tutorial) * <code class="docutils literal notranslate"><span class="pre">frames</span></code>: the frames for which the feature is computed, given as list of frame names * <code class="docutils literal notranslate"><span class="pre">type</span></code>: whether this is a sum-of-squares (sos) cost, or eq or ineq constraint * <code class="docutils literal notranslate"><span class="pre">scale</span></code>: the matrix(!) by which the feature is multiplied * <code class="docutils literal notranslate"><span class="pre">target</span></code>: the offset
+which is substracted from the feature (before scaling)</p>
+<p>Please see more formal details <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#inverse-kinematics">here</a>.</p>
 <p>Given this definition of an optimization problem, we can call a generic NLP solver:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -187,8 +194,8 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.001512, evals: 6, done: 1, feasible: 1, sos: 0.00414146, f: 0, ineq: 0, eq: 0.00188382 }====nlp==== method:AugmentedLagrangian bounded: yes
-
+{ time: 0.000456, evals: 6, done: 1, feasible: 1, sos: 0.00414146, f: 0, ineq: 0, eq: 0.00188382 }
+====nlp==== method:AugmentedLagrangian bounded: yes
 ==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1
 ----newton---- initial point f(x):16.0447 alpha:1 beta:1
 --newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    6.55808  ACCEPT
@@ -301,7 +308,7 @@ else:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.001797, evals: 4, done: 1, feasible: 1, sos: 0.00552507, f: 0, ineq: 0, eq: 0.00405028 }
+{ time: 0.000898, evals: 4, done: 1, feasible: 1, sos: 0.00552507, f: 0, ineq: 0, eq: 0.00405028 }
 -- Always check feasibility flag of NLP solver return
 </pre></div></div>
 </div>
@@ -350,16 +357,16 @@ for t in range(10):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.003631, evals: 8, done: 1, feasible: 1, sos: 0.0118405, f: 0, ineq: 0, eq: 0.00215776 }
-{ time: 0.006321, evals: 7, done: 1, feasible: 1, sos: 0.0103414, f: 0, ineq: 0, eq: 0.000336711 }
-{ time: 0.002403, evals: 7, done: 1, feasible: 1, sos: 0.01097, f: 0, ineq: 0, eq: 0.00447927 }
-{ time: 0.004758, evals: 7, done: 1, feasible: 1, sos: 0.00539469, f: 0, ineq: 0, eq: 0.00406896 }
-{ time: 0.002674, evals: 8, done: 1, feasible: 1, sos: 0.0112329, f: 0, ineq: 0, eq: 0.0020554 }
-{ time: 0.006923, evals: 7, done: 1, feasible: 1, sos: 0.0105515, f: 0, ineq: 0, eq: 0.00418246 }
-{ time: 0.006086, evals: 9, done: 1, feasible: 1, sos: 0.0159132, f: 0, ineq: 0, eq: 0.000817011 }
-{ time: 0.059088, evals: 129, done: 1, feasible: 1, sos: 0.0690676, f: 0, ineq: 0, eq: 0.254744 }
-{ time: 0.030893, evals: 35, done: 1, feasible: 1, sos: 0.011408, f: 0, ineq: 0, eq: 0.000348813 }
-{ time: 0.00723, evals: 8, done: 1, feasible: 1, sos: 0.00931696, f: 0, ineq: 0, eq: 0.000815863 }
+{ time: 0.001388, evals: 6, done: 1, feasible: 1, sos: 0.0133678, f: 0, ineq: 0, eq: 0.0016787 }
+{ time: 0.007355, evals: 10, done: 1, feasible: 1, sos: 0.0241692, f: 0, ineq: 0, eq: 0.00610164 }
+{ time: 0.011423, evals: 15, done: 1, feasible: 1, sos: 0.0157716, f: 0, ineq: 0, eq: 0.00158974 }
+{ time: 0.004805, evals: 8, done: 1, feasible: 1, sos: 0.00526809, f: 0, ineq: 0, eq: 0.00438865 }
+{ time: 0.004943, evals: 5, done: 1, feasible: 1, sos: 0.00474658, f: 0, ineq: 0, eq: 0.00463869 }
+{ time: 0.003978, evals: 7, done: 1, feasible: 1, sos: 0.0162224, f: 0, ineq: 0, eq: 0.00238246 }
+{ time: 0.001244, evals: 6, done: 1, feasible: 1, sos: 0.0123808, f: 0, ineq: 0, eq: 0.00375047 }
+{ time: 0.002103, evals: 5, done: 1, feasible: 1, sos: 0.00733383, f: 0, ineq: 0, eq: 0.00564761 }
+{ time: 0.002575, evals: 5, done: 1, feasible: 1, sos: 0.00689034, f: 0, ineq: 0, eq: 0.00613115 }
+{ time: 0.004353, evals: 7, done: 1, feasible: 1, sos: 0.0132762, f: 0, ineq: 0, eq: 0.00331933 }
 </pre></div></div>
 </div>
 <p>So the solver finds feasible grasps and exploits the null space of the constraints (grasps from different directions, but always opposing the y-planes).</p>
@@ -422,7 +429,7 @@ del C
 </section>
 <section id="Waypoints-example">
 <h2>Waypoints example<a class="headerlink" href="#Waypoints-example" title="Link to this heading"></a></h2>
-<p>Motion design can often be done by computing waypoints, i.e. a none-fine-resolution sequence of poses. The BotOp interface can then spline-interpolate between them when executing them.</p>
+<p>Motion design can often be done by computing waypoints, i.e. a coarse-resolution sequence of poses. The BotOp interface can then spline-interpolate between them when executing them.</p>
 <p>Let’s define a configuration where the desired gripper waypoints are pre-defined as marker frames. (That’s a common pattern: Simplify defining constraints by adding helper reference frames in the configuration.)</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -477,7 +484,7 @@ for t in range(len(q)):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.003847, evals: 10, done: 1, feasible: 1, sos: 2.3949, f: 0, ineq: 0, eq: 0.000292005 }
+{ time: 0.001713, evals: 10, done: 1, feasible: 1, sos: 2.3949, f: 0, ineq: 0, eq: 0.000292005 }
 [[-0.35333405 -0.05475643 -0.41824617 -2.08348439 -0.05931971  2.17654835
   -0.50101108]
  [-0.29338172 -0.37617078 -0.40548624 -1.73266988 -0.02274141  2.33778584
@@ -488,11 +495,11 @@ for t in range(len(q)):
   -0.50291742]]
 </pre></div></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">KOMO</span> <span class="pre">constructor</span></code> has arguments: * config: the configuration, which is copied once (for IK) or many times (for waypoints/paths) to be the optimization variable * phases: the number P of phases (which essentially defines the real-valued interval [0,P] over which objectives can be formulated) * slicesPerPhase: the discretizations per phase -&gt; in total we have phases<em>slicesPerPhases configurations which form the path and over which we optimize</em> kOrder: the ‘Markov-order’, i.e., maximal
-tuple of configurations over which we formulate features (e.g. take finite differences) * enableCollisions: if True, KOMO runs a broadphase collision check (using libFCL) in each optimization step – only then accumulative collision/penetration features will correctly evaluate to non-zero. But this is costly.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">KOMO</span> <span class="pre">constructor</span></code> has arguments: * <code class="docutils literal notranslate"><span class="pre">config</span></code>: the configuration, which is copied once (for IK) or many times (for waypoints/paths) to be the optimization variable * <code class="docutils literal notranslate"><span class="pre">phases</span></code>: the number <span class="math notranslate nohighlight">\(P\)</span> of phases (which essentially defines the real-valued interval <span class="math notranslate nohighlight">\([0, P]\)</span> over which objectives can be formulated) * <code class="docutils literal notranslate"><span class="pre">slicesPerPhase</span></code>: the discretizations per phase -&gt; in total we have <span class="math notranslate nohighlight">\(\texttt{phases} \cdot \texttt{slicesPerPhases}\)</span> configurations which form the path and over
+which we optimize * <code class="docutils literal notranslate"><span class="pre">kOrder</span></code>: the “Markov-order”, i.e., maximal tuple of configurations over which we formulate features (e.g. take finite differences) * enableCollisions: if True, KOMO runs a broadphase collision check (using libFCL) in each optimization step – only then accumulative collision/penetration features will correctly evaluate to non-zero. But this is costly.</p>
 <p>In our waypoint case: We have 4 phases, one for each waypoint. We don’t sub-sample the motion between waypoints, which is why we have slicesPerPhase=1. We formulate this as a 1-order problem: Some features take the finite difference between consecutive configurations (namely, to penalize velocities).</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">addControlObjective</span></code> is <em>almost</em> the same as adding a <code class="docutils literal notranslate"><span class="pre">FS.jointState</span></code> objective: It penalizes distances in joint space. It has three arguments: * times: (as for <code class="docutils literal notranslate"><span class="pre">addObjective</span></code>) the phase-interval in which this objective holds; [] means all times * order: Do we penalize the jointState directly (order=0: penalizing sqr distance to qHome, order=1: penalizing sqr distances between consecutive configurations (velocities), order=2: penalizing accelerations across 3 configurations) *
-scale: as usual, but modulated by a factor ‘sqrt(delta t)’ that somehow ensures total control costs in approximately independent of the choice of stepsPerPhase</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">addControlObjective</span></code> is /almost/ the same as adding a <code class="docutils literal notranslate"><span class="pre">FS.jointState</span></code> objective: It penalizes distances in joint space. It has three arguments: * <code class="docutils literal notranslate"><span class="pre">times</span></code>: (as for <code class="docutils literal notranslate"><span class="pre">addObjective</span></code>) the phase-interval in which this objective holds; [] means all times * <code class="docutils literal notranslate"><span class="pre">order</span></code>: Do we penalize the jointState directly (order=0: penalizing sqr distance to qHome, order=1: penalizing sqr distances between consecutive configurations (velocities), order=2: penalizing accelerations across 3 configurations)
+* <code class="docutils literal notranslate"><span class="pre">scale</span></code>: as usual, but modulated by a factor “sqrt(delta t)” that somehow ensures total control costs in approximately independent of the choice of stepsPerPhase</p>
 <p>In our waypoint case: We add control costs for both: homing (order 0, ensuring to stay close to homing), and velocities (order 1, penalizing movement between waypoints)</p>
 <p>And the <code class="docutils literal notranslate"><span class="pre">addObjective</span></code> method now makes use of <code class="docutils literal notranslate"><span class="pre">times</span></code> argument: Specifying [1] means that this objective only holds in the interval [1,1], i.e. at phase-time 1 only.</p>
 </section>
@@ -530,7 +537,7 @@ for t in range(q.shape[0]):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.040918, evals: 11, done: 1, feasible: 1, sos: 2.51979, f: 0, ineq: 0, eq: 0.00172374 }
+{ time: 0.015024, evals: 11, done: 1, feasible: 1, sos: 2.51979, f: 0, ineq: 0, eq: 0.00172374 }
 size of path: (40, 7)
 </pre></div></div>
 </div>
@@ -566,7 +573,7 @@ for t in range(q.shape[0]):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.048273, evals: 25, done: 1, feasible: 1, sos: 16.5171, f: 0, ineq: 0, eq: 0.000772768 }
+{ time: 0.051184, evals: 25, done: 1, feasible: 1, sos: 16.5171, f: 0, ineq: 0, eq: 0.000772768 }
 size of path: (40, 7)
 </pre></div></div>
 </div>
@@ -576,17 +583,28 @@ size of path: (40, 7)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from matplotlib import pyplot as plt
+
+print(q.shape)
 plt.plot(q)
-plt.show()
+plt.xlabel(&quot;Waypoint&quot;)
+plt.ylabel(&quot;Joint states&quot;);
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(40, 7)
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_1c-komo_36_0.png" src="../_images/tutorials_1c-komo_36_0.png" />
+<img alt="../_images/tutorials_1c-komo_36_1.png" src="../_images/tutorials_1c-komo_36_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
