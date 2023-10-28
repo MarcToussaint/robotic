@@ -30,7 +30,7 @@ long_description = (Path(__file__).parent / "README.md").read_text()
 setup(
     name='robotic',
     packages=['robotic'],
-    package_data={'robotic': ['ry.so', 'ry.pyi', 'version.py', 'render.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*', 'rai-robotModels/*/*/*/*/*', 'rai-robotModels/*/*/*/*/*/*']},
+    package_data={'robotic': ['_robotic.so', '_robotic.pyi', 'version.py', 'render.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*', 'rai-robotModels/*/*/*/*/*', 'rai-robotModels/*/*/*/*/*/*']},
     include_package_data=True,
     # cmdclass={ 'build_ext': CustomCommand },
     scripts=['rai/bin/urdf2rai.py', 'robotic/ry-view'],

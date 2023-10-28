@@ -4,7 +4,7 @@ cd $HOME/local
 ln -f -s _build_utils/CMakeLists-docker.txt CMakeLists.txt
 
 ### delete setup temp files
-rm -Rf robotic/*_robotic.* robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
+rm -Rf robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
 
 ### copy robotModels files
 cd robotic
@@ -41,7 +41,7 @@ for ver in 8 9 10 11 6 7; do
 done
 
 ### delete setup temp files
-rm -Rf robotic/*_robotic.* robotic/__pycache__ build/bdist* build/lib robotic.egg-info
+rm -Rf robotic/__pycache__ build/bdist* build/lib robotic.egg-info
 
 echo -e "\n\n======== renaming wheels ========"
 for wheel in $(find dist -iname "*.whl") ; do 

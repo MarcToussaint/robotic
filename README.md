@@ -6,23 +6,22 @@ and solve constrained optimization problems (for inverse kinematics,
 path optimization, and manipulation planning), and interfacing to
 various physical simulation engines.
 
-These python bindings were developed for easier access to the underlying
-[C++](https://github.com/MarcToussaint/rai) code base, esp. for teaching and students. This code base is how we, in
+These python bindings were developed for easier access to the 
+[uderlying C++ code base](https://github.com/MarcToussaint/rai), esp. for teaching and students. This code base is how we, in
 the [Learning & Intelligent Systems
 Lab](https://argmin.lis.tu-berlin.de/), operate our robots.
 
-
-## Documentation
-
-Please follow the documentation and tutorials here: https://marctoussaint.github.io/robotic/
+* **Documentation \& Tutorials:**  https://marctoussaint.github.io/robotic/
+* **Sources:** https://github.com/MarcToussaint/robotic/
+* **Pypi:** https://pypi.org/project/robotic/
 
 ## Installation via pip (simulation only, no real Franka & realsense support)
 
-* The pip package was compiled for python3.6 .. 3.10, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
+* The pip package was compiled for python3.6 .. 3.11, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
 ```
 sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
 ```
-* pip-install robotic and dependencies (numpy, scipy)
+* pip-install robotic
 ```
 pip install robotic
 ```
@@ -45,7 +44,7 @@ git clone https://github.com/MarcToussaint/rai-robotModels.git
 ```
 * You can download other examples and test:
 ```
-wget https://github.com/MarcToussaint/rai-python/raw/master/examples/skeleton-solving-example.py
+wget https://github.com/MarcToussaint/robotic/raw/master/examples/skeleton-solving-example.py
 python3 skeleton-solving-example.py
 ```
 -->
@@ -64,7 +63,7 @@ sudo apt install --yes \
   libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
   python3-dev python3 python3-pip
 
-python3 -m pip install --user numpy matplotlib jupyter nbconvert pybind11
+python3 -m pip install --user numpy pybind11
 ```
 
 * Install some external libs by source. You can skip librealsense and libfranka if you disable below. To standardize installations, I use a basic script:
@@ -79,11 +78,11 @@ wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x 
 * Clone, compile and install this repo (note the USE_REALSENSE and USE_LIBFRANKA options!):
 ```
 cd $HOME/git
-git clone --recursive https://github.com/MarcToussaint/rai-python.git
-cp rai-python/_build_utils/CMakeLists-ubuntu.txt rai-python/CMakeLists.txt
+git clone --recursive https://github.com/MarcToussaint/robotic.git
+cp robotic/_build_utils/CMakeLists-ubuntu.txt robotic/CMakeLists.txt
 export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON rai-python -B rai-python/build
-make -C rai-python/build install
+cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON robotic -B robotic/build
+make -C robotic/build _robotic docstrings install
 ```
 
 * This should install everything in .local/lib/python*/site-packages/robotic. Test:
@@ -92,7 +91,7 @@ python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compil
 python3 -c 'import robotic as ry; ry.test.RndScene()'
 ```
 
-## Building a wheel within a manylinux docker
+## Building the wheels within a manylinux docker
 
 * Build the docker
 ```
@@ -126,14 +125,14 @@ python3 -m pip install --user robotic
 ```
 * Get the sources by cloning this repo recursively:
 ```
-cd $HOME/git; git clone --recursive https://github.com/MarcToussaint/rai-python.git
+cd $HOME/git; git clone --recursive https://github.com/MarcToussaint/robotic.git
 ```
 * Copy things into an include and link folder (like 'make install') CHANGE PYTHON VERSION:
 ```
 mkdir -p $HOME/opt/include/rai $HOME/opt/lib
-cp $HOME/.local/lib/python3.6/site-packages/robotic/libry.so -f $HOME/opt/lib/libry.cpython-36m-x86_64-linux-gnu.so
-cp $HOME/git/rai-python/rai/rai/* -Rf $HOME/opt/include/rai
-cp $HOME/git/rai-python/botop/src/* -Rf $HOME/opt/include/rai
+cp $HOME/.local/lib/python3.6/site-packages/robotic/_robotic.so -f $HOME/opt/lib/libry.cpython-36m-x86_64-linux-gnu.so
+cp $HOME/git/robotic/rai/rai/* -Rf $HOME/opt/include/rai
+cp $HOME/git/robotic/botop/src/* -Rf $HOME/opt/include/rai
 ```
 * Compile your main
 ```
