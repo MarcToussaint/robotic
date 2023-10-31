@@ -291,7 +291,7 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam = ry.CameraView(C)
 cam.setCamera(&#39;cameraTop&#39;)
 rgb, depth = cam.computeImageAndDepth(C)
-pcl = ry.depthImage2PointCloud(depth, cam.getFxyCxy())
+pcl = ry.depthImage2PointCloud(depth, cam.getFxycxy())
 </pre></div>
 </div>
 </div>
