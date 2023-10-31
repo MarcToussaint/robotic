@@ -124,6 +124,7 @@
     "We explain the KOMO constructor arguments later. (The above defines an IK problem.)\n",
     "\n",
     "The `addObjective` method has signature\n",
+    "\n",
     "* `times`: the time intervals (subset of configurations in a path) over which this feature is active (irrelevant for IK)\n",
     "* `feature`: the feature symbol (see advanced `Feature` tutorial)\n",
     "* `frames`: the frames for which the feature is computed, given as list of frame names\n",
@@ -131,7 +132,7 @@
     "* `scale`: the matrix(!) by which the feature is multiplied\n",
     "* `target`: the offset which is substracted from the feature (before scaling)\n",
     "\n",
-    "Please see more formal details [here](https://marctoussaint.github.io/robotics-course/script/script.html#inverse-kinematics)."
+    "Please see more formal details [here](https://marctoussaint.github.io/robotics-course/script/script.html#nlp-interface)."
    ]
   },
   {
@@ -562,6 +563,7 @@
    "metadata": {},
    "source": [
     "The `KOMO constructor` has arguments:\n",
+    "\n",
     "* `config`: the configuration, which is copied once (for IK) or many times (for waypoints/paths) to be the optimization variable\n",
     "* `phases`: the number $P$ of phases (which essentially defines the real-valued interval $[0, P]$ over which objectives can be formulated)\n",
     "* `slicesPerPhase`: the discretizations per phase -> in total we have $\\texttt{phases} \\cdot \\texttt{slicesPerPhases}$ configurations which form the path and over which we optimize\n",
@@ -571,6 +573,7 @@
     "In our waypoint case: We have 4 phases, one for each waypoint. We don't sub-sample the motion between waypoints, which is why we have slicesPerPhase=1. We formulate this as a 1-order problem: Some features take the finite difference between consecutive configurations (namely, to penalize velocities).\n",
     "\n",
     "The `addControlObjective` is /almost/ the same as adding a `FS.jointState` objective: It penalizes distances in joint space. It has three arguments:\n",
+    "\n",
     "* `times`: (as for `addObjective`) the phase-interval in which this objective holds; [] means all times\n",
     "* `order`: Do we penalize the jointState directly (order=0: penalizing sqr distance to qHome, order=1: penalizing sqr distances between consecutive configurations (velocities), order=2: penalizing accelerations across 3 configurations)\n",
     "* `scale`: as usual, but modulated by a factor \"sqrt(delta t)\" that somehow ensures total control costs in approximately independent of the choice of stepsPerPhase\n",
