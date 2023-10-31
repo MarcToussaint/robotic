@@ -27,15 +27,15 @@ export PYTHONPATH=.
 for ver in 8 9 10 11 6 7; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPYBIND11_PYTHON_VERSION=3.$ver .
-    cd build_wheel
-    make _robotic
-    strip --strip-unneeded _robotic.*3$ver*.so
+    make -C build_wheel _robotic
+    
     echo -e "\n\n======== documenting (python version " $ver ") ========"
-    /opt/_internal/cpython-3.$ver.*/bin/pybind11-stubgen _robotic
-    cd ..
+    make -C build_wheel docstrings
+    
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
     cp -f build_wheel/_robotic.*3$ver*.so robotic/_robotic.so
     cp -f build_wheel/stubs/_robotic*/__init__.pyi robotic/_robotic.pyi
+    strip --strip-unneeded robotic/_robotic.so
     python3.$ver setup.py bdist_wheel
     #break
 done

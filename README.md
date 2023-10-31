@@ -7,9 +7,9 @@ path optimization, and manipulation planning), and interfacing to
 various physical simulation engines.
 
 These python bindings were developed for easier access to the 
-[uderlying C++ code base](https://github.com/MarcToussaint/rai), esp. for teaching and students. This code base is how we, in
+[uderlying C++ code base](https://github.com/MarcToussaint/rai), esp. for teaching and students. This code base is how we (in
 the [Learning & Intelligent Systems
-Lab](https://argmin.lis.tu-berlin.de/), operate our robots.
+Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 
 * **Documentation \& Tutorials:**  https://marctoussaint.github.io/robotic/
 * **Sources:** https://github.com/MarcToussaint/robotic/

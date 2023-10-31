@@ -36,6 +36,7 @@ pull:
 	cd rai && git pull
 	cd rai-robotModels && git pull
 	cd rai-docs && git pull
+	cd rai-docs/rai-tutorials && git pull
 	cd botop && git pull
 
 docker-clean:

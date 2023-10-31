@@ -152,7 +152,7 @@ if(USE_PYBIND)
 
   pybind11_add_module(_robotic SHARED
     rai/src/ry/unity.cxx
-    botop/src/BotOp/pyBot.cxx
+    botop/src/BotOp/py-BotOp.cxx
   )
 
   target_link_libraries(_robotic PRIVATE
@@ -167,19 +167,17 @@ if(USE_PYBIND)
 endif()
 
 ################################################################################
+#
+# verbosity: info on eventual compiler flags
 
-add_executable(raiView rai/bin/src_kinEdit/main.cpp)
-target_link_libraries(raiView PRIVATE
-  rai
-  dl libjsoncpp.a lapack pthread rt X11 libatlas.a
-    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
-    #${BULLET_LIBRARIES}
-    libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a
-    libBullet3Collision.a   libBullet3Dynamics.a  libBullet3OpenCL_clew.a  libBulletDynamics.a   libBulletSoftBody.a
-    libLinearMath.a 
-  )
+get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
+message(STATUS "[rai] compiler flags: " "${_defs}")
 
-#add_executable(testSim rai/test/Kin/simulation/main.cpp)
-#target_link_libraries(testSim rai)
+################################################################################
+
+add_custom_target(docstrings #ALL
+  DEPENDS _robotic
+  COMMAND ${PYTHON_EXECUTABLE} /opt/_internal/cpython-${PYBIND11_PYTHON_VERSION}.*/bin/pybind11-stubgen _robotic
+  COMMAND mv stubs/_robotic*/__init__.pyi _robotic.pyi)
 
 

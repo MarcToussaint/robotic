@@ -25,12 +25,11 @@ jobs:
         pip install numpy pybind11
     - name: setup build files
       run: |
-        ln -s build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
+        cp _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
         cd $HOME && mkdir -p .local/include && cd .local/include && ln -s /usr/include/libqhull qhull
     - name: cmake configure
       run: |
         export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-        ls	
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_QHULL8=ON .
-    - name: cmake build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_QHULL8=ON .
+    - name: make build
+      run: make -C build
