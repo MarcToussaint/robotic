@@ -10,7 +10,7 @@ following should be sufficient:
 ::
 
    sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
-   python3 -m pip install --user robotic numpy scipy
+   python3 -m pip install --user robotic
 
 A standard test is
 
@@ -29,24 +29,12 @@ Compiling from Source & Docstrings
    to the real robot: All you have to do is re-compile the python
    package on your machine, including the libfranka and librealsense
    drivers. This is done by installing the
-   `rai-python <https://github.com/MarcToussaint/rai-python>`__ package.
--  **Sources for the wheel:** The pip package is created also created
-   with the
-   `rai-python <https://github.com/MarcToussaint/rai-python>`__. The
-   hardest part was to create a Docker that compiles ALL the many
-   dependencies as static libraries in a CentOS - once that’s done, the
-   lib can be compiled in a compatible manner, not depending on shared
-   libs.
--  **Docstrings and tab completion for ry:** When you code in an IDE
-   (e.g. VS code), you definitely want to have tab completion and
-   docstrings for the methods. The ry module is compiled using pybind11
-   from C++ code and natively lacks docstrings and tab completion.
-   However, using pybind11-stubgen one can generate something like a
-   *header file* for the whole python module, called ry.ipy. That file
-   resides in ``~/.local/lib/python*/site-packages/robotic/ry.ipy`` next
-   to the ``ry.py`` and is important to get tab completion working.
-   Ensure that after installing ``robotic``, your IDE supports tab
-   completion for ry classes and methods.
+   `robotic <https://github.com/MarcToussaint/robotic>`__ package.
+-  **Docstrings and tab completion:** The package comes with a ‘stubs’
+   file (should be in
+   ``~/.local/lib/python*/site-packages/robotic/_robotic.ipy``), which
+   includes docstrings most methods and should enable autocompletion in
+   your IDE. The docstrings are not yet great for all methods.
 
    If tab-autocomplete for jupyter does not work, try
    ``python3 -m pip install --user jedi==0.17.2``

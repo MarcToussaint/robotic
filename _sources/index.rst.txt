@@ -7,10 +7,13 @@ with robot/world configurations, compute differentiable features,
 formulate and solve constrained optimization problems (for inverse
 kinematics, path optimization, and manipulation planning), and
 interfacing to various physical simulation engines. These python
-bindings were developed for easier access to the underlying `C++
-<https://github.com/MarcToussaint/rai>`_ code base, esp. for teaching
-and students. This code base is how we, in the `Learning & Intelligent
+bindings were developed for easier access to the `underlying C++ code
+base <https://github.com/MarcToussaint/rai>`_, esp. for teaching and
+students. This code base is how we, in the `Learning & Intelligent
 Systems Lab <https://argmin.lis.tu-berlin.de/>`_, operate our robots.
+
+-  **Sources:** https://github.com/MarcToussaint/robotic/
+-  **Pypi:** https://pypi.org/project/robotic/
 
 .. toctree::
    :maxdepth: 3

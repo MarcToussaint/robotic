@@ -87,7 +87,7 @@
 <p>Install the <code class="docutils literal notranslate"><span class="pre">robotic</span></code> python package. On a standard Ubuntu, the
 following should be sufficient:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">liblapack3</span> <span class="n">freeglut3</span> <span class="n">libglew</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
-<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">robotic</span> <span class="n">numpy</span> <span class="n">scipy</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">robotic</span>
 </pre></div>
 </div>
 <p>A standard test is</p>
@@ -106,24 +106,12 @@ interface and code is designed so that everything directly transfers
 to the real robot: All you have to do is re-compile the python
 package on your machine, including the libfranka and librealsense
 drivers. This is done by installing the
-<a class="reference external" href="https://github.com/MarcToussaint/rai-python">rai-python</a> package.</p></li>
-<li><p><strong>Sources for the wheel:</strong> The pip package is created also created
-with the
-<a class="reference external" href="https://github.com/MarcToussaint/rai-python">rai-python</a>. The
-hardest part was to create a Docker that compiles ALL the many
-dependencies as static libraries in a CentOS - once that’s done, the
-lib can be compiled in a compatible manner, not depending on shared
-libs.</p></li>
-<li><p><strong>Docstrings and tab completion for ry:</strong> When you code in an IDE
-(e.g. VS code), you definitely want to have tab completion and
-docstrings for the methods. The ry module is compiled using pybind11
-from C++ code and natively lacks docstrings and tab completion.
-However, using pybind11-stubgen one can generate something like a
-<em>header file</em> for the whole python module, called ry.ipy. That file
-resides in <code class="docutils literal notranslate"><span class="pre">~/.local/lib/python*/site-packages/robotic/ry.ipy</span></code> next
-to the <code class="docutils literal notranslate"><span class="pre">ry.py</span></code> and is important to get tab completion working.
-Ensure that after installing <code class="docutils literal notranslate"><span class="pre">robotic</span></code>, your IDE supports tab
-completion for ry classes and methods.</p>
+<a class="reference external" href="https://github.com/MarcToussaint/robotic">robotic</a> package.</p></li>
+<li><p><strong>Docstrings and tab completion:</strong> The package comes with a ‘stubs’
+file (should be in
+<code class="docutils literal notranslate"><span class="pre">~/.local/lib/python*/site-packages/robotic/_robotic.ipy</span></code>), which
+includes docstrings most methods and should enable autocompletion in
+your IDE. The docstrings are not yet great for all methods.</p>
 <p>If tab-autocomplete for jupyter does not work, try
 <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">jedi==0.17.2</span></code></p>
 </li>
