@@ -57,13 +57,13 @@ This assumes a standard Ubuntu 20.04 (or 18.04) machine.
 * Install Ubuntu and python packages:
 ```
 sudo apt install --yes \
-  g++ clang make gnupg cmake git wget libstdc++-12-dev \
+  g++ clang make gnupg cmake git wget \
   liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev libccd-dev \
   libjsoncpp-dev libyaml-cpp-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
   libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
   python3-dev python3 python3-pip
 
-python3 -m pip install --user numpy pybind11
+python3 -m pip install --user numpy pybind11 pybind11-stubgen
 ```
 
 * Install some external libs by source. You can skip librealsense and libfranka if you disable below. To standardize installations, I use a basic script:
@@ -87,6 +87,7 @@ make -C robotic/build _robotic docstrings install
 
 * This should install everything in .local/lib/python*/site-packages/robotic. Test:
 ```
+cd $HOME
 python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
 python3 -c 'import robotic as ry; ry.test.RndScene()'
 ```

@@ -183,7 +183,7 @@ message(STATUS "[rai] compiler flags: " "${_defs}")
 
 add_custom_target(docstrings #ALL
   DEPENDS _robotic
-  COMMAND pybind11-stubgen --ignore-invalid=all _robotic
+  COMMAND pybind11-stubgen _robotic
   COMMAND mv stubs/_robotic*/__init__.pyi _robotic.pyi)
 
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
@@ -210,8 +210,12 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
-  DIRECTORY robotic/rai-robotModels
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
+  DIRECTORY rai-robotModels
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic
+  FILES_MATCHING
+  PATTERN "*.g" PATTERN "*.ply"
+  PATTERN "retired" EXCLUDE
+  )
 
 install(
   TARGETS rai
