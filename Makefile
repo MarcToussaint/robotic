@@ -12,9 +12,9 @@ local-install:
 	+make -C build _robotic docstrings install
 
 local-clean:
-	-rm -R ${HOME}/.local/lib/python3.8/site-packages/robotic*
-	-rm ${HOME}/.local/lib/*rai*
-	-rm ${HOME}/.local/bin/*ry*
+	-rm -Rf ${HOME}/.local/lib/python3.8/site-packages/robotic*
+	-rm -f ${HOME}/.local/lib/*rai*
+	-rm -f ${HOME}/.local/bin/*ry*
 
 wheels:
 	$(eval id = $(shell _build_utils/run-docker.sh -d))

@@ -29,12 +29,8 @@ for ver in 8 9 10 11 6 7; do
     cmake -B build_wheel -DPYBIND11_PYTHON_VERSION=3.$ver .
     make -C build_wheel _robotic
     
-    echo -e "\n\n======== documenting (python version " $ver ") ========"
-    make -C build_wheel docstrings
-    
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
     cp -f build_wheel/_robotic.*3$ver*.so robotic/_robotic.so
-    cp -f build_wheel/stubs/_robotic*/__init__.pyi robotic/_robotic.pyi
     strip --strip-unneeded robotic/_robotic.so
     python3.$ver setup.py bdist_wheel
     #break

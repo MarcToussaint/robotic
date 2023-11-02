@@ -174,10 +174,3 @@ get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 message(STATUS "[rai] compiler flags: " "${_defs}")
 
 ################################################################################
-
-add_custom_target(docstrings #ALL
-  DEPENDS _robotic
-  COMMAND ${PYTHON_EXECUTABLE} /opt/_internal/cpython-${PYBIND11_PYTHON_VERSION}.*/bin/pybind11-stubgen _robotic
-  COMMAND mv stubs/_robotic*/__init__.pyi _robotic.pyi)
-
-

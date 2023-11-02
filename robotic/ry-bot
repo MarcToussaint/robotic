@@ -1,0 +1,70 @@
+#!/usr/bin/python3
+
+import argparse
+import robotic as ry
+
+parser = argparse.ArgumentParser(
+    description='Utility to test real robot basic operations')
+
+parser.add_argument('-v', '--version', action='version',
+                    version=f'%(prog)s -- robotic package version: {ry.__version__}, {ry.compiled()}')
+
+parser.add_argument('-two', help='use two arms', action="store_true")
+parser.add_argument('-real', help='use the real robot', action="store_true")
+
+parser.add_argument('-open', help='open gripper', action="store_true")
+parser.add_argument('-close', help='close gripper', action="store_true")
+parser.add_argument('-float', help='floating control (zero gains)', action="store_true")
+parser.add_argument('-damp', help='damped control (zero position gains)', action="store_true")
+parser.add_argument('-hold', help='hold positin', action="store_true")
+parser.add_argument('-up', help='move up', action="store_true")
+parser.add_argument('-home', help='home home', action="store_true")
+
+def main():
+    args = parser.parse_args()
+    
+    C = ry.Config()
+
+    if args.two:
+        C.addFile(ry.raiPath("../rai-robotModels/scenarios/pandasTable-calibrated.g"))
+    else:
+        C.addFile(ry.raiPath("../rai-robotModels/scenarios/pandaSingle.g"))
+
+    bot = ry.BotOp(C, args.real)
+
+    if args.close:
+        bot.gripperMove(ry._left, 0, .05)
+        while (not bot.gripperDone(ry._left)):
+            bot.sync(C)
+
+    if args.open:
+        bot.gripperMove(ry._left)
+        while (not bot.gripperDone(ry._left)):
+            bot.sync(C)
+
+    if args.float:
+        bot.hold(floating=True, damping=False)
+        bot.wait(C, forKeyPressed=True)
+
+    if args.damp:
+        bot.hold(floating=True, damping=True)
+        bot.wait(C, forKeyPressed=True)
+
+    if args.hold:
+        bot.hold(floating=False, damping=False)
+        bot.wait(C, forKeyPressed=True)
+
+    if args.up:
+        q = bot.get_qHome()
+        q[1] -= .5
+        #if(q.N>7) q(8) -=.5;
+        bot.moveTo(q, 1.)
+        bot.wait(C, True, True)
+
+    if args.home:
+        q = bot.get_qHome()
+        bot.moveTo(q, 1.)
+        bot.wait(C, True, True)
+
+if __name__ == "__main__":
+    main()

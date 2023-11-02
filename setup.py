@@ -33,7 +33,7 @@ setup(
     package_data={'robotic': ['_robotic.so', '_robotic.pyi', 'version.py', 'render.py', 'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*', 'rai-robotModels/*/*/*/*/*', 'rai-robotModels/*/*/*/*/*/*']},
     include_package_data=True,
     # cmdclass={ 'build_ext': CustomCommand },
-    scripts=['rai/bin/urdf2rai.py', 'robotic/ry-view'],
+    scripts=['rai/bin/urdf2rai.py', 'robotic/ry-view', 'robotic/ry-bot'],
 
     description="Robotic Control Interface & Manipulation Planning Library",
     long_description=long_description,
