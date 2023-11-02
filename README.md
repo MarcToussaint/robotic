@@ -66,7 +66,7 @@ sudo apt install --yes \
 python3 -m pip install --user numpy pybind11 pybind11-stubgen
 ```
 
-* Install some external libs by source. You can skip librealsense and libfranka if you disable below. To standardize installations, I use a basic script:
+* Install some external libs by source. You can skip librealsense and libfranka if you disable below. (To speed up compilation, e.g., set `export MAKEFLAGS="-j $(command nproc --ignore 2)"`.) To standardize installations, I use a basic script:
 ```
 wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
 ./install.sh fcl
@@ -79,11 +79,13 @@ wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x 
 ```
 cd $HOME/git
 git clone --recursive https://github.com/MarcToussaint/robotic.git
-cp robotic/_build_utils/CMakeLists-ubuntu.txt robotic/CMakeLists.txt
+cd robotic
+cp _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
 export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON robotic -B robotic/build
-make -C robotic/build _robotic docstrings install
+cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON . -B build
+make -C build _robotic install
 ```
+(Docstrings could be made with `make docstrings`, but this is not yet robust across distributions.)
 
 * This should install everything in .local/lib/python*/site-packages/robotic. Test:
 ```
@@ -91,6 +93,14 @@ cd $HOME
 python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
 python3 -c 'import robotic as ry; ry.test.RndScene()'
 ```
+
+* Recall that the user needs to be part of the `realtime` and `dialout` unix group:
+
+      sudo usermod -a -G realtime <username>
+      sudo usermod -a -G dialout <username>
+
+You need to log out and back in (or even reboot) for this to take effect. Check with `groups` in a terminal. Test the "real robot" tutorial.
+
 
 ## Building the wheels within a manylinux docker
 
