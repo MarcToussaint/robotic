@@ -222,9 +222,9 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
   COMPONENT pkgconfig)
 
-install(
-  TARGETS kinEdit meshTool bot
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+#install(
+#  TARGETS kinEdit meshTool bot
+#  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
 install(
   PROGRAMS robotic/ry-view robotic/ry-bot
