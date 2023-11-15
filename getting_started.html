@@ -47,7 +47,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quick-install">Quick Install</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#compiling-from-source-docstrings">Compiling from Source &amp; Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compiling-from-source-cmd-line-tools-docstrings">Compiling from source, cmd line tools, &amp; docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#downloading-the-tutorial-notebooks">Downloading the tutorial notebooks</a></li>
 </ul>
 </li>
@@ -96,8 +96,8 @@ following should be sufficient:</p>
 </pre></div>
 </div>
 </section>
-<section id="compiling-from-source-docstrings">
-<h2>Compiling from Source &amp; Docstrings<a class="headerlink" href="#compiling-from-source-docstrings" title="Link to this heading"></a></h2>
+<section id="compiling-from-source-cmd-line-tools-docstrings">
+<h2>Compiling from source, cmd line tools, &amp; docstrings<a class="headerlink" href="#compiling-from-source-cmd-line-tools-docstrings" title="Link to this heading"></a></h2>
 <ul>
 <li><p><strong>Compiling for the real robot:</strong> The <code class="docutils literal notranslate"><span class="pre">robotic</span></code> pip package does
 not have the real robot drivers (for the Franka Panda robot)
@@ -107,6 +107,17 @@ to the real robot: All you have to do is re-compile the python
 package on your machine, including the libfranka and librealsense
 drivers. This is done by installing the
 <a class="reference external" href="https://github.com/MarcToussaint/robotic">robotic</a> package.</p></li>
+<li><p><strong>Command line tools:</strong> There are currently three little cmd line
+tools, which should be in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ry-view</span></code>: to view robot/scene model files (see <a class="reference external" href="tutorials/configurationEditing.html">this
+tutorial</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ry-bot</span></code>: to test basic operations with the real robot (have a
+look at help and simple source)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">urdf2rai.py</span></code>: to help convert from urfl to model files (see,
+again, <a class="reference external" href="tutorials/configurationEditing.html">this tutorial</a>)</p></li>
+</ul>
+</li>
 <li><p><strong>Docstrings and tab completion:</strong> The package comes with a ‘stubs’
 file (should be in
 <code class="docutils literal notranslate"><span class="pre">~/.local/lib/python*/site-packages/robotic/_robotic.ipy</span></code>), which

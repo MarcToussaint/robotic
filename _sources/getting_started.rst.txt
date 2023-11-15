@@ -19,8 +19,8 @@ A standard test is
    python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
    python3 -c 'import robotic as ry; ry.test.RndScene()'
 
-Compiling from Source & Docstrings
-----------------------------------
+Compiling from source, cmd line tools, & docstrings
+---------------------------------------------------
 
 -  **Compiling for the real robot:** The ``robotic`` pip package does
    not have the real robot drivers (for the Franka Panda robot)
@@ -30,6 +30,16 @@ Compiling from Source & Docstrings
    package on your machine, including the libfranka and librealsense
    drivers. This is done by installing the
    `robotic <https://github.com/MarcToussaint/robotic>`__ package.
+-  **Command line tools:** There are currently three little cmd line
+   tools, which should be in ``~/.local/bin``:
+
+   -  ``ry-view``: to view robot/scene model files (see `this
+      tutorial <tutorials/configurationEditing.html>`__)
+   -  ``ry-bot``: to test basic operations with the real robot (have a
+      look at help and simple source)
+   -  ``urdf2rai.py``: to help convert from urfl to model files (see,
+      again, `this tutorial <tutorials/configurationEditing.html>`__)
+
 -  **Docstrings and tab completion:** The package comes with a ‘stubs’
    file (should be in
    ``~/.local/lib/python*/site-packages/robotic/_robotic.ipy``), which

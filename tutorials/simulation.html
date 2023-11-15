@@ -99,7 +99,7 @@
              
   <section id="Direct-Simulation-Interface">
 <h1>Direct Simulation Interface<a class="headerlink" href="#Direct-Simulation-Interface" title="Link to this heading"></a></h1>
-<p>BotOp is a narrow control interface to a real or simulated robot, which is also real time and threaded (as for a real robot). However, sometimes we need a more low-level interface to a physical simulator, e.g. to implement a Reinforcement Learning environment.</p>
+<p>BotOp is a narrow control interface to a real or simulated robot, which is also real time and threaded (as for a real robot). However, sometimes we need a more low-level interface to a physics simulator, e.g. to implement a Reinforcement Learning environment.</p>
 <section id="Minimalistic-example">
 <h2>Minimalistic example<a class="headerlink" href="#Minimalistic-example" title="Link to this heading"></a></h2>
 <p>Let’s first create the smallest possible example: A dropping ball. All we have to do is create a configuration with a ball, create an “attached” simulation, and step it:</p>
@@ -147,10 +147,8 @@ directly on it.)</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--- ry.cpp:operator():86(0) python,
+-- module.cpp:operator():95(0) python,
 message: &#34;this parameter was loaded from &#39;rai.cfg&#39;&#34;,
-noInteractivity,
-bot/blockRealRobot,
 physx/verbose: 1,
 physx/yGravity!,
 physx/softBody!,
@@ -165,12 +163,13 @@ physx/motorKd: 100
 </pre></div></div>
 </div>
 <p>And <code class="docutils literal notranslate"><span class="pre">params_add</span></code> allows you to set parameters. (Actually append, which is why we first need to clear.)</p>
+<p>As an example, let’s increase restitution, which is bounciness.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_clear()
-ry.params_add({&#39;physx/defaultRestitution&#39;: 1.})
+ry.params_add({&#39;physx/defaultRestitution&#39;: .9})
 ry.params_print()
 </pre></div>
 </div>
@@ -180,7 +179,7 @@ ry.params_print()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--- ry.cpp:operator():86(0) physx/defaultRestitution: 1
+-- module.cpp:operator():95(0) physx/defaultRestitution: 0.9
 </pre></div></div>
 </div>
 <p>Let’s try again:</p>
@@ -208,7 +207,8 @@ for i in range(200):
 -- simulation.cpp:~Simulation:148(0) shutting down Simulation
 </pre></div></div>
 </div>
-<p>As you can see, “restitution” means bouncing. Below is an example of how to set bounciness and friction per object.</p>
+<p>Below is an example of how to set bounciness and friction per object.</p>
+<p>The display window might not show a smooth video. That’s because C.view does not force a rendering of the current frame, but only triggers it if the display thread is idle. Depending on the window manager that might lead to gaps in the display.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -273,19 +273,12 @@ C.view()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-32
+0
 </pre></div></div>
 </div>
+<p>In this scene, the orange box is above the table and will fall, and the robot will execute a trivial turn to the right that should push the box. In the following, we will create a simulation engine for this scene several times, with different parameters. The first will actually lead to a frequent error…</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def move_a_bit(T=100):
@@ -300,15 +293,19 @@ C.view()
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>move_a_bit()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
+move_a_bit()
 </pre></div>
 </div>
 </div>
+<p>As you can see, the robot actually moved a bit and started to push, but got blocked by the box hanging in the air instead of dropping. <strong>The error: the box was created as a static object.</strong> You can verify this by setting verbose=2, which gives valuable information on the instantiation of the scene in the physical simulation.</p>
+<p>First rule: Only objects that have a non-zero mass become a dynamic object in the physics engine.</p>
+<p>So let’s add mass, and destroy and recreate the physics engine again:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
@@ -327,27 +324,9 @@ move_a_bit()
 -- simulation.cpp:~Simulation:148(0) shutting down Simulation
 </pre></div></div>
 </div>
+<p>That worked. But let’s try another fail: setting a transparent color:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
-C.setFrameState(X0)
-S = ry.Simulation(C, ry.SimulationEngine.kinematic, verbose=0)
-move_a_bit()
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
--- simulation.cpp:~Simulation:148(0) shutting down Simulation
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
@@ -366,13 +345,15 @@ move_a_bit()
 -- simulation.cpp:~Simulation:148(0) shutting down Simulation
 </pre></div></div>
 </div>
+<p>Second rule: Transparent objects or shapes are not at all considered for creation in the physx engine. (The rational is that I use transparent colors only for helper shapes, not real objects.)</p>
+<p>And another fail: Let’s attach the box to the table:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
 C.setFrameState(X0)
-C.getFrame(&#39;box&#39;) .setColor([1,1,0,1]) .setParent(C.getFrame(&#39;table&#39;))
+C.getFrame(&#39;box&#39;) .setColor([1,1,0]) .setParent(C.getFrame(&#39;table&#39;)) .setRelativePosition([.1,.35,.3])
 S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
 move_a_bit()
 </pre></div>
@@ -387,8 +368,31 @@ move_a_bit()
 -- WARNING:kin_physx.cpp:prepareLinkShapes:626(-1) computing compound inertia for object frame &#39;world&#39; -- this should have been done earlier?
 </pre></div></div>
 </div>
+<p>What happened here is more surprising and involved: The box is now a child frame of the table. Direct child frames (where there is no joint between child and parent) are really considered to be part of the parent. Also recursively. So the box is now just a sub-frame of the table, which is a sub-frame of the ‘world’ frame. (In general, this is how composed objects are represented, with one parent frame that may have multiple child frames carrying shapes and/or inertia.) In addition, the box as a
+child is giving mass to it’s root frame (here the ‘world’ frame) – therefore, while ‘world’ (with table shape) was previously a static object in physx, it now becomes dynamic, with two attached shapes. Again, setting verbose=2 reports this.</p>
+<p>Finally, the 2nd argument allows a choice of underlying physics engine, namely PhysX (by Nvidia), bullet (as in pybullet), and ‘kinematic’. The latter is actually no physics engine at all, but just kinematically executes articulated motion. Therefore, objects do not move at all – and also collision is not avoided:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
+C.setFrameState(X0)
+C.getFrame(&#39;box&#39;) .unLink()
+S = ry.Simulation(C, ry.SimulationEngine.kinematic, verbose=0)
+move_a_bit()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- simulation.cpp:~Simulation:148(0) shutting down Simulation
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
@@ -409,7 +413,7 @@ del C
 <h2>Friction and bouncing per object<a class="headerlink" href="#Friction-and-bouncing-per-object" title="Link to this heading"></a></h2>
 <p>Let’s build a configuration manually to test varying friction and bouncing (=restitution) per object:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
@@ -418,7 +422,7 @@ import time
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
@@ -443,7 +447,7 @@ C.view()
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -452,7 +456,7 @@ C.view()
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
@@ -466,7 +470,7 @@ for i in range(200):
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S=0
@@ -485,8 +489,9 @@ C=0
 </section>
 <section id="Resetting-and-messing-with-state">
 <h2>Resetting and messing with state<a class="headerlink" href="#Resetting-and-messing-with-state" title="Link to this heading"></a></h2>
+<p>Resetting state without recreating the engine can save a lot of time. The interface supports (re)set and overwrite the physis engine state arbitrarily. Let’s create a basic stack of blocks and a minimalistic finger:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
@@ -495,7 +500,7 @@ import time
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
@@ -520,7 +525,7 @@ C.view()
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -528,16 +533,9 @@ C.view()
 0
 </pre></div></div>
 </div>
+<p>The blocks will fall, and we realize a simple forward motion of the finger:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, 1)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def move_a_bit():
@@ -548,14 +546,22 @@ C.view()
         q[0] = q[0] - tau*1.
         S.step(q, tau,  ry.ControlMode.position)
         C.view()
-
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, 1)
 move_a_bit()
 </pre></div>
 </div>
 </div>
-<p>We are in the middle of some action. Let’s swap two blocks (top/bottom). And also displace the bottom one:</p>
+<p>Here we set verbose=1 to have an additional simulation display; which will help understanding the following:</p>
+<p>We are in the middle of some action. Let’s swap two blocks (top/bottom) by manipulating the configuration’s <em>frame state</em>. And also displace the bottom one:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#swap two blocks
@@ -570,7 +576,7 @@ C.view()
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -578,28 +584,29 @@ C.view()
 0
 </pre></div></div>
 </div>
-<p>If you compare the simulation display with the configuration display, you see the difference. Now, a simulation allows you to <strong>push</strong> the configuration back into the simulation, overwriting the physical state:</p>
+<p>If you compare the simulation display with the configuration display, you see the difference. Now, the simulation interface allows you to <strong>push</strong> the configuration back into the physics simulation, overwriting the physical state:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S.setState(X)
+#updates also the simulation window
+</pre></div>
+</div>
+</div>
+<p>If we continue with the simulation, all behaves ‘normal’. We tricked the physics engine to adopt the previous pose of the orange block to be the new one of the pink, without it getting broken.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S.setState(X)
-#updates the simulation window
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>move_a_bit()
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#recall that the position control starts from zero, leading to a hard PD jerk initially
-move_a_bit()
-</pre></div>
-</div>
-</div>
-<p>We can also recreate the initial state:</p>
+<p>If the finger motion surprised you: We called the ‘move_a_bit’ method, which always starts with setting the finger reference position (of the underlying PD actuation) back to q0. (We could have reset the finger to its original position, by calling <code class="docutils literal notranslate"><span class="pre">S.setState(X,</span> <span class="pre">q0)</span></code> instead, see below.)</p>
+<p>Instead of messing with the state, we can also reset it to the original frame state (including the joint state). And the result should be a simulation (approx.) idential to the first time we simulated:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S.setState(X0, q0)
@@ -608,7 +615,7 @@ C.view()
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -617,16 +624,16 @@ C.view()
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>move_a_bit()
 </pre></div>
 </div>
 </div>
-<p>Internally, not only the frame state (pose of all dynamic objects), but also the joint state (motor states/targets) are overwritten in the physics simulator. The optional arguments to <code class="docutils literal notranslate"><span class="pre">setState</span></code> allow you to also set the current frame and joint velocities. (Frame velocities is a n-by-2-by-3 tensor, as you get it from <code class="docutils literal notranslate"><span class="pre">getState</span></code>.)</p>
+<p>Internally, not only the frame state (pose of all dynamic objects), but also the joint state (motor states/targets) are now overwritten in the physics simulator. The optional arguments to <code class="docutils literal notranslate"><span class="pre">setState</span></code> allow you to also set the current frame and joint velocities. (Frame velocities is a n-by-2-by-3 tensor, as you get it from <code class="docutils literal notranslate"><span class="pre">getState</span></code>.)</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
