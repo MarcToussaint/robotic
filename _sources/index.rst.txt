@@ -12,7 +12,8 @@ base <https://github.com/MarcToussaint/rai>`_, esp. for teaching and
 students. This code base is how we, in the `Learning & Intelligent
 Systems Lab <https://argmin.lis.tu-berlin.de/>`_, operate our robots.
 
--  **Sources:** https://github.com/MarcToussaint/robotic/
+-  **Library Sources:** https://github.com/MarcToussaint/robotic/
+-  **Tutorial Notebooks:** https://github.com/MarcToussaint/rai-tutorials/
 -  **Pypi:** https://pypi.org/project/robotic/
 
 .. toctree::
