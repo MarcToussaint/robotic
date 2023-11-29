@@ -55,51 +55,55 @@ python3 skeleton-solving-example.py
 This assumes a standard Ubuntu 20.04 (or 18.04) machine.
 
 * Install Ubuntu and python packages:
-```
-sudo apt install --yes \
-  g++ clang make gnupg cmake git wget \
-  liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev libccd-dev \
-  libjsoncpp-dev libyaml-cpp-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
-  libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
-  python3-dev python3 python3-pip
 
-python3 -m pip install --user numpy pybind11 pybind11-stubgen
-```
+      sudo apt install --yes \
+        g++ clang make gnupg cmake git wget \
+        liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev libccd-dev \
+        libjsoncpp-dev libyaml-cpp-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
+        libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
+        python3-dev python3 python3-pip
+      
+      python3 -m pip install --user numpy pybind11 pybind11-stubgen
 
-* Install some external libs by source. You can skip librealsense and libfranka if you disable below. (To speed up compilation, e.g., set `export MAKEFLAGS="-j $(command nproc --ignore 2)"`.) To standardize installations, I use a basic script:
-```
-wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
-./install.sh fcl
-./install.sh physx
-./install.sh librealsense
-./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.7.1 libfranka
-```
+* Install some external libs by source. You can skip librealsense and
+  libfranka if you disable below. (To speed up compilation, e.g., set
+
+      export MAKEFLAGS="-j $(command nproc --ignore 2)"
+  
+  To standardize installations, I use a basic script:
+
+      wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
+      ./install.sh fcl
+      ./install.sh physx
+      ./install.sh librealsense
+      ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.7.1 libfranka
 
 * Clone, compile and install this repo (note the USE_REALSENSE and USE_LIBFRANKA options!):
-```
-cd $HOME/git
-git clone --recursive https://github.com/MarcToussaint/robotic.git
-cd robotic
-cp _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
-export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON . -B build
-make -C build _robotic install
-```
-(Docstrings could be made with `make docstrings`, but this is not yet robust across distributions.)
+
+      cd $HOME/git
+      git clone --recursive https://github.com/MarcToussaint/robotic.git
+      cd robotic
+      cp _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
+      export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
+      cmake -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON . -B build
+      make -C build _robotic install
+
+  (Docstrings could be made with `make docstrings`, but this is not yet robust across distributions.)
 
 * This should install everything in .local/lib/python*/site-packages/robotic. Test:
-```
-cd $HOME
-python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
-python3 -c 'import robotic as ry; ry.test.RndScene()'
-```
+
+      cd $HOME
+      python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
+      python3 -c 'import robotic as ry; ry.test.RndScene()'
 
 * Recall that the user needs to be part of the `realtime` and `dialout` unix group:
 
       sudo usermod -a -G realtime <username>
       sudo usermod -a -G dialout <username>
 
-You need to log out and back in (or even reboot) for this to take effect. Check with `groups` in a terminal. Test the "real robot" tutorial.
+  You need to log out and back in (or even reboot) for this to take
+  effect. Check with `groups` in a terminal. Test the "real robot"
+  tutorial.
 
 
 ## Building the wheels within a manylinux docker
