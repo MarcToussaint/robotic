@@ -26,7 +26,7 @@ export PYTHONPATH=.
 ### build each version
 for ver in 8 9 10 11 6 7; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
-    cmake -B build_wheel -DPYBIND11_PYTHON_VERSION=3.$ver .
+    cmake -B build_wheel -DPY_VERSION=3.$ver .
     make -C build_wheel _robotic
     
     echo -e "\n\n======== build wheel (python version " $ver ") ========"

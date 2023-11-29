@@ -9,7 +9,7 @@ endif()
 
 ## variable default values
 set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
-set(PYBIND11_PYTHON_VERSION 3.8 CACHE STRING "python version")
+set(PY_VERSION 3.8 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
@@ -139,7 +139,7 @@ endif()
 ################################################################################
 
 if(USE_PYBIND)
-  set(PYTHON_EXECUTABLE "python${PYBIND11_PYTHON_VERSION}")
+  set(PYTHON_EXECUTABLE "python${PY_VERSION}")
   message(STATUS "[rai] using python executable " ${PYTHON_EXECUTABLE} )
   execute_process(
     COMMAND bash "-c" "${PYTHON_EXECUTABLE} -m pybind11 --cmakedir" 

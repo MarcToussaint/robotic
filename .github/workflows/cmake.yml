@@ -29,7 +29,7 @@ jobs:
         cd $HOME && mkdir -p .local/include && cd .local/include && ln -s /usr/include/libqhull qhull
     - name: cmake configure
       run: |
-        export PYTHONVERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF -DPYBIND11_PYTHON_VERSION=$PYTHONVERSION -DUSE_QHULL8=ON .
+        export PY_VERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
+        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF -DPY_VERSION=$PY_VERSION -DUSE_QHULL8=ON .
     - name: make build
       run: make -C build
