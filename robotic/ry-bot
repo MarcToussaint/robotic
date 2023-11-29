@@ -66,5 +66,9 @@ def main():
         bot.moveTo(q, 1.)
         bot.wait(C, True, True)
 
+    del bot
+    print('== used parameters:')
+    ry.params_print()
+
 if __name__ == "__main__":
     main()
