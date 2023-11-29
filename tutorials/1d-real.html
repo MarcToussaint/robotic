@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Starting with a real robot &mdash; Robotic Python Library 0.1.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -55,9 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="1b-botop.html">BotOp (Robot Operation) interface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="1c-komo.html">KOMO: Motion Optimization</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Starting with a real robot</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#First-robot-motion,-camera-&amp;-pcl,-and-gripper-motion">First robot motion, camera &amp; pcl, and gripper motion</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Advanced:-Compliance-&amp;-Force/Torque-feedback">Advanced: Compliance &amp; Force/Torque feedback</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Testing-the-depth-camera">Testing the depth camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Basic-Checklist-for-operating-a-Franka">Basic Checklist for operating a Franka</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="features.html">Differentiable Features &amp; Collision Evaluation</a></li>
@@ -98,8 +98,13 @@
   <section id="Starting-with-a-real-robot">
 <h1>Starting with a real robot<a class="headerlink" href="#Starting-with-a-real-robot" title="Link to this heading"></a></h1>
 <p>The BotOp interface should work equally for a simulated and real robot. Note that currently only a locally compiled robotic package supports connecting to a Franka robot and Realsense camera. Here some first cautious steps to get started with a real robot.</p>
+<section id="Basic-Checklist-for-operating-a-Franka">
+<h2>Basic Checklist for operating a Franka<a class="headerlink" href="#Basic-Checklist-for-operating-a-Franka" title="Link to this heading"></a></h2>
+<p>For a full franka setup description see <a class="reference external" href="https://frankaemika.github.io/docs/getting_started.html">https://frankaemika.github.io/docs/getting_started.html</a>. Here just a minimal checklist for operating a Franka: * Is the a real time kernel running? Check <code class="docutils literal notranslate"><span class="pre">uname</span> <span class="pre">-r</span></code>. The kernel name should end with -rt Is the user in <code class="docutils literal notranslate"><span class="pre">dialout</span></code> and <code class="docutils literal notranslate"><span class="pre">realtime</span></code> group? Check with <code class="docutils literal notranslate"><span class="pre">groups</span></code>. If not, add with <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">usermod</span> <span class="pre">-a</span> <span class="pre">-G</span> <span class="pre">realtime</span> <span class="pre">&lt;username&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">usermod</span> <span class="pre">-a</span> <span class="pre">-G</span> <span class="pre">dialout</span> <span class="pre">&lt;username&gt;</span></code>, and log out and in (or reboot) and check again. * Is the robot ready?
+E.g. at <a class="reference external" href="https://172.16.0.2/desk/">https://172.16.0.2/desk/</a>. Are joints unlocked and status Ready? * Test the console tool <code class="docutils literal notranslate"><span class="pre">ry-bot</span> <span class="pre">-real</span> <span class="pre">-up</span></code>. (See <code class="docutils literal notranslate"><span class="pre">ry-bot</span> <span class="pre">-h</span></code> for other test commands, e.g. homing.) Potential issues: * Stalls when connecting to Franka - are the Franka IP addresses ({“172.16.0.2”, “172.17.0.2”} in franka.cpp) correct? * Franka not Ready or can’t move - check as above? * Error message “== ERROR:franka.cpp:init:356(-2) not implemented with this compiler options”. Do you use the pypi package instead
+of a locally compiled package? Did you enable USE_LIBFRANKA with cmake? Did you <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>? * When executing the cell below, check whether <code class="docutils literal notranslate"><span class="pre">print(ry.compiled())</span></code> prints the correct compile time.</p>
 <section id="First-robot-motion,-camera-&amp;-pcl,-and-gripper-motion">
-<h2>First robot motion, camera &amp; pcl, and gripper motion<a class="headerlink" href="#First-robot-motion,-camera-&-pcl,-and-gripper-motion" title="Link to this heading"></a></h2>
+<h3>First robot motion, camera &amp; pcl, and gripper motion<a class="headerlink" href="#First-robot-motion,-camera-&-pcl,-and-gripper-motion" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -119,31 +124,7 @@ print(ry.compiled())
 compile time: Oct 25 2023 23:46:34
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#in case you switch to simulation
-ry.params_add({&#39;botsim/verbose&#39;: 1., &#39;physx/motorKp&#39;: 10000., &#39;physx/motorKd&#39;: 1000.})
-ry.params_print()
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
--- ry.cpp:operator():86(0) python,
-message: &#34;this parameter was loaded from &#39;rai.cfg&#39;&#34;,
-noInteractivity,
-bot/blockRealRobot,
-botsim/verbose: 1,
-physx/motorKp: 10000,
-physx/motorKd: 1000
-</pre></div></div>
-</div>
-<p>First, also for a real robot we first load the configuration and maintain our own workspace configuration.</p>
+<p>Also for a real robot we first load the configuration and maintain our own workspace configuration.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -182,7 +163,7 @@ bot = ry.BotOp(C, useRealRobot=True)
 -- bot.cpp:BotOp:38(0) -- blocking useRealRobot --
 </pre></div></div>
 </div>
-<p>If that failed, you could <code class="docutils literal notranslate"><span class="pre">ry.params_print()</span></code> to see which global parameters were used and whether you should change them.</p>
+<p>If that failed, you could <code class="docutils literal notranslate"><span class="pre">ry.params_print()</span></code> to see which global parameters were used and whether you should change them. See also the checklist above. Or continue with sim from here one:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -293,7 +274,7 @@ del C
 </div>
 </section>
 <section id="Advanced:-Compliance-&amp;-Force/Torque-feedback">
-<h2>Advanced: Compliance &amp; Force/Torque feedback<a class="headerlink" href="#Advanced:-Compliance-&-Force/Torque-feedback" title="Link to this heading"></a></h2>
+<h3>Advanced: Compliance &amp; Force/Torque feedback<a class="headerlink" href="#Advanced:-Compliance-&-Force/Torque-feedback" title="Link to this heading"></a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -513,7 +494,7 @@ del C
 </div>
 </section>
 <section id="Testing-the-depth-camera">
-<h2>Testing the depth camera<a class="headerlink" href="#Testing-the-depth-camera" title="Link to this heading"></a></h2>
+<h3>Testing the depth camera<a class="headerlink" href="#Testing-the-depth-camera" title="Link to this heading"></a></h3>
 <p>The following grabs an attached realsense camera, which in our setup is attached by default to the wrist. The robot is put in floating mode, so that you can move the camera. At the same time, the point cloud is attached in the model configuration to the camera frame – and forward kinematics displays it in world coordinates. That way you can visually see how well you configuration model is calibrated to your real world – and how noisy the depth camera really is.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
@@ -601,6 +582,7 @@ while bot.getKeyPressed()!=ord(&#39;q&#39;):
 </pre></div>
 </div>
 </div>
+</section>
 </section>
 </section>
 
