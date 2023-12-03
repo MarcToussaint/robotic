@@ -137,7 +137,7 @@ endif()
 
 if(USE_REALSENSE)
   add_definitions(-DRAI_REALSENSE)
-  target_link_libraries(rai realsense2 realsense-file rsutils fw usb-1.0)
+  target_link_libraries(rai realsense2 realsense-file fw usb-1.0) #rsutils
   message(STATUS "[rai] using realsense libs")
 endif()
 
