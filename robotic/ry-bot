@@ -44,15 +44,15 @@ def main():
 
     if args.float:
         bot.hold(floating=True, damping=False)
-        bot.wait(C, forKeyPressed=True)
+        bot.wait(C, forKeyPressed=True, forTimeToEnd=False)
 
     if args.damp:
         bot.hold(floating=True, damping=True)
-        bot.wait(C, forKeyPressed=True)
+        bot.wait(C, forKeyPressed=True, forTimeToEnd=False)
 
     if args.hold:
         bot.hold(floating=False, damping=False)
-        bot.wait(C, forKeyPressed=True)
+        bot.wait(C, forKeyPressed=True, forTimeToEnd=False)
 
     if args.up:
         q = bot.get_qHome()

@@ -31,7 +31,7 @@ RUN ./install.sh -gc assimp
 RUN ./install.sh -gc bullet
 RUN ./install.sh -gc physx
 
-#RUN wget  https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
+#RUN wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
 #RUN yum -y install openssl-devel poco-devel libusbx-devel
 #RUN ./install.sh -g librealsense
 #RUN ./install.sh -g libfranka
