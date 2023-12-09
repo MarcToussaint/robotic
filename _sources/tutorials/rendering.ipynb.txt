@@ -5,7 +5,7 @@
    "id": "a7fa063a",
    "metadata": {},
    "source": [
-    "# CameraView, Offscreen (headless), and Realistic Rendering\n",
+    "# Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering\n",
     "\n",
     "The `view` is realized using very basic OpenGL rendering. It is straight-forward to grab the image (and, e.g., make a video from such images), as well as the depth (e.g. to simulate a depth camera).\n",
     "\n",

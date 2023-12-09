@@ -22,7 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Configurations" href="tutorials/1a-configurations.html" />
+    <link rel="next" title="Intro: Configurations" href="tutorials/intro_Configurations.html" />
     <link rel="prev" title="Getting Started" href="getting_started.html" /> 
 </head>
 
@@ -49,23 +49,17 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#basics-on-configurations-botop-komo">Basics on Configurations, BotOp &amp; KOMO</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/1a-configurations.html">Configurations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/1b-botop.html">BotOp (Robot Operation) interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/1c-komo.html">KOMO: Motion Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/1d-real.html">Starting with a real robot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/features.html">Differentiable Features &amp; Collision Evaluation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#in-depth">In Depth</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/configurationEditing.html">Importing, Editing &amp; Manipulating Configurations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/komo-reporting.html">KOMO: Reporting &amp; Explaining Convergence</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/simulation.html">Direct Simulation Interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/rendering.html">CameraView, Offscreen (headless), and Realistic Rendering</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/rrt-example.html">Path finding example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/nlp-solver.html">Optimization (NLP formulation and solving)</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/intro_Configurations.html">Intro: Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/intro_BotOp.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/intro_KOMO.html">Intro: KOMO - Motion Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/real_robot.html">Real robot operation: Checklist &amp; first steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/features.html">Features: Computing differentiable features &amp; collision evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/configuration_importing_editing.html">Configurations: Importing, editing &amp; manipulating them</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/komo_reporting.html">KOMO: Reporting &amp; explaining convergence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/RRT_example.html">RRT: basic finding example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/nlp_solving.html">NLP abstraction: Low-level NLP formulation and solving</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="script/script.html">Lecture Script</a></li>
@@ -98,36 +92,33 @@
              
   <section id="tutorials">
 <h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h1>
-<p>All tutorials are jupyter notebooks, downloadable from <a class="reference external" href="https://github.com/MarcToussaint/rai-tutorials">https://github.com/MarcToussaint/rai-tutorials</a></p>
-<p>For installation instructions, see <a class="reference external" href="getting_started.html">Getting Started</a>.</p>
-<section id="basics-on-configurations-botop-komo">
-<h2>Basics on Configurations, BotOp &amp; KOMO<a class="headerlink" href="#basics-on-configurations-botop-komo" title="Link to this heading"></a></h2>
-<p>This round of 4 tutorials builds on each other and gives a first idea
-what this lib is about.</p>
+<p>All tutorials are jupyter notebooks, downloadable from <a class="reference external" href="https://github.com/MarcToussaint/rai-tutorials">https://github.com/MarcToussaint/rai-tutorials</a>. For installation instructions, see <a class="reference external" href="getting_started.html">Getting Started</a>.</p>
+<p>The first 3 are <strong>intro tutorials</strong> that introduce essentials for understanding the code:</p>
+<ul class="simple">
+<li><p><strong>Configurations</strong>: The core data structure used to represent scenes and robots, compute features, and feed into optimization problems, simulations, and real robot control.</p></li>
+<li><p><strong>BotOp</strong>: The <em>Robot Operation</em> interface used to control a real or simulated robot, as well as to access sensor.</p></li>
+<li><p><strong>KOMO</strong>: A framework to formulate optimization problems, esp. for motion design (IK, path optimization, and manipulation planning).</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/1a-configurations.html">Configurations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/1b-botop.html">BotOp (Robot Operation) interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/1c-komo.html">KOMO: Motion Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/1d-real.html">Starting with a real robot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/features.html">Differentiable Features &amp; Collision Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/intro_Configurations.html">Intro: Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/intro_BotOp.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/intro_KOMO.html">Intro: KOMO - Motion Optimization</a></li>
 </ul>
 </div>
-</section>
-<section id="in-depth">
-<h2>In Depth<a class="headerlink" href="#in-depth" title="Link to this heading"></a></h2>
-<p>There is no special ordering of the following. Each goes deeper in one particular part of the lib.</p>
+<p>The remaining tutorials cover various topics in more depth:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/configurationEditing.html">Importing, Editing &amp; Manipulating Configurations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/komo-reporting.html">KOMO: Reporting &amp; Explaining Convergence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/simulation.html">Direct Simulation Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/rendering.html">CameraView, Offscreen (headless), and Realistic Rendering</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/rrt-example.html">Path finding example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/nlp-solver.html">Optimization (NLP formulation and solving)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/real_robot.html">Real robot operation: Checklist &amp; first steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/features.html">Features: Computing differentiable features &amp; collision evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/configuration_importing_editing.html">Configurations: Importing, editing &amp; manipulating them</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/komo_reporting.html">KOMO: Reporting &amp; explaining convergence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/RRT_example.html">RRT: basic finding example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/nlp_solving.html">NLP abstraction: Low-level NLP formulation and solving</a></li>
 </ul>
 </div>
-</section>
 </section>
 
 
@@ -135,7 +126,7 @@ what this lib is about.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tutorials/1a-configurations.html" class="btn btn-neutral float-right" title="Configurations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials/intro_Configurations.html" class="btn btn-neutral float-right" title="Intro: Configurations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

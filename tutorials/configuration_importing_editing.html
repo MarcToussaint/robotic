@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurations: Importing, editing &amp; manipulating them &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="KOMO: Reporting &amp; explaining convergence" href="komo_reporting.html" />
+    <link rel="prev" title="Features: Computing differentiable features &amp; collision evaluation" href="features.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro_Configurations.html">Intro: Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_BotOp.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_KOMO.html">Intro: KOMO - Motion Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="real_robot.html">Real robot operation: Checklist &amp; first steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features.html">Features: Computing differentiable features &amp; collision evaluation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Configurations: Importing, editing &amp; manipulating them</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Importing-robot-models">Importing robot models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Conversion-from-URDF">Conversion from URDF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Configuration-file-(.g-file)-syntax">Configuration file (.g-file) syntax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Interactive-Editing">Interactive Editing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#How-to-attach-frames---faking-grasps">How to attach frames - faking grasps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Advanced:-YAML-and-dict-representations">Advanced: YAML and dict representations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="komo_reporting.html">KOMO: Reporting &amp; explaining convergence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RRT_example.html">RRT: basic finding example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlp_solving.html">NLP abstraction: Low-level NLP formulation and solving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">robotic python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Configurations: Importing, editing &amp; manipulating them</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/configuration_importing_editing.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Configurations:-Importing,-editing-&amp;-manipulating-them">
+<h1>Configurations: Importing, editing &amp; manipulating them<a class="headerlink" href="#Configurations:-Importing,-editing-&-manipulating-them" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>This scripts loads a mini scene defined in ‘mini.g’.</p></li>
+<li><p>The ‘watchFile’ command allows you to edit the file in some other editor, while it is being redisplayed whenever you save.</p></li>
+<li><p>‘set/getJointState’ shows how to access degrees-of-freedom of the scene</p></li>
+<li><p>‘eval’ shows how to access other features, including its Jacobian</p></li>
+</ul>
+<section id="Importing-robot-models">
+<h2>Importing robot models<a class="headerlink" href="#Importing-robot-models" title="Link to this heading"></a></h2>
+<p>Let’s first have a look at robot models that are already installed with rai. (They are defined in the <code class="docutils literal notranslate"><span class="pre">rai-robotModels</span></code> github repo, which is partly copied into the <code class="docutils literal notranslate"><span class="pre">.../site-packages/robotic/rai-robotModels</span></code> install path.)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;The path where model files are pre-installed:\n&#39;, ry.raiPath(&#39;&#39;))
+# you could overwrite this with:
+# ry.setRaiPath(&#39;your_path/rai-robotModels/&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The path where model files are pre-installed:
+ /home/mtoussai/.local/lib/python3.8/site-packages/robotic/rai-robotModels/
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;panda/panda.g&#39;)) .setPosition([1.,.0,.0]) .setQuaternion([1,0,0,1])
+C.addFile(ry.raiPath(&#39;panda/panda.g&#39;), &#39;r_&#39;) .setPosition([1.5,.0,.0]) .setQuaternion([1,0,0,1])
+C.addFile(ry.raiPath(&#39;pr2/pr2.g&#39;)) .setPosition([-1.,.0,.0])
+C.addFile(ry.raiPath(&#39;baxter/baxter.g&#39;)) .setPosition([0,.0,1.]) .setQuaternion([1,0,0,1])
+C.addFile(ry.raiPath(&#39;robotiq/robotiq.g&#39;)) .setParent(C.getFrame(&#39;panda_joint7&#39;)) .setRelativePosition([0., 0., .15])
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- WARNING:graph.cpp:read:663(-1) nothing to delete with key &#39;visual&#39;
+-- WARNING:graph.cpp:edit:485(-1) no nodes edited! (from &#39;joint: { ctrl_H: 1 }&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">addFile</span></code> returns the <em>first</em> frame defined in the file, which typically is the base frame of the whole robot. Therefore, by setting it’s position, you can move the whole loaded robot.</p>
+<p>Sometimes you want to add a model twice, but avoid duplicated frame names. With <code class="docutils literal notranslate"><span class="pre">addFile</span></code> you can specify a <code class="docutils literal notranslate"><span class="pre">prefix</span></code> string (here <code class="docutils literal notranslate"><span class="pre">r_</span></code>) which add that prefix to all frame names of the added robot. This is exemplified with the second panda added here.</p>
+<p>The Robotiq example also shows that this base frame can be made a child of other frames – attaching the robotiq to the panda arm. (Here in addition to the existing gripper, which would first have to be removed using <code class="docutils literal notranslate"><span class="pre">C.delFrame</span></code>.)</p>
+<p>The following is a simple helper to articulare all dofs in the display (press <code class="docutils literal notranslate"><span class="pre">q</span></code> to interrupt):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.animate()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Conversion-from-URDF">
+<h2>Conversion from URDF<a class="headerlink" href="#Conversion-from-URDF" title="Link to this heading"></a></h2>
+<p>The python package should install a script <code class="docutils literal notranslate"><span class="pre">urdf2rai.py</span></code> in <code class="docutils literal notranslate"><span class="pre">.local/bin</span></code>. That converts a urdf-file to a .g-file. For instance, place a <code class="docutils literal notranslate"><span class="pre">ur10.urdf</span></code> and the <code class="docutils literal notranslate"><span class="pre">ur_description</span></code> folder into the same folder and run:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>urdf2rai.py ur10.urdf &gt; ur10_org.g
+</pre></div>
+</div>
+<p>That should generate a <code class="docutils literal notranslate"><span class="pre">ur10_org.g</span></code> file that can be displayed with <code class="docutils literal notranslate"><span class="pre">kinEdit</span> <span class="pre">ur10_org.g</span></code>. Note, by default that <strong>excludes</strong> exporting collision shapes (as I typically replace them, e.g. by the convex hull of the visual shapes). The <code class="docutils literal notranslate"><span class="pre">-coll</span> <span class="pre">1</span></code> option of the script should include also the collision shapes. The <code class="docutils literal notranslate"><span class="pre">rai-robotModels</span></code> repository README provides more info on conversion from URDF, as well as specific examples for those models included in the package.</p>
+</section>
+<section id="Configuration-file-(.g-file)-syntax">
+<h2>Configuration file (.g-file) syntax<a class="headerlink" href="#Configuration-file-(.g-file)-syntax" title="Link to this heading"></a></h2>
+<p>The <a class="reference external" href=".../yaml-graph-files">Appendix:Yaml-Graph Files</a> provides a more detailed description of the underlying syntax of the .g-files. While the syntax should be yaml compatible, the fact that node names use <code class="docutils literal notranslate"><span class="pre">(&lt;parents&gt;)</span></code> to define the parent(s) of a node, filenames should be strings <code class="docutils literal notranslate"><span class="pre">&lt;filename&gt;</span></code>, and the additional <code class="docutils literal notranslate"><span class="pre">Include</span></code>, <code class="docutils literal notranslate"><span class="pre">Edit</span></code>, and <code class="docutils literal notranslate"><span class="pre">Delete</span></code> tags extend the semantics of what can be define in such a file.</p>
+<p>In essence, to describe a robot/world configuration, every node describes a frame, and is described by three things:</p>
+<pre>
+  <frame-name> ( <parent> ) { <attributes> }
+</pre><p>where <code class="docutils literal notranslate"><span class="pre">&lt;parent&gt;</span></code> needs to be a previously defined frame, or omitted, if the frame is a root frame. The attributes define properties of the frame, such as its pose (<code class="docutils literal notranslate"><span class="pre">X</span></code>), relative transformation (<code class="docutils literal notranslate"><span class="pre">Q</span></code>), shape, joint, and inertia properties. The main interpreted attributes are the following. Internally, a few more attributes are interpreted in experimental code (also your python code can retrieve attributes via <code class="docutils literal notranslate"><span class="pre">f.info()</span></code>).</p>
+<p>Frame:</p>
+<pre>
+X Q
+</pre><p>Shape:</p>
+<pre>
+shape size contact mesh meshscale core sdf color texture
+</pre><p>Joint:</p>
+<pre>
+joint joint_scale q Q limits ctrl_limits ctrl_H sampleUniform joint_active mimic
+</pre><p>Inertia:</p>
+<pre>
+mass inertia
+</pre></section>
+<section id="Interactive-Editing">
+<h2>Interactive Editing<a class="headerlink" href="#Interactive-Editing" title="Link to this heading"></a></h2>
+<p>When developing your own model (robot or scene), you could of course just use the python commands <code class="docutils literal notranslate"><span class="pre">addFrame</span></code> etc. But that might be cumbersome and not interactive enough. The .g-file format is fairly easy to edit. To help doing this more interactively, there is the <code class="docutils literal notranslate"><span class="pre">watchFile</span></code> method:</p>
+<p>Open the file you want to edit (here <code class="docutils literal notranslate"><span class="pre">mini.g</span></code>) in any editor. At the same time, open it from within python and display it using <code class="docutils literal notranslate"><span class="pre">watchFile</span></code>. The key benefit is that <code class="docutils literal notranslate"><span class="pre">watchFile</span></code> reloads and re-displays the file whenever it is externally modified (it watches the file’s inode). That enables interactive editing. It also allows you to return information on objects you point on (their name and attributes), which helps a lot to inspect models. It also reports on collisions in the configuration.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">ry-view</span></code> command line script is shipped with the python package, which simply calls <code class="docutils literal notranslate"><span class="pre">watchFile</span></code>. Editing from command line with this script makes it easier to see the info and error messages, e.g. when you get the syntax wrong. Jupyter is problematic, as it holds info messages back – still, here an example directly from within python:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.watchFile(&#39;mini.g&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- kin.cpp:watchFile:3517(0) reloading `mini.g&#39; ...
+Configuration: q.N=1 #frames=3 #dofs=1 #shapes=3 #ucertainties=0 #proxies=0 #forces=0 #evals=86
+-- kin.cpp:watchFile:3551(0) watching...
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
+</pre></div>
+</div>
+</div>
+</section>
+<section id="How-to-attach-frames---faking-grasps">
+<h2>How to attach frames - faking grasps<a class="headerlink" href="#How-to-attach-frames---faking-grasps" title="Link to this heading"></a></h2>
+<p>Note, this is not real grasping. Just editing the kinematic tree in your configuration</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandasTable.g&#39;))
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.attach(&quot;l_gripper&quot;, &quot;r_gripper&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#move a bit around
+
+q = C.getJointState()
+
+for t in range(30):
+    q[0] = np.sin(t/10)
+
+    C.setJointState(q)
+    C.view()
+    time.sleep(0.1)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Advanced:-YAML-and-dict-representations">
+<h2>Advanced: YAML and dict representations<a class="headerlink" href="#Advanced:-YAML-and-dict-representations" title="Link to this heading"></a></h2>
+<p>The following shows that configuration files are essentially YAML files with some special semantics. We can load the configuration description as a dict using yaml as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
+
+with open(ry.raiPath(&#39;panda/panda_clean.g&#39;), &#39;r&#39;, encoding=&#39;utf-8&#39;) as fil:
+    model = yaml.safe_load(fil)
+
+print(model)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;panda_link0&#39;: {}, &#39;panda_link0_0(panda_link0)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link0.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint1_origin(panda_link0)&#39;: {&#39;rel&#39;: [0, 0, 0.333, 1, 0, 0, 0]}, &#39;panda_joint1(panda_joint1_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link1(panda_joint1)&#39;: {}, &#39;panda_link1_0(panda_link1)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link1.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint2_origin(panda_link1)&#39;: {&#39;rel&#39;: [0, 0, 0, 0.707107, -0.707107, 0, 0]}, &#39;panda_joint2(panda_joint2_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-1.7628, 1.7628, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link2(panda_joint2)&#39;: {}, &#39;panda_link2_0(panda_link2)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link2.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint3_origin(panda_link2)&#39;: {&#39;rel&#39;: [0, -0.316, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint3(panda_joint3_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link3(panda_joint3)&#39;: {}, &#39;panda_link3_0(panda_link3)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link3.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint4_origin(panda_link3)&#39;: {&#39;rel&#39;: [0.0825, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint4(panda_joint4_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-3.0718, -0.0698, 2.175, -1, 87], &#39;ctrl_limits&#39;: [2.175, -1, 87]}, &#39;panda_link4(panda_joint4)&#39;: {}, &#39;panda_link4_0(panda_link4)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link4.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint5_origin(panda_link4)&#39;: {&#39;rel&#39;: [-0.0825, 0.384, 0, 0.707107, -0.707107, 0, 0]}, &#39;panda_joint5(panda_joint5_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link5(panda_joint5)&#39;: {}, &#39;panda_link5_0(panda_link5)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link5.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint6_origin(panda_link5)&#39;: {&#39;rel&#39;: [0, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint6(panda_joint6_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-0.0175, 3.7525, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link6(panda_joint6)&#39;: {}, &#39;panda_link6_0(panda_link6)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link6.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint7_origin(panda_link6)&#39;: {&#39;rel&#39;: [0.088, 0, 0, 0.707107, 0.707107, 0, 0]}, &#39;panda_joint7(panda_joint7_origin)&#39;: {&#39;joint&#39;: &#39;hingeZ&#39;, &#39;limits&#39;: [-2.8973, 2.8973, 2.61, -1, 12], &#39;ctrl_limits&#39;: [2.61, -1, 12]}, &#39;panda_link7(panda_joint7)&#39;: {}, &#39;panda_link7_0(panda_link7)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/link7.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_joint8_origin(panda_link7)&#39;: {&#39;rel&#39;: [0, 0, 0.107, 1, 0, 0, 0]}, &#39;panda_joint8(panda_joint8_origin)&#39;: {&#39;joint&#39;: &#39;rigid&#39;}, &#39;panda_link8(panda_joint8)&#39;: {}, &#39;panda_hand_joint_origin(panda_link8)&#39;: {&#39;rel&#39;: [0, 0, 0, 0.92388, 0, 0, -0.382683]}, &#39;panda_hand_joint(panda_hand_joint_origin)&#39;: {&#39;joint&#39;: &#39;rigid&#39;}, &#39;panda_hand(panda_hand_joint)&#39;: {}, &#39;panda_hand_0(panda_hand)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/hand.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_finger_joint1_origin(panda_hand)&#39;: {&#39;rel&#39;: [0, 0, 0.0584, 1, 0, 0, 0]}, &#39;panda_finger_joint2_origin(panda_hand)&#39;: {&#39;rel&#39;: [0, 0, 0.0584, 1, 0, 0, 0]}, &#39;panda_finger_joint1(panda_finger_joint1_origin)&#39;: {&#39;joint&#39;: &#39;transY&#39;, &#39;limits&#39;: [0, 0.04, 0.2, -1, 20], &#39;ctrl_limits&#39;: [0.2, -1, 20]}, &#39;panda_finger_joint2(panda_finger_joint2_origin)&#39;: {&#39;joint&#39;: &#39;transY&#39;, &#39;joint_scale&#39;: -1, &#39;limits&#39;: [0, 0.04, 0.2, -1, 20], &#39;mimic&#39;: &#39;panda_finger_joint1&#39;, &#39;ctrl_limits&#39;: [0.2, -1, 20]}, &#39;panda_leftfinger(panda_finger_joint1)&#39;: {}, &#39;panda_rightfinger(panda_finger_joint2)&#39;: {}, &#39;panda_leftfinger_0(panda_leftfinger)&#39;: {&#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/finger.ply&gt;&#39;, &#39;visual&#39;: True}, &#39;panda_rightfinger_0(panda_rightfinger)&#39;: {&#39;rel&#39;: [0, 0, 0, -1.03412e-13, 0, 0, 1], &#39;shape&#39;: &#39;mesh&#39;, &#39;mesh&#39;: &#39;&lt;franka_description/meshes/visual/finger.ply&gt;&#39;, &#39;visual&#39;: True}}
+</pre></div></div>
+</div>
+<p>This dict contains all information about the configuration.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="features.html" class="btn btn-neutral float-left" title="Features: Computing differentiable features &amp; collision evaluation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="komo_reporting.html" class="btn btn-neutral float-right" title="KOMO: Reporting &amp; explaining convergence" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

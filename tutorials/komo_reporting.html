@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KOMO: Reporting &amp; explaining convergence &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simulation: Low-level stepping interface &amp; gym environments" href="simulation.html" />
+    <link rel="prev" title="Configurations: Importing, editing &amp; manipulating them" href="configuration_importing_editing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro_Configurations.html">Intro: Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_BotOp.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_KOMO.html">Intro: KOMO - Motion Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="real_robot.html">Real robot operation: Checklist &amp; first steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features.html">Features: Computing differentiable features &amp; collision evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration_importing_editing.html">Configurations: Importing, editing &amp; manipulating them</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">KOMO: Reporting &amp; explaining convergence</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Problem-specs-reporting">Problem specs reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Constraints-error-reporting">Constraints error reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Lagrange-gradients-reporting">Lagrange gradients reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Plotting-constraint-errors-over-time-for-paths">Plotting constraint errors over time for paths</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RRT_example.html">RRT: basic finding example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlp_solving.html">NLP abstraction: Low-level NLP formulation and solving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">robotic python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">KOMO: Reporting &amp; explaining convergence</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/komo_reporting.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="KOMO:-Reporting-&amp;-explaining-convergence">
+<h1>KOMO: Reporting &amp; explaining convergence<a class="headerlink" href="#KOMO:-Reporting-&-explaining-convergence" title="Link to this heading"></a></h1>
+<p>When designing motion problems using KOMO, it is really important to check feasibility and – if the point of convergence is infeasible or different to what you expected – know how to introspect the result. The key here is get information about which constraints were actually active, what their constraint violation is, and “how much each constraint is pulling” at the point of convergence. I recently figured a way to quantify the latter (inspecting the gradients the constraints contribute to the
+underlying Lagrangian), which really “explains” the point of convergence as good as it gets.</p>
+<p>You should have done the <a class="reference external" href="1c-komo.ipynb">first KOMO tutorial</a> first.</p>
+<section id="Problem-specs-reporting">
+<h2>Problem specs reporting<a class="headerlink" href="#Problem-specs-reporting" title="Link to this heading"></a></h2>
+<p>Let’s first define a simple feasible KOMO problem (same as in the 1st tutorial), solve it, and get info on convergence:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.addFrame(&#39;box&#39;) \
+    .setPosition([-.25,.1,1.]) \
+    .setShape(ry.ST.ssBox, size=[.06,.06,.06,.005]) \
+    .setColor([1,.5,0]) \
+    .setContact(True)
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo = ry.KOMO(C, 1, 1, 0, False) # minimalisitc IK problem: just 1 slice
+komo.addControlObjective([], 0, 1e-1) # basic homing (0th order) objective on joint angles q
+komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1]);
+</pre></div>
+</div>
+</div>
+<p>Even before we run optimization, we can a report containing the komo specs and list of all objectives.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report(True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;KOMO_specs&#39;: {&#39;x_dim&#39;: 7,
+  &#39;dual_dim&#39;: 0,
+  &#39;T&#39;: 1,
+  &#39;k&#39;: 0,
+  &#39;phases&#39;: 1.0,
+  &#39;slicesPerPhase&#39;: 1,
+  &#39;enableCollisions&#39;: False,
+  &#39;tau&#39;: 1.0,
+  &#39;#slices&#39;: 1,
+  &#39;#totalDOF&#39;: 7,
+  &#39;#frames&#39;: 66,
+  &#39;#pathQueries:&#39;: 0},
+ &#39;objectives&#39;: {&#39;_F_qItself/0-#14&#39;: {&#39;order&#39;: 0.0,
+   &#39;type&#39;: &#39;sos&#39;,
+   &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+   &#39;times&#39;: [],
+   &#39;slices&#39;: [0.0, 0.0]},
+  &#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;order&#39;: 0.0,
+   &#39;type&#39;: &#39;eq&#39;,
+   &#39;scale&#39;: [10.0],
+   &#39;times&#39;: [],
+   &#39;slices&#39;: [0.0, 0.0]}}}
+</pre></div></div>
+</div>
+</section>
+<section id="Constraints-error-reporting">
+<h2>Constraints error reporting<a class="headerlink" href="#Constraints-error-reporting" title="Link to this heading"></a></h2>
+<p>After optimization, the report will contain errors (i.e. constraint violations, or sqr costs) for all objects. In the current case, all constraint violations are very small:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
+q = komo.getPath()
+C.setJointState(q[0])
+C.view()
+print(ret)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{ time: 0.000571, evals: 6, done: 1, feasible: 1, sos: 0.00414146, f: 0, ineq: 0, eq: 0.00188382 }
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;_F_qItself/0-#14&#39;: {&#39;order&#39;: 0.0,
+  &#39;type&#39;: &#39;sos&#39;,
+  &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+  &#39;err&#39;: 0.004141463188074276,
+  &#39;times&#39;: [],
+  &#39;slices&#39;: [0.0, 0.0]},
+ &#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;order&#39;: 0.0,
+  &#39;type&#39;: &#39;eq&#39;,
+  &#39;scale&#39;: [10.0],
+  &#39;err&#39;: 0.0018838214351309113,
+  &#39;times&#39;: [],
+  &#39;slices&#39;: [0.0, 0.0]},
+ &#39;totals&#39;: {&#39;sos&#39;: 0.004141463188074276,
+  &#39;ineq&#39;: 0.0,
+  &#39;eq&#39;: 0.0018838214351309113,
+  &#39;f&#39;: 0.0}}
+</pre></div></div>
+</div>
+<p>Let’s make the problem infeasible by moving the target out of reach and repeating optimization:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getFrame(&#39;box&#39;) .setPosition([.8, .8, 1.])
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.updateRootObjects(C)
+solver = ry.NLP_Solver(komo.nlp(), verbose=0 )
+ret = solver.solve()
+q = komo.getPath()
+C.setJointState(q[0])
+C.view()
+print(ret)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{ time: 0.010084, evals: 120, done: 1, feasible: 0, sos: 0.0702195, f: 0, ineq: 0, eq: 4.60313 }
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;_F_qItself/0-#14&#39;: {&#39;order&#39;: 0.0,
+  &#39;type&#39;: &#39;sos&#39;,
+  &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+  &#39;err&#39;: 0.07021953478317369,
+  &#39;times&#39;: [],
+  &#39;slices&#39;: [0.0, 0.0]},
+ &#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;order&#39;: 0.0,
+  &#39;type&#39;: &#39;eq&#39;,
+  &#39;scale&#39;: [10.0],
+  &#39;err&#39;: 4.603126581420996,
+  &#39;times&#39;: [],
+  &#39;slices&#39;: [0.0, 0.0]},
+ &#39;totals&#39;: {&#39;sos&#39;: 0.07021953478317369,
+  &#39;ineq&#39;: 0.0,
+  &#39;eq&#39;: 4.603126581420996,
+  &#39;f&#39;: 0.0}}
+</pre></div></div>
+</div>
+<p>We clearly see that the <code class="docutils literal notranslate"><span class="pre">positionDiff</span></code> eq-objective is violated (<code class="docutils literal notranslate"><span class="pre">err</span></code> includes the <code class="docutils literal notranslate"><span class="pre">scale</span></code> as factor, so err=4.6 means 0.46 meters error).</p>
+</section>
+<section id="Lagrange-gradients-reporting">
+<h2>Lagrange gradients reporting<a class="headerlink" href="#Lagrange-gradients-reporting" title="Link to this heading"></a></h2>
+<p>Seeing only objective errors sometimes does not really explain what is the issues. So instead we can let the solver report what the lagrange gradients w.r.t. each feature are:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.reportLagrangeGradients(komo.getFeatureNames())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;err&#39;: 4.603126581420996,
+  &#39;grad&#39;: 1996.3797729703783,
+  &#39;type&#39;: &#39;eq&#39;},
+ &#39;_F_qItself/0-#14&#39;: {&#39;err&#39;: 0.07021953478317369,
+  &#39;grad&#39;: 0.10441937164903314,
+  &#39;type&#39;: &#39;sos&#39;}}
+</pre></div></div>
+</div>
+<p>Note that this list is always sorted, starting with largest gradients first. For complex problems, this report can be rather insightful. Sometimes one explicitly sees which objectives <em>fight</em> against each other in the Lagrangian by both having similar large gradient sizes (typically with opposing directions, which the report does not show; also a matrix with “angles between gradients” can be computed).</p>
+</section>
+<section id="Plotting-constraint-errors-over-time-for-paths">
+<h2>Plotting constraint errors over time for paths<a class="headerlink" href="#Plotting-constraint-errors-over-time-for-paths" title="Link to this heading"></a></h2>
+<p>The above only considers a simple IK problem. Let’s look at a path problem (we take the same 4-waypoint problem from the 1st tutorial):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.addFrame(&#39;way1&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
+C.addFrame(&#39;way2&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
+C.addFrame(&#39;way3&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
+C.addFrame(&#39;way4&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
+q0 = C.getJointState()
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(q0)
+komo = ry.KOMO(C, 4, 10, 2, False)
+komo.addControlObjective([], 0, 1e-1)
+komo.addControlObjective([], 2, 1e0)
+komo.addObjective([1], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way1&#39;], ry.OT.eq, [1e1])
+komo.addObjective([2], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way2&#39;], ry.OT.eq, [1e1])
+komo.addObjective([3], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way3&#39;], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way4&#39;], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.jointState, [], ry.OT.eq, [1e1], [], order=1)
+
+solver = ry.NLP_Solver(komo.nlp(), verbose=0 )
+ret = solver.solve()
+print(ret)
+q = komo.getPath()
+
+for t in range(q.shape[0]):
+    C.setJointState(q[t])
+    C.view(False, f&#39;waypoint {t}&#39;)
+    time.sleep(.1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{ time: 0.030879, evals: 25, done: 1, feasible: 1, sos: 16.5173, f: 0, ineq: 0, eq: 0.000774498 }
+</pre></div></div>
+</div>
+<p>Using <code class="docutils literal notranslate"><span class="pre">plotOverTime</span></code> in the report method now plots the constraint violations (or sqr costs) over <em>phase</em>, using gnuplot. (You need to have <code class="docutils literal notranslate"><span class="pre">gnuplot</span></code> installed on your Ubuntu, using <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">gnuplot</span></code>.)</p>
+<p>Here, the only interesting (non-zero) signal is from the 2nd-order control costs, which are the acceleration costs. This is a typical acceperation cost profile for optimal paths between waypoints.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>R = komo.report(False, plotOverTime=True)
+</pre></div>
+</div>
+</div>
+<p>Finally, the largrange gradients show that the control costs and the final velocity constraints contribute a lot, but each waypoint also contributes a significant gradient that explains the point of convergence. (If you’d increase control cost scaling, the waypoint Lagrange parameters and their reported gradients would equally increase.)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.reportLagrangeGradients(komo.getFeatureNames())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;_F_qItself/2-#14&#39;: {&#39;err&#39;: 16.271221226873042,
+  &#39;grad&#39;: 6007.932041855862,
+  &#39;type&#39;: &#39;sos&#39;},
+ &#39;_F_qItself/1-#14&#39;: {&#39;err&#39;: 3.2991984627583903e-05,
+  &#39;grad&#39;: 215.44352203086478,
+  &#39;type&#39;: &#39;eq&#39;},
+ &#39;__F_PositionDiff/0-l_gripper-way3&#39;: {&#39;err&#39;: 0.00010220589093085097,
+  &#39;grad&#39;: 38.292276583455326,
+  &#39;type&#39;: &#39;eq&#39;},
+ &#39;__F_PositionDiff/0-l_gripper-way1&#39;: {&#39;err&#39;: 0.00022613176104052668,
+  &#39;grad&#39;: 36.94496585387665,
+  &#39;type&#39;: &#39;eq&#39;},
+ &#39;__F_PositionDiff/0-l_gripper-way2&#39;: {&#39;err&#39;: 0.00016647615025650042,
+  &#39;grad&#39;: 31.041675044147212,
+  &#39;type&#39;: &#39;eq&#39;},
+ &#39;__F_PositionDiff/0-l_gripper-way4&#39;: {&#39;err&#39;: 0.0002466926005761927,
+  &#39;grad&#39;: 22.00293286910548,
+  &#39;type&#39;: &#39;eq&#39;},
+ &#39;_F_qItself/0-#14&#39;: {&#39;err&#39;: 0.24605158167255367,
+  &#39;grad&#39;: 1.2106791822071845,
+  &#39;type&#39;: &#39;sos&#39;}}
+</pre></div></div>
+</div>
+<p>Test the following: Change the timing of the 3rd waypoint to “[2]” as well, requiring the robot to be at way2 and way3 at the same time – which clearly is infeasible. Check the solver return and lagrange gradients.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del komo
+del C
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="configuration_importing_editing.html" class="btn btn-neutral float-left" title="Configurations: Importing, editing &amp; manipulating them" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulation.html" class="btn btn-neutral float-right" title="Simulation: Low-level stepping interface &amp; gym environments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

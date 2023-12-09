@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Differentiable Features &amp; Collision Evaluation &mdash; Robotic Python Library 0.1.0 documentation</title>
+  <title>Features: Computing differentiable features &amp; collision evaluation &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -25,8 +25,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Importing, Editing &amp; Manipulating Configurations" href="configurationEditing.html" />
-    <link rel="prev" title="Starting with a real robot" href="1d-real.html" /> 
+    <link rel="next" title="Configurations: Importing, editing &amp; manipulating them" href="configuration_importing_editing.html" />
+    <link rel="prev" title="Real robot operation: Checklist &amp; first steps" href="real_robot.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,24 +52,26 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#basics-on-configurations-botop-komo">Basics on Configurations, BotOp &amp; KOMO</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="1a-configurations.html">Configurations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="1b-botop.html">BotOp (Robot Operation) interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="1c-komo.html">KOMO: Motion Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="1d-real.html">Starting with a real robot</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Differentiable Features &amp; Collision Evaluation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Recap-of-evaluating-features-directly">Recap of evaluating features directly</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#List-of-features">List of features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Position-features">Position features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Scalar-product-features">Scalar product features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Scale-and-target-transformation">Scale and target transformation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Collision-features">Collision features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Enabling/disabling-collisions">Enabling/disabling collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_Configurations.html">Intro: Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_BotOp.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_KOMO.html">Intro: KOMO - Motion Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="real_robot.html">Real robot operation: Checklist &amp; first steps</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Features: Computing differentiable features &amp; collision evaluation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Recap-of-evaluating-features-directly">Recap of evaluating features directly</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#List-of-features">List of features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Position-features">Position features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Scalar-product-features">Scalar product features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Scale-and-target-transformation">Scale and target transformation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Collision-features">Collision features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Enabling/disabling-collisions">Enabling/disabling collisions</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#in-depth">In Depth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration_importing_editing.html">Configurations: Importing, editing &amp; manipulating them</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_reporting.html">KOMO: Reporting &amp; explaining convergence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RRT_example.html">RRT: basic finding example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlp_solving.html">NLP abstraction: Low-level NLP formulation and solving</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
@@ -91,7 +93,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">Differentiable Features &amp; Collision Evaluation</li>
+      <li class="breadcrumb-item active">Features: Computing differentiable features &amp; collision evaluation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/features.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,13 +103,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="Differentiable-Features-&amp;-Collision-Evaluation">
-<h1>Differentiable Features &amp; Collision Evaluation<a class="headerlink" href="#Differentiable-Features-&-Collision-Evaluation" title="Link to this heading"></a></h1>
+  <section id="Features:-Computing-differentiable-features-&amp;-collision-evaluation">
+<h1>Features: Computing differentiable features &amp; collision evaluation<a class="headerlink" href="#Features:-Computing-differentiable-features-&-collision-evaluation" title="Link to this heading"></a></h1>
 <p>The <a class="reference external" href="https://marctoussaint.github.io/robotics-course/tutorials/1a-configurations.html">1st tutorial</a> introduced the basic concepts of features. The <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#kinematics">lecture script section ‘Kinematics’</a> introduces this a bit more formally.</p>
 <p>This tutorial first gives an overview over available features, and then provides more details specifically on collision features.</p>
 <section id="Recap-of-evaluating-features-directly">
 <h2>Recap of evaluating features directly<a class="headerlink" href="#Recap-of-evaluating-features-directly" title="Link to this heading"></a></h2>
-<p>Let’s first recap how features are directly computed on a configuration - as introduced in the <a class="reference internal" href="1a-configurations.html"><span class="doc">1st tutorial</span></a>:</p>
+<p>Let’s first recap how features are directly computed on a configuration - as introduced in the <a class="reference external" href="1a-configurations.ipynb">1st tutorial</a>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -695,8 +697,8 @@ C.getCollisions()
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="1d-real.html" class="btn btn-neutral float-left" title="Starting with a real robot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="configurationEditing.html" class="btn btn-neutral float-right" title="Importing, Editing &amp; Manipulating Configurations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="real_robot.html" class="btn btn-neutral float-left" title="Real robot operation: Checklist &amp; first steps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration_importing_editing.html" class="btn btn-neutral float-right" title="Configurations: Importing, editing &amp; manipulating them" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

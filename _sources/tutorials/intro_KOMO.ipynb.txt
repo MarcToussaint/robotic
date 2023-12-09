@@ -1,0 +1,754 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "dffc232a",
+   "metadata": {},
+   "source": [
+    "# Intro: KOMO - Motion Optimization\n",
+    "\n",
+    "KOMO is a framework for designing motion by formulating optimization problems. Inverse kinematics (IK) is the special case of optimizing only over a single configuration rather than a path. Formulating KOMO problems is key to realizing motion in `rai`.\n",
+    "\n",
+    "The [Script:Inverse Kinematics](https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features) and the [Appendix:NLP Interface](https://marctoussaint.github.io/robotics-course/script/script.html#nlp-interface) provide the mathematical background on inverse kinematics and especially the convention of how NLPs can be defined by adding objectives.\n",
+    "\n",
+    "This tutorial shows how IK, rough waypoint optimization, and fine path optimization can be formulated as non-linear mathematical program (NLP) using KOMO. Essentially, the `addObjective` allows to add costs or constraints over any `Feature` to the NLP (same features that can be evaluated with `C.eval`)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a177972b",
+   "metadata": {},
+   "source": [
+    "## Minimal IK example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "8e07bf36",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import robotic as ry\n",
+    "import numpy as np\n",
+    "import time"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "059a8ee7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "C = ry.Config()\n",
+    "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "582b68ba",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "C.addFrame('box') \\\n",
+    "    .setPosition([-.25,.1,1.]) \\\n",
+    "    .setShape(ry.ST.ssBox, size=[.06,.06,.06,.005]) \\\n",
+    "    .setColor([1,.5,0]) \\\n",
+    "    .setContact(1)\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ac059dc2",
+   "metadata": {},
+   "source": [
+    "The following defines an optimization problem over a single configuration. The KOMO object essentially contains:\n",
+    "1. Copies of the configuration(s) over which we optimize\n",
+    "2. The list of objectives (=costs & constraints) that define the optimization problem.\n",
+    "\n",
+    "The constructor declares over how many configurations (single, waypoints, path..) we optimize. The addObjective methods add costs or constraints:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "bccb7b55",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "qHome = C.getJointState()\n",
+    "\n",
+    "komo = ry.KOMO(C, 1, 1, 0, False)\n",
+    "komo.addObjective(\n",
+    "    times=[], \n",
+    "    feature=ry.FS.jointState, \n",
+    "    frames=[],\n",
+    "    type=ry.OT.sos, \n",
+    "    scale=[1e-1], \n",
+    "    target=qHome\n",
+    ")\n",
+    "komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "76895850",
+   "metadata": {},
+   "source": [
+    "We explain the KOMO constructor arguments later. (The above defines an IK problem.)\n",
+    "\n",
+    "The `addObjective` method has signature\n",
+    "\n",
+    "* `times`: the time intervals (subset of configurations in a path) over which this feature is active (irrelevant for IK)\n",
+    "* `feature`: the feature symbol (see advanced `Feature` tutorial)\n",
+    "* `frames`: the frames for which the feature is computed, given as list of frame names\n",
+    "* `type`: whether this is a sum-of-squares (sos) cost, or eq or ineq constraint\n",
+    "* `scale`: the matrix(!) by which the feature is multiplied\n",
+    "* `target`: the offset which is substracted from the feature (before scaling)\n",
+    "\n",
+    "Please see more formal details [here](https://marctoussaint.github.io/robotics-course/script/script.html#nlp-interface)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9e27cfa8",
+   "metadata": {},
+   "source": [
+    "Given this definition of an optimization problem, we can call a generic NLP solver:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "178e3d42",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{ time: 0.000456, evals: 6, done: 1, feasible: 1, sos: 0.00414146, f: 0, ineq: 0, eq: 0.00188382 }\n",
+      "====nlp==== method:AugmentedLagrangian bounded: yes\n",
+      "==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1\n",
+      "----newton---- initial point f(x):16.0447 alpha:1 beta:1\n",
+      "--newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    6.55808  ACCEPT\n",
+      "--newton-- it:   2  |Delta|:        0.2  alpha:          1  evals:   3  f(y):   0.686083  ACCEPT\n",
+      "--newton-- it:   3  |Delta|:   0.144223  alpha:          1  evals:   4  f(y):  0.0170221  ACCEPT\n",
+      "--newton-- it:   4  |Delta|:  0.0221449  alpha:          1  evals:   5  f(y): 0.00418093  ACCEPT\n",
+      "--newton-- stopping: 'absMax(Delta)<options.stopTolerance'\n",
+      "==nlp== it:   0  evals:   5  A(x): 0.00418093  f: 0.00414937  g:          0  h: 0.00951471  |x-x'|:   0.373024 \tstop:DeltaConverge\n",
+      "==nlp== it:   1  evals:   5  A(x): 0.00437027  mu:5\n",
+      "--newton-- it:   5  |Delta|: 0.00240133  alpha:          1  evals:   6  f(y): 0.00413537  ACCEPT\n",
+      "--newton-- stopping: 'absMax(Delta)<options.stopTolerance'\n",
+      "==nlp== it:   1  evals:   6  A(x): 0.00413537  f: 0.00414146  g:          0  h: 0.00188382  |x-x'|: 0.00240133 \tstop:DeltaConverge\n",
+      "==nlp== StoppingCriterion Delta<0.01\n",
+      "----newton---- final f(x):0.00413537\n"
+     ]
+    }
+   ],
+   "source": [
+    "ret = ry.NLP_Solver(komo.nlp(), verbose=4) .solve()\n",
+    "print(ret)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5481e8b8",
+   "metadata": {},
+   "source": [
+    "With this high verbosity, individual newton steps and Augmented Lagrangian outer loops are displayed (we need only very few steps here).\n",
+    "\n",
+    "The KOMO view displays the optimized configuration(s) stored by KOMO. (For paths, this is an overlay of many configurations. For IK, just one.):"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "b727e37c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "komo.view(False, \"IK solution\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "10840e1f",
+   "metadata": {},
+   "source": [
+    "We can get the sequence of joint state vectors for the optimized configuration(s) with `getPath`. Since this is only an IK problem, the sequence contains only the joint state vector for the single optimized configuration:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "5adc15f8",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'numpy.ndarray'> 1\n"
+     ]
+    }
+   ],
+   "source": [
+    "q = komo.getPath()\n",
+    "print(type(q), len(q))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9f92e896",
+   "metadata": {},
+   "source": [
+    "We're done with KOMO and can destroy it. Then set the optimal joint state in C and view it:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "b20fc581",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "del komo #also closes komo view\n",
+    "C.setJointState(q[0])\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "57ccf739",
+   "metadata": {},
+   "source": [
+    "## Example for more constraints: box grasping IK\n",
+    "\n",
+    "The key to design motions is to add clever constraints. Here is an example for more realistic box grasping:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "bdbbbe7b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "komo = ry.KOMO(C, 1,1,0, True)\n",
+    "komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], qHome)\n",
+    "komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)\n",
+    "komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq)\n",
+    "komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([], ry.FS.scalarProductXX, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])\n",
+    "komo.addObjective([], ry.FS.scalarProductXZ, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])\n",
+    "komo.addObjective([], ry.FS.distance, ['l_palm', 'box'], ry.OT.ineq, [1e1])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "de8fe5b5",
+   "metadata": {},
+   "source": [
+    "The two `scalarProduct` feature state that the gripper x-axis (which is the axis connecting the fingers) should be orthogonal to the object x- and z-axes. That implies fingers to normally oppose the object's y-planes.\n",
+    "\n",
+    "Note that grasping could also be opposing the object x- or z- planes -- see below. Let solve it and then set the joint state to the solution:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "dab4fbee",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{ time: 0.000898, evals: 4, done: 1, feasible: 1, sos: 0.00552507, f: 0, ineq: 0, eq: 0.00405028 }\n",
+      "-- Always check feasibility flag of NLP solver return\n"
+     ]
+    }
+   ],
+   "source": [
+    "ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
+    "print(ret)\n",
+    "if ret.feasible:\n",
+    "    print('-- Always check feasibility flag of NLP solver return')\n",
+    "else:\n",
+    "    print('-- THIS IS INFEASIBLE!')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "f1970bb1",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "q = komo.getPath()\n",
+    "C.setJointState(q[0])\n",
+    "C.view(False, \"IK solution\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bef1a139",
+   "metadata": {},
+   "source": [
+    "Reusing the KOMO instance is ok if some aspect of the configuration changes and you want to resolve the same problem:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "a2d386d6",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{ time: 0.001388, evals: 6, done: 1, feasible: 1, sos: 0.0133678, f: 0, ineq: 0, eq: 0.0016787 }\n",
+      "{ time: 0.007355, evals: 10, done: 1, feasible: 1, sos: 0.0241692, f: 0, ineq: 0, eq: 0.00610164 }\n",
+      "{ time: 0.011423, evals: 15, done: 1, feasible: 1, sos: 0.0157716, f: 0, ineq: 0, eq: 0.00158974 }\n",
+      "{ time: 0.004805, evals: 8, done: 1, feasible: 1, sos: 0.00526809, f: 0, ineq: 0, eq: 0.00438865 }\n",
+      "{ time: 0.004943, evals: 5, done: 1, feasible: 1, sos: 0.00474658, f: 0, ineq: 0, eq: 0.00463869 }\n",
+      "{ time: 0.003978, evals: 7, done: 1, feasible: 1, sos: 0.0162224, f: 0, ineq: 0, eq: 0.00238246 }\n",
+      "{ time: 0.001244, evals: 6, done: 1, feasible: 1, sos: 0.0123808, f: 0, ineq: 0, eq: 0.00375047 }\n",
+      "{ time: 0.002103, evals: 5, done: 1, feasible: 1, sos: 0.00733383, f: 0, ineq: 0, eq: 0.00564761 }\n",
+      "{ time: 0.002575, evals: 5, done: 1, feasible: 1, sos: 0.00689034, f: 0, ineq: 0, eq: 0.00613115 }\n",
+      "{ time: 0.004353, evals: 7, done: 1, feasible: 1, sos: 0.0132762, f: 0, ineq: 0, eq: 0.00331933 }\n"
+     ]
+    }
+   ],
+   "source": [
+    "box = C.getFrame('box')\n",
+    "box.setPosition([-.25,.1,1.])\n",
+    "p0 = box.getPosition() # memory the start box position\n",
+    "\n",
+    "for t in range(10):\n",
+    "    box.setPosition(p0 + .2 * np.random.randn(3)) # randomize box position\n",
+    "    komo.updateRootObjects(C) # only works for root objects (the 'box' is one)\n",
+    "    ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
+    "    print(ret)\n",
+    "    q = komo.getPath()\n",
+    "    C.setJointState(q[0])\n",
+    "    C.view(False, 'IK solution - ' + ('*** INFEASIBLE ***' if not ret.feasible else 'feasible'))\n",
+    "    time.sleep(1.)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c0e78a35",
+   "metadata": {},
+   "source": [
+    "So the solver finds feasible grasps and exploits the null space of the constraints (grasps from different directions, but always opposing the y-planes).\n",
+    "\n",
+    "To make this proper, we should actually test all three possible grasps - so let's define 3 IK problems, solve each, and pick the best:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "8222658d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "del komo\n",
+    "komo = []\n",
+    "for k in range(3):\n",
+    "    komo.append(ry.KOMO(C, 1,1,0, True))\n",
+    "    komo[k].addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], qHome)\n",
+    "    komo[k].addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)\n",
+    "    komo[k].addObjective([], ry.FS.jointLimits, [], ry.OT.ineq)\n",
+    "    komo[k].addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1])\n",
+    "    komo[k].addObjective([], ry.FS.distance, ['l_palm', 'box'], ry.OT.ineq, [1e1])\n",
+    "\n",
+    "komo[0].addObjective([], ry.FS.scalarProductXY, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])\n",
+    "komo[0].addObjective([], ry.FS.scalarProductXZ, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])\n",
+    "\n",
+    "komo[1].addObjective([], ry.FS.scalarProductXX, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])\n",
+    "komo[1].addObjective([], ry.FS.scalarProductXZ, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])\n",
+    "\n",
+    "komo[2].addObjective([], ry.FS.scalarProductXX, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])\n",
+    "komo[2].addObjective([], ry.FS.scalarProductXY, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "09c7a057",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for t in range(10):\n",
+    "    box.setPosition(p0 + .2 * np.random.randn(3))\n",
+    "    box.setQuaternion(np.random.randn(4)) # also set random orientation (quaternions get internally normalized)\n",
+    "    \n",
+    "    score = []\n",
+    "    for k in range(3):\n",
+    "        komo[k].updateRootObjects(C)\n",
+    "        ret = ry.NLP_Solver(komo[k].nlp(), verbose=0 ) .solve()\n",
+    "        score.append( 100.*(ret.eq+ret.ineq) + ret.sos )\n",
+    "        \n",
+    "    k = np.argmin(score)\n",
+    "    C.setJointState(komo[k].getPath()[0])\n",
+    "    C.view(False, f'IK solution {k} - ' + ('*** INFEASIBLE ***' if not ret.feasible else 'feasible'))\n",
+    "    time.sleep(1.)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "cda905f5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "del komo\n",
+    "del C"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f7d69b02",
+   "metadata": {},
+   "source": [
+    "## Waypoints example\n",
+    "\n",
+    "Motion design can often be done by computing waypoints, i.e. a coarse-resolution sequence of poses. The BotOp interface can then spline-interpolate between them when executing them.\n",
+    "\n",
+    "Let's define a configuration where the desired gripper waypoints are pre-defined as marker frames. (That's a common pattern: Simplify defining constraints by adding helper reference frames in the configuration.)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "a6da9bda",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "C = ry.Config()\n",
+    "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
+    "C.addFrame('way1'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])\n",
+    "C.addFrame('way2'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])\n",
+    "C.addFrame('way3'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])\n",
+    "C.addFrame('way4'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "53a2b1c8",
+   "metadata": {},
+   "source": [
+    "Now we can define a KOMO problem over 4 configurations, where at each configuration we impose position equality between gripper and a waypoint:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "id": "7c3a74d2",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{ time: 0.001713, evals: 10, done: 1, feasible: 1, sos: 2.3949, f: 0, ineq: 0, eq: 0.000292005 }\n",
+      "[[-0.35333405 -0.05475643 -0.41824617 -2.08348439 -0.05931971  2.17654835\n",
+      "  -0.50101108]\n",
+      " [-0.29338172 -0.37617078 -0.40548624 -1.73266988 -0.02274141  2.33778584\n",
+      "  -0.50190159]\n",
+      " [ 0.44235508 -0.06356002  0.31597399 -2.10275629  0.12245479  2.2037305\n",
+      "  -0.50256413]\n",
+      " [ 0.43491826 -0.36086469  0.27555955 -1.74089886  0.12219269  2.34815424\n",
+      "  -0.50291742]]\n"
+     ]
+    }
+   ],
+   "source": [
+    "komo = ry.KOMO(C, phases=4, slicesPerPhase=1, kOrder=1, enableCollisions=False)\n",
+    "komo.addControlObjective([], 0, 1e-1)\n",
+    "komo.addControlObjective([], 1, 1e0)\n",
+    "komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])\n",
+    "\n",
+    "ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
+    "print(ret)\n",
+    "q = komo.getPath()\n",
+    "print(q)\n",
+    "\n",
+    "for t in range(len(q)):\n",
+    "    C.setJointState(q[t])\n",
+    "    C.view(False, f'waypoint {t}')\n",
+    "    time.sleep(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f6263d5c",
+   "metadata": {},
+   "source": [
+    "The `KOMO constructor` has arguments:\n",
+    "\n",
+    "* `config`: the configuration, which is copied once (for IK) or many times (for waypoints/paths) to be the optimization variable\n",
+    "* `phases`: the number $P$ of phases (which essentially defines the real-valued interval $[0, P]$ over which objectives can be formulated)\n",
+    "* `slicesPerPhase`: the discretizations per phase -> in total we have $\\texttt{phases} \\cdot \\texttt{slicesPerPhases}$ configurations which form the path and over which we optimize\n",
+    "* `kOrder`: the \"Markov-order\", i.e., maximal tuple of configurations over which we formulate features (e.g. take finite differences)\n",
+    "* enableCollisions: if True, KOMO runs a broadphase collision check (using libFCL) in each optimization step -- only then accumulative collision/penetration features will correctly evaluate to non-zero. But this is costly.\n",
+    "\n",
+    "In our waypoint case: We have 4 phases, one for each waypoint. We don't sub-sample the motion between waypoints, which is why we have slicesPerPhase=1. We formulate this as a 1-order problem: Some features take the finite difference between consecutive configurations (namely, to penalize velocities).\n",
+    "\n",
+    "The `addControlObjective` is /almost/ the same as adding a `FS.jointState` objective: It penalizes distances in joint space. It has three arguments:\n",
+    "\n",
+    "* `times`: (as for `addObjective`) the phase-interval in which this objective holds; [] means all times\n",
+    "* `order`: Do we penalize the jointState directly (order=0: penalizing sqr distance to qHome, order=1: penalizing sqr distances between consecutive configurations (velocities), order=2: penalizing accelerations across 3 configurations)\n",
+    "* `scale`: as usual, but modulated by a factor \"sqrt(delta t)\" that somehow ensures total control costs in approximately independent of the choice of stepsPerPhase\n",
+    "\n",
+    "In our waypoint case: We add control costs for both: homing (order 0, ensuring to stay close to homing), and velocities (order 1, penalizing movement between waypoints)\n",
+    "\n",
+    "And the `addObjective` method now makes use of `times` argument: Specifying [1] means that this objective only holds in the interval [1,1], i.e. at phase-time 1 only."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "132f82a0",
+   "metadata": {},
+   "source": [
+    "## Path example\n",
+    "\n",
+    "Let's do almost the same, but for a fine path. First order=1, leading to zig-zag, then order=2, leading to smooth path."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "dd21ae9e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{ time: 0.015024, evals: 11, done: 1, feasible: 1, sos: 2.51979, f: 0, ineq: 0, eq: 0.00172374 }\n",
+      "size of path: (40, 7)\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Note, the slicesPerPhase=10 is the only difference to above\n",
+    "C.setJointState(qHome)\n",
+    "komo = ry.KOMO(C, 4, 10, 1, False)\n",
+    "komo.addControlObjective([], 0, 1e-1) # what happens if you change weighting to 1e0? why?\n",
+    "komo.addControlObjective([], 1, 1e0)\n",
+    "komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])\n",
+    "\n",
+    "ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
+    "print(ret)\n",
+    "q = komo.getPath()\n",
+    "print('size of path:', q.shape)\n",
+    "\n",
+    "for t in range(q.shape[0]):\n",
+    "    C.setJointState(q[t])\n",
+    "    C.view(False, f'waypoint {t}')\n",
+    "    time.sleep(.1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "40341e34",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{ time: 0.051184, evals: 25, done: 1, feasible: 1, sos: 16.5171, f: 0, ineq: 0, eq: 0.000772768 }\n",
+      "size of path: (40, 7)\n"
+     ]
+    }
+   ],
+   "source": [
+    "# only differences: the kOrder=2, control objective order 2, constrain final jointState velocity to zero\n",
+    "C.setJointState(qHome)\n",
+    "komo = ry.KOMO(C, 4, 10, 2, False)\n",
+    "komo.addControlObjective([], 0, 1e-1) # what happens if you change weighting to 1e0? why?\n",
+    "komo.addControlObjective([], 2, 1e0)\n",
+    "komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([4], ry.FS.jointState, [], ry.OT.eq, [1e1], [], order=1)\n",
+    "\n",
+    "ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
+    "print(ret)\n",
+    "q = komo.getPath()\n",
+    "print('size of path:', q.shape)\n",
+    "\n",
+    "for t in range(q.shape[0]):\n",
+    "    C.setJointState(q[t])\n",
+    "    C.view(False, f'waypoint {t}')\n",
+    "    time.sleep(.1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "154ea039",
+   "metadata": {},
+   "source": [
+    "Notice the new last objective! Without it, *final velocity* would not be zero. The last objective constrains the order=1 (i.e. velocity!) of the jointState feature to be zero.\n",
+    "\n",
+    "Let's plot the trajectory:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "3d47d887",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(40, 7)\n"
+     ]
+    },
+    {
+     "data": {
+      "image/png": "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iC4TQ80UEfR5MdDZAVdXZzy8uOJLx3lrXAaZ7Q6k5xfGlgJkFBQhPb8Azrx86A3GK3QVREREE2fKhJrHH38cL730Ek6ePAmz2YxVq1bhn/7pn1BVVZXqol2WkN8HT18fvP298Pb1wtvfB09sHX/c24Ogb/Q+LsOZ7Q44snPhzMlFRkFhPMSk5RfAbLNfgashIiJKnSkTarZv344HHngAy5YtQyQSwXe/+11cf/31OH78OKxWa6qLh2gkjIDHg4DXg6DXE98OeNwIeAb3uWP7PPC5+uHt60M4GBjz14iHluwcOHJy4cjOgTNbWTuyc2AwmSfwComIiCY3SYhz56ifGrq6upCTk4Pt27djzZo1o54TDAYRDAbjj10uF4qLizEwMACHw5G0srzwj99Hw5GDl/x8vckMW3o6rGkZsKalw5qurG3pGbCmZcCWkQF7VjZDCxERTUsulwtOp/Oin99TpqbmXAMDAwCAjIyM857z+OOP47HHHpvwsugMhvi20WqFyWqD0WqDyWaHyWqDyWZL3GezwWJ3wpquBBiGFSIioss3JWtqZFnGJz/5SfT39+ODDz4473lXqqbG5xqApNHAaLHwpotERERJpuqamgceeADHjh27YKABAKPRCKNx4kf2WBzOCf8aREREdGFTLtQ8+OCDeP3117Fjxw4UFRWlujhEREQ0SUyZUCOEwFe/+lW8/PLL2LZtG2bOnJnqIhEREdEkMmVCzQMPPIDf/e53ePXVV2G329He3g4AcDqdMJvZ0ZaIiGi6mzIdhc93t+enn34a99xzz5heY6wdjYiIiGjyUF1H4SmSvYiIiChFNKkuABEREVEyMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAREZEqMNQQERGRKjDUEBERkSow1BAR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GI1G8cwzz4jjx4+LL3/5yyItLU20t7enumhJ841vfENs27ZNnDlzRuzcuVNs3LhRZGVlic7OzlQX7bK43W5x8OBBcfDgQQFA/Ou//qs4ePCgaGhoEEII8cQTT4i0tDTx6quviiNHjojbbrtNzJw5U/j9/hSXfOwudI1ut1s89NBD4qOPPhJnzpwR7733nli8eLGoqKgQgUAg1UUfl/vvv184nU6xbds20dbWFl98Pl/8nK985SuipKREbNmyRezbt0+sXLlSrFy5MoWlHr+LXWddXZ344Q9/KPbt2yfOnDkjXn31VTFr1iyxZs2aFJd87L7zne+I7du3izNnzogjR46I73znO0KSJPHOO+8IIdTxPgpx4etUw/t4IeeO7Erme8pQkwQ//elPRUlJiTAYDGL58uVi165dqS5SUt11110iPz9fGAwGUVhYKO666y5RV1eX6mJdtq1btwoAI5a7775bCKEM6/7+978vcnNzhdFoFBs2bBA1NTWpLfQ4XegafT6fuP7660V2drbQ6/VixowZ4r777puSgXy0awQgnn766fg5fr9f/PVf/7VIT08XFotFfOpTnxJtbW2pK/QluNh1NjY2ijVr1oiMjAxhNBpFeXm5+OY3vykGBgZSW/BxuPfee8WMGTOEwWAQ2dnZYsOGDfFAI4Q63kchLnydangfL+TcUJPM91QSQohLqFEiIiIimlTYp4aIiIhUgaGGiIiIVIGhhoiIiFSBoYaIiIhUgaGGiIiIVIGhhoiIiFSBoYaIiIhUgaGGiIiIVIGhhogIwD333IPbb7891cUgosvAUENESfOLX/wCdrsdkUgkvs/j8UCv12PdunUJ527btg2SJKG+vv4Kl3J0//7v/45nnnlmXM+RJAmvvPLKhJSHiMaPoYaIkmb9+vXweDzYt29ffN/777+PvLw87N69G4FAIL5/69atKCkpQVlZWSqKOoLT6URaWlqqi0FEl4GhhoiSpqqqCvn5+di2bVt837Zt23Dbbbdh5syZ2LVrV8L+9evX43//93+xdOlS2O125OXl4fOf/zw6OzsBAEIIlJeX40c/+lHC1zl06BAkSUJdXR0Apcbk5z//OW688UaYzWbMmjULL7zwQsJzjh49iuuuuw5msxmZmZn48pe/DI/HEz9+bvPTunXr8Dd/8zf41re+hYyMDOTl5eEHP/hB/HhpaSkA4FOf+hQkSYo/JqLUYaghoqRav349tm7dGn+8detWrFu3DmvXro3v9/v92L17N9avX49wOIy///u/x+HDh/HKK6/g7NmzuOeeewAoYeXee+/F008/nfA1nn76aaxZswbl5eXxfd///vdx55134vDhw/jCF76Az33uczhx4gQAwOv1YtOmTUhPT8fevXvx/PPP47333sODDz54wWv59a9/DavVit27d+PJJ5/ED3/4Q7z77rsAgL1798bL0tbWFn9MRCmUjNuIExEN+u///m9htVpFOBwWLpdL6HQ60dnZKX73u9+JNWvWCCGE2Lx5swAgGhoaRjx/7969AoBwu91CCCFaWlqEVqsVu3fvFkIIEQqFRFZWlnjmmWfizwEgvvKVryS8zooVK8T9998vhBDiv/7rv0R6errweDzx42+88YbQaDSivb1dCCHE3XffLW677bb48bVr14prrrkm4TWXLVsmvv3tbyd83Zdffnm8/0VENEFYU0NESbVu3Tp4vV7s3bsX77//PiorK5GdnY21a9fG+9Vs27YNs2bNQklJCfbv349bb70VJSUlsNvtWLt2LQCgsbERAFBQUICbb74Zv/rVrwAAr732GoLBID7zmc8kfN2VK1eOeDxYU3PixAksXLgQVqs1fnz16tWQZRk1NTXnvZYFCxYkPM7Pz483jRHR5MNQQ0RJVV5ejqKiImzduhVbt26Nh5SCggIUFxfjww8/xNatW3HdddfFm4UcDgd++9vfYu/evXj55ZcBAKFQKP6af/mXf4lnn30Wfr8fTz/9NO666y5YLJYJvxa9Xp/wWJIkyLI84V+XiC4NQw0RJd369euxbds2bNu2LWEo95o1a/Dmm29iz549WL9+PU6ePImenh488cQTuPbaa1FdXT1qTchNN90Eq9WKn//853jrrbdw7733jjhneCfkwcezZ88GAMyePRuHDx+G1+uNH9+5cyc0Gg2qqqou+Tr1ej2i0eglP5+IkouhhoiSbv369fjggw9w6NCheE0NAKxduxZPPfUUQqEQ1q9fj5KSEhgMBvz0pz/F6dOn8cc//hF///d/P+L1tFot7rnnHjz88MOoqKgY0dQEAM8//zx+9atfoba2Fo8++ij27NkT7wj8hS98ASaTCXfffTeOHTuGrVu34qtf/Sr+7M/+DLm5uZd8naWlpdi8eTPa29vR19d3ya9DRMnBUENESbd+/Xr4/X6Ul5cnhIa1a9fC7XbHh35nZ2fjmWeewfPPP485c+bgiSeeGDF8e9Bf/MVfIBQK4Utf+tKoxx977DE8++yzWLBgAX7zm9/g97//PebMmQMAsFgsePvtt9Hb24tly5bh05/+NDZs2ID/+I//uKzr/Jd/+Re8++67KC4uxlVXXXVZr0VEl08SQohUF4KI6GLef/99bNiwAU1NTSNqVyRJwssvv8zbHBBNc7pUF4CI6EKCwSC6urrwgx/8AJ/5zGcuq7mIiNSNzU9ENKn9/ve/x4wZM9Df348nn3wy1cUhokmMzU9ERESkCqypISIiIlVgqCEiIiJVYKghIiIiVWCoISIiIlVgqCEiIiJVYKghIiIiVWCoISIiIlVgqCEiIiJV+P8Buvi4my2tZToAAAAASUVORK5CYII=",
+      "text/plain": [
+       "<Figure size 640x480 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "from matplotlib import pyplot as plt\n",
+    "\n",
+    "print(q.shape)\n",
+    "plt.plot(q)\n",
+    "plt.xlabel(\"Waypoint\")\n",
+    "plt.ylabel(\"Joint states\");"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "08aacd1a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "del C"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c209e80b",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
