@@ -476,6 +476,10 @@ class Config():
         """
         get the total number of degrees of freedom
         """
+    def getJointLimits(self) -> arr: 
+        """
+        get the joint limits as a n-by-2 matrix; for dofs that do not have limits defined, the entries are [0,-1] (i.e. upper limit < lower limit)
+        """
     def getJointNames(self) -> StringA: 
         """
         get the list of joint names
@@ -553,9 +557,17 @@ class Config():
         """
         write the full configuration in a string (roughly yaml), e.g. for file export
         """
-    def writeCollada(self, arg0: str, arg1: str) -> None: 
+    def writeCollada(self, filename: str, format: str = 'collada') -> None: 
         """
         write the full configuration in a collada file for export
+        """
+    def writeMesh(self, filename: str) -> None: 
+        """
+        write the full configuration in a ply mesh file
+        """
+    def writeMeshes(self, pathPrefix: str) -> None: 
+        """
+        write all object meshes in a directory
         """
     def writeURDF(self) -> str: 
         """
@@ -809,6 +821,8 @@ class Frame():
     def setConvexMesh(*args, **kwargs) -> typing.Any: ...
     @staticmethod
     def setDensity(*args, **kwargs) -> typing.Any: ...
+    @staticmethod
+    def setImplicitSurface(*args, **kwargs) -> typing.Any: ...
     def setJoint(self, arg0: JT) -> Frame: ...
     def setJointState(self, arg0: arr) -> Frame: ...
     def setMass(self, arg0: float) -> Frame: ...
@@ -1509,8 +1523,10 @@ class Simulation():
     def addImp(self, arg0: ImpType, arg1: StringA, arg2: arr) -> None: ...
     @staticmethod
     def addSensor(*args, **kwargs) -> typing.Any: ...
+    def attach(self, gripper: Frame, obj: Frame) -> None: ...
     def closeGripper(self, gripperFrameName: str, width: float = 0.05, speed: float = 0.3, force: float = 20.0) -> None: ...
     def depthData2pointCloud(self, arg0: numpy.ndarray[numpy.float32], arg1: typing.List[float]) -> numpy.ndarray[numpy.float64]: ...
+    def detach(self, obj: Frame) -> None: ...
     def getGripperIsGrasping(self, gripperFrameName: str) -> bool: ...
     def getGripperWidth(self, gripperFrameName: str) -> float: ...
     def getGroundTruthPosition(self, arg0: str) -> numpy.ndarray[numpy.float64]: ...
@@ -1531,6 +1547,10 @@ class Simulation():
     def pushConfigurationToSimulator(self, frameVelocities: arr = array(0.0078125), jointVelocities: arr = array(0.0078125)) -> None: 
         """
         set the simulator to the full (frame) state of the configuration
+        """
+    def resetSplineRef(self) -> None: 
+        """
+        reset the spline reference, i.e., clear the current spline buffer and initialize it to constant spline at current position (to which setSplineRef can append)
         """
     @staticmethod
     def selectSensor(*args, **kwargs) -> typing.Any: ...
