@@ -441,7 +441,7 @@ class Config():
         """
         create a feature (a differentiable map from joint state to a vector space), as they're typically used for IK or optimization. See the dedicated tutorial for details. featureSymbol defines which mapping this is (position, vectors, collision distance, etc). many mapping refer to one or several frames, which need to be specified using frameNames
         """
-    def frame(self, frameName: str) -> Frame: 
+    def frame(self, frameName: str, warnIfNotExist: bool = True) -> Frame: 
         """
         get access to a frame by name; use the Frame methods to set/get frame properties
         """
@@ -451,7 +451,7 @@ class Config():
         return the results of collision computations: a list of 3 tuples with (frame1, frame2, distance). Optionally report only on distances below a margin To get really precise distances and penetrations use the FS.distance feature with the two frame names
         """
     def getDofIDs(self) -> typing.List[int]: ...
-    def getFrame(self, frameName: str) -> Frame: 
+    def getFrame(self, frameName: str, warnIfNotExist: bool = True) -> Frame: 
         """
         get access to a frame by name; use the Frame methods to set/get frame properties
         """
@@ -539,6 +539,10 @@ class Config():
     def view_pose(self) -> arr: 
         """
         return the 7D pose of the view camera
+        """
+    def view_raise(self) -> None: 
+        """
+        raise the view
         """
     def view_recopyMeshes(self) -> None: ...
     def view_savePng(self, pathPrefix: str = 'z.vid/') -> None: 
@@ -1004,8 +1008,7 @@ class KOMO():
     @staticmethod
     def addInteraction_elasticBounce(*args, **kwargs) -> typing.Any: ...
     def addModeSwitch(self, times: arr, newMode: SY, frames: StringA, firstSwitch: bool = True) -> None: ...
-    @staticmethod
-    def addObjective(*args, **kwargs) -> typing.Any: 
+    def addObjective(self, times: arr, feature: FS, frames: StringA, type: ObjectiveType, scale: arr = array(0.0078125), target: arr = array(0.0078125), order: int = -1) -> None: 
         """
         central method to define objectives in the KOMO NLP:
         * times: the time intervals (subset of configurations in a path) over which this feature is active (irrelevant for IK)
@@ -1028,7 +1031,6 @@ class KOMO():
     def getPathFrames(self) -> arr: ...
     def getPathTau(self) -> arr: ...
     def getPath_qAll(self) -> arrA: ...
-    def getReport(self, arg0: bool) -> dict: ...
     def getT(self) -> int: ...
     def initOrg(self) -> None: ...
     def initPhaseWithDofsPath(self, t_phase: int, dofIDs: uintA, path: arr, autoResamplePath: bool = False) -> None: ...
@@ -1040,9 +1042,10 @@ class KOMO():
         """
         return the problem NLP
         """
-    def report(self, specs: bool = False, plotOverTime: bool = False) -> dict: 
+    @staticmethod
+    def report(*args, **kwargs) -> typing.Any: 
         """
-        returns a dict with full report on features, optionally also on problem specs and plotting costs/violations over time
+        returns a dict with full list of features, optionally also on problem specs and plotting costs/violations over time
         """
     def reportProblem(self) -> str: ...
     def setConfig(self, config: Config, enableCollisions: bool) -> None: 
@@ -1116,7 +1119,7 @@ class NLP_Solver():
     def getTrace_phi(self) -> arr: ...
     def getTrace_x(self) -> arr: ...
     def reportLagrangeGradients(self, arg0: StringA) -> dict: ...
-    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, maxStep: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2) -> NLP_Solver: 
+    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, maxStep: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, maxLambda: float = -1.0) -> NLP_Solver: 
         """
         set solver options
         """
@@ -1190,6 +1193,7 @@ class NLP_SolverOptions():
     def __init__(self) -> None: ...
     def dict(self) -> dict: ...
     def set_damping(self, arg0: float) -> NLP_SolverOptions: ...
+    def set_maxLambda(self, arg0: float) -> NLP_SolverOptions: ...
     def set_maxStep(self, arg0: float) -> NLP_SolverOptions: ...
     def set_muInc(self, arg0: float) -> NLP_SolverOptions: ...
     def set_muInit(self, arg0: float) -> NLP_SolverOptions: ...

@@ -218,6 +218,7 @@ install(
 
 install(
   TARGETS rai
+  #DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
   COMPONENT pkgconfig)
 

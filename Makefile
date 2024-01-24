@@ -10,6 +10,7 @@ local-install:
 	ln -f -s _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
 	cmake . -B build
 	+make -C build _robotic docstrings install
+	cp build/_robotic.pyi ${HOME}/.local/lib/python3.8/site-packages/robotic
 
 local-clean:
 	-rm -Rf ${HOME}/.local/lib/python3.8/site-packages/robotic*
@@ -31,6 +32,9 @@ wheels-install:
 
 test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
+
+test-tutorials:
+	make -j1 -C rai-docs/rai-tutorials run
 
 pull:
 	cd rai && git pull
