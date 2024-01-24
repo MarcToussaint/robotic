@@ -157,7 +157,7 @@ komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report(True)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report()
 </pre></div>
 </div>
 </div>
@@ -167,28 +167,20 @@ komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], 
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;KOMO_specs&#39;: {&#39;x_dim&#39;: 7,
-  &#39;dual_dim&#39;: 0,
-  &#39;T&#39;: 1,
-  &#39;k&#39;: 0,
-  &#39;phases&#39;: 1.0,
-  &#39;slicesPerPhase&#39;: 1,
-  &#39;enableCollisions&#39;: False,
-  &#39;tau&#39;: 1.0,
-  &#39;#slices&#39;: 1,
-  &#39;#totalDOF&#39;: 7,
-  &#39;#frames&#39;: 66,
-  &#39;#pathQueries:&#39;: 0},
- &#39;objectives&#39;: {&#39;_F_qItself/0-#14&#39;: {&#39;order&#39;: 0.0,
-   &#39;type&#39;: &#39;sos&#39;,
-   &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-   &#39;times&#39;: [],
-   &#39;slices&#39;: [0.0, 0.0]},
-  &#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;order&#39;: 0.0,
-   &#39;type&#39;: &#39;eq&#39;,
-   &#39;scale&#39;: [10.0],
-   &#39;times&#39;: [],
-   &#39;slices&#39;: [0.0, 0.0]}}}
+{&#39;o0&#39;: {&#39;name&#39;: &#39;F_qItself&#39;,
+  &#39;frames&#39;: [&#39;#14&#39;],
+  &#39;order&#39;: 0.0,
+  &#39;type&#39;: &#39;sos&#39;,
+  &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+  &#39;times&#39;: [],
+  &#39;slices&#39;: [0.0, 0.0]},
+ &#39;o1&#39;: {&#39;name&#39;: &#39;F_PositionDiff&#39;,
+  &#39;frames&#39;: [&#39;l_gripper&#39;, &#39;box&#39;],
+  &#39;order&#39;: 0.0,
+  &#39;type&#39;: &#39;eq&#39;,
+  &#39;scale&#39;: [10.0],
+  &#39;times&#39;: [],
+  &#39;slices&#39;: [0.0, 0.0]}}
 </pre></div></div>
 </div>
 </section>
@@ -212,7 +204,7 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.000571, evals: 6, done: 1, feasible: 1, sos: 0.00414146, f: 0, ineq: 0, eq: 0.00188382 }
+{ time: 0.000332, evals: 6, done: 1, feasible: 1, sos: 0.00414146, f: 0, ineq: 0, eq: 0.00188382 }
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -229,16 +221,20 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;_F_qItself/0-#14&#39;: {&#39;order&#39;: 0.0,
+{&#39;o0&#39;: {&#39;name&#39;: &#39;F_qItself&#39;,
+  &#39;frames&#39;: [&#39;#14&#39;],
+  &#39;err&#39;: 0.004141463188074276,
+  &#39;order&#39;: 0.0,
   &#39;type&#39;: &#39;sos&#39;,
   &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-  &#39;err&#39;: 0.004141463188074276,
   &#39;times&#39;: [],
   &#39;slices&#39;: [0.0, 0.0]},
- &#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;order&#39;: 0.0,
+ &#39;o1&#39;: {&#39;name&#39;: &#39;F_PositionDiff&#39;,
+  &#39;frames&#39;: [&#39;l_gripper&#39;, &#39;box&#39;],
+  &#39;err&#39;: 0.0018838214351309113,
+  &#39;order&#39;: 0.0,
   &#39;type&#39;: &#39;eq&#39;,
   &#39;scale&#39;: [10.0],
-  &#39;err&#39;: 0.0018838214351309113,
   &#39;times&#39;: [],
   &#39;slices&#39;: [0.0, 0.0]},
  &#39;totals&#39;: {&#39;sos&#39;: 0.004141463188074276,
@@ -285,7 +281,7 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.010084, evals: 120, done: 1, feasible: 0, sos: 0.0702195, f: 0, ineq: 0, eq: 4.60313 }
+{ time: 0.004545, evals: 120, done: 1, feasible: 0, sos: 0.0702195, f: 0, ineq: 0, eq: 4.60313 }
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -302,16 +298,20 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;_F_qItself/0-#14&#39;: {&#39;order&#39;: 0.0,
+{&#39;o0&#39;: {&#39;name&#39;: &#39;F_qItself&#39;,
+  &#39;frames&#39;: [&#39;#14&#39;],
+  &#39;err&#39;: 0.07021953478317369,
+  &#39;order&#39;: 0.0,
   &#39;type&#39;: &#39;sos&#39;,
   &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-  &#39;err&#39;: 0.07021953478317369,
   &#39;times&#39;: [],
   &#39;slices&#39;: [0.0, 0.0]},
- &#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;order&#39;: 0.0,
+ &#39;o1&#39;: {&#39;name&#39;: &#39;F_PositionDiff&#39;,
+  &#39;frames&#39;: [&#39;l_gripper&#39;, &#39;box&#39;],
+  &#39;err&#39;: 4.603126581420996,
+  &#39;order&#39;: 0.0,
   &#39;type&#39;: &#39;eq&#39;,
   &#39;scale&#39;: [10.0],
-  &#39;err&#39;: 4.603126581420996,
   &#39;times&#39;: [],
   &#39;slices&#39;: [0.0, 0.0]},
  &#39;totals&#39;: {&#39;sos&#39;: 0.07021953478317369,
@@ -339,10 +339,10 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;__F_PositionDiff/0-l_gripper-box&#39;: {&#39;err&#39;: 4.603126581420996,
+{&#39;F_PositionDiff/0-l_gripper-box&#39;: {&#39;err&#39;: 4.603126581420996,
   &#39;grad&#39;: 1996.3797729703783,
   &#39;type&#39;: &#39;eq&#39;},
- &#39;_F_qItself/0-#14&#39;: {&#39;err&#39;: 0.07021953478317369,
+ &#39;F_qItself/0-#14&#39;: {&#39;err&#39;: 0.07021953478317369,
   &#39;grad&#39;: 0.10441937164903314,
   &#39;type&#39;: &#39;sos&#39;}}
 </pre></div></div>
@@ -407,7 +407,7 @@ for t in range(q.shape[0]):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.030879, evals: 25, done: 1, feasible: 1, sos: 16.5173, f: 0, ineq: 0, eq: 0.000774498 }
+{ time: 0.028148, evals: 25, done: 1, feasible: 1, sos: 16.5173, f: 0, ineq: 0, eq: 0.000774498 }
 </pre></div></div>
 </div>
 <p>Using <code class="docutils literal notranslate"><span class="pre">plotOverTime</span></code> in the report method now plots the constraint violations (or sqr costs) over <em>phase</em>, using gnuplot. (You need to have <code class="docutils literal notranslate"><span class="pre">gnuplot</span></code> installed on your Ubuntu, using <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">gnuplot</span></code>.)</p>
@@ -435,25 +435,25 @@ for t in range(q.shape[0]):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;_F_qItself/2-#14&#39;: {&#39;err&#39;: 16.271221226873042,
+{&#39;F_qItself/2-#14&#39;: {&#39;err&#39;: 16.271221226873042,
   &#39;grad&#39;: 6007.932041855862,
   &#39;type&#39;: &#39;sos&#39;},
- &#39;_F_qItself/1-#14&#39;: {&#39;err&#39;: 3.2991984627583903e-05,
+ &#39;F_qItself/1-#14&#39;: {&#39;err&#39;: 3.2991984627583903e-05,
   &#39;grad&#39;: 215.44352203086478,
   &#39;type&#39;: &#39;eq&#39;},
- &#39;__F_PositionDiff/0-l_gripper-way3&#39;: {&#39;err&#39;: 0.00010220589093085097,
+ &#39;F_PositionDiff/0-l_gripper-way3&#39;: {&#39;err&#39;: 0.00010220589093085097,
   &#39;grad&#39;: 38.292276583455326,
   &#39;type&#39;: &#39;eq&#39;},
- &#39;__F_PositionDiff/0-l_gripper-way1&#39;: {&#39;err&#39;: 0.00022613176104052668,
+ &#39;F_PositionDiff/0-l_gripper-way1&#39;: {&#39;err&#39;: 0.00022613176104052668,
   &#39;grad&#39;: 36.94496585387665,
   &#39;type&#39;: &#39;eq&#39;},
- &#39;__F_PositionDiff/0-l_gripper-way2&#39;: {&#39;err&#39;: 0.00016647615025650042,
+ &#39;F_PositionDiff/0-l_gripper-way2&#39;: {&#39;err&#39;: 0.00016647615025650042,
   &#39;grad&#39;: 31.041675044147212,
   &#39;type&#39;: &#39;eq&#39;},
- &#39;__F_PositionDiff/0-l_gripper-way4&#39;: {&#39;err&#39;: 0.0002466926005761927,
+ &#39;F_PositionDiff/0-l_gripper-way4&#39;: {&#39;err&#39;: 0.0002466926005761927,
   &#39;grad&#39;: 22.00293286910548,
   &#39;type&#39;: &#39;eq&#39;},
- &#39;_F_qItself/0-#14&#39;: {&#39;err&#39;: 0.24605158167255367,
+ &#39;F_qItself/0-#14&#39;: {&#39;err&#39;: 0.24605158167255367,
   &#39;grad&#39;: 1.2106791822071845,
   &#39;type&#39;: &#39;sos&#39;}}
 </pre></div></div>

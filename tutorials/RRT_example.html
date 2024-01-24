@@ -197,8 +197,7 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-====nlp==== method:AugmentedLagrangian bounded: yes
-{ time: 0.16243, evals: 194, done: 1, feasible: 1, sos: 4.60585, f: 0, ineq: 0, eq: 0.00676303 }
+{ time: 0.099493, evals: 194, done: 1, feasible: 1, sos: 4.60585, f: 0, ineq: 0, eq: 0.00676303 }====nlp==== method:AugmentedLagrangian bounded: yes
 ==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1
 ----newton---- initial point f(x):118.048 alpha:1 beta:1
 --newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    60.0308  ACCEPT
@@ -210,7 +209,8 @@ print(ret)
 --newton-- it:   7  |Delta|:        0.2  alpha:          1  evals:   8  f(y):    3.78052  ACCEPT
 --newton-- it:   8  |Delta|:   0.173284  alpha:          1  evals:   9  f(y):    3.59785  ACCEPT
 --newton-- it:   9  |Delta|:   0.103234  alpha:          1  evals:  10  f(y):    3.53436  ACCEPT
---newton-- it:  10  |Delta|:  0.0367851  alpha:          1  evals:  11  f(y):    3.52091  ACCEPT
+--newton-- it:  10  |Delta|:  0.0367851  alpha:          1  evals:  11
+  f(y):    3.52091  ACCEPT
 --newton-- it:  11  |Delta|:  0.0231793  alpha:          1  evals:  12  f(y):    3.51658  ACCEPT
 --newton-- stopping: &#39;absMax(Delta)&lt;options.stopTolerance&#39;
 ==nlp== it:   0  evals:  12  A(x):    3.51658  f:    3.15532  g:          0  h:    1.45074  |x-x&#39;|:     1.0145      stop:DeltaConverge
@@ -445,13 +445,23 @@ rrt.setProblem(C, [q0], [qT])
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- RRT_PathFinder.cpp:RRT_PathFinder:244(0) initializing with infeasible qT:
+query: h_goal: 0 g_coll: 0 isGoal: 1 isFeasible: 0
+proxy:  (r_panda_coll6)-(l_panda_coll5) [125,44]        d=-0
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;robotic._robotic.PathFinder at 0x7fad9954a370&gt;
+&lt;robotic._robotic.PathFinder at 0x7f288c50e4f0&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -469,7 +479,7 @@ path = ret.x
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.209925, evals: 172, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
+{ time: 0.019944, evals: 243, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -496,7 +506,7 @@ bot.home(C)
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
@@ -505,14 +515,6 @@ while bot.getTimeToEnd()&gt;0:
     bot.sync(C, .1)
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0.180939 1
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -527,9 +529,9 @@ while bot.getTimeToEnd()&gt;0:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--- bot.cpp:~BotOp:114(0) shutting down BotOp...
+-- bot.cpp:~BotOp:118(0) shutting down BotOp...
 -- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread
--- simulation.cpp:~Simulation:148(0) shutting down Simulation
+-- simulation.cpp:~Simulation:149(0) shutting down Simulation
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">

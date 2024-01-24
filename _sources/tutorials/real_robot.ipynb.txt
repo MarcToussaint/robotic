@@ -51,7 +51,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "robotic version: 0.1.2 compile time: Dec  2 2023 17:34:34\n"
+      "robotic version: 0.1.3b compile time: Jan 24 2024 13:12:18\n"
      ]
     }
    ],
@@ -72,7 +72,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 2,
    "id": "33f75e77",
    "metadata": {},
    "outputs": [
@@ -82,7 +82,7 @@
        "0"
       ]
      },
-     "execution_count": 3,
+     "execution_count": 2,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -104,7 +104,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 3,
    "id": "f1119ecc",
    "metadata": {},
    "outputs": [
@@ -131,7 +131,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 4,
    "id": "bafdead7",
    "metadata": {},
    "outputs": [],
@@ -151,7 +151,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 5,
    "id": "df4ea390",
    "metadata": {},
    "outputs": [
@@ -168,7 +168,7 @@
        "0"
       ]
      },
-     "execution_count": 6,
+     "execution_count": 5,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -195,7 +195,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 6,
    "id": "1b2144a8",
    "metadata": {},
    "outputs": [
@@ -203,7 +203,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "-- WARNING:frame.cpp:glDraw:1681(-1) trying to draw empty mesh (shape type:pointCloud)\n"
+      "-- WARNING:frame.cpp:glDraw:1806(-1) trying to draw empty mesh (shape type:pointCloud)\n"
      ]
     }
    ],
@@ -229,7 +229,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": 7,
    "id": "79a8549c",
    "metadata": {},
    "outputs": [],
@@ -257,7 +257,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 8,
    "id": "10443e09",
    "metadata": {},
    "outputs": [
@@ -267,7 +267,7 @@
      "text": [
       "-- bot.cpp:~BotOp:118(0) shutting down BotOp...\n",
       "-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread\n",
-      "-- simulation.cpp:~Simulation:148(0) shutting down Simulation\n"
+      "-- simulation.cpp:~Simulation:149(0) shutting down Simulation\n"
      ]
     }
    ],
@@ -286,7 +286,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 9,
    "id": "6e82d8f8",
    "metadata": {},
    "outputs": [],
@@ -298,7 +298,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": 10,
    "id": "aa1a93be",
    "metadata": {},
    "outputs": [
@@ -308,7 +308,7 @@
        "0"
       ]
      },
-     "execution_count": 11,
+     "execution_count": 10,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -321,7 +321,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": 11,
    "id": "5844a69c",
    "metadata": {},
    "outputs": [
@@ -348,7 +348,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": 12,
    "id": "18468cf5",
    "metadata": {},
    "outputs": [
@@ -358,7 +358,7 @@
        "0"
       ]
      },
-     "execution_count": 13,
+     "execution_count": 12,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -377,7 +377,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": 13,
    "id": "953b9f3f",
    "metadata": {},
    "outputs": [
@@ -387,7 +387,7 @@
        "0"
       ]
      },
-     "execution_count": 14,
+     "execution_count": 13,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -407,7 +407,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 15,
+   "execution_count": 14,
    "id": "5d51abbd",
    "metadata": {},
    "outputs": [
@@ -417,7 +417,7 @@
        "0"
       ]
      },
-     "execution_count": 15,
+     "execution_count": 14,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -439,7 +439,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": 15,
    "id": "86cad3be",
    "metadata": {},
    "outputs": [
@@ -447,46 +447,6 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
-      " direct: [nan]  pseudoInv: [nan]\n",
       " direct: [nan]  pseudoInv: [nan]\n",
       " direct: [nan]  pseudoInv: [nan]\n",
       " direct: [nan]  pseudoInv: [nan]\n",
@@ -527,7 +487,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 17,
+   "execution_count": 16,
    "id": "549b1e19",
    "metadata": {},
    "outputs": [],
@@ -537,7 +497,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
+   "execution_count": 17,
    "id": "248e8726",
    "metadata": {},
    "outputs": [
@@ -547,7 +507,7 @@
      "text": [
       "-- bot.cpp:~BotOp:118(0) shutting down BotOp...\n",
       "-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread\n",
-      "-- simulation.cpp:~Simulation:148(0) shutting down Simulation\n"
+      "-- simulation.cpp:~Simulation:149(0) shutting down Simulation\n"
      ]
     }
    ],
@@ -568,7 +528,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 19,
+   "execution_count": 18,
    "id": "09599476",
    "metadata": {},
    "outputs": [],
@@ -580,7 +540,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 20,
+   "execution_count": 19,
    "id": "b52de13c",
    "metadata": {},
    "outputs": [
@@ -590,7 +550,7 @@
        "0"
       ]
      },
-     "execution_count": 20,
+     "execution_count": 19,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -603,18 +563,26 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 21,
+   "execution_count": 20,
    "id": "69b11c6a",
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "-- bot.cpp:BotOp:38(0) -- blocking useRealRobot -- \n"
+     ]
+    }
+   ],
    "source": [
     "# True = real robot!!\n",
-    "bot = ry.BotOp(C, False)"
+    "bot = ry.BotOp(C, True)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 22,
+   "execution_count": 21,
    "id": "9a4ad737",
    "metadata": {},
    "outputs": [],
@@ -624,7 +592,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 23,
+   "execution_count": 22,
    "id": "41a1f137",
    "metadata": {},
    "outputs": [],
@@ -640,7 +608,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 24,
+   "execution_count": 23,
    "id": "11284fdc",
    "metadata": {},
    "outputs": [
@@ -650,12 +618,13 @@
      "text": [
       "-- bot.cpp:~BotOp:118(0) shutting down BotOp...\n",
       "-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread\n",
-      "-- simulation.cpp:~Simulation:148(0) shutting down Simulation\n"
+      "-- simulation.cpp:~Simulation:149(0) shutting down Simulation\n"
      ]
     }
    ],
    "source": [
-    "del bot"
+    "del bot\n",
+    "del C"
    ]
   },
   {

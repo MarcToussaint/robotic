@@ -114,8 +114,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "====nlp==== method:AugmentedLagrangian bounded: yes\n",
-      "{ time: 0.16243, evals: 194, done: 1, feasible: 1, sos: 4.60585, f: 0, ineq: 0, eq: 0.00676303 }\n",
+      "{ time: 0.099493, evals: 194, done: 1, feasible: 1, sos: 4.60585, f: 0, ineq: 0, eq: 0.00676303 }====nlp==== method:AugmentedLagrangian bounded: yes\n",
       "==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1\n",
       "----newton---- initial point f(x):118.048 alpha:1 beta:1\n",
       "--newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    60.0308  ACCEPT\n",
@@ -127,7 +126,8 @@
       "--newton-- it:   7  |Delta|:        0.2  alpha:          1  evals:   8  f(y):    3.78052  ACCEPT\n",
       "--newton-- it:   8  |Delta|:   0.173284  alpha:          1  evals:   9  f(y):    3.59785  ACCEPT\n",
       "--newton-- it:   9  |Delta|:   0.103234  alpha:          1  evals:  10  f(y):    3.53436  ACCEPT\n",
-      "--newton-- it:  10  |Delta|:  0.0367851  alpha:          1  evals:  11  f(y):    3.52091  ACCEPT\n",
+      "--newton-- it:  10  |Delta|:  0.0367851  alpha:          1  evals:  11\n",
+      "  f(y):    3.52091  ACCEPT\n",
       "--newton-- it:  11  |Delta|:  0.0231793  alpha:          1  evals:  12  f(y):    3.51658  ACCEPT\n",
       "--newton-- stopping: 'absMax(Delta)<options.stopTolerance'\n",
       "==nlp== it:   0  evals:  12  A(x):    3.51658  f:    3.15532  g:          0  h:    1.45074  |x-x'|:     1.0145 \tstop:DeltaConverge\n",
@@ -372,9 +372,18 @@
    "metadata": {},
    "outputs": [
     {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "-- RRT_PathFinder.cpp:RRT_PathFinder:244(0) initializing with infeasible qT:\n",
+      "query: h_goal: 0 g_coll: 0 isGoal: 1 isFeasible: 0\n",
+      "proxy:  (r_panda_coll6)-(l_panda_coll5) [125,44] \td=-0\n"
+     ]
+    },
+    {
      "data": {
       "text/plain": [
-       "<robotic._robotic.PathFinder at 0x7fad9954a370>"
+       "<robotic._robotic.PathFinder at 0x7f288c50e4f0>"
       ]
      },
      "execution_count": 8,
@@ -398,7 +407,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "{ time: 0.209925, evals: 172, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }\n"
+      "{ time: 0.019944, evals: 243, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }\n"
      ]
     }
    ],
@@ -441,15 +450,7 @@
    "execution_count": 12,
    "id": "f0d8e62c",
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "0.180939 1\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "bot.moveAutoTimed(path, 1., 1.)\n",
     "while bot.getTimeToEnd()>0:\n",
@@ -466,9 +467,9 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "-- bot.cpp:~BotOp:114(0) shutting down BotOp...\n",
+      "-- bot.cpp:~BotOp:118(0) shutting down BotOp...\n",
       "-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread\n",
-      "-- simulation.cpp:~Simulation:148(0) shutting down Simulation\n"
+      "-- simulation.cpp:~Simulation:149(0) shutting down Simulation\n"
      ]
     }
    ],
