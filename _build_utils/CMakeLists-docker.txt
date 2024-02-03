@@ -65,6 +65,7 @@ file(GLOB SRC_GeoLewiner rai/src/Geo/Lewiner/*.cpp)
 
 file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
+file(GLOB SRC_Omnibase botop/src/Omnibase/*.cpp)
 file(GLOB SRC_OptiTrack botop/src/OptiTrack/*.cpp)
 file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
 file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
@@ -88,6 +89,7 @@ add_library(rai STATIC
   rai/src/Control/unity.cxx
   ${SRC_BotOp}
   ${SRC_Franka}
+  ${SRC_Omnibase}
   ${SRC_OptiTrack}
   ${SRC_RealSense}
   ${SRC_Robotiq}
