@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gym Environment Interface: minimal example &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lecture Script" href="../script/script.html" />
+    <link rel="prev" title="NLP interface: Low-level NLP formulation and solving" href="ext_nlp_solvers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="config_1_intro.html">Intro: Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">Real robot operation: Checklist &amp; first steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Features: Computing differentiable features &amp; collision evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Configurations: Importing, editing &amp; manipulating them</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_2_reporting.html">KOMO: Reporting &amp; explaining convergence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_3_manipulation.html">Manipulation Modelling &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_physx_simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_rrt.html">RRT: basic finding example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_nlp_solvers.html">NLP interface: Low-level NLP formulation and solving</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Gym Environment Interface: minimal example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">robotic python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Gym Environment Interface: minimal example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/ext_gym_environment.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Gym-Environment-Interface:-minimal-example">
+<h1>Gym Environment Interface: minimal example<a class="headerlink" href="#Gym-Environment-Interface:-minimal-example" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import gymnasium as gym
+import numpy as np
+print(&#39;ry version:&#39;, ry.__version__, ry.compiled())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ry version: 0.1.5 compile time: Feb  3 2024 21:50:47
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># A basic configuration, where the orange box is to be pushed to the target with the stick
+
+C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.view(False)
+
+C.addFrame(&#39;box&#39;) \
+    .setShape(ry.ST.ssBox, size=[.1,.1,.1,.005]) .setColor([1,.5,0]) \
+    .setPosition([.1,.35,.9]) \
+    .setMass(.1)
+
+C.addFrame(&#39;stick&#39;, &#39;l_gripper&#39;) \
+    .setShape(ry.ST.capsule, size=[.3,.02]) .setColor([.5,1,0]) \
+    .setRelativePosition([0,0,-.13])
+
+C.addFrame(&#39;target&#39;) \
+    .setShape(ry.ST.marker, size=[.1]) .setColor([0,1,0]) \
+    .setPosition([.5,.0,.7]) \
+
+C.setJointState([.0], [&#39;l_panda_joint2&#39;]) #only cosmetics
+C.setJointState([.02], [&#39;l_panda_finger_joint1&#39;]) #only cosmetics
+
+q0 = C.getJointState()
+X0 = C.getFrameState()
+
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Generic gym environment, instantiating pyhsx multibody sim, with velocity control
+# the arguments C, time_limit, and reward_fct define the problem
+
+class RaiGym(gym.Env):
+    metadata = {&quot;render_modes&quot;: [&quot;human&quot;, &quot;rgb_array&quot;], &quot;render_fps&quot;: 4}
+    tau = .05
+    time = 0.
+
+    def __init__(self, C, time_limit, reward_fct, render_mode=None):
+        self.C = C
+        self.time_limit = time_limit
+        self.reward_fct = reward_fct
+        self.render_mode = render_mode
+        #self.limits = self.C.getJointLimits()
+        self.limits = [-10., 10.]
+        self.q0 = self.C.getJointState()
+        self.X0 = self.C.getFrameState()
+
+        self.observation_space = gym.spaces.box.Box(self.limits[0], self.limits[1], shape=(self.q0.size,), dtype=np.float32)
+        self.action_space = gym.spaces.box.Box(low=-1., high=1., shape=(self.q0.size,), dtype=np.float32)
+
+        assert render_mode is None or render_mode in self.metadata[&quot;render_modes&quot;]
+        self.render_mode = render_mode
+
+        self.sim = ry.Simulation(self.C, ry.SimulationEngine.physx, 0)
+
+    def __del__(self):
+        del self.sim
+        del self.C
+
+    def step(self, action):
+        self.sim.step(action, self.tau, ry.ControlMode.velocity)
+        self.time += self.tau
+
+        observation = self.C.getJointState()
+        reward = self.reward_fct(C)
+        terminated = (self.time &gt;= self.time_limit)
+        info = {&quot;no&quot;: &quot;additional info&quot;}
+
+        return observation, reward, terminated, False, info
+
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
+
+        self.time = 0.
+        self.sim.setState(X0, q0)
+        self.sim.resetSplineRef()
+
+        observation = self.C.getJointState()
+        info = {&quot;no&quot;: &quot;additional info&quot;}
+
+        if self.render_mode == &quot;human&quot;:
+            self.C.view(False)
+
+        return observation, info
+
+    def render(self):
+        self.C.view(False, f&#39;RaiGym time {self.time} / {self.time_limit}&#39;)
+        if self.render_mode == &quot;rgb_array&quot;:
+            return self.C.view_getRgb()
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># reward function
+
+def reward_function(C):
+    touch, _ = C.eval(ry.FS.negDistance, [&quot;stick&quot;, &quot;box&quot;])
+    dist, _ = C.eval(ry.FS.positionDiff, [&quot;box&quot;, &quot;target&quot;])
+    r = touch[0] - np.linalg.norm(dist)
+    return r
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>g = RaiGym(C, 10., reward_function)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># basic test
+
+g.reset()
+v = np.zeros(g.q0.size)
+v[0] = -1.
+print(v)
+t = 0
+while True:
+    t += 1
+    ret = g.step(v)
+    if ret[2]:
+        break;
+    print(&quot;reward: &quot;, ret[1])
+    if not (t%10):
+        g.render()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[-1.  0.  0.  0.  0.  0.  0.]
+reward:  -0.5893210723155677
+reward:  -0.5747704604085424
+reward:  -0.5607111282717746
+reward:  -0.5630630193037823
+reward:  -0.5526126975096675
+reward:  -0.548855507884232
+reward:  -0.5446356504735119
+reward:  -0.5404041677106877
+reward:  -0.5355761968416785
+reward:  -0.5305064150295323
+reward:  -0.5267102253488318
+reward:  -0.5231001385229148
+reward:  -0.5190994993102397
+reward:  -0.5151942664330835
+reward:  -0.5114000324234872
+reward:  -0.5077107457070799
+reward:  -0.5039480055221426
+reward:  -0.500171503736764
+reward:  -0.4965198458938494
+reward:  -0.4928791268707496
+reward:  -0.4891557324962862
+reward:  -0.48569171365156044
+reward:  -0.48201554188095325
+reward:  -0.4784995808185587
+reward:  -0.4748108202282276
+reward:  -0.47096072050656135
+reward:  -0.46749700895847557
+reward:  -0.4638239898787941
+reward:  -0.46013569618786765
+reward:  -0.4567251093731977
+reward:  -0.4532226717560402
+reward:  -0.449598309751659
+reward:  -0.4464303200193492
+reward:  -0.44308481320924054
+reward:  -0.4399751287346834
+reward:  -0.4371890256934602
+reward:  -0.43434511183220065
+reward:  -0.43137160580864303
+reward:  -0.42860779315592806
+reward:  -0.4258293253849189
+reward:  -0.42335558968492376
+reward:  -0.42086511717527997
+reward:  -0.418522944107307
+reward:  -0.41636697606257167
+reward:  -0.4142598802659565
+reward:  -0.41238064099726096
+reward:  -0.41020517236690673
+reward:  -0.40828858151446545
+reward:  -0.40673621975521684
+reward:  -0.405164053854981
+reward:  -0.4037779261049056
+reward:  -0.40242369523666155
+reward:  -0.4016517857664458
+reward:  -0.4015413875962686
+reward:  -0.40129557865124754
+reward:  -0.40118173333515583
+reward:  -0.4010202664832648
+reward:  -0.40095505382980134
+reward:  -0.4010015398892874
+reward:  -0.4008974615732725
+reward:  -0.40106267552966307
+reward:  -0.40103246515576896
+reward:  -0.4015886539622809
+reward:  -0.4032511576922282
+reward:  -0.4077921796005921
+reward:  -0.41299387910850205
+reward:  -0.4191877807141245
+reward:  -0.42576005177460646
+reward:  -0.43276787007401546
+reward:  -0.4400379972632281
+reward:  -0.4475101406190001
+reward:  -0.45515682266346713
+reward:  -0.46282972117174553
+reward:  -0.47083384513809834
+reward:  -0.47877825709980093
+reward:  -0.4868465974425138
+reward:  -0.4949862797878318
+reward:  -0.5031662553561733
+reward:  -0.5114133613281165
+reward:  -0.5196858143832078
+reward:  -0.5280024413160056
+reward:  -0.5363497931962409
+reward:  -0.5447231813278781
+reward:  -0.5531184060616432
+reward:  -0.5615317224665407
+reward:  -0.5699597564177313
+reward:  -0.5783994611480141
+reward:  -0.5868480580924167
+reward:  -0.5953030718585272
+reward:  -0.6037621803435829
+reward:  -0.6122231468821935
+reward:  -0.6206841447542182
+reward:  -0.6291432409726093
+reward:  -0.6375987424483144
+reward:  -0.6460491333137139
+reward:  -0.6544928691524952
+reward:  -0.6629286906232716
+reward:  -0.6713551309467258
+reward:  -0.6797711486365773
+reward:  -0.6881754857480546
+reward:  -0.6965670950090641
+reward:  -0.7049448320418115
+reward:  -0.7133078590985156
+reward:  -0.7216551708118797
+reward:  -0.729985835615865
+reward:  -0.7382989970934896
+reward:  -0.7465938118996639
+reward:  -0.7548695472093165
+reward:  -0.7631253322971197
+reward:  -0.7713604742909825
+reward:  -0.7795742831740153
+reward:  -0.7877659513164386
+reward:  -0.7959348653835823
+reward:  -0.8040803550255031
+reward:  -0.8122018122687449
+reward:  -0.8202985181484461
+reward:  -0.8283699397385871
+reward:  -0.8364153621195924
+reward:  -0.8444342642219178
+reward:  -0.8524260022802395
+reward:  -0.8603900586392084
+reward:  -0.8683259218525221
+reward:  -0.8762329585697572
+reward:  -0.8841105438685797
+reward:  -0.8919581739040783
+reward:  -0.8997754096076145
+reward:  -0.9075616349675306
+reward:  -0.9153163556740791
+reward:  -0.92303902227836
+reward:  -0.9307291473640815
+reward:  -0.9383862455039891
+reward:  -0.9460097770594569
+reward:  -0.9535992600768224
+reward:  -0.9611541637786898
+reward:  -0.9686740708935149
+reward:  -0.9761584537963235
+reward:  -0.9836068444292498
+reward:  -0.991018720133978
+reward:  -0.9983937311917892
+reward:  -1.0057312489438117
+reward:  -1.01303092720307
+reward:  -1.020292312142317
+reward:  -1.0275148428281384
+reward:  -1.0346981217869653
+reward:  -1.0418417579624755
+reward:  -1.0489452539386745
+reward:  -1.0560081132626464
+reward:  -1.0630299009962663
+reward:  -1.0700101808956937
+reward:  -1.07694857292398
+reward:  -1.083844645375629
+reward:  -1.090697973147377
+reward:  -1.0975080777011113
+reward:  -1.104274538038407
+reward:  -1.1109969867701601
+reward:  -1.1176748543822987
+reward:  -1.124307832122699
+reward:  -1.1308955099524445
+reward:  -1.1374374805467453
+reward:  -1.1439333387731918
+reward:  -1.1503827812161098
+reward:  -1.1567853125769507
+reward:  -1.1631405357951003
+reward:  -1.169448059137383
+reward:  -1.1757074905771518
+reward:  -1.181918447072912
+reward:  -1.188080543325488
+reward:  -1.1941933986398843
+reward:  -1.2002566352442343
+reward:  -1.2062698801263851
+reward:  -1.2122327619616402
+reward:  -1.2181449117008323
+reward:  -1.224005965986352
+reward:  -1.2298155617358948
+reward:  -1.2355732534755721
+reward:  -1.2412787746029557
+reward:  -1.2469317745127797
+reward:  -1.252531901394343
+reward:  -1.2580788110556977
+reward:  -1.2635721606019192
+reward:  -1.2690116113733814
+reward:  -1.2743968288393686
+reward:  -1.2797274793582667
+reward:  -1.285003233691842
+reward:  -1.2902237661548306
+reward:  -1.2953887559000243
+reward:  -1.300497882370356
+reward:  -1.3055508311756228
+reward:  -1.3105472898549462
+reward:  -1.3154869502109416
+reward:  -1.32036950698841
+reward:  -1.3251946597103306
+reward:  -1.3299621097469219
+reward:  -1.334671562044423
+reward:  -1.3393227266838663
+reward:  -1.3439153147284304
+reward:  -1.3484490439591295
+reward:  -1.3529236338575064
+reward:  -1.3573388087643419
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># train a stable baslines
+
+from stable_baselines3 import A2C, SAC
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = SAC(&quot;MlpPolicy&quot;, g, verbose=1)
+#model = A2C(&quot;MlpPolicy&quot;, g, verbose=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Using cpu device
+Wrapping the env with a `Monitor` wrapper
+Wrapping the env in a DummyVecEnv.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.learn(total_timesteps=1_000)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+---------------------------------
+| rollout/           |          |
+|    ep_len_mean     | 200      |
+|    ep_rew_mean     | -114     |
+| time/              |          |
+|    episodes        | 4        |
+|    fps             | 49       |
+|    time_elapsed    | 16       |
+|    total_timesteps | 800      |
+| train/             |          |
+|    actor_loss      | -16.6    |
+|    critic_loss     | 0.101    |
+|    ent_coef        | 0.811    |
+|    ent_coef_loss   | -2.47    |
+|    learning_rate   | 0.0003   |
+|    n_updates       | 699      |
+---------------------------------
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;stable_baselines3.sac.sac.SAC at 0x7f66dae40e80&gt;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># play the policy
+
+obs, info = g.reset()
+for t in range(100):
+    action, _state = model.predict(obs, deterministic=True)
+    ret = g.step(action)
+    if not (t%10):
+        g.render()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del model
+del g
+del C
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ext_nlp_solvers.html" class="btn btn-neutral float-left" title="NLP interface: Low-level NLP formulation and solving" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../script/script.html" class="btn btn-neutral float-right" title="Lecture Script" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

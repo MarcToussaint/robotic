@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real robot operation: Checklist &amp; first steps &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Features: Computing differentiable features &amp; collision evaluation" href="config_2_features.html" />
+    <link rel="prev" title="Intro: KOMO - Motion Optimization" href="komo_1_intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="config_1_intro.html">Intro: Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Real robot operation: Checklist &amp; first steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Basic-Checklist-for-operating-a-Franka">Basic Checklist for operating a Franka</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#First-robot-motion,-camera-&amp;-pcl,-and-gripper-motion">First robot motion, camera &amp; pcl, and gripper motion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Advanced:-Compliance-&amp;-Force/Torque-feedback">Advanced: Compliance &amp; Force/Torque feedback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Testing-the-depth-camera">Testing the depth camera</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Features: Computing differentiable features &amp; collision evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Configurations: Importing, editing &amp; manipulating them</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_2_reporting.html">KOMO: Reporting &amp; explaining convergence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_3_manipulation.html">Manipulation Modelling &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_physx_simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_rrt.html">RRT: basic finding example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_nlp_solvers.html">NLP interface: Low-level NLP formulation and solving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_gym_environment.html">Gym Environment Interface: minimal example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">robotic python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Real robot operation: Checklist &amp; first steps</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/botop_2_real_robot.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Real-robot-operation:-Checklist-&amp;-first-steps">
+<h1>Real robot operation: Checklist &amp; first steps<a class="headerlink" href="#Real-robot-operation:-Checklist-&-first-steps" title="Link to this heading"></a></h1>
+<p>The BotOp interface should work equally for a simulated and real robot. Note that currently only a locally compiled robotic package supports connecting to a Franka robot and Realsense camera. Here some first cautious steps to get started with a real robot.</p>
+<section id="Basic-Checklist-for-operating-a-Franka">
+<h2>Basic Checklist for operating a Franka<a class="headerlink" href="#Basic-Checklist-for-operating-a-Franka" title="Link to this heading"></a></h2>
+<p>For a full franka setup description see <a class="reference external" href="https://frankaemika.github.io/docs/getting_started.html">https://frankaemika.github.io/docs/getting_started.html</a>. Here just a minimal checklist for operating a Franka:</p>
+<ul class="simple">
+<li><p>Is the a real time kernel running? Check <code class="docutils literal notranslate"><span class="pre">uname</span> <span class="pre">-r</span></code>. The kernel name should end with -rt*</p></li>
+<li><p>Is the user in <code class="docutils literal notranslate"><span class="pre">dialout</span></code> and <code class="docutils literal notranslate"><span class="pre">realtime</span></code> group? Check with <code class="docutils literal notranslate"><span class="pre">groups</span></code>. If not, add with <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">usermod</span> <span class="pre">-a</span> <span class="pre">-G</span> <span class="pre">realtime</span> <span class="pre">&lt;username&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">usermod</span> <span class="pre">-a</span> <span class="pre">-G</span> <span class="pre">dialout</span> <span class="pre">&lt;username&gt;</span></code>, and log out and in (or reboot) and check again.</p></li>
+<li><p>Is the robot ready? E.g. at <a class="reference external" href="https://172.16.0.2/desk/">https://172.16.0.2/desk/</a>. Are joints unlocked and status Ready?</p></li>
+<li><p>Test the console tool <code class="docutils literal notranslate"><span class="pre">ry-bot</span> <span class="pre">-real</span> <span class="pre">-up</span> <span class="pre">-home</span></code>. (See <code class="docutils literal notranslate"><span class="pre">ry-bot</span> <span class="pre">-h</span></code> for other test commands, e.g. homing.) Potential issues:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ry-bot:</span> <span class="pre">command</span> <span class="pre">not</span> <span class="pre">found</span></code>. Is it located in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>? Do you have <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=&quot;$HOME/.local/bin:$PATH&quot;</span></code> in your <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>?</p></li>
+<li><p>Stalls when connecting to Franka - are the Franka IP addresses ({“172.16.0.2”, “172.17.0.2”} in franka.cpp) correct?</p></li>
+<li><p>Franka not Ready or can’t move - check as above?</p></li>
+<li><p>Error message “== ERROR:franka.cpp:init:356(-2) not implemented with this compiler options”. Do you use the pypi package instead of a locally compiled package? Did you enable USE_LIBFRANKA with cmake? Did you <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>?</p></li>
+<li><p>Error message roughly like ‘Franka uses wrong library version’. Do you have an old franka and need to install version 0.7.1 of the franka lib? (See <code class="docutils literal notranslate"><span class="pre">./install.sh</span> <span class="pre">-v</span> <span class="pre">0.7.1</span> <span class="pre">libfranka</span></code> in the README of <code class="docutils literal notranslate"><span class="pre">robotic</span></code>.)</p></li>
+<li><p>When executing the cell below, check whether <code class="docutils literal notranslate"><span class="pre">print(ry.compiled())</span></code> prints the correct compile time.</p></li>
+</ul>
+</li>
+</ul>
+<p>Finally, the <code class="docutils literal notranslate"><span class="pre">ry-bot</span></code> (usually installed in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>) provides a minimalistic example for how to run the robot - have a look if you like.</p>
+<section id="First-robot-motion,-camera-&amp;-pcl,-and-gripper-motion">
+<h3>First robot motion, camera &amp; pcl, and gripper motion<a class="headerlink" href="#First-robot-motion,-camera-&-pcl,-and-gripper-motion" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+import time
+print(&#39;robotic version:&#39;, ry.__version__, ry.compiled())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+robotic version: 0.1.3b compile time: Jan 24 2024 13:12:18
+</pre></div></div>
+</div>
+<p>Also for a real robot we first load the configuration and maintain our own workspace configuration.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;../rai-robotModels/scenarios/pandaSingle.g&#39;))
+pcl = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
+C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>Now we start botop with real=True. By passing the model configuration C, the system knows which and how many robots there should be an tries to connect with them.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># True = real robot!!
+bot = ry.BotOp(C, useRealRobot=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- bot.cpp:BotOp:38(0) -- blocking useRealRobot --
+</pre></div></div>
+</div>
+<p>If that failed, you could <code class="docutils literal notranslate"><span class="pre">ry.params_print()</span></code> to see which global parameters were used and whether you should change them. See also the checklist above. Or continue with sim from here one:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>if bot.get_t()==0: #if the above failed, use a sim...
+    del bot
+    bot = ry.BotOp(C, useRealRobot=False)
+</pre></div>
+</div>
+</div>
+<p>A first <strong>motion</strong>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>q = bot.get_qHome()
+q[1] = q[1] + .2
+
+bot.moveTo(q)
+bot.wait(C)
+print(&#39;first motion done&#39;)
+
+bot.moveTo(bot.get_qHome())
+bot.wait(C)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+first motion done
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>Grabbing a <strong>camera image &amp; pcl</strong>, adding the pcl to the workspace C:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcl = C.getFrame(&quot;pcl&quot;)
+pcl.setShape(ry.ST.pointCloud, [2]) # the size here is pixel size for display
+bot.sync(C)
+
+while bot.getKeyPressed()!=ord(&#39;q&#39;):
+    image, depth, points = bot.getImageDepthPcl(&quot;cameraWrist&quot;)
+    pcl.setPointCloud(points, image)
+    pcl.setColor([1,0,0])
+    bot.sync(C, .1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- WARNING:frame.cpp:glDraw:1806(-1) trying to draw empty mesh (shape type:pointCloud)
+</pre></div></div>
+</div>
+<p>Closing &amp; opening the <strong>gripper</strong>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#slow close
+bot.gripperMove(ry._left, width=.0, speed=.1)
+
+while not bot.gripperDone(ry._left):
+    bot.sync(C)
+
+#fast open
+bot.gripperMove(ry._left, width=.08, speed=1.)
+
+while not bot.gripperDone(ry._left):
+    bot.sync(C)
+</pre></div>
+</div>
+</div>
+<p>Always shut down the robot properly by destroying the handle:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del bot
+del C
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- bot.cpp:~BotOp:118(0) shutting down BotOp...
+-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread
+-- simulation.cpp:~Simulation:149(0) shutting down Simulation
+</pre></div></div>
+</div>
+</section>
+<section id="Advanced:-Compliance-&amp;-Force/Torque-feedback">
+<h3>Advanced: Compliance &amp; Force/Torque feedback<a class="headerlink" href="#Advanced:-Compliance-&-Force/Torque-feedback" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># True = real robot!!
+bot = ry.BotOp(C, True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- bot.cpp:BotOp:38(0) -- blocking useRealRobot --
+</pre></div></div>
+</div>
+<p>After opening the robot, it is holding its position. Try moving it you can feel the gains.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.view(True, &#39;floating=False, damping=True -- Try moving the robot by hand!\n-- press any key to continue --&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>We can let it float (=setting the reference always to q_current) and turn off the damping, which makes the robot move more freely:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.hold(floating=True, damping=False)
+C.view(True, &#39;floating=True, damping=False -- Try moving the robot by hand!\n-- press any key to continue --&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>We can also float with daming:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.hold(floating=True, damping=True)
+C.view(True, &#39;floating=True, damping=True -- Try moving the robot by hand!\n-- press any key to continue --&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">hold</span></code> methods above might be useful for kinestetic teaching or so (you can always keep C sync’ed and compute any features while moving the robot).</p>
+<p>But for autonomous compliant manipulation we want to follow a reference and impose compliance in following this reference <em>along some task space dimensions only</em>. I.e., a task space compliance.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.moveTo(bot.get_qHome(), 1.)
+bot.wait(C)
+
+while bot.getKeyPressed()!=ord(&#39;q&#39;):
+    bot.sync(C, .1)
+    y, J = C.eval(ry.FS.position, [&quot;l_gripper&quot;], [[1,0,0]])
+    bot.setCompliance(J, 1.)
+    print(&#39; direct:&#39;, J @ bot.get_tauExternal(),
+          &#39; pseudoInv:&#39;, np.linalg.pinv(J.T, rcond=1e-3) @ bot.get_tauExternal())
+
+bot.setCompliance([], 0.)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+-- bot.cpp:setCompliance:336(0) clearing compliance
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.home(C)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del bot
+del C
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- bot.cpp:~BotOp:118(0) shutting down BotOp...
+-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread
+-- simulation.cpp:~Simulation:149(0) shutting down Simulation
+</pre></div></div>
+</div>
+</section>
+<section id="Testing-the-depth-camera">
+<h3>Testing the depth camera<a class="headerlink" href="#Testing-the-depth-camera" title="Link to this heading"></a></h3>
+<p>The following grabs an attached realsense camera, which in our setup is attached by default to the wrist. The robot is put in floating mode, so that you can move the camera. At the same time, the point cloud is attached in the model configuration to the camera frame – and forward kinematics displays it in world coordinates. That way you can visually see how well you configuration model is calibrated to your real world – and how noisy the depth camera really is.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+import time
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># True = real robot!!
+bot = ry.BotOp(C, True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- bot.cpp:BotOp:38(0) -- blocking useRealRobot --
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.hold(floating=True, damping=False)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
+
+while bot.getKeyPressed()!=ord(&#39;q&#39;):
+    rgb, depth, points = bot.getImageDepthPcl(&#39;cameraWrist&#39;)
+    pclFrame.setPointCloud(points, rgb)
+
+    bot.sync(C, .1)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del bot
+del C
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-- bot.cpp:~BotOp:118(0) shutting down BotOp...
+-- simulation.cpp:~BotThreadedSim:56(0) shutting down SimThread
+-- simulation.cpp:~Simulation:149(0) shutting down Simulation
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="komo_1_intro.html" class="btn btn-neutral float-left" title="Intro: KOMO - Motion Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="config_2_features.html" class="btn btn-neutral float-right" title="Features: Computing differentiable features &amp; collision evaluation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
