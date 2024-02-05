@@ -10,7 +10,7 @@ following should be sufficient:
 ::
 
    sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
-   python3 -m pip install --user robotic
+   python3 -m pip install robotic
 
 A standard test is
 
@@ -34,11 +34,11 @@ Compiling from source, cmd line tools, & docstrings
    tools, which should be in ``~/.local/bin``:
 
    -  ``ry-view``: to view robot/scene model files (see `this
-      tutorial <tutorials/configurationEditing.html>`__)
+      tutorial <tutorials/config_3_import_edit.html>`__)
    -  ``ry-bot``: to test basic operations with the real robot (have a
       look at help and simple source)
    -  ``urdf2rai.py``: to help convert from urfl to model files (see,
-      again, `this tutorial <tutorials/configurationEditing.html>`__)
+      again, `this tutorial <tutorials/config_3_import_edit.html>`__)
 
 -  **Docstrings and tab completion:** The package comes with a ‘stubs’
    file (should be in
@@ -47,7 +47,7 @@ Compiling from source, cmd line tools, & docstrings
    your IDE. The docstrings are not yet great for all methods.
 
    If tab-autocomplete for jupyter does not work, try
-   ``python3 -m pip install --user jedi==0.17.2``
+   ``python3 -m pip install jedi==0.17.2``
 
 Downloading the tutorial notebooks
 ----------------------------------

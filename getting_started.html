@@ -89,7 +89,7 @@
 <p>Install the <code class="docutils literal notranslate"><span class="pre">robotic</span></code> python package. On a standard Ubuntu, the
 following should be sufficient:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">liblapack3</span> <span class="n">freeglut3</span> <span class="n">libglew</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
-<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">robotic</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">robotic</span>
 </pre></div>
 </div>
 <p>A standard test is</p>
@@ -112,12 +112,12 @@ drivers. This is done by installing the
 <li><p><strong>Command line tools:</strong> There are currently three little cmd line
 tools, which should be in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ry-view</span></code>: to view robot/scene model files (see <a class="reference external" href="tutorials/configurationEditing.html">this
+<li><p><code class="docutils literal notranslate"><span class="pre">ry-view</span></code>: to view robot/scene model files (see <a class="reference external" href="tutorials/config_3_import_edit.html">this
 tutorial</a>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ry-bot</span></code>: to test basic operations with the real robot (have a
 look at help and simple source)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">urdf2rai.py</span></code>: to help convert from urfl to model files (see,
-again, <a class="reference external" href="tutorials/configurationEditing.html">this tutorial</a>)</p></li>
+again, <a class="reference external" href="tutorials/config_3_import_edit.html">this tutorial</a>)</p></li>
 </ul>
 </li>
 <li><p><strong>Docstrings and tab completion:</strong> The package comes with a ‘stubs’
@@ -126,7 +126,7 @@ file (should be in
 includes docstrings most methods and should enable autocompletion in
 your IDE. The docstrings are not yet great for all methods.</p>
 <p>If tab-autocomplete for jupyter does not work, try
-<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">jedi==0.17.2</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">jedi==0.17.2</span></code></p>
 </li>
 </ul>
 </section>

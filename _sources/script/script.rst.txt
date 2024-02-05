@@ -9,9 +9,9 @@ Reference material
 
 In terms of background, please refer to the Maths for Intelligent
 Systems
-[<https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Maths.pdf>] as
+<https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Maths.pdf> as
 well as the Intro to Robotics
-[<https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Robotics.pdf>]
+<https://www.user.tu-berlin.de/mtoussai/teaching/Lecture-Robotics.pdf>
 lecture scripts. Here a list of further teaching material:
 
 -  Craig, J.J.: *Introduction to robotics: mechanics and control*.
@@ -58,9 +58,9 @@ Coding Getting Started
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Please follow the instructions at github/robotics-course
-[<https://marctoussaint.github.io/robotics-course/>] for setting up the
+<https://marctoussaint.github.io/robotics-course/> for setting up the
 python package. This includes a series of tutorials, which can also be
-downloaded here [<https://github.com/MarcToussaint/rai-tutorials>].
+downloaded here <https://github.com/MarcToussaint/rai-tutorials>.
 
 Scene & Robot Description
 -------------------------
@@ -68,7 +68,7 @@ Scene & Robot Description
 Generally speaking, a scene is a collection of objects (including robot
 parts). We typically assume objects to be rigid bodies with fixed shape
 – which clearly is a simplification relative to real world. More about
-this below, in section `1.14.1 <#secShapes>`__.
+this below, in section `1.16.1 <#secShapes>`__.
 
 However, formally we define a scene as a collection of **frames**, which
 is short for coordinate frames. We can think of these frames as oriented
@@ -90,7 +90,7 @@ frame.
 
 Transformations in :math:`A\in SE(3)` are tuples :math:`A = (t, r)`,
 where :math:`t\in{\mathbb{R}}^3` is a translation and :math:`r\in SO(3)`
-a rotation – see Appendix `1.10 <#appTransforms>`__ for more details.
+a rotation – see Appendix `1.12 <#appTransforms>`__ for more details.
 Rotations can be represented as matrix :math:`R` (see the Maths script
 on properties of rotation matrices), and a pose as the :math:`4\times 4`
 homogeneous transform
@@ -105,11 +105,13 @@ rotation axis :math:`\underline w`.
 
 Euler angles and the scaled rotation vector are alternative rotation
 representations – but never use them. The appendix
-`1.10 <#appTransforms>`__ introduces to all these representations and
+`1.12 <#appTransforms>`__ introduces to all these representations and
 derives conversion equations to relate them.
 
-The illustrates how you can manually define frames in a configuration
-and set absolute or relative transformations.
+The 1st tutorial
+<https://marctoussaint.github.io/robotic/tutorials/config_1_intro.html>
+illustrates how you can manually define frames in a configuration and
+set absolute or relative transformations.
 
 Coordinates and Composition of Transformations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,7 +130,7 @@ transforms :math:`Q_{W\to 1}, Q_{1\to 2}, Q_{2\to 3}`. We have
    \begin{aligned}
    X_1 &= Q_{W\to 1} \\
    X_2 &= Q_{W\to 1} \circ Q_{1\to2} \\
-   X_3 &= Q_{W\to 1} \circ Q_{1\to2} \circ Q_{1\to3} ~.\end{aligned}
+   X_3 &= Q_{W\to 1} \circ Q_{1\to2} \circ Q_{2\to3} ~.\end{aligned}
 
 Note that when composing relative transforms, we concatenate (append)
 them *on the right*! Intuitively, this describes a concatenation of
@@ -144,7 +146,7 @@ world coordinates :math:`x^W`, but also in relative coordinates
 .. math::
 
    \begin{aligned}
-   x^W &= Q_{W\to 1}~ Q_{1\to2}~ Q_{1\to3}~ x^3 = X_3~ x^3 ~.\end{aligned}
+   x^W &= Q_{W\to 1}~ Q_{1\to2}~ Q_{2\to3}~ x^3 = X_3~ x^3 ~.\end{aligned}
 
 Now you might want to ask: “does :math:`Q_{1\to 2}` describe the forward
 or the backward transformation from frame :math:`1` to frame :math:`2`?”
@@ -160,7 +162,7 @@ But this question is somewhat ill-posed. The situation is:
 
 In the view of fundamental linear algebra, this should not surprise as
 basis vectors transform *covariant*, while coordinates transform
-*contra-variant*. The appendix `1.10.2.1 <#secTransNotation>`__ explains
+*contra-variant*. The appendix `1.12.2.1 <#secTransNotation>`__ explains
 this again in more detail and with an explicit example.
 
 Scene Tree or Forest
@@ -184,7 +186,9 @@ and their pose :math:`X_i` must be specified, while for non-roots the
 relative transform :math:`Q_i` is specified. We usually only talk about
 trees, but include meaning forests.
 
-The also demonstrates how to define a fram a *child* of another, thereby
+The 1st tutorial
+<https://marctoussaint.github.io/robotic/tutorials/config_1_intro.html>
+also demonstrates how to define a frame a *child* of another, thereby
 defining a frame tree. Instead of the absolute pose ``X``, you typically
 specify the relative transformation ``Q`` for such a child frame.
 
@@ -209,8 +213,8 @@ just a single number (the joint dimensionality :math:`d_i=1`). E.g., a
    \begin{aligned}
    Q_i(q_i) =  \left(\begin{array}{cccc}
    1 & 0 & 0 & 0 \\
-   0 & \cos(q_i) & -\sin(q) & 0 \\
-   0 &  \sin(q_i) & \cos(q) & 0 \\
+   0 & \cos(q_i) & -\sin(q_i) & 0 \\
+   0 &  \sin(q_i) & \cos(q_i) & 0 \\
    0 & 0 & 0 & 1\end{array}\right)  ~.\end{aligned}
 
 And a **prismatic** (or translational) joint along the (local)
@@ -239,9 +243,11 @@ rotation that corresponds to the quaternion :math:`q_i/|q_i|`. Note that
 if a user or algorithms sets such a quaternion parameter to zero, that’s
 a singularity and strict error.
 
-In the , when a joint is define for the first time, play around with
-alternative joint types, e.g. a ``quatBall``. The tutorial also lists
-which joint types are pre-defined.
+In the 1st tutorial
+<https://marctoussaint.github.io/robotic/tutorials/config_1_intro.html>,
+when a joint is defined for the first time, play around with alternative
+joint types, e.g. a ``quatBall``. The tutorial also lists which joint
+types are pre-defined.
 
 In the scene tree, some of the relative transforms :math:`Q_i` are
 parameterized by dofs, :math:`Q_i(q_i)`. Note that
@@ -272,9 +278,11 @@ of the following joint origin). But there is no need to use this
 convention and the above notation is conceptually cleaner and leads to
 intuitive, freely user-defined joint origins.
 
-In the you find a section on interactively editing a scene description
-file ``mini.g``. Using this you can try to invent your own robot and
-environment. The tutorial also shows how to load pre-define robot
+In the tutorial on configuration editing
+<https://marctoussaint.github.io/robotic/tutorials/config_3_import_edit.html>
+you find a section on interactively editing a scene description file
+``mini.g``. Using this you can try to invent your own robot and
+environment. The tutorial also shows how to load pre-defined robot
 models. The appendix `[secConfigFiles] <#secConfigFiles>`__ provides a
 more formal specification of the yaml-style file syntax.
 
@@ -304,7 +312,7 @@ dofs :math:`q` to the full configuration state
 :math:`\{X_i(q)\}_{i=1}^m`, which so far we described in terms of all
 frame poses. This definition is consistent with the formal description
 of *kinematics* as the theory of possible motions of a system
-configuration (see `1.14.2 <#secKinematics>`__).
+configuration (see `1.16.2 <#secKinematics>`__).
 
 But in practice, the word forward kinematics is often used simply as the
 mapping from :math:`q` to one particular “feature” of the configuration.
@@ -348,10 +356,12 @@ tensor.)
 The output space of the kinematic map is also called **task space**.
 However, I often just call it **kinematic feature**.
 
-The illustrates how you get the joint vector :math:`q` and set it. This
-way you can animate the configuration. Also the positions and
-orientations of all frames can be queried directly – realizing the most
-basic kind of forward kinematics.
+The 1st tutorial
+<https://marctoussaint.github.io/robotic/tutorials/config_1_intro.html>
+illustrates how you get the joint vector :math:`q` and set it. This way
+you can animate the configuration. Also the positions and orientations
+of all frames can be queried directly – realizing the most basic kind of
+forward kinematics.
 
 Jacobians
 ~~~~~~~~~
@@ -459,11 +469,12 @@ Translational Joint
 ^^^^^^^^^^^^^^^^^^^
 
 A translational (prismatic) joint on the path from world to frame
-:math:`i` also contribute a column to the basic matrix
+:math:`i` also contributes a column to the basic matrix
 :math:`J^{\textsf{pos}}(p)`, but contributes notion to
 :math:`J^{\textsf{ang}}` (as it does not imply rotational velocity in
-the sub-branch). Specifically, let :math:`a_j` the translational axis of
-the joint with dof index :math:`j`, then it simply contributes a column
+the sub-branch). Specifically, let :math:`a_j` be the translational axis
+of the joint with dof index :math:`j`, then it simply contributes a
+column
 
 .. math::
 
@@ -497,13 +508,13 @@ transform :math:`Q_j`. Then
    J(r)_{:,k} &= -2 (e_k \circ r^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1})_{1:3} ~.\end{aligned}
 
 Here, :math:`e_i` for :math:`k=0,..,3` are the unit quaternions and the
-matrix :math:`J(r)\in{\mathbb{R}}{3 \times 4}` describes how a variation
-of a quaternion :math:`r` induces a 3D rotation vector relative to the
-*output* space of :math:`r`. I call this the quaternion Jacobian. The
-derivation is found in the appendix when discussion how a quaternion
-velocity implies and angular velocity. The multiplication with
-:math:`R_j` transforms this rotation vector to world coordinates. The
-division by :math:`|q_j|` accounts when the dof :math:`q_j` is not
+matrix :math:`J(r)\in{\mathbb{R}}^{3 \times 4}` describes how a
+variation of a quaternion :math:`r` induces a 3D rotation vector
+relative to the *output* space of :math:`r`. I call this the quaternion
+Jacobian. The derivation is found in the appendix when discussion how a
+quaternion velocity implies and angular velocity. The multiplication
+with :math:`R_j` transforms this rotation vector to world coordinates.
+The division by :math:`|q_j|` accounts when the dof :math:`q_j` is not
 (exactly) normalized.
 
 As we figured out the angular vector induced by a variation of a
@@ -550,7 +561,9 @@ mapping
 
 of a single configuration into some :math:`D`-dimensional space.
 
-The introduces to features that are readily implemented in the rai code.
+The features tutorial
+<https://marctoussaint.github.io/robotic/tutorials/config_2_features.html>
+introduces to features that are readily implemented in the rai code.
 
 (In C++, new features can be implemented by overloading the abstract
 Feature class. Implementing new features is typically done by first
@@ -570,8 +583,8 @@ frame :math:`i`, then you can use a matrix
 :math:`\texttt{scale}= \left(\begin{array}{ccc}1 & 0 & 0 \\ 0 & 1 & 0\end{array}\right)`.
 
 Further, a feature can also be of higher order, which by default means a
-finite difference of a 0-order features. In general, a higher-order
-features is a differentiable mapping
+finite difference of a zero-order feature. In general, a higher-order
+feature is a differentiable mapping
 
 .. math:: \phi: (q_0,q_1,..,q_k) \mapsto \mathbb{R}^D
 
@@ -580,7 +593,7 @@ space. This is typically used in the context of **path configurations**,
 which is a sequence of configurations used in path optimization.
 
 Given any 0-order feature :math:`\phi`, by default that defines its 1st
-and 2st order feature as
+and 2nd order feature as
 
 .. math:: \phi(q_0,q_1) = \frac{1}{\tau}(\phi(q_1) - \phi(q_0))
 
@@ -652,7 +665,7 @@ Given :math:`\phi` and a target :math:`y^*`, a good option is to define
 
    \begin{aligned}
    \label{eqIKNLP}
-   q^* = \argmin_q f(q) ~~\text{s.t.}~~\phi(q) = y^* ~.\end{aligned}
+   q^* = \text{argmin}_q f(q) ~~\text{s.t.}~~\phi(q) = y^* ~.\end{aligned}
 
 The cost term :math:`f(q)` is called *regularization* and indicates a
 preference among all solutions that satisfy :math:`\phi(q) = y`. One
@@ -675,7 +688,7 @@ Building an NLP from features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Eq. (\ `[eqIKNLP] <#eqIKNLP>`__) describes IK as an NLP. Appendix
-`1.12.1 <#secNLP>`__ provides a technical reference of how we define
+`1.14.1 <#secNLP>`__ provides a technical reference of how we define
 NLPs mathematically and in code. Essentially, an NLP is specified by
 *adding objectives*, where each objective is given by a feature function
 :math:`\phi_i` and an indicator :math:`\varrho_i` that defines whether
@@ -683,9 +696,11 @@ the feature contributes a linear cost (``f``), sum-of-squares cost
 (``sos``), equality constraint (``eq``), or inequality constraint
 (``ineq``) to the NLP.
 
-The illustrates how an Inverse Kinematics problem can be specified as
-NLP. The core is the ``addObjective`` method, which adds a kinematic
-feature (optimally with transformed by scaling and target) as a cost or
+The 1st KOMO tutorial
+<https://marctoussaint.github.io/robotic/tutorials/komo_1_intro.html>
+illustrates how an Inverse Kinematics problem can be specified as NLP.
+The core is the ``addObjective`` method, which adds a kinematic feature
+(optimally with transformed by scaling and target) as a cost or
 constraint (depending on the ``f``, ``sos``, ``eq``, or
 ``ineq``\ indicator) to the NLP.
 
@@ -727,7 +742,7 @@ are
    {\nabla_{\!\!f}^2}(q)
    &\approx 2 (J^{\!\top\!}C J + W) \\
    \delta(q)
-   &= - [{\nabla_{\!\!f}^2}(q)]^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} {\nabla_{\!\!f}}(q) = (J^{\!\top\!}C J + W)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} [J^{\!\top\!}C (\phi(q)-y^*) + W (q-q_0) ]\end{aligned}
+   &= - [{\nabla_{\!\!f}^2}(q)]^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} {\nabla_{\!\!f}}(q) = - (J^{\!\top\!}C J + W)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} [J^{\!\top\!}C (\phi(q)-y^*) + W (q-q_0) ]\end{aligned}
 
 With some identities, this can be rewritten as
 
@@ -1270,30 +1285,28 @@ Splines
 -------
 
 A spline is a piece-wise polynomial path
-:math:`x:[0,T] \maps {\mathbb{R}}^n`.
+:math:`x:[0,T] \to {\mathbb{R}}^n`. Let’s first clearly distinguish the
+use of words *knot*, *waypoint*, and *control point*:
 
-Let’s first clearly distinguish the use of words **knot**, **waypoint**,
-and **control point**:
-
--  A knot :math:`t_i` is a point in *time*, :math:`t_i \in {\mathbb{R}}`
-   (usually :math:`t_i \in [0,T]`). The path is polynomial between
-   knots. We have a non-decreasing sequence of knots :math:`t_0,..,t_m`
-   (usually with :math:`t_0=0` and :math:`t_m=T`) which partition the
-   time interval :math:`[0,T]` into pieces
+-  A **knot** :math:`t_i` is a point in *time*,
+   :math:`t_i \in {\mathbb{R}}`, we assume :math:`t_i \in [0,T]`. For a
+   spline, we have a non-decreasing sequence of knots :math:`t_0,..,t_m`
+   (we assume :math:`t_0=0` and :math:`t_m=T`) which partition the time
+   interval :math:`[0,T]` into pieces
    :math:`[t_i, t_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}]` so
-   that the path is just polynomial in each piece. Note that we may
-   often have double or triple knots, meaning that several consecutive
-   knots
+   that the path is polynomial in each piece. Note that we may often
+   have double or triple knots, meaning that several consecutive knots
    :math:`t_i = t_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}` are
    equal, especially at the beginning and end.
 
--  A waypoint :math:`x_i` is a point on the path, typically at a knot,
-   :math:`x_i = x(t_i)`. So a path really passes through a waypoint. At
-   waypoints, we often also care about velocities :math:`v_i` (or
-   accelerations), where :math:`v_i = \dot x(t_i)`.
+-  A **waypoint** :math:`x_i` is a point on the path, typically at a
+   knot, :math:`x_i = x(t_i)`. So a path really passes through a
+   waypoint. At waypoints, we often also care about velocities
+   :math:`v_i` and accelerations :math:`\alpha_i`, where
+   :math:`v_i = \dot x(t_i)`, :math:`a_i = \ddot x(t_i)`, .
 
--  A control point :math:`z_j` is (usually) not a point *on* the path,
-   but it indirectly defines the path as an linear combination of
+-  A **control point** :math:`z_j` is (usually) not a point *on* the
+   path, but it indirectly defines the path as an linear combination of
    several control points. B-splines, defined below, make this explicit.
 
 In robotics, there are two main conventions to define and parameterize
@@ -1303,16 +1316,395 @@ the knot sequence and explicitly prescribing waypoints :math:`x_i` and
 acceperations :math:`a_i`). In contrast, B-splines are specified by the
 knot sequence and :math:`K` control points :math:`z_j`. As in B-splines
 we do not need to provide velocities as part of the specification, they
-are sometimes easier to use in practical robotics. However, the
-resulting path does not go (exactly) through the provided control points
-– the actual waypoints are implicit and ensuring exact prescribed
-waypoints implies solving a subproblem.
+are sometimes easier to use in practice. However, the resulting path
+does not go (exactly) through the provided control points – the actual
+waypoints are implicit and ensuring exact prescribed waypoints implies
+solving a subproblem.
 
 Cubic splines are a common choice in robotics, as they have a still
 continuous (piece-wise linear) acceleration profile, and therefore
 limited jerk (3rd time derivative).
 
-Let’s start with Cubic Hermite splines.
+In the following we first discuss a single cubic spline-piece as a means
+of control, then Hermite splines, then B-splines.
+
+Single cubic spline for timing-optimal control to a target
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following discusses a single cubic spline piece and and how to use
+it for timing-optimal control to a target. Although very simple, the
+method is a powerful alternative to typical PD-control to a target. It
+also lays foundations on how timing-optimality can be realized with
+Hermite splines.
+
+Consider a cubic polynomial :math:`x(t) = a t^3 + b t^2 + c t + d`.
+Given four boundary conditions
+:math:`x(0)=x_0, \dot x(0) = v_0, x(\theta) = x_\theta, \dot x(\theta) = v_\theta`,
+the four coefficients are
+
+.. math::
+
+   \begin{aligned}
+   d &= x_0 ~, \\
+   c &= \dot x_0 ~, \\
+   b &= \frac{1}{\theta^2}\Big[ 3(x_\theta-x_0) - \theta(\dot x_\theta+ 2 \dot x_0) \Big] ~, \\
+   a &= \frac{1}{\theta^3}\Big[ - 2(x_0-x_\theta) + \theta(\dot x_\theta+ \dot x_0) \Big] ~.\end{aligned}
+
+This cubic spline is in fact the solution to an optimization problem,
+namely it is the path that minimizes accelerations between these
+boundary conditions and it can therefore be viewed as the solution to
+optimal control with acceleration costs:
+
+.. math::
+
+   \begin{aligned}
+   \min_x~ \int_0^\tau \ddot x(t)^2~ dt 
+   \quad~~\text{s.t.}~~ \left(\begin{array}{c}x(0)\\\dot x(0)\end{array}\right) = \left(\begin{array}{c}x_0\\v_0\end{array}\right) ,~
+    \left(\begin{array}{c}x(\tau)\\\dot x(\tau)\end{array}\right) = \left(\begin{array}{c}x_1\\v_1\end{array}\right)  ~.\end{aligned}
+
+The minimal costs can analytically be given as
+
+.. math::
+
+   \begin{aligned}
+   \int_0^T \ddot x(t)^2 dt
+   %% &= \int_0^T (6 a t + 2 b)^2 ~ dt \\
+   %% &= \int_0^T (36 a^2 t^2 + 4 b^2 + 24 abt) ~ dt \\
+   %% &= 4 b^2 [t]_0^T + 24 ab [\half t^2]_0^T + 36 a^2 [\frac{1}{3} t^3]_0^T \\
+   &= 4 \tau b^2  + 12 \tau^2 ab + 12 \tau^3 a^2 \\
+   &= \frac{12}{\tau^3}~[(x_1 - x_0)-\frac{\tau}{2}(v_0+v_1)]^2+\frac{1}{\tau}(v_1-v_0)^2 \label{eqLeap}\\
+   &= \frac{12}{\tau^3} D^{\!\top\!}D + \frac{1}{\tau} V^{\!\top\!}V ~,\quad D := (x_1 - x_0)-\frac{\tau}{2}(v_0+v_1),~ V:=v_1-v_0,~ \\
+   &= \tilde D^{\!\top\!}\tilde D + \tilde V^{\!\top\!}\tilde V ~,\quad
+   \tilde D := \sqrt{12}~ \tau^{-\frac{3}{2}}~ D,~ \tilde V := \tau^{-{\frac{1}{2}}}~ V ~,
+   \label{eqLeapSOS}\end{aligned}
+
+where we used some help of computer algebra to get this right.
+
+Eq. (\ `[eqLeap] <#eqLeap>`__) explicitly gives the optimal cost in
+terms of boundary conditions :math:`(x_0,v_0,x_1,v_1)` and time
+:math:`\tau`. This is a very powerful means to optimize boundary
+conditions and :math:`\tau`. The following is a simple application that
+realizes reactive control.
+
+Single-piece optimal timing control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Consider the system is in state :math:`(x,\dot x)` and you want to
+control it to a reference point
+:math:`(x_\text{ref}, \dot x_\text{ref}=0)`. An obvious approach would
+be to use a PD law
+:math:`\ddot x_\text{des}= k_p (x_\text{ref}- x) + k_d (\dot x_\text{ref}- \dot x)`
+and translate :math:`\ddot x_\text{des}` to controls using inverse
+dynamics. By choosing :math:`k_p` and :math:`k_d` appropriately one can
+generate any desired damped/oscillatory-exponential approach behavior
+(section `[secPD] <#secPD>`__ derives the necessary equations).
+
+However, while PD laws are fundamental for low-level optimal control
+under noise (e.g. as result of the Riccati equation), they are actually
+not great for generating more macroscopic approach behavior: They are
+“only” exponentially converging, never really reaching the target in a
+definite time, never providing a clear expected time-to-target. And
+accelerations seem intuitively too large when far from the set point,
+and too small when close. (Which is why many heuristics, such as capped
+PD laws were proposed.)
+
+Instead of imposing a desired PD behavior, we can impose a desired cubic
+spline behavior, which leads to succinct convergence in a finite
+expected time-to-target, as well as moderate gains when far. The
+approach is simply to choose an optimal :math:`\tau` (time-to-target)
+that minimizes
+
+.. math::
+
+   \begin{aligned}
+   \min_{\tau, x}~ \alpha\tau + \int_0^\tau \ddot x(t)^2~ dt\end{aligned}
+
+under our boundary conditions, assuming a cubic spline
+:math:`x(t), t\in[0,\tau]`. Using (`[eqLeap] <#eqLeap>`__), we know the
+optimal :math:`x` and optimal control costs for given :math:`\tau`. When
+:math:`\delta= x_\text{ref}- x` and :math:`v` are co-linear (i.e., the
+system moves towards the target), computer algebra can tell us the
+optimal :math:`\tau`:
+
+.. math::
+
+   \begin{aligned}
+   \label{eqTimingControl}
+     \tau^* = \frac{1}{\alpha}\Big[ \sqrt{6 |\delta| \alpha+ v^2} - |v| \Big] ~.\end{aligned}
+
+If the system has a lateral movement, the analytical solution seems
+overly complex, but a numerical solution to the least-squares form
+(`[eqLeapSOS] <#eqLeapSOS>`__) very efficient. However, in practise,
+using (`[eqTimingControl] <#eqTimingControl>`__) with scalar
+:math:`v \gets (\delta^{\!\top\!}v)/|\delta|` for easy timing control of
+convergence to a target is highly efficient and versatile.
+
+To make this a reactive control scheme, in each control cycle
+:math:`\tau^*` is reevaluated and the corresponding cubic spline
+reference send to low-level control. If there are no perturbations, the
+estimated :math:`\tau^*` will be the true time-to-target. See
+:raw-latex:`\cite{22-toussaint-SecMPC}` for details and comparision to
+PD approach behavior.
+
+The ``moveTo`` method of ``BotOP`` uses exactly this scheme to realize
+reactive control.
+
+Hermite Cubic Splines
+~~~~~~~~~~~~~~~~~~~~~
+
+A Hermite cubic spline is specified by the series of non-decreasing time
+knots, :math:`t_0,..,t_m \in [0,T]`, :math:`t_0=0, t_m=T`, and the
+waypoints :math:`x_i` *and velocities* :math:`v_i` at each time knot.
+There are not double knots, so the interval :math:`[0,T]` is split in
+:math:`m` cubic pieces, where the :math:`i`\ th piece is determined by
+the boundary conditions
+:math:`(x_{i{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}},v_{i{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}, x_i, v_i)`
+and
+:math:`\tau_i = t_i - t_{i{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}`.
+
+Specifying the timings (i.e., knots) and velocities of all waypoints is
+often not easy in terms of a user interface. Therefore the question is
+whether a series of given weypoints can easily be augmented with optimal
+timings and waypoint velocities.
+
+Further, since each piece respects boundary conditions, continuity in
+velocities is ensured. However, note that two pieces might have
+completely different accelerations at their joining knots (from the left
+and the right), and therefore a freely specified Hermite cubic spline is
+discontinuous in acceleration (has infintite jerk). Conversely,
+requiring a path in :math:`{\cal C}^2` implies continuity constraints in
+acceleration at each knot. Over the full path, these are
+:math:`(m{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}) \cdot n`
+constraints (in :math:`{\mathbb{R}}^n`), which “kill” the
+degrees-of-freedom of all but the start and end velocity. Therefore,
+requiring continuous accelleration, the kots, waypoints and start/end
+velocity alone are sufficient to specify the spline – but in practise
+the resulting waypoint velocities might not be quite desired, as they
+might “go crazy” when chaining forward the continuous acceleration
+constraint.
+
+However, optimizing both, timing and waypoint velocities under out
+optimal control objective is rather efficient and effective. Note that
+the optimal control cost over the full spline is just the sum of single
+piece costs (`[eqLeapSOS] <#eqLeapSOS>`__). This represents costs as a
+least-squares of differentiable features, where :math:`D` can be
+interpreted as distance to be covered by accelerations, and :math:`V` as
+necessary total acceleration, and the Jacobians of :math:`\tilde D` and
+:math:`\tilde V` w.r.t. all boundary conditions and :math:`\tau_i` are
+trivial. Exploiting the least-squares formulation of :math:`\psi` we can
+use the Gauss-Newton approximate Hessian.
+
+As a concequence, it is fairly efficient to solve for
+:math:`\tau_{1:m}`,
+:math:`v_{1:m{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}` given
+:math:`v_0, v_m, x_{0:m}` under continuous acceleration constraints
+subject to total time and control costs.
+
+The C++ code implementes this with the ``TimingOpt`` class, leverging
+our standard AugLag method and the least-squares formulation
+(`[eqLeapSOS] <#eqLeapSOS>`__).
+
+As a final note, in Hermite quintic splines we need positions
+:math:`x_i`, velocities :math:`v_i` and accelerations :math:`a_i` at
+each knot, which describe the quintic polynomial pieces between knots.
+The issues discussed above apply here analogously.
+
+B-Splines
+~~~~~~~~~
+
+In B-splines, the path :math:`x: [0,T] \to {\mathbb{R}}^n` is expressed
+as a linear combination of control points
+:math:`z_0,.., z_K \in {\mathbb{R}}^n`,
+
+.. math::
+
+   \begin{aligned}
+   \label{bspline}
+   x(t) = \sum_{i=0}^K B_{i,p}(t)~ z_i ~,\end{aligned}
+
+where :math:`B_{i,p}: {\mathbb{R}}\to {\mathbb{R}}` maps the time
+:math:`t` to the weighting of the :math:`i`\ th control point – it
+blends in and out the :math:`i`\ th control point. For any :math:`t` it
+holds that :math:`\sum_{i=0}^K B_{i,p}(t) = 1`, i.e., all the weights
+:math:`B_{i,p}(t)` sum to one (as with a probability distribution over
+:math:`i`), and the path point :math:`x(t)` is therefore always in the
+convex hull of control points.
+
+Concerning terminology, actually the functions :math:`B_{i,p}(t)` are
+called **B-splines**, not the resulting path :math:`x(t)`. (But in
+everyday robotics language, one often calls the path a B-spline.) As the
+linear (scalar) product in (`[bspline] <#bspline>`__) is trivial, the
+maths (and complexity of code) is all about the B-splines
+:math:`B_{i,p}(t)`, not the path :math:`x(t)`.
+
+The B-spline functions :math:`B_{i,p}(t)` are fully specified by a
+non-decreasing series of time knots :math:`t_0,..,t_m \in [0,T]` and the
+integer degree :math:`p\in\{0,1,..\}`. Namely, the recursive definition
+is
+
+.. math::
+
+   \begin{aligned}
+   B_{i,0}(t) &= [t_i \le t < t_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}] ~,\quad\text{for $0\le i \le m-1$} ~,\\
+   B_{i,p}(t)
+   &= \frac{t-t_i}{t_{i+p}-t_i}~ B_{i,p-1}(t)
+    +  \frac{t_{i+p+1}-t}{t_{i+p+1}-t_{i+1}}~ B_{i+1,p-1}(t)  ~,\quad\text{for $0\le i \le m-p-1$} ~.\end{aligned}
+
+The zero-degree B-spline functions :math:`B_{i,0}` are indicators of
+:math:`t_i \le t < t_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}`,
+and :math:`i` ranges from :math:`i=0,..,m-1`. The 1st-degree B-spline
+functions :math:`B_{i,1}` have support in :math:`t_i \le t < t_{i+2}`
+and :math:`i` only ranges in :math:`i=0,..,m-2` – because one can show
+that the normalization :math:`\sum_{i=0}^{m-2} B_{i,1}(t) = 1` holds
+(and for :math:`i>m-2`, the recursion would also not be clearly
+defined). In general, degree :math:`p` B-spline functions
+:math:`B_{i,p}` have support in :math:`t_i \le t < t_{i+p+1}` and
+:math:`i` ranges from :math:`i=0,..,m+p-1`, which is why we need
+:math:`K+1` control points :math:`z_{0:K}` with
+
+.. math::
+
+   \begin{aligned}
+       K = m+p-1 ~,
+     \end{aligned}
+
+which ensures the normalization property
+:math:`\sum_{i=0}^K B_{i,p}(t) = 1` for every degree.
+
+|image|
+
+[figSplines] Illustration of B-spline functions for degrees
+:math:`p=0,..,4`. Above each plot of functions, a rough illustration of
+a resulting spline is provided, where bullets indicate control points.
+Note that this illustration implies a localization of control points in
+time, namely roughly where the coresponding weighting function (B-spline
+function) is highest – but control points are formally not localized in
+time, they are just being linearly combined,
+:math:`x(t) = \sum_{i=0}^K B_{i,p}(t)~ z_i`, with different weighting in
+time. However, intuitively we can see that for odd degrees, the
+“localization in time” of control points roughly aligns with knots,
+while for even degrees the localization is between knots. Further, the
+illustrations assume multi-knots at the start and end (namely
+:math:`p{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}`-fold knots),
+which ensures that the spline starts with :math:`z_0` and ends with
+:math:`z_K`. Multiple equal control points :math:`z_{0:p}` and
+:math:`z_{K-p:K}` (illustrated with gray bars) are needed to ensure also
+zero vel/acc/jerk at start and end.
+
+B-spline Matrix for Time Discretized Paths
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Splines describe a continuous path :math:`x(t)`, but often we want to
+evaluate this path only at a finite number of time slices
+:math:`t\in \{\widehat t_1,..,\widehat t_S\} \subset [0,T]`. E.g., this
+could be a grid of :math:`S=100` time slices over which we want to
+optimize using KOMO, and for which we have to compute collision
+features. Let :math:`x \in {\mathbb{R}}^{S \times n}` be the time
+discretized path, and
+:math:`z \in{\mathbb{R}}^{K{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}\times n}`
+be the stack of control points. Then the B-spline representation becomes
+
+.. math::
+
+   \begin{aligned}
+   x = B_p z ~,\quad\text{with } B_p\in{\mathbb{R}}^{S\times K{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}},~ B_{p,si} = B_{i,p}(\widehat t_s) ~,\end{aligned}
+
+where :math:`B_p` is the B-spline matrix of degree :math:`p` for this
+particular time grid :math:`\{\widehat t_1,..,\widehat t_S\}`.
+
+So whenever we have a problem (e.g., NLP) defined over the fine
+resolution samples :math:`x_s`, the B-spline matrix provides a linear
+re-parameterization and it is trivial to pull gradients (and Hessians)
+back to define a problem over :math:`z`. In our code, KOMO defines NLPs
+over trajectories – it is trivial to wrap this with a linear B-spline
+parameterization to then imply a much lower-dimensional NLP over the
+control points :math:`z`.
+
+Ensuring B-splines pass through waypoints
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As we emphasized, the control point parameterization is not necessarily
+intuitive for a user, as the resulting path does not transition through
+control points. If a user provides a series of waypoints at desired
+times :math:`\widehat t_s`, how can we construct a B-spline to ensure
+transitioning through these waypoints at the desired times?
+
+The answer is again the matrix equation. Consider the cubic spline case
+and that the start and end points and times are fixed. Therefore
+:math:`z_{0:1}` and
+:math:`z_{K{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}:K}`, as well as
+knots :math:`t_{0:3}` and :math:`t_{m-3:m}` are fixed. The user wants
+waypoints :math:`x_1,..,x_S` at times
+:math:`\widehat t_1,..,\widehat t_S` *between* start and end.
+
+We can distribute :math:`S` knots :math:`t_{4:3+S}` uniformly between
+start and end knots (or also at :math:`\widehat t_1,..,\widehat t_S`),
+from which it follows we have :math:`m = S+7`, and :math:`K=m-p-1=S+3`,
+which are :math:`K+1=S+4` control points in total, of which :math:`4`
+are already fixed. So the :math:`S` middle control points are still
+free, and matrix inversion gives them from the desired waypoints,
+
+.. math::
+
+   \begin{aligned}
+     z_{2:S+1} = B^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} x_{1:S} ~,\quad\text{with } B \in {\mathbb{R}}^{S \times S},~ B_{si} =  B_{i+1,3}(\widehat t_s),~ s,i=1,..,S  ~.
+     \end{aligned}
+
+Ensuring boundary velocities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Consider again an online control situation where the is in state
+:math:`(x,\dot x)` and we want to steer it through future waypoints. In
+the B-spline representation we have to construct a spline that starts
+with current state as starting boundary.
+
+For degrees 2 and 3 this is simple to achieve: In both cases we usually
+have :math:`z_0=z_1` and
+:math:`z_{K{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}=z_K` to ensure
+zero start and end velocities. Modifying :math:`z_1` directly leads to
+the start velocity
+:math:`\dot x(0) = \dot B_{0,p}(0) z_0 + \dot B_{1,p}(0) z_1`. But
+because of normalization we have
+:math:`\dot B_{0,p}(0) = - \dot B_{1,p}(0)`, and therefore
+
+.. math::
+
+   \begin{aligned}
+     \dot x(0) &= \dot B_{0,p}(0) (z_0 - z_1) \\
+     z_1 &= z_0 - \frac{\dot x(0)}{\dot B_{0,p}(0)} ~.\end{aligned}
+
+Gradients
+^^^^^^^^^
+
+The gradients of a B-spline represented path w.r.t. control points are
+trivial. But the gradients w.r.t. the knots are less trivial. Here the
+basic equations:
+
+.. math::
+
+   \begin{aligned}
+   B_{i,p}(t)
+     &= \frac{t-t_i}{t_{i+p}-t_i} B_{i,p-1}(t)
+    +  \frac{t_{i+p+1}-t}{t_{i+p+1}-t_{i+1}} B_{i+1,p-1}(t) \\
+   &=: v~ B_{i,p-1} + w~ B_{i+1,p-1} \\
+   \dot B_{i,p}(t)
+    &= \frac{1}{t_{i{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}{}p}-t_i}~ B_{i,p{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}(t)
+    + v~ \dot B_{i,p{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}(t)
+    - \frac{1}{t_{i{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}{}p{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}-t_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1}}}~ B_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1},p{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}(t)
+    + w~ \dot B_{i{{\hspace{-0.0pt}\textrm{+}\hspace{-0.5pt}}1},p{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}}(t) \\
+   \partial_{t_i} B_{i,p}
+     &= \Big[\frac{-1}{t_{i+p}-t_i} + \frac{t-t_i}{(t_{i+p}-t_i)^2}\Big]~ B_{i,p-1}
+      + v~ \partial_{t_i} B_{i,p-1} + w~ \partial_{t_i} B_{i+1,p-1} \\
+     &= \Big[\frac{-1}{t-t_i} + \frac{1}{t_{i+p}-t_i} \Big]~ v~ B_{i,p-1} + v~ \partial_{t_i} B_{i,p-1} + w~ \partial_{t_i} B_{i+1,p-1} \\
+   \partial_{t_{i+1}} B_{i,p}
+     &= \Big[\frac{1}{t_{i+p+1}-t_{i+1}}\Big]~ w~ B_{i+1,p-1}
+         + v~ \partial_{t_{i+1}}~ B_{i,p-1} + w~ \partial_{t_{i+1}}~ B_{i+1,p-1} \\
+   \partial_{t_{i+p}} B_{i,p}
+     &= \Big[- \frac{1}{t_{i+p}-t_{i}}\Big]~ v~ B_{i,p-1}
+         + v~ \partial_{t_{i+p}}~ B_{i,p-1} + w~ \partial_{t_{i+p}}~ B_{i+1,p-1} \\
+   \partial_{t_{i+p+1}} B_{i,p}
+     &= \Big[\frac{1}{t_{i+p+1}-t} - \frac{1}{t_{i+p+1}-t_{i+1}}\Big]~ w~ B_{i+1,p-1}
+         + v~ \partial_{t_{i+p+1}}~ B_{i,p-1} + w~ \partial_{t_{i+p+1}}~ B_{i+1,p-1}\end{aligned}
 
 Code References
 ---------------
@@ -1455,7 +1847,9 @@ also nodes in subgraphs or parentgraphs are to be searched. This
 connectivity across (sub)-graphs e.g. allows to represent logic
 knowledge bases.
 
-The shows this file syntax is used to specify robot/environment
+The Editing Configurations tutorial
+<https://marctoussaint.github.io/robotic/tutorials/config_3_import_edit.html>
+shows this file syntax is used to specify robot/environment
 configurations.
 
 Cameras
@@ -1473,8 +1867,8 @@ point:
    :math:`T\equiv T_{W\to C}` is the camera position/orientation, also
    called **extrinsic parameter**),
 
--  image coordinates :math:`u=(u_x,u_y,u_d)`, with the pixel coordinates
-   :math:`(u_x,u_y)` and depth coordinate :math:`u_d`, details as
+-  image coordinates :math:`u=(u_x,u_y,u_z)`, with the pixel coordinates
+   :math:`(u_x,u_y)` and depth coordinate :math:`u_z`, details as
    followed.
 
 The pixel coordinates :math:`(u_x,u_y)` indicate where a point appears
@@ -1485,7 +1879,7 @@ there are two conventions for the :math:`y`-axis:
    how a diagram is typically drawn on paper: :math:`x`-axis right,
    :math:`y`-axis up. However, a consequence is that the :math:`z`-axis
    then points backward, i.e., pixels in front of the camera have
-   negative depth :math:`u_d`.
+   negative depth :math:`u_z`.
 
 -  :math:`y`-down: The :math:`y`-axis points down. This is consistent to
    how pixels are typically indexed in image data: counting rows from
@@ -1493,18 +1887,18 @@ there are two conventions for the :math:`y`-axis:
    literally to be pixel indices in image data, :math:`y`-down is the
    natural convention. A consequence is that the :math:`z`-axis points
    forward, i.e., pixels in front of the camera have a positive depth
-   :math:`u_d`, which might also be more intuitive.
+   :math:`u_z`, which might also be more intuitive.
 
 The transformation from camera coordinates :math:`x` to image
 coordinates :math:`u` is involves perspective projection. For better
-readability, let’s write (only in this equation)
+readability, let’s write
 :math:`x \equiv (\texttt{x},\texttt{y},\texttt{z})`. Then the mapping is
 
 .. math::
 
    \begin{aligned}
    \label{eqxtou}
-   u =  \left(\begin{array}{c}u_x \\ u_y \\ u_d\end{array}\right) 
+   u =  \left(\begin{array}{c}u_x \\ u_y \\ u_z\end{array}\right) 
    &=  \left(\begin{array}{c}(f_x \texttt{x}+ s \texttt{y})/\texttt{z}+ c_x\\ f_y \texttt{y}/\texttt{z}+ c_y \\ \texttt{z}\end{array}\right)  ~.\end{aligned}
 
 Here, the five so-called **intrinsic parameters**
@@ -1549,7 +1943,8 @@ that
 
 .. math:: \boldsymbol x = T^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1} \boldsymbol X ~.
 
-Given camera coordinates :math:`x = ``(x,y,z)''`, we can write
+Given camera coordinates
+:math:`x \equiv (\texttt{x},\texttt{y},\texttt{z})`, we can write
 (`[eqxtou] <#eqxtou>`__)
 
 .. math::
@@ -1557,15 +1952,15 @@ Given camera coordinates :math:`x = ``(x,y,z)''`, we can write
    \begin{aligned}
    \boldsymbol u
    &= K x
-   =  \left(\begin{array}{c}f_x x + s y + c_x z\\ f_y y + c_y z \\ z\end{array}\right)  ~,\quad
+   =  \left(\begin{array}{c}f_x \texttt{x}+ s \texttt{y}+ c_x \texttt{z}\\ f_y \texttt{y}+ c_y \texttt{z}\\ \texttt{z}\end{array}\right)  ~,\quad
    K =  \left(\begin{array}{ccc}f_x & s & c_x \\ & f_y & c_y \\ & & 1 \end{array}\right)  ~,\quad
    {\cal P}(\boldsymbol u)
-   =  \left(\begin{array}{c}  (f_x x + s y)/z + c_x\\ f_y y/z + c_y \end{array}\right)  ~,\end{aligned}
+   =  \left(\begin{array}{c}  (f_x x + s \texttt{y})/\texttt{z}+ c_x\\ f_y \texttt{y}/\texttt{z}+ c_y \end{array}\right)  ~,\end{aligned}
 
-where :math:`\boldsymbol u` are homogeneous *pixel* coordinates, and
+where :math:`\boldsymbol u` are *homogeneous pixel* coordinates, and
 :math:`{\cal P}(\boldsymbol u)` the actual pixel coordinates, which
-would have to be augmented with :math:`z` again to get the :math:`u`
-including depth coordinate.
+would have to be augmented with :math:`\texttt{z}` again to get the
+:math:`u` including depth coordinate.
 
 The :math:`3\times 3` matrix :math:`K` includes the 5 general intrinsic
 parameters. Writing the inverse transformation
@@ -1597,8 +1992,8 @@ intrinsic and extrinsic camera parameters from :math:`P`. Note that here
 we discuss the situation where we have the “right” :math:`\boldsymbol u`
 in the data – and not only the pixel coordinates
 :math:`{\cal P}(\boldsymbol u)`! This means that we assume we have data
-entries :math:`\boldsymbol u = (u_x u_d, u_y u_d, u_d)` which includes
-the true depth :math:`u_d`. So this method is only applicable when we
+entries :math:`\boldsymbol u = (u_x u_z, u_y u_z, u_z)` which includes
+the true depth :math:`u_z`. So this method is only applicable when we
 want to calibrate a depth camera.
 
 Given data :math:`D = \{(\boldsymbol u_i, \boldsymbol X_i)\}_{i=1}^n`,
@@ -1607,13 +2002,14 @@ we want to minimize the squared error
 .. math::
 
    \begin{aligned}
-   \argmin_P \sum_i (\boldsymbol u_i - P \boldsymbol X_i)^2 = [U - P X]^2 ~,\end{aligned}
+   \text{argmin}_P \sum_i (\boldsymbol u_i - P \boldsymbol X_i)^2 = [U - P X]^2 ~,\end{aligned}
 
 where :math:`U` and :math:`X` are the stacked :math:`\boldsymbol u_i`
 and :math:`\boldsymbol X_i`, respectively. The solution is
 :math:`P = U^{\!\top\!}X (X^{\!\top\!}X)^{{\hspace{-0.0pt}\textrm{-}\hspace{-0.5pt}}1}`.
-Comparing with the form of :math:`P` above, we can decompose it and
-extract explicit :math:`K, R, t` using
+Comparing with the definition
+:math:`P=  \left(\begin{array}{cc}KR^{\!\top\!}& -KR^{\!\top\!}t\end{array}\right)`,
+we can decompose it and extract explicit :math:`K, R, t` using
 
 .. math::
 
