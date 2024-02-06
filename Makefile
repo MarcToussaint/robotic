@@ -8,6 +8,7 @@ docs-clean:
 
 local-install:
 	ln -f -s _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
+	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build
 	+make -C build _robotic docstrings install
 	cp build/_robotic.pyi ${HOME}/.local/lib/python3.8/site-packages/robotic
