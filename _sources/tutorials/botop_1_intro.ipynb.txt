@@ -11,7 +11,7 @@
     "\n",
     "The interface essentially provides move methods to set/overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera.\n",
     "\n",
-    "This interface quite different to a more *generic physical simulation* interface. If you're interested in the latter (e.g. to implement a gym environment) look at the `Simulation` tutorial. BotOp uses a `Simulation` (optionally) as an underlying engine, but is quite different in that it is wrapped as a real-time threaded process that emulates the specific BotOp interface to a real robot -- to make it swappable with a real robot. If BotOp it run in simulation mode, the simulation can be run in many different modes: \n",
+    "This interface is quite different to a more *generic physical simulation* interface. If you're interested in the latter (e.g. to implement a gym environment) look at the `Simulation` tutorial. BotOp uses a `Simulation` (optionally) as an underlying engine, but is quite different in that it is wrapped as a real-time threaded process that emulates the specific BotOp interface to a real robot -- to make it swappable with a real robot. If BotOp is run in simulation mode, the simulation can be run in many different modes: \n",
     "- pure kinematic (no physics for objects)\n",
     "- a physics simulator with physics for objects but still kinematic robot\n",
     "- a physic simulator with PD motors for the robot."
@@ -242,7 +242,7 @@
    "id": "76e13a25",
    "metadata": {},
    "source": [
-    "The following does *not* really move the robot: it is just 'setting' the workspace C to the IK solution. No motion is send to the real/simulated robot:"
+    "The following does *not* really move the robot: it is just 'setting' the workspace C to the IK solution. No motion is sent to the real/simulated robot:"
    ]
   },
   {

@@ -108,7 +108,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "C.animate()"
+    "#C.animate()\n",
+    "C.animateSpline(5)"
    ]
   },
   {
@@ -119,6 +120,107 @@
    "outputs": [],
    "source": [
     "del C"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d7badd49",
+   "metadata": {},
+   "source": [
+    "# Creating a grid of duplicated configurations\n",
+    "It's become populat to setup simulations to include a grid of copies of the scene. Here how to do this:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "2910dcf4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import robotic as ry"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "0afbc019",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "C = ry.Config()\n",
+    "table = C.addFrame('table') .setShape(ry.ST.ssBox,[.5, .5, .1, .01]) .setPosition([0,0,1]) .setColor([.2])\n",
+    "panda = C.addFile(ry.raiPath('panda/panda.g'))\n",
+    "panda.setParent(table) .setRelativePosition([0,0,.05])\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "c590dfbf",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "#frame in grid: 531\n",
+      "1st frame's name: x0_y0_table\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Cgrid = ry.Config()\n",
+    "d = 3\n",
+    "for x in range(d):\n",
+    "    for y in range(d):\n",
+    "        base = Cgrid.addConfigurationCopy(C, f'x{x}_y{y}_') #the string adds a prefix to all frame names\n",
+    "        base.setPosition([x-(d-1)/2,y-(d-1)/2,1])\n",
+    "print('#frame in grid:', Cgrid.getFrameDimension())\n",
+    "print('1st frame\\'s name:', Cgrid.frames()[0].name)\n",
+    "Cgrid.view()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "7ba346e5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Cgrid.animateSpline()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "d41d10a4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "del Cgrid"
    ]
   },
   {
@@ -145,33 +247,17 @@
     "The [Appendix:Yaml-Graph Files](.../yaml-graph-files) provides a more detailed description of the underlying syntax of the .g-files. While the syntax should be yaml compatible, the fact that node names use `(<parents>)` to define the parent(s) of a node, filenames should be strings `<filename>`, and the additional `Include`, `Edit`, and `Delete` tags extend the semantics of what can be define in such a file.\n",
     "\n",
     "In essence, to describe a robot/world configuration, every node describes a\n",
-    "frame, and is described by three things:\n",
-    "<pre>\n",
-    "  <frame-name> ( <parent> ) { <attributes> }\n",
-    "</pre>\n",
-    "where ``<parent>`` needs to be a previously defined frame, or omitted, if\n",
+    "frame, and is described by three things: `<frame-name> ( <parent> ) { <attributes> }`, where ``<parent>`` needs to be a previously defined frame, or omitted, if\n",
     "the frame is a root frame. The attributes define properties of the\n",
     "frame, such as its pose (`X`), relative transformation (`Q`), shape, joint, and inertia properties. The main interpreted attributes are the following. Internally, a few more attributes are interpreted in experimental code (also your python code can retrieve attributes via `f.info()`).\n",
     "\n",
-    "Frame:\n",
-    "<pre>\n",
-    "X Q\n",
-    "</pre>\n",
+    "Frame: `X Q`\n",
     "\n",
-    "Shape:\n",
-    "<pre>\n",
-    "shape size contact mesh meshscale core sdf color texture\n",
-    "</pre>\n",
+    "Shape: `shape size contact mesh meshscale core sdf color texture`\n",
     "\n",
-    "Joint:\n",
-    "<pre>\n",
-    "joint joint_scale q Q limits ctrl_limits ctrl_H sampleUniform joint_active mimic\n",
-    "</pre>\n",
+    "Joint: `joint joint_scale q Q limits ctrl_limits ctrl_H sampleUniform joint_active mimic`\n",
     "\n",
-    "Inertia:\n",
-    "<pre>\n",
-    "mass inertia\n",
-    "</pre>"
+    "Inertia: `mass inertia`"
    ]
   },
   {
@@ -190,7 +276,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 11,
    "id": "0c2bd1ab",
    "metadata": {},
    "outputs": [],
@@ -200,7 +286,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 12,
    "id": "32f64861",
    "metadata": {},
    "outputs": [
@@ -208,9 +294,9 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "-- kin.cpp:watchFile:3491(0) reloading `mini.g' ... \n",
-      "Configuration: q.N=1 #frames=3 #dofs=1 #shapes=3 #ucertainties=0 #proxies=0 #forces=0 #evals=2951\n",
-      "-- kin.cpp:watchFile:3525(0) watching...\n"
+      "-- kin.cpp:watchFile:3506(0) reloading `mini.g' ... \n",
+      "Configuration: q.N=1 #frames=3 #dofs=1 #shapes=3 #ucertainties=0 #proxies=0 #forces=0 #evals=501\n",
+      "-- kin.cpp:watchFile:3540(0) watching...\n"
      ]
     }
    ],
@@ -221,7 +307,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": 13,
    "id": "d9a162b7",
    "metadata": {},
    "outputs": [],
@@ -240,7 +326,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 14,
    "id": "4e64cc63",
    "metadata": {},
    "outputs": [],
@@ -252,7 +338,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 15,
    "id": "023feac6",
    "metadata": {},
    "outputs": [
@@ -262,7 +348,7 @@
        "0"
       ]
      },
-     "execution_count": 10,
+     "execution_count": 15,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -275,7 +361,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": 16,
    "id": "9dfde73a",
    "metadata": {},
    "outputs": [],
@@ -285,7 +371,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": 17,
    "id": "b7da474c",
    "metadata": {},
    "outputs": [],
@@ -304,7 +390,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": 18,
    "id": "2f8d26f3",
    "metadata": {},
    "outputs": [],
@@ -324,7 +410,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": 19,
    "id": "6fa89f59",
    "metadata": {},
    "outputs": [
@@ -332,7 +418,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "{'panda_link0': {}, 'panda_link0_0(panda_link0)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link0.ply>', 'visual': True}, 'panda_joint1_origin(panda_link0)': {'rel': [0, 0, 0.333, 1, 0, 0, 0]}, 'panda_joint1(panda_joint1_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link1(panda_joint1)': {}, 'panda_link1_0(panda_link1)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link1.ply>', 'visual': True}, 'panda_joint2_origin(panda_link1)': {'rel': [0, 0, 0, 0.707107, -0.707107, 0, 0]}, 'panda_joint2(panda_joint2_origin)': {'joint': 'hingeZ', 'limits': [-1.7628, 1.7628, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link2(panda_joint2)': {}, 'panda_link2_0(panda_link2)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link2.ply>', 'visual': True}, 'panda_joint3_origin(panda_link2)': {'rel': [0, -0.316, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint3(panda_joint3_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link3(panda_joint3)': {}, 'panda_link3_0(panda_link3)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link3.ply>', 'visual': True}, 'panda_joint4_origin(panda_link3)': {'rel': [0.0825, 0, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint4(panda_joint4_origin)': {'joint': 'hingeZ', 'limits': [-3.0718, -0.0698, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link4(panda_joint4)': {}, 'panda_link4_0(panda_link4)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link4.ply>', 'visual': True}, 'panda_joint5_origin(panda_link4)': {'rel': [-0.0825, 0.384, 0, 0.707107, -0.707107, 0, 0]}, 'panda_joint5(panda_joint5_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.61, -1, 12], 'ctrl_limits': [2.61, -1, 12]}, 'panda_link5(panda_joint5)': {}, 'panda_link5_0(panda_link5)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link5.ply>', 'visual': True}, 'panda_joint6_origin(panda_link5)': {'rel': [0, 0, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint6(panda_joint6_origin)': {'joint': 'hingeZ', 'limits': [-0.0175, 3.7525, 2.61, -1, 12], 'ctrl_limits': [2.61, -1, 12]}, 'panda_link6(panda_joint6)': {}, 'panda_link6_0(panda_link6)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link6.ply>', 'visual': True}, 'panda_joint7_origin(panda_link6)': {'rel': [0.088, 0, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint7(panda_joint7_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.61, -1, 12], 'ctrl_limits': [2.61, -1, 12]}, 'panda_link7(panda_joint7)': {}, 'panda_link7_0(panda_link7)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link7.ply>', 'visual': True}, 'panda_joint8_origin(panda_link7)': {'rel': [0, 0, 0.107, 1, 0, 0, 0]}, 'panda_joint8(panda_joint8_origin)': {'joint': 'rigid'}, 'panda_link8(panda_joint8)': {}, 'panda_hand_joint_origin(panda_link8)': {'rel': [0, 0, 0, 0.92388, 0, 0, -0.382683]}, 'panda_hand_joint(panda_hand_joint_origin)': {'joint': 'rigid'}, 'panda_hand(panda_hand_joint)': {}, 'panda_hand_0(panda_hand)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/hand.ply>', 'visual': True}, 'panda_finger_joint1_origin(panda_hand)': {'rel': [0, 0, 0.0584, 1, 0, 0, 0]}, 'panda_finger_joint2_origin(panda_hand)': {'rel': [0, 0, 0.0584, 1, 0, 0, 0]}, 'panda_finger_joint1(panda_finger_joint1_origin)': {'joint': 'transY', 'limits': [0, 0.04, 0.2, -1, 20], 'ctrl_limits': [0.2, -1, 20]}, 'panda_finger_joint2(panda_finger_joint2_origin)': {'joint': 'transY', 'joint_scale': -1, 'limits': [0, 0.04, 0.2, -1, 20], 'mimic': 'panda_finger_joint1', 'ctrl_limits': [0.2, -1, 20]}, 'panda_leftfinger(panda_finger_joint1)': {}, 'panda_rightfinger(panda_finger_joint2)': {}, 'panda_leftfinger_0(panda_leftfinger)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/finger.ply>', 'visual': True}, 'panda_rightfinger_0(panda_rightfinger)': {'rel': [0, 0, 0, -1.03412e-13, 0, 0, 1], 'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/finger.ply>', 'visual': True}}\n"
+      "{'panda_link0': {}, 'panda_link0_0(panda_link0)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link0.ply>', 'visual': True}, 'panda_joint1_origin(panda_link0)': {'rel': [0, 0, 0.333, 1, 0, 0, 0]}, 'panda_joint1(panda_joint1_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link1(panda_joint1)': {}, 'panda_link1_0(panda_link1)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link1.ply>', 'visual': True}, 'panda_joint2_origin(panda_link1)': {'rel': [0, 0, 0, 0.707107, -0.707107, 0, 0]}, 'panda_joint2(panda_joint2_origin)': {'joint': 'hingeZ', 'limits': [-1.7628, 1.7628, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link2(panda_joint2)': {}, 'panda_link2_0(panda_link2)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link2.ply>', 'visual': True}, 'panda_joint3_origin(panda_link2)': {'rel': [0, -0.316, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint3(panda_joint3_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link3(panda_joint3)': {}, 'panda_link3_0(panda_link3)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link3.ply>', 'visual': True}, 'panda_joint4_origin(panda_link3)': {'rel': [0.0825, 0, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint4(panda_joint4_origin)': {'joint': 'hingeZ', 'limits': [-3.0718, -0.0698, 2.175, -1, 87], 'ctrl_limits': [2.175, -1, 87]}, 'panda_link4(panda_joint4)': {}, 'panda_link4_0(panda_link4)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link4.ply>', 'visual': True}, 'panda_joint5_origin(panda_link4)': {'rel': [-0.0825, 0.384, 0, 0.707107, -0.707107, 0, 0]}, 'panda_joint5(panda_joint5_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.61, -1, 12], 'ctrl_limits': [2.61, -1, 12]}, 'panda_link5(panda_joint5)': {}, 'panda_link5_0(panda_link5)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link5.ply>', 'visual': True}, 'panda_joint6_origin(panda_link5)': {'rel': [0, 0, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint6(panda_joint6_origin)': {'joint': 'hingeZ', 'limits': [-0.0175, 3.7525, 2.61, -1, 12], 'ctrl_limits': [2.61, -1, 12]}, 'panda_link6(panda_joint6)': {}, 'panda_link6_0(panda_link6)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link6.ply>', 'visual': True}, 'panda_joint7_origin(panda_link6)': {'rel': [0.088, 0, 0, 0.707107, 0.707107, 0, 0]}, 'panda_joint7(panda_joint7_origin)': {'joint': 'hingeZ', 'limits': [-2.8973, 2.8973, 2.61, -1, 12], 'ctrl_limits': [2.61, -1, 12]}, 'panda_link7(panda_joint7)': {}, 'panda_link7_0(panda_link7)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/link7.ply>', 'visual': True}, 'panda_joint8_origin(panda_link7)': {'rel': [0, 0, 0.107, 1, 0, 0, 0]}, 'panda_joint8(panda_joint8_origin)': {'joint': 'rigid'}, 'panda_link8(panda_joint8)': {}, 'panda_hand_joint_origin(panda_link8)': {'rel': [0, 0, 0, 0.92388, 0, 0, -0.382683]}, 'panda_hand_joint(panda_hand_joint_origin)': {'joint': 'rigid'}, 'panda_hand(panda_hand_joint)': {}, 'panda_hand_0(panda_hand)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/hand.ply>', 'visual': True}, 'panda_finger_joint1_origin(panda_hand)': {'Q': [0, 0, 0.0584, 1, 0, 0, 0]}, 'panda_finger_joint2_origin(panda_hand)': {'Q': [0, 0, 0.0584, 1, 0, 0, 0]}, 'panda_finger_joint1(panda_finger_joint1_origin)': {'joint': 'transY', 'limits': [0, 0.04, 0.2, -1, 20], 'ctrl_limits': [0.2, -1, 20]}, 'panda_finger_joint2(panda_finger_joint2_origin)': {'joint': 'transY', 'joint_scale': -1, 'limits': [0, 0.04, 0.2, -1, 20], 'mimic': 'panda_finger_joint1', 'ctrl_limits': [0.2, -1, 20]}, 'panda_leftfinger(panda_finger_joint1)': {}, 'panda_rightfinger(panda_finger_joint2)': {}, 'panda_leftfinger_0(panda_leftfinger)': {'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/finger.ply>', 'visual': True}, 'panda_rightfinger_0(panda_rightfinger)': {'Q': [0, 0, 0, -1.03412e-13, 0, 0, 1], 'shape': 'mesh', 'mesh': '<franka_description/meshes/visual/finger.ply>', 'visual': True}}\n"
      ]
     }
    ],
