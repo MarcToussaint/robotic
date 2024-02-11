@@ -21,6 +21,12 @@ mkdir -p scenarios; cp ../../rai-robotModels/scenarios/*.g scenarios
 mkdir -p tests; cp ../../rai-robotModels/tests/*.g tests
 cd ../..
 
+### copy header files
+rm -Rf robotic/include
+cp --parents $(find rai/src -not -path "*retired*" -name "*.h" -or -name "*.ipp") robotic
+mv robotic/rai robotic/include
+mv robotic/include/src robotic/include/rai
+
 export PYTHONPATH=.
 
 ### build each version
@@ -28,10 +34,18 @@ for ver in 8 9 10 11 6 7; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPY_VERSION=3.$ver .
     make -C build_wheel _robotic
-    
-    echo -e "\n\n======== build wheel (python version " $ver ") ========"
+    if [ "$?" != 0 ]; then
+	echo "--- compile failed ---"
+	exit
+    fi
+
+    echo -e "\n\n======== cleanup libs (python version " $ver ") ========"
     cp -f build_wheel/_robotic.*3$ver*.so robotic/_robotic.so
+    cp -f build_wheel/librai.so robotic/
     strip --strip-unneeded robotic/_robotic.so
+    strip --strip-unneeded robotic/librai.so
+
+    echo -e "\n\n======== build wheel (python version " $ver ") ========"
     python3.$ver setup.py bdist_wheel
     #break
 done

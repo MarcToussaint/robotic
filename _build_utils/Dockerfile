@@ -16,8 +16,10 @@ RUN cd /usr/lib64; ln -s libstdc++.so.6.0.19 libstdc++.so
 
 RUN wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
 
+# (some of these we compile manually just to ensure the -fPIC, which is missing in yum packages)
 RUN ./install.sh -gc jsoncpp
 RUN ./install.sh -gc libpng
+RUN ./install.sh -gc hdf5
 RUN ./install.sh -gc glew
 RUN ./install.sh -gc glfw
 
@@ -29,6 +31,8 @@ RUN ./install.sh -gc fcl
 RUN ./install.sh -gc assimp
 
 RUN ./install.sh -gc bullet
+RUN rm install.sh
+RUN wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod  a+x  install.sh
 RUN ./install.sh -gc physx
 
 #RUN wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh

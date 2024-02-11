@@ -4,6 +4,7 @@ robotic.egg-info/
 rai-robotModels
 ry.pyi
 build_wheel/
+robotic/include
 
 %% compile temporaries
 build/

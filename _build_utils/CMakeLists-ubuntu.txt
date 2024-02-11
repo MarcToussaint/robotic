@@ -13,7 +13,11 @@ set(PY_VERSION 3.8 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(PYTHON_SITE "lib/python${PY_VERSION}/site-packages")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "\$ORIGIN;${CMAKE_INSTALL_PREFIX}/lib")
+#only for testing: python module needs to link to python later!
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 ## options
 option(USE_PYBIND "build python bindings" ON)
@@ -23,6 +27,7 @@ option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" ON)
 option(USE_LIBFRANKA "link to libfranka" ON)
 option(USE_PCL "link to pcl library" OFF)
+option(USE_H5 "link to h5 library" ON)
 
 ## compile options
 add_compile_options(
@@ -54,8 +59,11 @@ include_directories(
 
 link_directories(
   $ENV{HOME}/.local/lib
-  $ENV{HOME}/.local/lib/PhysX
   )
+
+if(USE_PHYSX)
+  link_directories($ENV{HOME}/.local/lib/PhysX)
+endif()
 
 file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
 file(GLOB SRC_GeoPly rai/src/Geo/ply/*.c)
@@ -95,10 +103,11 @@ add_library(rai SHARED
   ${SRC_Audio}
   )
 
-target_link_libraries(rai
+target_link_libraries(rai PRIVATE
+  # ORDER MATTERS! test with -no-undefined linker flag (above)
   jsoncpp lapack blas pthread rt X11
   assimp ccd fcl qhull ann glfw GLEW glut GLU GL png
-  boost_system 
+  boost_system
   )
 
 ################################################################################
@@ -108,6 +117,12 @@ target_link_libraries(rai
 #find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 #target_link_libraries (rai Eigen3::Eigen)
 find_package(PkgConfig REQUIRED)
+
+if(USE_H5)
+  add_definitions(-DRAI_H5)
+  target_link_libraries(rai PRIVATE hdf5_cpp hdf5)
+  message(STATUS "[rai] using H5 libs: hdf5 hdf5_cpp")
+endif()
 
 if(USE_BULLET)
   find_package(Bullet REQUIRED)
@@ -119,7 +134,7 @@ endif()
 
 if(USE_PHYSX)
   add_definitions(-DRAI_PHYSX -DNDEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX)
-  target_link_libraries(rai PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
+  target_link_libraries(rai PRIVATE PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
   message(STATUS "[rai] using physx libs from ~/.local")
 endif()
 
@@ -139,13 +154,13 @@ endif()
 
 if(USE_REALSENSE)
   add_definitions(-DRAI_REALSENSE)
-  target_link_libraries(rai realsense2 realsense-file fw usb-1.0) #rsutils
+  target_link_libraries(rai PRIVATE realsense2 realsense-file fw usb-1.0) #rsutils
   message(STATUS "[rai] using realsense libs")
 endif()
 
 if(USE_LIBFRANKA)
   add_definitions(-DRAI_FRANKA)
-  target_link_libraries(rai franka PocoNet PocoFoundation)
+  target_link_libraries(rai PRIVATE franka PocoNet PocoFoundation)
   message(STATUS "[rai] using libfranka")
 endif()
 
@@ -174,6 +189,10 @@ if(USE_PYBIND)
   )
 endif()
 
+target_link_libraries(rai PRIVATE
+  z dl
+  )
+
 ################################################################################
 #
 # verbosity: info on eventual compiler flags
@@ -199,11 +218,10 @@ target_link_libraries(bot rai)
 
 ################################################################################
 
-set(PYTHON_SITE "lib/python${PY_VERSION}/site-packages")
 message(STATUS "[rai] installing python packages in " ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic )
 
 install(
-  TARGETS _robotic
+  TARGETS _robotic rai
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
@@ -218,16 +236,10 @@ install(
   PATTERN "retired" EXCLUDE
   )
 
-install(
-  TARGETS rai
-  #DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-  COMPONENT pkgconfig)
-
 #install(
 #  TARGETS kinEdit meshTool bot
 #  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
 install(
-  PROGRAMS robotic/ry-view robotic/ry-bot
+  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

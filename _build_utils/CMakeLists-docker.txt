@@ -13,7 +13,11 @@ set(PY_VERSION 3.8 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+#only for testing: python module needs to link to python later!
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 ## options
 option(USE_PYBIND "build python bindings" ON)
@@ -37,7 +41,7 @@ add_definitions(
   -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
-  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
+  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY -DRAI_H5
   -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner
   -DRAI_NO_STB_IMPL
   -DRAI_BotOp
@@ -58,6 +62,10 @@ link_directories(
   $ENV{HOME}/.local/lib
   )
 
+if(USE_PHYSX)
+  link_directories(/usr/local/bin/linux.clang/release)
+endif()
+
 file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
 file(GLOB SRC_GeoPly rai/src/Geo/ply/*.c)
 file(GLOB SRC_GeoCcd rai/src/Geo/ccd_rai/*.c)
@@ -71,7 +79,7 @@ file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
 file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
 
-add_library(rai STATIC
+add_library(rai SHARED
   rai/src/Core/unity.cxx
   rai/src/Optim/unity.cxx
   rai/src/Geo/unity.cxx
@@ -96,6 +104,18 @@ add_library(rai STATIC
   ${SRC_Audio}
   )
 
+target_link_libraries(rai PRIVATE
+    # ORDER MATTERS! test with -no-undefined linker flag (above)
+    libjsoncpp.a lapack pthread rt X11 libatlas.a
+    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
+    libhdf5_cpp.a libhdf5.a
+    #${BULLET_LIBRARIES}
+    libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a
+    libBullet3Collision.a   libBullet3Dynamics.a  libBullet3OpenCL_clew.a  libBulletDynamics.a   libBulletSoftBody.a
+    libLinearMath.a
+    dl
+  )
+
 ################################################################################
 #
 # include external libraries
@@ -108,33 +128,32 @@ if(USE_BULLET)
   find_package(Bullet REQUIRED)
   add_definitions(-DRAI_BULLET)
   include_directories(${BULLET_INCLUDE_DIRS})
-  target_link_libraries(rai ${BULLET_LIBRARIES})
+  target_link_libraries(rai PRIVATE ${BULLET_LIBRARIES})
   message(STATUS "[rai] using bullet libs:" ${BULLET_LIBRARIES})
 endif()
 
 if(USE_PHYSX)
   add_definitions(-DRAI_PHYSX -DNDEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX)
-  link_directories(/usr/local/bin/linux.clang/release)
-  target_link_libraries(rai PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
+  target_link_libraries(rai PRIVATE libPhysXExtensions_static_64.a PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
   message(STATUS "[rai] using physx libs from /usr/local")
 endif()
 
 if(USE_OPENCV)
   find_package(OpenCV REQUIRED)
   add_definitions(-DRAI_OPENCV)
-  target_link_libraries(rai ${OpenCV_LIBS})
+  target_link_libraries(rai PRIVATE ${OpenCV_LIBS})
   message(STATUS "[rai] using OpenCV libs:" ${OpenCV_LIBS})
 endif()
 
 if(USE_REALSENSE)
   add_definitions(-DRAI_REALSENSE)
-  target_link_libraries(rai realsense2 realsense-file fw usb-1.0) #rsutils
+  target_link_libraries(rai PRIVATE realsense2 realsense-file fw usb-1.0) #rsutils
   message(STATUS "[rai] using realsense libs")
 endif()
 
 if(USE_LIBFRANKA)
   add_definitions(-DRAI_FRANKA)
-  target_link_libraries(rai franka PocoNet PocoFoundation)
+  target_link_libraries(rai PRIVATE franka PocoNet PocoFoundation)
   message(STATUS "[rai] using libfranka")
 endif()
 
@@ -159,12 +178,6 @@ if(USE_PYBIND)
 
   target_link_libraries(_robotic PRIVATE
     rai
-    libjsoncpp.a lapack pthread rt X11 libatlas.a
-    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
-    #${BULLET_LIBRARIES}
-    libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a
-    libBullet3Collision.a   libBullet3Dynamics.a  libBullet3OpenCL_clew.a  libBulletDynamics.a   libBulletSoftBody.a
-    libLinearMath.a 
   )
 endif()
 

@@ -3,4 +3,4 @@
 docker build \
        --tag rai-manylinux \
        --network host \
-       -f Dockerfile . #--no-cache
+       -f Dockerfile . #&> build.log #--no-cache
