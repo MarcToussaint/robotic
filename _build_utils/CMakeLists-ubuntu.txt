@@ -204,7 +204,7 @@ message(STATUS "[rai] compiler flags: " "${_defs}")
 
 add_custom_target(docstrings #ALL
   DEPENDS _robotic
-  COMMAND env PYTHONPATH="." pybind11-stubgen --ignore-invalid=all _robotic
+  COMMAND env PYTHONPATH="." pybind11-stubgen --ignore-all-errors _robotic
   COMMAND mv stubs/_robotic*/__init__.pyi _robotic.pyi)
 
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
