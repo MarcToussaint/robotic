@@ -145,13 +145,13 @@ print(&#39;feature value:&#39;, y, &#39;\nJacobian:&#39;, J)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-feature value: [2.89890247e-01 1.25455202e-16 8.05237266e-01]
-Jacobian: [[-1.25455202e-16  4.72237266e-01 -1.15172364e-16 -2.32080381e-01
-   0.00000000e+00  4.48170606e-02  0.00000000e+00  0.00000000e+00]
- [ 2.89890247e-01  6.43685653e-17  5.54002326e-01  2.83784184e-16
-   1.63424512e-01  2.26026356e-16 -1.38777878e-17  0.00000000e+00]
- [ 0.00000000e+00 -2.89890247e-01 -1.79370329e-16  5.11220138e-01
-   0.00000000e+00  2.32670220e-01  0.00000000e+00  0.00000000e+00]]
+feature value: [2.81896272e-01 1.25455202e-16 8.10370138e-01]
+Jacobian: [[-1.25455202e-16  4.77370138e-01 -1.15172364e-16 -2.37213253e-01
+   0.00000000e+00  3.96841887e-02  0.00000000e+00  0.00000000e+00]
+ [ 2.81896272e-01  6.25935464e-17  5.54002326e-01  2.79346636e-16
+   1.54786187e-01  2.18260648e-16  4.16333634e-17  0.00000000e+00]
+ [ 0.00000000e+00 -2.81896272e-01 -1.79370329e-16  5.03226163e-01
+   0.00000000e+00  2.24676245e-01  0.00000000e+00  0.00000000e+00]]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -356,15 +356,15 @@ sign properly.]</p></td>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(array([2.89890247e-01, 1.25455202e-16, 1.72237266e-01]),
- array([[ 0.00000000e+00,  4.72237266e-01, -1.15172364e-16,
-         -2.32080381e-01,  0.00000000e+00,  4.48170606e-02,
+(array([2.81896272e-01, 1.25455202e-16, 1.77370138e-01]),
+ array([[ 0.00000000e+00,  4.77370138e-01, -1.15172364e-16,
+         -2.37213253e-01,  0.00000000e+00,  3.96841887e-02,
           0.00000000e+00,  0.00000000e+00],
-        [ 0.00000000e+00,  6.43685653e-17,  5.54002326e-01,
-          2.83784184e-16,  1.63424512e-01,  2.26026356e-16,
-         -1.38777878e-17,  0.00000000e+00],
-        [ 0.00000000e+00, -2.89890247e-01, -1.79370329e-16,
-          5.11220138e-01,  0.00000000e+00,  2.32670220e-01,
+        [ 0.00000000e+00,  6.25935464e-17,  5.54002326e-01,
+          2.79346636e-16,  1.54786187e-01,  2.18260648e-16,
+          4.16333634e-17,  0.00000000e+00],
+        [ 0.00000000e+00, -2.81896272e-01, -1.79370329e-16,
+          5.03226163e-01,  0.00000000e+00,  2.24676245e-01,
           0.00000000e+00,  0.00000000e+00]]))
 </pre></div></div>
 </div>
@@ -406,13 +406,13 @@ sign properly.]</p></td>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(array([2.89890247e-01, 1.25455202e-16]),
- array([[-1.25455202e-16,  4.72237266e-01, -1.15172364e-16,
-         -2.32080381e-01,  0.00000000e+00,  4.48170606e-02,
+(array([2.81896272e-01, 1.25455202e-16]),
+ array([[-1.25455202e-16,  4.77370138e-01, -1.15172364e-16,
+         -2.37213253e-01,  0.00000000e+00,  3.96841887e-02,
           0.00000000e+00,  0.00000000e+00],
-        [ 2.89890247e-01,  6.43685653e-17,  5.54002326e-01,
-          2.83784184e-16,  1.63424512e-01,  2.26026356e-16,
-         -1.38777878e-17,  0.00000000e+00]]))
+        [ 2.81896272e-01,  6.25935464e-17,  5.54002326e-01,
+          2.79346636e-16,  1.54786187e-01,  2.18260648e-16,
+          4.16333634e-17,  0.00000000e+00]]))
 </pre></div></div>
 </div>
 <p>A very useful application is again if we care about a camera looking at a point: If we want frame <code class="docutils literal notranslate"><span class="pre">B</span></code> to appear centrally in the <span class="math notranslate nohighlight">\(xy\)</span>-plane of frame <code class="docutils literal notranslate"><span class="pre">A</span></code>, we can mimimize the feature:</p>
@@ -430,13 +430,13 @@ sign properly.]</p></td>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(array([2.89890247e-01, 1.25455202e-16]),
- array([[ 0.00000000e+00,  4.72237266e-01, -1.15172364e-16,
-         -2.32080381e-01,  0.00000000e+00,  4.48170606e-02,
+(array([2.81896272e-01, 1.25455202e-16]),
+ array([[ 0.00000000e+00,  4.77370138e-01, -1.15172364e-16,
+         -2.37213253e-01,  0.00000000e+00,  3.96841887e-02,
           0.00000000e+00,  0.00000000e+00],
-        [ 0.00000000e+00,  6.43685653e-17,  5.54002326e-01,
-          2.83784184e-16,  1.63424512e-01,  2.26026356e-16,
-         -1.38777878e-17,  0.00000000e+00]]))
+        [ 0.00000000e+00,  6.25935464e-17,  5.54002326e-01,
+          2.79346636e-16,  1.54786187e-01,  2.18260648e-16,
+          4.16333634e-17,  0.00000000e+00]]))
 </pre></div></div>
 </div>
 </section>
@@ -447,10 +447,8 @@ sign properly.]</p></td>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coll = C.feature(ry.FS.accumulatedCollisions, [])
-
-C.computeCollisions() #collisions/proxies are not automatically computed on set...State
-coll.eval(C)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.computeCollisions() #collisions/proxies are not automatically computed on set...State
+C.eval(ry.FS.accumulatedCollisions, [])
 </pre></div>
 </div>
 </div>
@@ -484,7 +482,7 @@ base_r.setPosition([.0, .5, .0])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;robotic._robotic.Frame at 0x7f78a87018f0&gt;
+&lt;robotic._robotic.Frame at 0x7fd54c223d70&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -577,62 +575,54 @@ C.getCollisions()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[(&#39;r_palm&#39;, &#39;palm&#39;, -0.13976683583198263),
- (&#39;r_finger1&#39;, &#39;palm&#39;, 0.013576748081966544),
- (&#39;r_finger2&#39;, &#39;palm&#39;, 0.014228713904190754),
- (&#39;r_panda_coll6&#39;, &#39;palm&#39;, -0.015404140037349565),
- (&#39;r_panda_coll5&#39;, &#39;palm&#39;, 0.04525630035427913),
- (&#39;r_finger2&#39;, &#39;r_panda_coll5&#39;, 0.13749756426853948),
- (&#39;r_panda_coll7&#39;, &#39;palm&#39;, -0.09280264001977123),
- (&#39;r_panda_coll2&#39;, &#39;r_panda_coll5&#39;, 0.1945494196968938),
- (&#39;r_panda_coll3&#39;, &#39;palm&#39;, 0.36007247820155464),
- (&#39;r_palm&#39;, &#39;r_panda_coll3&#39;, 0.35692722195160376),
- (&#39;r_panda_coll7&#39;, &#39;r_panda_coll4&#39;, 0.32362431478923487),
- (&#39;panda_coll2&#39;, &#39;panda_coll5&#39;, 0.19454941969689368),
- (&#39;panda_coll7&#39;, &#39;panda_coll4&#39;, 0.32362431478923515),
- (&#39;r_panda_coll2&#39;, &#39;panda_coll0&#39;, 0.28717304075316374),
- (&#39;r_panda_coll0&#39;, &#39;panda_coll1&#39;, 0.27280115353885176),
- (&#39;r_panda_coll1&#39;, &#39;panda_coll0&#39;, 0.2728011535388518),
- (&#39;r_panda_coll0&#39;, &#39;panda_coll0&#39;, 0.19999999999999998),
- (&#39;r_panda_coll0b&#39;, &#39;panda_coll1&#39;, 0.22160801784824963),
- (&#39;r_panda_coll0b&#39;, &#39;panda_coll0&#39;, 0.13131351929875237),
- (&#39;r_panda_coll0&#39;, &#39;panda_coll2&#39;, 0.28717304075316374),
- (&#39;r_panda_coll0b&#39;, &#39;panda_coll2&#39;, 0.2638941651174542),
- (&#39;r_panda_coll6&#39;, &#39;panda_coll6&#39;, 0.050972864653827),
- (&#39;r_panda_coll6&#39;, &#39;panda_coll7&#39;, 0.015315130184475917),
+[(&#39;r_panda_coll6&#39;, &#39;finger2&#39;, 0.03488780676276168),
  (&#39;r_panda_coll6&#39;, &#39;finger1&#39;, 0.05202028460982694),
- (&#39;r_panda_coll6&#39;, &#39;finger2&#39;, 0.03488780676276168),
- (&#39;r_panda_coll5&#39;, &#39;panda_coll6&#39;, 0.11164377353037033),
- (&#39;r_panda_coll5&#39;, &#39;panda_coll7&#39;, 0.08766336859618301),
- (&#39;r_panda_coll5&#39;, &#39;finger1&#39;, 0.12895455840607237),
  (&#39;r_panda_coll5&#39;, &#39;finger2&#39;, 0.06147141318949159),
- (&#39;r_panda_coll7&#39;, &#39;panda_coll6&#39;, 0.013907106655053708),
- (&#39;r_panda_coll7&#39;, &#39;panda_coll7&#39;, -0.08287262318906746),
- (&#39;r_panda_coll7&#39;, &#39;finger1&#39;, 0.030647107437714566),
- (&#39;r_panda_coll7&#39;, &#39;finger2&#39;, 0.03284520763356755),
- (&#39;r_palm&#39;, &#39;panda_coll6&#39;, -0.05737613444861561),
- (&#39;r_finger1&#39;, &#39;panda_coll6&#39;, -0.020651551158550177),
- (&#39;r_finger2&#39;, &#39;panda_coll6&#39;, 0.112620748583009),
- (&#39;r_palm&#39;, &#39;panda_coll7&#39;, -0.1273471133054103),
- (&#39;r_finger1&#39;, &#39;panda_coll7&#39;, 0.0011556581521950104),
- (&#39;r_finger2&#39;, &#39;panda_coll7&#39;, 0.05638875573522109),
- (&#39;r_palm&#39;, &#39;finger1&#39;, -0.02159299051272197),
- (&#39;r_palm&#39;, &#39;finger2&#39;, -0.014663617396226986),
- (&#39;r_finger2&#39;, &#39;finger1&#39;, 0.03712381290870001),
+ (&#39;r_panda_coll5&#39;, &#39;finger1&#39;, 0.12895455840607237),
+ (&#39;r_finger2&#39;, &#39;r_panda_coll5&#39;, 0.13749756426853948),
  (&#39;r_finger2&#39;, &#39;finger2&#39;, 0.03836716448878992),
- (&#39;palm&#39;, &#39;panda_coll3&#39;, 0.3569272219516041),
+ (&#39;r_finger2&#39;, &#39;finger1&#39;, 0.03712381290870001),
+ (&#39;r_panda_coll2&#39;, &#39;r_panda_coll5&#39;, 0.1945494196968938),
+ (&#39;r_panda_coll7&#39;, &#39;finger2&#39;, 0.03284520763356755),
+ (&#39;r_panda_coll7&#39;, &#39;finger1&#39;, 0.030647107437714566),
+ (&#39;r_panda_coll7&#39;, &#39;r_panda_coll4&#39;, 0.32362431478923487),
+ (&#39;r_palm&#39;, &#39;panda_coll7&#39;, -0.1273471133054103),
+ (&#39;r_palm&#39;, &#39;panda_coll6&#39;, -0.05737613444861561),
  (&#39;r_palm&#39;, &#39;panda_coll3&#39;, 0.3884474823677896),
- (&#39;r_panda_coll7&#39;, &#39;panda_coll5&#39;, 0.08262699740729021),
  (&#39;r_palm&#39;, &#39;panda_coll5&#39;, 0.0151854277723599),
+ (&#39;panda_coll7&#39;, &#39;panda_coll4&#39;, 0.32362431478923515),
+ (&#39;panda_coll2&#39;, &#39;panda_coll5&#39;, 0.19454941969689368),
+ (&#39;r_palm&#39;, &#39;palm&#39;, -0.13976683583198263),
+ (&#39;palm&#39;, &#39;panda_coll3&#39;, 0.3569272219516041),
+ (&#39;r_panda_coll5&#39;, &#39;palm&#39;, 0.04525630035427913),
+ (&#39;r_panda_coll6&#39;, &#39;palm&#39;, -0.015404140037349565),
+ (&#39;r_finger2&#39;, &#39;palm&#39;, 0.014228713904190754),
+ (&#39;r_finger1&#39;, &#39;palm&#39;, 0.013576748081966544),
+ (&#39;r_panda_coll7&#39;, &#39;palm&#39;, -0.09280264001977123),
+ (&#39;r_panda_coll3&#39;, &#39;palm&#39;, 0.36007247820155464),
+ (&#39;r_panda_coll5&#39;, &#39;panda_coll7&#39;, 0.08766336859618301),
+ (&#39;r_panda_coll5&#39;, &#39;panda_coll6&#39;, 0.11164377353037033),
+ (&#39;r_panda_coll6&#39;, &#39;panda_coll7&#39;, 0.015315130184475917),
+ (&#39;r_panda_coll6&#39;, &#39;panda_coll6&#39;, 0.050972864653827),
+ (&#39;r_palm&#39;, &#39;finger2&#39;, -0.014663617396226986),
+ (&#39;r_palm&#39;, &#39;finger1&#39;, -0.02159299051272197),
+ (&#39;r_finger2&#39;, &#39;panda_coll7&#39;, 0.05638875573522109),
+ (&#39;r_finger1&#39;, &#39;panda_coll7&#39;, 0.0011556581521950104),
+ (&#39;r_finger2&#39;, &#39;panda_coll6&#39;, 0.112620748583009),
+ (&#39;r_finger1&#39;, &#39;panda_coll6&#39;, -0.020651551158550177),
+ (&#39;r_finger2&#39;, &#39;panda_coll5&#39;, 0.16135689397161754),
  (&#39;r_finger1&#39;, &#39;panda_coll5&#39;, 0.037025559294402516),
- (&#39;r_finger2&#39;, &#39;panda_coll5&#39;, 0.16135689397161754)]
+ (&#39;r_panda_coll7&#39;, &#39;panda_coll7&#39;, -0.08287262318906746),
+ (&#39;r_panda_coll7&#39;, &#39;panda_coll6&#39;, 0.013907106655053708),
+ (&#39;r_panda_coll7&#39;, &#39;panda_coll5&#39;, 0.08262699740729021),
+ (&#39;r_palm&#39;, &#39;r_panda_coll3&#39;, 0.35692722195160376)]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getTotalPenetration()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getCollisionsTotalPenetration()
 </pre></div>
 </div>
 </div>
@@ -642,7 +632,7 @@ C.getCollisions()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.572477645899696
+0.5724776458996959
 </pre></div></div>
 </div>
 <p>The last command is useful for what is classically called binary collision check: if <code class="docutils literal notranslate"><span class="pre">totalPenetration</span></code> is zero, we have no collisions.</p>
