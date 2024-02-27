@@ -29,7 +29,8 @@ long_description = (Path(__file__).parent / "README.md").read_text()
 
 setup(
     name='robotic',
-    packages=['robotic'],
+    #packages=['robotic'],
+    packages=setuptools.find_namespace_packages(),
     package_data={
         'robotic': ['_robotic.so', 'librai.so', '_robotic.pyi', 'version.py', 'render.py',
                     'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*', 'rai-robotModels/*/*/*/*/*', 'rai-robotModels/*/*/*/*/*/*',

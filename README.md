@@ -27,6 +27,9 @@ pip install robotic
 ```
 * Tests:
 ```
+ry-info
+```
+```
 python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
 ```
 ```

@@ -27,6 +27,7 @@ option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
 option(USE_PCL "link to pcl library" OFF)
+option(USE_H5 "link to h5 library" ON)
 
 ## compile options
 add_compile_options(
@@ -41,7 +42,7 @@ add_definitions(
   -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
-  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY -DRAI_H5
+  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
   -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner
   -DRAI_NO_STB_IMPL
   -DRAI_BotOp
@@ -104,25 +105,31 @@ add_library(rai SHARED
   ${SRC_Audio}
   )
 
+
+################################################################################
+#
+# rai include/link
+
 target_link_libraries(rai PRIVATE
     # ORDER MATTERS! test with -no-undefined linker flag (above)
-    libjsoncpp.a lapack pthread rt X11 libatlas.a
-    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libccd.a libfcl.a
+    libjsoncpp.a lapack libatlas.a
+    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libfcl.a libccd.a
     libhdf5_cpp.a libhdf5.a
     #${BULLET_LIBRARIES}
     libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a
     libBullet3Collision.a   libBullet3Dynamics.a  libBullet3OpenCL_clew.a  libBulletDynamics.a   libBulletSoftBody.a
     libLinearMath.a
-    dl
   )
-
-################################################################################
-#
-# include external libraries
 
 #find_package (FindEigen3 REQUIRED)
 #target_link_libraries (rai FindEigen3::Eigen)
 #target_link_libraries (rai eigen)
+
+if(USE_H5)
+  add_definitions(-DRAI_H5)
+  target_link_libraries(rai PRIVATE libhdf5_cpp.a libhdf5.a libzlibstatic.a)
+  message(STATUS "[rai] using H5 libs: hdf5 hdf5_cpp in " ${HDF5_INCLUDE_DIRS})
+endif()
 
 if(USE_BULLET)
   find_package(Bullet REQUIRED)
@@ -156,6 +163,10 @@ if(USE_LIBFRANKA)
   target_link_libraries(rai PRIVATE franka PocoNet PocoFoundation)
   message(STATUS "[rai] using libfranka")
 endif()
+
+target_link_libraries(rai PRIVATE
+  pthread rt X11 dl
+  )
 
 ################################################################################
 

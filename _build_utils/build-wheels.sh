@@ -46,7 +46,7 @@ for ver in 8 9 10 11 6 7; do
     strip --strip-unneeded robotic/librai.so
 
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
-    python3.$ver setup.py bdist_wheel
+    python3.$ver setup.py --quiet bdist_wheel
     #break
 done
 

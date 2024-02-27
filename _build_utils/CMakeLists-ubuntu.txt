@@ -53,8 +53,8 @@ add_definitions(
 include_directories(
   rai/src
   botop/src
-  /usr/include/eigen3
   $ENV{HOME}/.local/include
+  /usr/include/eigen3
   )
 
 link_directories(
@@ -63,6 +63,9 @@ link_directories(
 
 if(USE_PHYSX)
   link_directories($ENV{HOME}/.local/lib/PhysX)
+endif()
+if(USE_H5)
+  link_directories(/usr/lib/x86_64-linux-gnu/hdf5/serial)
 endif()
 
 file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
@@ -103,32 +106,35 @@ add_library(rai SHARED
   ${SRC_Audio}
   )
 
-target_link_libraries(rai PRIVATE
-  # ORDER MATTERS! test with -no-undefined linker flag (above)
-  jsoncpp lapack blas pthread rt X11
-  assimp ccd fcl qhull ann glfw GLEW glut GLU GL png
-  boost_system
-  )
-
 ################################################################################
 #
-# include external libraries
+# rai include/link
+
+# default/required dependencies
+target_link_libraries(rai PRIVATE
+  # ORDER MATTERS! test with -no-undefined linker flag (above)
+  jsoncpp lapack blas
+  assimp fcl ccd ann qhull
+  glfw GLEW glut GLU GL png
+  )
 
 #find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 #target_link_libraries (rai Eigen3::Eigen)
 find_package(PkgConfig REQUIRED)
 
 if(USE_H5)
+  find_package(HDF5 REQUIRED)
   add_definitions(-DRAI_H5)
-  target_link_libraries(rai PRIVATE hdf5_cpp hdf5)
-  message(STATUS "[rai] using H5 libs: hdf5 hdf5_cpp")
+  include_directories(${HDF5_INCLUDE_DIRS})
+  target_link_libraries(rai PRIVATE hdf5_cpp hdf5 z)
+  message(STATUS "[rai] using H5 libs: hdf5 hdf5_cpp in " ${HDF5_INCLUDE_DIRS})
 endif()
 
 if(USE_BULLET)
   find_package(Bullet REQUIRED)
   add_definitions(-DRAI_BULLET)
   include_directories(${BULLET_INCLUDE_DIRS})
-  target_link_libraries(rai ${BULLET_LIBRARIES})
+  target_link_libraries(rai PRIVATE ${BULLET_LIBRARIES})
   message(STATUS "[rai] using bullet libs:" ${BULLET_LIBRARIES})
 endif()
 
@@ -141,7 +147,7 @@ endif()
 if(USE_OPENCV)
   find_package(OpenCV REQUIRED)
   add_definitions(-DRAI_OPENCV)
-  target_link_libraries(rai ${OpenCV_LIBS})
+  target_link_libraries(rai PRIVATE ${OpenCV_LIBS})
   message(STATUS "[rai] using OpenCV libs:" ${OpenCV_LIBS})
 endif()
 
@@ -163,6 +169,10 @@ if(USE_LIBFRANKA)
   target_link_libraries(rai PRIVATE franka PocoNet PocoFoundation)
   message(STATUS "[rai] using libfranka")
 endif()
+
+target_link_libraries(rai PRIVATE
+  pthread rt X11 boost_system
+  )
 
 ################################################################################
 
