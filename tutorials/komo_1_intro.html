@@ -208,8 +208,8 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+{ time: 0.000666, evals: 6, done: 1, feasible: 1, sos: 0.00423205, f: 0, ineq: 0, eq: 0.00253782 }
 ====nlp==== method:AugmentedLagrangian bounded: yes
-{ time: 0.00498, evals: 6, done: 1, feasible: 1, sos: 0.00423205, f: 0, ineq: 0, eq: 0.00253782 }
 ==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1
 ----newton---- initial point f(x):16.3219 alpha:1 beta:1
 --newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    6.96322  ACCEPT
@@ -322,7 +322,7 @@ else:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.000928, evals: 4, done: 1, feasible: 1, sos: 0.00570952, f: 0, ineq: 0, eq: 0.0103569 }
+{ time: 0.000794, evals: 4, done: 1, feasible: 1, sos: 0.00570952, f: 0, ineq: 0, eq: 0.0103569 }
 -- Always check feasibility flag of NLP solver return
 </pre></div></div>
 </div>
@@ -371,16 +371,16 @@ for t in range(10):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.00267, evals: 10, done: 1, feasible: 1, sos: 0.0188663, f: 0, ineq: 0.0339463, eq: 0.0533131 }
-{ time: 0.00108, evals: 8, done: 1, feasible: 1, sos: 0.0103682, f: 0, ineq: 0.0332484, eq: 0.0521701 }
-{ time: 0.002522, evals: 18, done: 1, feasible: 1, sos: 0.0061874, f: 0, ineq: 0, eq: 0.0114558 }
-{ time: 0.005746, evals: 10, done: 1, feasible: 1, sos: 0.0183376, f: 0, ineq: 0.00646323, eq: 0.0317301 }
-{ time: 0.001563, evals: 9, done: 1, feasible: 1, sos: 0.00853173, f: 0, ineq: 0.034115, eq: 0.053917 }
-{ time: 0.003073, evals: 7, done: 1, feasible: 1, sos: 0.00642263, f: 0, ineq: 0, eq: 0.0135033 }
-{ time: 0.004421, evals: 8, done: 1, feasible: 1, sos: 0.0208156, f: 0, ineq: 0, eq: 0.112883 }
-{ time: 0.005179, evals: 25, done: 1, feasible: 1, sos: 0.00896542, f: 0, ineq: 0, eq: 0.0130986 }
-{ time: 0.004278, evals: 12, done: 1, feasible: 0, sos: 0.0488416, f: 0, ineq: 0, eq: 1.10423 }
-{ time: 0.020559, evals: 74, done: 1, feasible: 1, sos: 0.0497169, f: 0, ineq: 0, eq: 0.0466023 }
+{ time: 0.001418, evals: 6, done: 1, feasible: 1, sos: 0.00142475, f: 0, ineq: 0, eq: 0.0111502 }
+{ time: 0.001098, evals: 8, done: 1, feasible: 1, sos: 0.0124192, f: 0, ineq: 0, eq: 0.00662152 }
+{ time: 0.007917, evals: 44, done: 1, feasible: 1, sos: 0.0350814, f: 0, ineq: 0.000118715, eq: 0.0122223 }
+{ time: 0.004219, evals: 28, done: 1, feasible: 1, sos: 0.0168511, f: 0, ineq: 0, eq: 0.00391636 }
+{ time: 0.002502, evals: 18, done: 1, feasible: 1, sos: 0.0061559, f: 0, ineq: 0, eq: 0.0120048 }
+{ time: 0.001049, evals: 8, done: 1, feasible: 1, sos: 0.0149443, f: 0, ineq: 0, eq: 0.00980311 }
+{ time: 0.0052, evals: 19, done: 1, feasible: 1, sos: 0.0164137, f: 0, ineq: 0, eq: 0.0117922 }
+{ time: 0.000932, evals: 6, done: 1, feasible: 1, sos: 0.00277814, f: 0, ineq: 0, eq: 0.0130124 }
+{ time: 0.001582, evals: 6, done: 1, feasible: 1, sos: 0.0109993, f: 0, ineq: 0, eq: 0.00719791 }
+{ time: 0.001361, evals: 9, done: 1, feasible: 1, sos: 0.0166243, f: 0, ineq: 0.0341276, eq: 0.0542185 }
 </pre></div></div>
 </div>
 <p>So the solver finds feasible grasps and exploits the null space of the constraints (grasps from different directions, but always opposing the y-planes).</p>
@@ -498,7 +498,7 @@ for t in range(len(q)):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.001562, evals: 10, done: 1, feasible: 1, sos: 2.43407, f: 0, ineq: 0, eq: 0.00032262 }
+{ time: 0.00304, evals: 10, done: 1, feasible: 1, sos: 2.43407, f: 0, ineq: 0, eq: 0.00032262 }
 [[-0.35581271 -0.03481746 -0.4176425  -2.08265507 -0.0543818   2.18036138
   -0.50103126]
  [-0.29489888 -0.35553853 -0.40753179 -1.7269542  -0.01931644  2.34501124
@@ -561,7 +561,7 @@ for t in range(q.shape[0]):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.006885, evals: 11, done: 1, feasible: 1, sos: 2.56424, f: 0, ineq: 0, eq: 0.00186233 }
+{ time: 0.013192, evals: 11, done: 1, feasible: 1, sos: 2.56424, f: 0, ineq: 0, eq: 0.00186233 }
 size of path: (40, 7)
 </pre></div></div>
 </div>
@@ -597,7 +597,7 @@ for t in range(q.shape[0]):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.024988, evals: 25, done: 1, feasible: 1, sos: 16.8523, f: 0, ineq: 0, eq: 0.000832403 }
+{ time: 0.021188, evals: 25, done: 1, feasible: 1, sos: 16.8523, f: 0, ineq: 0, eq: 0.000832403 }
 size of path: (40, 7)
 </pre></div></div>
 </div>

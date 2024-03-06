@@ -118,6 +118,7 @@
 <li><p>Test the console tool <code class="docutils literal notranslate"><span class="pre">ry-bot</span> <span class="pre">-real</span> <span class="pre">-up</span> <span class="pre">-home</span></code>. (See <code class="docutils literal notranslate"><span class="pre">ry-bot</span> <span class="pre">-h</span></code> for other test commands, e.g. homing.) Potential issues:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">ry-bot:</span> <span class="pre">command</span> <span class="pre">not</span> <span class="pre">found</span></code>. Is it located in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>? Do you have <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=&quot;$HOME/.local/bin:$PATH&quot;</span></code> in your <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>?</p></li>
+<li><p>‘FCI mode is not activated’. Activate it in the Desk: Older versions: side panel, newer versions: hidden in a top menu.</p></li>
 <li><p>Stalls when connecting to Franka - are the Franka IP addresses ({“172.16.0.2”, “172.17.0.2”} in franka.cpp) correct?</p></li>
 <li><p>Franka not Ready or can’t move - check as above?</p></li>
 <li><p>Error message “== ERROR:franka.cpp:init:356(-2) not implemented with this compiler options”. Do you use the pypi package instead of a locally compiled package? Did you enable USE_LIBFRANKA with cmake? Did you <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>?</p></li>
@@ -126,7 +127,7 @@
 </ul>
 </li>
 </ul>
-<p>Finally, the <code class="docutils literal notranslate"><span class="pre">ry-bot</span></code> (usually installed in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>) provides a minimalistic example for how to run the robot - have a look if you like.</p>
+<p>Finally, the <code class="docutils literal notranslate"><span class="pre">ry-bot</span></code> (usually installed in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>) provides a minimalistic example for how to run the robot - have a look!</p>
 <section id="First-robot-motion,-camera-&amp;-pcl,-and-gripper-motion">
 <h3>First robot motion, camera &amp; pcl, and gripper motion<a class="headerlink" href="#First-robot-motion,-camera-&-pcl,-and-gripper-motion" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
@@ -145,7 +146,7 @@ print(&#39;robotic version:&#39;, ry.__version__, ry.compiled())
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-robotic version: 0.1.7 compile time: Feb 13 2024 12:22:55
+robotic version: 0.1.8 compile time: Feb 26 2024 21:50:27
 </pre></div></div>
 </div>
 <p>Also for a real robot we first load the configuration and maintain our own workspace configuration.</p>
@@ -188,7 +189,7 @@ bot = ry.BotOp(C, useRealRobot=True)
 </pre></div></div>
 </div>
 <p>If that failed, you could <code class="docutils literal notranslate"><span class="pre">ry.params_print()</span></code> to see which global parameters were used and whether you should change them. See also the checklist above. Or continue with sim from here one:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
@@ -197,14 +198,6 @@ bot = ry.BotOp(C, useRealRobot=True)
     bot = ry.BotOp(C, useRealRobot=False)
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
--- simulation.cpp:updateDisplayData:664(0) simulation frames changed: #frames: 64 last: pcl
-</pre></div></div>
 </div>
 <p>A first <strong>motion</strong>:</p>
 <div class="nbinput docutils container">
@@ -262,7 +255,7 @@ while bot.getKeyPressed()!=ord(&#39;q&#39;):
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--- WARNING:frame.cpp:glDraw:1845(-1) trying to draw empty mesh (shape type:pointCloud)
+-- WARNING:frame.cpp:glDraw:1848(-1) trying to draw empty mesh (shape type:pointCloud)
 </pre></div></div>
 </div>
 <p>Closing &amp; opening the <strong>gripper</strong>:</p>
@@ -361,14 +354,6 @@ bot = ry.BotOp(C, True)
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.view(True, &#39;floating=False, damping=True -- Try moving the robot by hand!\n-- press any key to continue --&#39;)
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
--- simulation.cpp:updateDisplayData:664(0) simulation frames changed: #frames: 63 last: panda_collCameraWrist
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -484,7 +469,25 @@ bot.setCompliance([], 0.)
  direct: [nan]  pseudoInv: [nan]
  direct: [nan]  pseudoInv: [nan]
  direct: [nan]  pseudoInv: [nan]
--- bot.cpp:setCompliance:347(0) clearing compliance
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+ direct: [nan]  pseudoInv: [nan]
+-- bot.cpp:setCompliance:348(0) clearing compliance
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -562,7 +565,6 @@ bot = ry.BotOp(C, True)
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 -- bot.cpp:BotOp:39(0) -- blocking useRealRobot --
--- simulation.cpp:updateDisplayData:664(0) simulation frames changed: #frames: 63 last: panda_collCameraWrist
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">

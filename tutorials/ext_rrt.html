@@ -173,7 +173,10 @@ ry.params_print()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{ time: 0.587682, evals: 174, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
+{ time: 0.339952, evals: 174, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: base
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: ego
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: obstacle
 RRT queries=436 tree sizes = 41 39
   -- rrt success: queries:762 tree sizes: 69 70
   path-length=31
@@ -312,8 +315,8 @@ print(ret)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-====nlp==== method:AugmentedLagrangian bounded: yes
-{ time: 0.120195, evals: 181, done: 1, feasible: 1, sos: 4.60525, f: 0, ineq: 0, eq: 0.00832905 }
+{ time: 0.14005, evals: 181, done: 1, feasible: 1, sos: 4.60525, f: 0, ineq: 0, eq: 0.00832905 }====nlp==== method:AugmentedLagrangian bounded: yes
+
 ==nlp== it:0 evals:0 mu:1 nu:1 muLB:0.1
 ----newton---- initial point f(x):118.878 alpha:1 beta:1
 --newton-- it:   1  |Delta|:        0.2  alpha:          1  evals:   2  f(y):    61.1067  ACCEPT
@@ -325,7 +328,26 @@ print(ret)
 --newton-- it:   7  |Delta|:        0.2  alpha:          1  evals:   8  f(y):    3.69354  ACCEPT
 --newton-- it:   8  |Delta|:   0.124542  alpha:          1  evals:   9  f(y):    3.58322  ACCEPT
 --newton-- it:   9  |Delta|:  0.0889825  alpha:          1  evals:  10  f(y):    3.53209  ACCEPT
---newton-- it:  10  |Delta|:  0.0335182  alpha:          1  evals:  11  f(y):    3.52013  ACCEPT
+--newton-- it:  10  |Delta|:
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># that&#39;s the goal configuration
+qT = komo.getPath()[0]
+C.setJointState(qT)
+C.view(False, &quot;IK solution&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.0335182  alpha:          1  evals:  11  f(y):    3.52013  ACCEPT
 --newton-- it:  11  |Delta|:  0.0219181  alpha:          1  evals:  12  f(y):    3.51622  ACCEPT
 --newton-- stopping: &#39;absMax(Delta)&lt;options.stopTolerance&#39;
 ==nlp== it:   0  evals:  12  A(x):    3.51622  f:     3.1564  g:          0  h:    1.44686  |x-x&#39;|:    1.01145      stop:DeltaConverge
@@ -517,17 +539,6 @@ print(ret)
 ----newton---- final f(x):4.7327
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># that&#39;s the goal configuration
-qT = komo.getPath()[0]
-C.setJointState(qT)
-C.view(False, &quot;IK solution&quot;)
-</pre></div>
-</div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -547,24 +558,175 @@ rrt.setProblem(C, [q0], [qT])
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: world
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: table_base
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: table
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_base
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link0_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint1_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint1
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link1
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link1_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint2_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint2
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link2
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link2_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint3_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint3
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link3
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link3_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint4_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint4
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link4
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link4_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint5_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint5
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link5
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link5_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint6_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint6
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link6
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link6_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint7_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint7
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link7
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link7_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint8_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_joint8
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_link8
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_hand
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_leftfinger
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_panda_rightfinger
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll0
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll1
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll3
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll5
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll2
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll4
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll6
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll7
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_robotiq_base
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_robotiq_arg2f_base_link
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_robotiq_arg2f_base_link_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_finger_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_inner_knuckle_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_outer_knuckle_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_inner_knuckle_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_finger_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_inner_knuckle_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_outer_knuckle_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_inner_knuckle_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_outer_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_outer_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_inner_finger_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_inner_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_outer_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_outer_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_inner_finger_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_inner_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_inner_finger_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_inner_finger_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_inner_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_left_inner_finger_pad_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_inner_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_right_inner_finger_pad_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_ftsensor
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_gripper
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_palm
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_finger1
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_finger2
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: l_robotiq_optitrackMarker
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: l_panda_coll7b
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_base
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link0_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint1_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint1
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link1
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link1_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint2_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint2
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link2
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link2_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint3_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint3
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link3
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link3_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint4_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint4
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link4
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link4_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint5_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint5
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link5
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link5_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint6_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint6
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link6
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link6_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint7_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint7
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link7
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link7_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint8_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_joint8
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_link8
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_hand
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_leftfinger
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_panda_rightfinger
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll0
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll1
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll3
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll5
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll2
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll4
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll6
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll7
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_robotiq_base
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_robotiq_arg2f_base_link
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_robotiq_arg2f_base_link_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_finger_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_inner_knuckle_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_outer_knuckle_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_inner_knuckle_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_finger_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_inner_knuckle_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_outer_knuckle_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_inner_knuckle_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_outer_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_outer_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_inner_finger_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_inner_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_outer_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_outer_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_inner_finger_joint_origin
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_inner_knuckle_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_inner_finger_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_inner_finger_joint
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_inner_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_left_inner_finger_pad_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_inner_finger_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_right_inner_finger_pad_0
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_ftsensor
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_gripper
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_palm
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_finger1
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_finger2
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: r_robotiq_optitrackMarker
+-- kin.cpp:fcl:2076(0)   adding to FCL interface: r_panda_coll7b
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: camera
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: boxR
+-- kin.cpp:fcl:2078(0)   SKIPPING from FCL interface: boxL
 -- RRT_PathFinder.cpp:RRT_PathFinder:251(0) initializing with infeasible qT:
 query: h_goal: 0 g_coll: 0 isGoal: 1 isFeasible: 0
 proxy:  (r_panda_coll5)-(l_panda_coll5) [120,43]        d=-0
 proxy:  (r_panda_coll6)-(l_panda_coll5) [123,43]        d=-0
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;robotic._robotic.PathFinder at 0x7f8a6e2be630&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -583,7 +745,7 @@ path = ret.x
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 RRT queries=502 tree sizes = 70 32
-{ time: 0.838225, evals: 177, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
+{ time: 0.530418, evals: 177, done: 1, feasible: 1, sos: -1, f: -1, ineq: -1, eq: -1 }
   -- rrt success: queries:1028 tree sizes: 120 106
   path-length=37
 </pre></div></div>
@@ -600,7 +762,7 @@ for t in range(0, path.shape[0]-1):
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
@@ -611,14 +773,6 @@ bot = ry.BotOp(C, False)
 bot.home(C)
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
--- simulation.cpp:updateDisplayData:664(0) simulation frames changed: #frames: 160 last: boxL
-</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
