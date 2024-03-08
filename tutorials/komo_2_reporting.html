@@ -112,7 +112,7 @@ underlying Lagrangian), which really “explains” the point of convergence as 
 <h2>Problem specs reporting<a class="headerlink" href="#Problem-specs-reporting" title="Link to this heading"></a></h2>
 <p>Let’s first define a simple feasible KOMO problem (same as in the 1st tutorial), solve it, and get info on convergence:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
@@ -121,8 +121,8 @@ import time
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
@@ -136,17 +136,8 @@ C.view()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo = ry.KOMO(C, 1, 1, 0, False) # minimalisitc IK problem: just 1 slice
@@ -156,42 +147,20 @@ komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], 
 </div>
 </div>
 <p>Even before we run optimization, we can a report containing the komo specs and list of all objectives.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;o0&#39;: {&#39;name&#39;: &#39;F_qItself&#39;,
-  &#39;frames&#39;: [&#39;#14&#39;],
-  &#39;order&#39;: 0.0,
-  &#39;type&#39;: &#39;sos&#39;,
-  &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-  &#39;times&#39;: [],
-  &#39;slices&#39;: [0.0, 0.0]},
- &#39;o1&#39;: {&#39;name&#39;: &#39;F_PositionDiff&#39;,
-  &#39;frames&#39;: [&#39;l_gripper&#39;, &#39;box&#39;],
-  &#39;order&#39;: 0.0,
-  &#39;type&#39;: &#39;eq&#39;,
-  &#39;scale&#39;: [10.0],
-  &#39;times&#39;: [],
-  &#39;slices&#39;: [0.0, 0.0]}}
-</pre></div></div>
-</div>
 </section>
 <section id="Constraints-error-reporting">
 <h2>Constraints error reporting<a class="headerlink" href="#Constraints-error-reporting" title="Link to this heading"></a></h2>
 <p>After optimization, the report will contain errors (i.e. constraint violations, or sqr costs) for all objects. In the current case, all constraint violations are very small:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
@@ -202,53 +171,17 @@ print(ret)
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{ time: 0.000537, evals: 6, done: 1, feasible: 1, sos: 0.00423205, f: 0, ineq: 0, eq: 0.00253782 }
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;o0&#39;: {&#39;name&#39;: &#39;F_qItself&#39;,
-  &#39;frames&#39;: [&#39;#14&#39;],
-  &#39;err&#39;: 0.004232047441629455,
-  &#39;order&#39;: 0.0,
-  &#39;type&#39;: &#39;sos&#39;,
-  &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-  &#39;times&#39;: [],
-  &#39;slices&#39;: [0.0, 0.0]},
- &#39;o1&#39;: {&#39;name&#39;: &#39;F_PositionDiff&#39;,
-  &#39;frames&#39;: [&#39;l_gripper&#39;, &#39;box&#39;],
-  &#39;err&#39;: 0.0025378204360193557,
-  &#39;order&#39;: 0.0,
-  &#39;type&#39;: &#39;eq&#39;,
-  &#39;scale&#39;: [10.0],
-  &#39;times&#39;: [],
-  &#39;slices&#39;: [0.0, 0.0]},
- &#39;totals&#39;: {&#39;sos&#39;: 0.004232047441629455,
-  &#39;ineq&#39;: 0.0,
-  &#39;eq&#39;: 0.0025378204360193557,
-  &#39;f&#39;: 0.0}}
-</pre></div></div>
-</div>
 <p>Let’s make the problem infeasible by moving the target out of reach and repeating optimization:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getFrame(&#39;box&#39;) .setPosition([.8, .8, 1.])
@@ -256,17 +189,8 @@ C.view()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.updateRootObjects(C)
@@ -279,84 +203,34 @@ print(ret)
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{ time: 0.008881, evals: 153, done: 1, feasible: 0, sos: 0.069906, f: 0, ineq: 0, eq: 4.72774 }
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.report()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;o0&#39;: {&#39;name&#39;: &#39;F_qItself&#39;,
-  &#39;frames&#39;: [&#39;#14&#39;],
-  &#39;err&#39;: 0.06990602225714217,
-  &#39;order&#39;: 0.0,
-  &#39;type&#39;: &#39;sos&#39;,
-  &#39;scale&#39;: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-  &#39;times&#39;: [],
-  &#39;slices&#39;: [0.0, 0.0]},
- &#39;o1&#39;: {&#39;name&#39;: &#39;F_PositionDiff&#39;,
-  &#39;frames&#39;: [&#39;l_gripper&#39;, &#39;box&#39;],
-  &#39;err&#39;: 4.72774201910934,
-  &#39;order&#39;: 0.0,
-  &#39;type&#39;: &#39;eq&#39;,
-  &#39;scale&#39;: [10.0],
-  &#39;times&#39;: [],
-  &#39;slices&#39;: [0.0, 0.0]},
- &#39;totals&#39;: {&#39;sos&#39;: 0.06990602225714217,
-  &#39;ineq&#39;: 0.0,
-  &#39;eq&#39;: 4.72774201910934,
-  &#39;f&#39;: 0.0}}
-</pre></div></div>
-</div>
 <p>We clearly see that the <code class="docutils literal notranslate"><span class="pre">positionDiff</span></code> eq-objective is violated (<code class="docutils literal notranslate"><span class="pre">err</span></code> includes the <code class="docutils literal notranslate"><span class="pre">scale</span></code> as factor, so err=4.6 means 0.46 meters error).</p>
 </section>
 <section id="Lagrange-gradients-reporting">
 <h2>Lagrange gradients reporting<a class="headerlink" href="#Lagrange-gradients-reporting" title="Link to this heading"></a></h2>
 <p>Seeing only objective errors sometimes does not really explain what is the issues. So instead we can let the solver report what the lagrange gradients w.r.t. each feature are:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.reportLagrangeGradients(komo.getFeatureNames())
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;F_PositionDiff/0-l_gripper-box&#39;: {&#39;err&#39;: 4.72774201910934,
-  &#39;grad&#39;: 2029.9373380340226,
-  &#39;type&#39;: &#39;eq&#39;},
- &#39;F_qItself/0-#14&#39;: {&#39;err&#39;: 0.06990602225714217,
-  &#39;grad&#39;: 0.10405218101073233,
-  &#39;type&#39;: &#39;sos&#39;}}
-</pre></div></div>
-</div>
 <p>Note that this list is always sorted, starting with largest gradients first. For complex problems, this report can be rather insightful. Sometimes one explicitly sees which objectives <em>fight</em> against each other in the Lagrangian by both having similar large gradient sizes (typically with opposing directions, which the report does not show; also a matrix with “angles between gradients” can be computed).</p>
 </section>
 <section id="Plotting-constraint-errors-over-time-for-paths">
 <h2>Plotting constraint errors over time for paths<a class="headerlink" href="#Plotting-constraint-errors-over-time-for-paths" title="Link to this heading"></a></h2>
 <p>The above only considers a simple IK problem. Let’s look at a path problem (we take the same 4-waypoint problem from the 1st tutorial):</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
@@ -370,17 +244,8 @@ C.view()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(q0)
@@ -405,18 +270,10 @@ for t in range(q.shape[0]):
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{ time: 0.057882, evals: 25, done: 1, feasible: 1, sos: 16.8524, f: 0, ineq: 0, eq: 0.000830766 }
-</pre></div></div>
-</div>
 <p>Using <code class="docutils literal notranslate"><span class="pre">plotOverTime</span></code> in the report method now plots the constraint violations (or sqr costs) over <em>phase</em>, using gnuplot. (You need to have <code class="docutils literal notranslate"><span class="pre">gnuplot</span></code> installed on your Ubuntu, using <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">gnuplot</span></code>.)</p>
 <p>Here, the only interesting (non-zero) signal is from the 2nd-order control costs, which are the acceleration costs. This is a typical acceperation cost profile for optimal paths between waypoints.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>R = komo.report(False, plotOverTime=True)
@@ -424,46 +281,17 @@ for t in range(q.shape[0]):
 </div>
 </div>
 <p>Finally, the largrange gradients show that the control costs and the final velocity constraints contribute a lot, but each waypoint also contributes a significant gradient that explains the point of convergence. (If you’d increase control cost scaling, the waypoint Lagrange parameters and their reported gradients would equally increase.)</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.reportLagrangeGradients(komo.getFeatureNames())
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;F_qItself/2-#14&#39;: {&#39;err&#39;: 16.600820571993694,
-  &#39;grad&#39;: 6043.488528066637,
-  &#39;type&#39;: &#39;sos&#39;},
- &#39;F_qItself/1-#14&#39;: {&#39;err&#39;: 3.9011114034981365e-05,
-  &#39;grad&#39;: 216.80256228823174,
-  &#39;type&#39;: &#39;eq&#39;},
- &#39;F_PositionDiff/0-l_gripper-way3&#39;: {&#39;err&#39;: 0.00018811043262373373,
-  &#39;grad&#39;: 38.44085787533682,
-  &#39;type&#39;: &#39;eq&#39;},
- &#39;F_PositionDiff/0-l_gripper-way1&#39;: {&#39;err&#39;: 0.0001978945998004633,
-  &#39;grad&#39;: 37.565078052715286,
-  &#39;type&#39;: &#39;eq&#39;},
- &#39;F_PositionDiff/0-l_gripper-way2&#39;: {&#39;err&#39;: 0.00011034995341691056,
-  &#39;grad&#39;: 31.405043613278952,
-  &#39;type&#39;: &#39;eq&#39;},
- &#39;F_PositionDiff/0-l_gripper-way4&#39;: {&#39;err&#39;: 0.0002954000254168365,
-  &#39;grad&#39;: 22.527104757310475,
-  &#39;type&#39;: &#39;eq&#39;},
- &#39;F_qItself/0-#14&#39;: {&#39;err&#39;: 0.2516152206502213,
-  &#39;grad&#39;: 1.2275839237172441,
-  &#39;type&#39;: &#39;sos&#39;}}
-</pre></div></div>
-</div>
 <p>Test the following: Change the timing of the 3rd waypoint to “[2]” as well, requiring the robot to be at way2 and way3 at the same time – which clearly is infeasible. Check the solver return and lagrange gradients.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del komo

@@ -114,7 +114,7 @@
 <h2>Recap of evaluating features directly<a class="headerlink" href="#Recap-of-evaluating-features-directly" title="Link to this heading"></a></h2>
 <p>Let’s first recap how features are directly computed on a configuration - as introduced in the <a class="reference internal" href="config_1_intro.html"><span class="doc">1st tutorial</span></a>:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
@@ -122,7 +122,7 @@
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
@@ -131,8 +131,8 @@ q = C.getJointState()
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>[y,J] = C.eval(ry.FS.position, [&#39;gripper&#39;])
@@ -140,46 +140,14 @@ print(&#39;feature value:&#39;, y, &#39;\nJacobian:&#39;, J)
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-feature value: [2.81896272e-01 1.25455202e-16 8.10370138e-01]
-Jacobian: [[-1.25455202e-16  4.77370138e-01 -1.15172364e-16 -2.37213253e-01
-   0.00000000e+00  3.96841887e-02  0.00000000e+00  0.00000000e+00]
- [ 2.81896272e-01  6.25935464e-17  5.54002326e-01  2.79346636e-16
-   1.54786187e-01  2.18260648e-16  4.16333634e-17  0.00000000e+00]
- [ 0.00000000e+00 -2.81896272e-01 -1.79370329e-16  5.03226163e-01
-   0.00000000e+00  2.24676245e-01  0.00000000e+00  0.00000000e+00]]
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># the x-axis of the given frame in world coordinates
 C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([ 0.38205142, -0.70710678,  0.59500984]),
- array([[ 7.07106781e-01,  5.95009840e-01,  3.82051424e-01,
-         -5.95009840e-01,  3.82051424e-01, -5.95009840e-01,
-         -3.82051424e-01,  0.00000000e+00],
-        [ 3.82051424e-01,  8.48324576e-17,  7.07106781e-01,
-          2.12081144e-16, -2.94260250e-01,  3.71142002e-16,
-         -7.07106781e-01,  0.00000000e+00],
-        [ 0.00000000e+00, -3.82051424e-01,  5.95009840e-01,
-          3.82051424e-01, -5.95009840e-01,  3.82051424e-01,
-         -5.95009840e-01,  0.00000000e+00]]))
-</pre></div></div>
 </div>
 <p>The signature of the <code class="docutils literal notranslate"><span class="pre">eval</span></code> method is</p>
 <ul class="simple">
@@ -192,22 +160,13 @@ C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
 <section id="List-of-features">
 <h2>List of features<a class="headerlink" href="#List-of-features" title="Link to this heading"></a></h2>
 <p>Here is a full list of feature symbols:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.FS.__members__.keys()
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-dict_keys([&#39;position&#39;, &#39;positionDiff&#39;, &#39;positionRel&#39;, &#39;quaternion&#39;, &#39;quaternionDiff&#39;, &#39;quaternionRel&#39;, &#39;pose&#39;, &#39;poseDiff&#39;, &#39;poseRel&#39;, &#39;vectorX&#39;, &#39;vectorXDiff&#39;, &#39;vectorXRel&#39;, &#39;vectorY&#39;, &#39;vectorYDiff&#39;, &#39;vectorYRel&#39;, &#39;vectorZ&#39;, &#39;vectorZDiff&#39;, &#39;vectorZRel&#39;, &#39;scalarProductXX&#39;, &#39;scalarProductXY&#39;, &#39;scalarProductXZ&#39;, &#39;scalarProductYX&#39;, &#39;scalarProductYY&#39;, &#39;scalarProductYZ&#39;, &#39;scalarProductZZ&#39;, &#39;gazeAt&#39;, &#39;angularVel&#39;, &#39;accumulatedCollisions&#39;, &#39;jointLimits&#39;, &#39;distance&#39;, &#39;negDistance&#39;, &#39;oppose&#39;, &#39;qItself&#39;, &#39;jointState&#39;, &#39;aboveBox&#39;, &#39;insideBox&#39;, &#39;pairCollision_negScalar&#39;, &#39;pairCollision_vector&#39;, &#39;pairCollision_normal&#39;, &#39;pairCollision_p1&#39;, &#39;pairCollision_p2&#39;, &#39;standingAbove&#39;, &#39;physics&#39;, &#39;contactConstraints&#39;, &#39;energy&#39;, &#39;transAccelerations&#39;, &#39;transVelocities&#39;])
-</pre></div></div>
 </div>
 <p>But some of these (esp later ones) are exotic or experimental. The core pre-defined features are the following:</p>
 <table class="docutils align-default">
@@ -342,31 +301,13 @@ sign properly.]</p></td>
 <li><p><code class="docutils literal notranslate"><span class="pre">positionRel</span></code> is the position of frame <code class="docutils literal notranslate"><span class="pre">A</span></code> in the RELATIVE coordinates of frame <code class="docutils literal notranslate"><span class="pre">B</span></code></p></li>
 </ul>
 <p>The best example is if <code class="docutils literal notranslate"><span class="pre">A</span></code> is a camera: Assume you would like to frame <code class="docutils literal notranslate"><span class="pre">B</span></code> to be positioned exactly at coordinate (0,0,-.3) in the coordinate frame of <code class="docutils literal notranslate"><span class="pre">A</span></code> – meaning exactly 30cm centrally in front of the camera – then the following feature would evaluate the error:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, [&#39;gripper&#39;, &#39;panda_joint1&#39;], scale=[1], target=[0, 0, .3])
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([2.81896272e-01, 1.25455202e-16, 1.77370138e-01]),
- array([[ 0.00000000e+00,  4.77370138e-01, -1.15172364e-16,
-         -2.37213253e-01,  0.00000000e+00,  3.96841887e-02,
-          0.00000000e+00,  0.00000000e+00],
-        [ 0.00000000e+00,  6.25935464e-17,  5.54002326e-01,
-          2.79346636e-16,  1.54786187e-01,  2.18260648e-16,
-          4.16333634e-17,  0.00000000e+00],
-        [ 0.00000000e+00, -2.81896272e-01, -1.79370329e-16,
-          5.03226163e-01,  0.00000000e+00,  2.24676245e-01,
-          0.00000000e+00,  0.00000000e+00]]))
-</pre></div></div>
 </div>
 <p>Concretely, if you minimize the above feature, the <code class="docutils literal notranslate"><span class="pre">gripper</span></code> will look exactly(=centrally) at <code class="docutils literal notranslate"><span class="pre">panda_joint1</span></code> with 30cm distance.</p>
 </section>
@@ -392,59 +333,29 @@ sign properly.]</p></td>
 <li><p>or a <strong>matrix</strong>.</p></li>
 </ul>
 <p>We can do interesting things when <code class="docutils literal notranslate"><span class="pre">scale</span></code> is a matrix. For instance, if we only want the <span class="math notranslate nohighlight">\(xy\)</span>-position of a frame returned, we can choose a matrix <span class="math notranslate nohighlight">\(S=\begin{pmatrix}1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0\end{pmatrix}\)</span>, which multiplies to the 3D feature to return a 2D feature. In code:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.position, [&#39;gripper&#39;], [[1,0,0],[0,1,0]])
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([2.81896272e-01, 1.25455202e-16]),
- array([[-1.25455202e-16,  4.77370138e-01, -1.15172364e-16,
-         -2.37213253e-01,  0.00000000e+00,  3.96841887e-02,
-          0.00000000e+00,  0.00000000e+00],
-        [ 2.81896272e-01,  6.25935464e-17,  5.54002326e-01,
-          2.79346636e-16,  1.54786187e-01,  2.18260648e-16,
-          4.16333634e-17,  0.00000000e+00]]))
-</pre></div></div>
-</div>
 <p>A very useful application is again if we care about a camera looking at a point: If we want frame <code class="docutils literal notranslate"><span class="pre">B</span></code> to appear centrally in the <span class="math notranslate nohighlight">\(xy\)</span>-plane of frame <code class="docutils literal notranslate"><span class="pre">A</span></code>, we can mimimize the feature:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, [&#39;gripper&#39;, &#39;panda_joint1&#39;], [[1,0,0],[0,1,0]])
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([2.81896272e-01, 1.25455202e-16]),
- array([[ 0.00000000e+00,  4.77370138e-01, -1.15172364e-16,
-         -2.37213253e-01,  0.00000000e+00,  3.96841887e-02,
-          0.00000000e+00,  0.00000000e+00],
-        [ 0.00000000e+00,  6.25935464e-17,  5.54002326e-01,
-          2.79346636e-16,  1.54786187e-01,  2.18260648e-16,
-          4.16333634e-17,  0.00000000e+00]]))
-</pre></div></div>
-</div>
 </section>
 <section id="Collision-features">
 <h2>Collision features<a class="headerlink" href="#Collision-features" title="Link to this heading"></a></h2>
 <p>Let’s evaluate the accumulative collision scalar and its Jacobian</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.computeCollisions() #collisions/proxies are not automatically computed on set...State
@@ -452,18 +363,9 @@ C.eval(ry.FS.accumulatedCollisions, [])
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([0.]), array([[0., 0., 0., 0., 0., 0., 0., 0.]]))
-</pre></div></div>
-</div>
 <p>Let’s move into collision and redo this</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
@@ -476,17 +378,8 @@ base_r.setPosition([.0, .5, .0])
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;robotic._robotic.Frame at 0x7f29022a07b0&gt;
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([&#39;panda_joint1&#39;, &#39;panda_joint2&#39;, &#39;r_panda_joint1&#39;, &#39;r_panda_joint2&#39;])
@@ -495,73 +388,34 @@ C.view()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
 <p>The configuration is now in collision. We can evaluate between some specific shape-pairs that show this:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;palm&#39;, &#39;r_palm&#39;])
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([0.13976684]),
- array([[ 0.2021495 , -0.06471866,  0.00841045,  0.55724234]]))
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;panda_coll7&#39;, &#39;r_panda_coll7&#39;])
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([0.08287262]),
- array([[ 0.14218262,  0.43479204, -0.14218262,  0.43479204]]))
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;panda_coll6&#39;, &#39;r_panda_coll6&#39;])
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([-0.05097286]),
- array([[-0.05482199,  0.48443921, -0.12142734,  0.29574326]]))
-</pre></div></div>
-</div>
 <p>However, the above features only return penetration (=negDistance) between specific pairs of shapes. For holistic collision checking we query if any pair of shapes collides. This is called <strong>broad phase collision checking</strong>. The following does this (calling <code class="docutils literal notranslate"><span class="pre">fcl</span></code> internally):</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.computeCollisions()
@@ -569,91 +423,23 @@ C.getCollisions()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-[(&#39;r_panda_coll6&#39;, &#39;finger2&#39;, 0.03488780676276168),
- (&#39;r_panda_coll6&#39;, &#39;finger1&#39;, 0.05202028460982694),
- (&#39;r_panda_coll5&#39;, &#39;finger2&#39;, 0.06147141318949159),
- (&#39;r_panda_coll5&#39;, &#39;finger1&#39;, 0.12895455840607237),
- (&#39;r_finger2&#39;, &#39;r_panda_coll5&#39;, 0.13749756426853948),
- (&#39;r_finger2&#39;, &#39;finger2&#39;, 0.03836716448878992),
- (&#39;r_finger2&#39;, &#39;finger1&#39;, 0.03712381290870001),
- (&#39;r_panda_coll2&#39;, &#39;r_panda_coll5&#39;, 0.1945494196968938),
- (&#39;r_panda_coll7&#39;, &#39;finger2&#39;, 0.03284520763356755),
- (&#39;r_panda_coll7&#39;, &#39;finger1&#39;, 0.030647107437714566),
- (&#39;r_panda_coll7&#39;, &#39;r_panda_coll4&#39;, 0.32362431478923487),
- (&#39;r_palm&#39;, &#39;panda_coll7&#39;, -0.1273471133054103),
- (&#39;r_palm&#39;, &#39;panda_coll6&#39;, -0.05737613444861561),
- (&#39;r_palm&#39;, &#39;panda_coll3&#39;, 0.3884474823677896),
- (&#39;r_palm&#39;, &#39;panda_coll5&#39;, 0.0151854277723599),
- (&#39;panda_coll7&#39;, &#39;panda_coll4&#39;, 0.32362431478923515),
- (&#39;panda_coll2&#39;, &#39;panda_coll5&#39;, 0.19454941969689368),
- (&#39;r_palm&#39;, &#39;palm&#39;, -0.13976683583198263),
- (&#39;palm&#39;, &#39;panda_coll3&#39;, 0.3569272219516041),
- (&#39;r_panda_coll5&#39;, &#39;palm&#39;, 0.04525630035427913),
- (&#39;r_panda_coll6&#39;, &#39;palm&#39;, -0.015404140037349565),
- (&#39;r_finger2&#39;, &#39;palm&#39;, 0.014228713904190754),
- (&#39;r_finger1&#39;, &#39;palm&#39;, 0.013576748081966544),
- (&#39;r_panda_coll7&#39;, &#39;palm&#39;, -0.09280264001977123),
- (&#39;r_panda_coll3&#39;, &#39;palm&#39;, 0.36007247820155464),
- (&#39;r_panda_coll5&#39;, &#39;panda_coll7&#39;, 0.08766336859618301),
- (&#39;r_panda_coll5&#39;, &#39;panda_coll6&#39;, 0.11164377353037033),
- (&#39;r_panda_coll6&#39;, &#39;panda_coll7&#39;, 0.015315130184475917),
- (&#39;r_panda_coll6&#39;, &#39;panda_coll6&#39;, 0.050972864653827),
- (&#39;r_palm&#39;, &#39;finger2&#39;, -0.014663617396226986),
- (&#39;r_palm&#39;, &#39;finger1&#39;, -0.02159299051272197),
- (&#39;r_finger2&#39;, &#39;panda_coll7&#39;, 0.05638875573522109),
- (&#39;r_finger1&#39;, &#39;panda_coll7&#39;, 0.0011556581521950104),
- (&#39;r_finger2&#39;, &#39;panda_coll6&#39;, 0.112620748583009),
- (&#39;r_finger1&#39;, &#39;panda_coll6&#39;, -0.020651551158550177),
- (&#39;r_finger2&#39;, &#39;panda_coll5&#39;, 0.16135689397161754),
- (&#39;r_finger1&#39;, &#39;panda_coll5&#39;, 0.037025559294402516),
- (&#39;r_panda_coll7&#39;, &#39;panda_coll7&#39;, -0.08287262318906746),
- (&#39;r_panda_coll7&#39;, &#39;panda_coll6&#39;, 0.013907106655053708),
- (&#39;r_panda_coll7&#39;, &#39;panda_coll5&#39;, 0.08262699740729021),
- (&#39;r_palm&#39;, &#39;r_panda_coll3&#39;, 0.35692722195160376)]
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getCollisionsTotalPenetration()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0.5724776458996959
-</pre></div></div>
-</div>
 <p>The last command is useful for what is classically called binary collision check: if <code class="docutils literal notranslate"><span class="pre">totalPenetration</span></code> is zero, we have no collisions.</p>
 <p>Finally, we can get the same information in a differentiable manner, as a feature:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.accumulatedCollisions, [])
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(array([0.57247765]),
- array([[ 0.5810677 ,  1.0999702 , -0.74220228,  1.70678119]]))
-</pre></div></div>
 </div>
 </section>
 <section id="Enabling/disabling-collisions">
@@ -668,7 +454,7 @@ C.getCollisions()
 <p>So, the latter setting is very natural in robot chains: contact=-1 means “not colliding with the parent link”. To be precise, the “k-th order parenthood” means frames between which there are k joints or less.</p>
 <p>Note <code class="docutils literal notranslate"><span class="pre">contact</span></code> needs to be set <em>before</em> the first broadphase collision checking, as it is used in the construction of the underlying collision engine.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C

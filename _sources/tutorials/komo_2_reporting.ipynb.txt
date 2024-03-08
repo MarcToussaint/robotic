@@ -24,7 +24,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": null,
    "id": "8e07bf36",
    "metadata": {},
    "outputs": [],
@@ -36,21 +36,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": null,
    "id": "059a8ee7",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "0"
-      ]
-     },
-     "execution_count": 2,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "C = ry.Config()\n",
     "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
@@ -64,7 +53,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": null,
    "id": "bccb7b55",
    "metadata": {},
    "outputs": [],
@@ -84,34 +73,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": null,
    "id": "97fb23dd",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "{'o0': {'name': 'F_qItself',\n",
-       "  'frames': ['#14'],\n",
-       "  'order': 0.0,\n",
-       "  'type': 'sos',\n",
-       "  'scale': [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],\n",
-       "  'times': [],\n",
-       "  'slices': [0.0, 0.0]},\n",
-       " 'o1': {'name': 'F_PositionDiff',\n",
-       "  'frames': ['l_gripper', 'box'],\n",
-       "  'order': 0.0,\n",
-       "  'type': 'eq',\n",
-       "  'scale': [10.0],\n",
-       "  'times': [],\n",
-       "  'slices': [0.0, 0.0]}}"
-      ]
-     },
-     "execution_count": 4,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "komo.report()"
    ]
@@ -128,18 +93,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": null,
    "id": "178e3d42",
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "{ time: 0.000537, evals: 6, done: 1, feasible: 1, sos: 0.00423205, f: 0, ineq: 0, eq: 0.00253782 }\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
     "q = komo.getPath()\n",
@@ -150,40 +107,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": null,
    "id": "d5842764",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "{'o0': {'name': 'F_qItself',\n",
-       "  'frames': ['#14'],\n",
-       "  'err': 0.004232047441629455,\n",
-       "  'order': 0.0,\n",
-       "  'type': 'sos',\n",
-       "  'scale': [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],\n",
-       "  'times': [],\n",
-       "  'slices': [0.0, 0.0]},\n",
-       " 'o1': {'name': 'F_PositionDiff',\n",
-       "  'frames': ['l_gripper', 'box'],\n",
-       "  'err': 0.0025378204360193557,\n",
-       "  'order': 0.0,\n",
-       "  'type': 'eq',\n",
-       "  'scale': [10.0],\n",
-       "  'times': [],\n",
-       "  'slices': [0.0, 0.0]},\n",
-       " 'totals': {'sos': 0.004232047441629455,\n",
-       "  'ineq': 0.0,\n",
-       "  'eq': 0.0025378204360193557,\n",
-       "  'f': 0.0}}"
-      ]
-     },
-     "execution_count": 6,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "komo.report()"
    ]
@@ -198,21 +125,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": null,
    "id": "b727e37c",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "0"
-      ]
-     },
-     "execution_count": 7,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "C.getFrame('box') .setPosition([.8, .8, 1.])\n",
     "C.view()"
@@ -220,18 +136,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": null,
    "id": "5adc15f8",
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "{ time: 0.008881, evals: 153, done: 1, feasible: 0, sos: 0.069906, f: 0, ineq: 0, eq: 4.72774 }\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "komo.updateRootObjects(C)\n",
     "solver = ry.NLP_Solver(komo.nlp(), verbose=0 )\n",
@@ -244,40 +152,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": null,
    "id": "b20fc581",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "{'o0': {'name': 'F_qItself',\n",
-       "  'frames': ['#14'],\n",
-       "  'err': 0.06990602225714217,\n",
-       "  'order': 0.0,\n",
-       "  'type': 'sos',\n",
-       "  'scale': [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],\n",
-       "  'times': [],\n",
-       "  'slices': [0.0, 0.0]},\n",
-       " 'o1': {'name': 'F_PositionDiff',\n",
-       "  'frames': ['l_gripper', 'box'],\n",
-       "  'err': 4.72774201910934,\n",
-       "  'order': 0.0,\n",
-       "  'type': 'eq',\n",
-       "  'scale': [10.0],\n",
-       "  'times': [],\n",
-       "  'slices': [0.0, 0.0]},\n",
-       " 'totals': {'sos': 0.06990602225714217,\n",
-       "  'ineq': 0.0,\n",
-       "  'eq': 4.72774201910934,\n",
-       "  'f': 0.0}}"
-      ]
-     },
-     "execution_count": 9,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "komo.report()"
    ]
@@ -302,26 +180,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": null,
    "id": "ee59d5f3",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "{'F_PositionDiff/0-l_gripper-box': {'err': 4.72774201910934,\n",
-       "  'grad': 2029.9373380340226,\n",
-       "  'type': 'eq'},\n",
-       " 'F_qItself/0-#14': {'err': 0.06990602225714217,\n",
-       "  'grad': 0.10405218101073233,\n",
-       "  'type': 'sos'}}"
-      ]
-     },
-     "execution_count": 10,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "solver.reportLagrangeGradients(komo.getFeatureNames())"
    ]
@@ -346,21 +208,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": null,
    "id": "a6da9bda",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "0"
-      ]
-     },
-     "execution_count": 11,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "C = ry.Config()\n",
     "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
@@ -374,18 +225,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": null,
    "id": "40341e34",
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "{ time: 0.057882, evals: 25, done: 1, feasible: 1, sos: 16.8524, f: 0, ineq: 0, eq: 0.000830766 }\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "C.setJointState(q0)\n",
     "komo = ry.KOMO(C, 4, 10, 2, False)\n",
@@ -420,7 +263,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": null,
    "id": "3f9776fe",
    "metadata": {},
    "outputs": [],
@@ -438,41 +281,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": null,
    "id": "c6b64321",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "{'F_qItself/2-#14': {'err': 16.600820571993694,\n",
-       "  'grad': 6043.488528066637,\n",
-       "  'type': 'sos'},\n",
-       " 'F_qItself/1-#14': {'err': 3.9011114034981365e-05,\n",
-       "  'grad': 216.80256228823174,\n",
-       "  'type': 'eq'},\n",
-       " 'F_PositionDiff/0-l_gripper-way3': {'err': 0.00018811043262373373,\n",
-       "  'grad': 38.44085787533682,\n",
-       "  'type': 'eq'},\n",
-       " 'F_PositionDiff/0-l_gripper-way1': {'err': 0.0001978945998004633,\n",
-       "  'grad': 37.565078052715286,\n",
-       "  'type': 'eq'},\n",
-       " 'F_PositionDiff/0-l_gripper-way2': {'err': 0.00011034995341691056,\n",
-       "  'grad': 31.405043613278952,\n",
-       "  'type': 'eq'},\n",
-       " 'F_PositionDiff/0-l_gripper-way4': {'err': 0.0002954000254168365,\n",
-       "  'grad': 22.527104757310475,\n",
-       "  'type': 'eq'},\n",
-       " 'F_qItself/0-#14': {'err': 0.2516152206502213,\n",
-       "  'grad': 1.2275839237172441,\n",
-       "  'type': 'sos'}}"
-      ]
-     },
-     "execution_count": 14,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "solver.reportLagrangeGradients(komo.getFeatureNames())"
    ]
@@ -487,7 +299,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 15,
+   "execution_count": null,
    "id": "7d08b232",
    "metadata": {},
    "outputs": [],

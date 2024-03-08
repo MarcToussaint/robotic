@@ -73,8 +73,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#Integrated-Example">Integrated Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tob-grasps-and-pick-and-place-over-an-object">tob grasps and pick-and-place over an object</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#endless-box-pick-and-place-with-random-pick-and-place-orientations">endless box pick and place with random pick and place orientations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#box-top-grasps-and-place-over-obstacle">box top grasps and place over obstacle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#random-pushes">random pushes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#TODOS:">TODOS:</a></li>
@@ -127,7 +128,7 @@ next few actions and solve them to get a plan for the next few waypoints. * Path
 <h2>Manipulation Modelling<a class="headerlink" href="#Manipulation-Modelling" title="Link to this heading"></a></h2>
 <p>We start with discussing manipulation modelling for standard box/cylinder grasping and placing.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
@@ -141,8 +142,8 @@ import manipulation as manip
 </div>
 </div>
 <p>A basic configuration with a box and cylinder:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
@@ -172,21 +173,12 @@ C.view()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
 <p>Look into the definition of <em>ManipulationModelling</em> class! You see that this class provides wrapper methods to setup a komo problem. The following demonstrate the methods provided to model box and cylinder grasping IK problems:</p>
 <section id="Box-centered-top-grasp">
 <h3>Box centered top grasp<a class="headerlink" href="#Box-centered-top-grasp" title="Link to this heading"></a></h3>
 <p>There are 6 possible orientation of an orthonormal centered box grasp. Have a look at the <code class="docutils literal notranslate"><span class="pre">grasp_top_box</span></code> method!</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(qHome)
@@ -208,31 +200,12 @@ for orientation in [&#39;xy&#39;, &#39;xz&#39;, &#39;yx&#39;, &#39;yz&#39;, &#39
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-  -- feasible:
-     { time: 0.0185, evals: 45, done: 1, feasible: 1, sos: 0.121124, f: 0, ineq: 0, eq: 0.0594381 }
-  -- feasible:
-     { time: 0.005344, evals: 18, done: 1, feasible: 1, sos: 0.0353606, f: 0, ineq: 0, eq: 0.00981419 }
-  -- feasible:
-     { time: 0.006397, evals: 22, done: 1, feasible: 1, sos: 0.0508421, f: 0, ineq: 0, eq: 0.00981408 }
-  -- feasible:
-     { time: 0.0034, evals: 12, done: 1, feasible: 1, sos: 0.00573579, f: 0, ineq: 0, eq: 0.00982528 }
-  -- feasible:
-     { time: 0.00447, evals: 15, done: 1, feasible: 1, sos: 0.0401536, f: 0, ineq: 0, eq: 0.00981435 }
-  -- feasible:
-     { time: 0.003661, evals: 13, done: 1, feasible: 1, sos: 0.0279681, f: 0, ineq: 0, eq: 0.00979114 }
-</pre></div></div>
-</div>
 </section>
 <section id="Box-general-grasp">
 <h3>Box general grasp<a class="headerlink" href="#Box-general-grasp" title="Link to this heading"></a></h3>
 <p>We do not have to grasp a box in the center or orthonormally. We can only specify along which axis the fingers should press, and that they need to be inside a margin of the box sides. Have a look at the <code class="docutils literal notranslate"><span class="pre">grasp_box</span></code> method! To illustrate the gained degrees of freedom, we also impose a random bias (leading to different solutions in nullspace):</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(qHome)
@@ -260,83 +233,12 @@ for orientation in [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-  -- feasible:
-     { time: 0.011672, evals: 64, done: 1, feasible: 1, sos: 7.61771, f: 0, ineq: 8.72807e-07, eq: 5.06128e-06 }
-  -- feasible:
-     { time: 0.051235, evals: 200, done: 1, feasible: 1, sos: 9.53751, f: 0, ineq: 0.0602805, eq: 0.340924 }
-  -- feasible:
-     { time: 0.079095, evals: 201, done: 1, feasible: 1, sos: 9.97874, f: 0, ineq: 0.0614884, eq: 0.340507 }
-  -- feasible:
-     { time: 0.0145, evals: 38, done: 1, feasible: 1, sos: 1.55816, f: 0, ineq: 6.18967e-07, eq: 1.93568e-06 }
-  -- feasible:
-     { time: 0.020767, evals: 70, done: 1, feasible: 1, sos: 9.02855, f: 0, ineq: 5.18334e-07, eq: 5.84549e-06 }
-  -- feasible:
-     { time: 0.032381, evals: 157, done: 1, feasible: 1, sos: 6.23748, f: 0, ineq: 0, eq: 0.0123802 }
-  -- feasible:
-     { time: 0.03224, evals: 173, done: 1, feasible: 1, sos: 20.3903, f: 0, ineq: 0.000316202, eq: 0.000378403 }
-  -- feasible:
-     { time: 0.043399, evals: 201, done: 1, feasible: 1, sos: 19.5482, f: 0, ineq: 0.00706512, eq: 0.00550651 }
-  -- feasible:
-     { time: 0.019995, evals: 107, done: 1, feasible: 1, sos: 3.53313, f: 0, ineq: 0.000111701, eq: 0.000239007 }
-  -- feasible:
-     { time: 0.023943, evals: 78, done: 1, feasible: 1, sos: 5.32685, f: 0, ineq: 1.13135e-06, eq: 1.79984e-06 }
-  -- feasible:
-     { time: 0.017026, evals: 52, done: 1, feasible: 1, sos: 7.13694, f: 0, ineq: 5.58898e-07, eq: 3.65356e-05 }
-  -- feasible:
-     { time: 0.056203, evals: 201, done: 1, feasible: 1, sos: 24.7924, f: 0, ineq: 0.0120411, eq: 0.145331 }
-  -- feasible:
-     { time: 0.037665, evals: 162, done: 1, feasible: 1, sos: 20.8518, f: 0, ineq: 0, eq: 0.0211145 }
-  -- infeasible:
-     { time: 0.045247, evals: 200, done: 1, feasible: 0, sos: 9.54729, f: 0, ineq: 1.39023, eq: 1.74183 }
--- infeasible 3 y
-  -- feasible:
-     { time: 0.040681, evals: 201, done: 1, feasible: 1, sos: 6.50141, f: 0, ineq: 0.0652829, eq: 0.0234219 }
-  -- feasible:
-     { time: 0.031486, evals: 163, done: 1, feasible: 1, sos: 12.8938, f: 0, ineq: 3.28385e-05, eq: 2.54202e-05 }
-  -- infeasible:
-     { time: 0.046533, evals: 200, done: 1, feasible: 0, sos: 9.69396, f: 0, ineq: 1.36464, eq: 1.72497 }
--- infeasible 6 y
-  -- feasible:
-     { time: 0.019705, evals: 100, done: 1, feasible: 1, sos: 13.6366, f: 0, ineq: 3.28824e-06, eq: 1.51141e-05 }
-  -- feasible:
-     { time: 0.010333, evals: 54, done: 1, feasible: 1, sos: 3.20699, f: 0, ineq: 6.21556e-07, eq: 1.40814e-06 }
-  -- infeasible:
-     { time: 0.044091, evals: 200, done: 1, feasible: 0, sos: 13.0767, f: 0, ineq: 0.0390716, eq: 0.619842 }
--- infeasible 9 y
-  -- feasible:
-     { time: 0.04013, evals: 200, done: 1, feasible: 1, sos: 16.0122, f: 0, ineq: 5.18443e-05, eq: 0.000205728 }
-  -- feasible:
-     { time: 0.01563, evals: 78, done: 1, feasible: 1, sos: 3.10875, f: 0, ineq: 4.99516e-09, eq: 2.79678e-06 }
-  -- feasible:
-     { time: 0.039737, evals: 200, done: 1, feasible: 1, sos: 16.019, f: 0, ineq: 6.76209e-05, eq: 0.000226301 }
-  -- feasible:
-     { time: 0.046871, evals: 201, done: 1, feasible: 1, sos: 8.58349, f: 0, ineq: 0.00070553, eq: 0.0418426 }
-  -- feasible:
-     { time: 0.044332, evals: 201, done: 1, feasible: 1, sos: 7.12162, f: 0, ineq: 0.00126941, eq: 0.0415629 }
-  -- feasible:
-     { time: 0.024238, evals: 122, done: 1, feasible: 1, sos: 5.01708, f: 0, ineq: 0.000200262, eq: 0.0003691 }
-  -- feasible:
-     { time: 0.044535, evals: 201, done: 1, feasible: 1, sos: 21.5337, f: 0, ineq: 0.0144211, eq: 0.0874642 }
-  -- feasible:
-     { time: 0.028223, evals: 134, done: 1, feasible: 1, sos: 9.89445, f: 0, ineq: 0, eq: 0.00140128 }
-  -- infeasible:
-     { time: 0.036676, evals: 200, done: 1, feasible: 0, sos: 10.0614, f: 0, ineq: 2.60733, eq: 0.267835 }
--- infeasible 8 z
-  -- feasible:
-     { time: 0.013116, evals: 61, done: 1, feasible: 1, sos: 2.40134, f: 0, ineq: 4.25198e-05, eq: 2.38717e-05 }
-</pre></div></div>
-</div>
 </section>
 <section id="Cylinder-grasp">
 <h3>Cylinder grasp<a class="headerlink" href="#Cylinder-grasp" title="Link to this heading"></a></h3>
 <p>A cylinder (or capsule) can be grasped by ensuring the finger axis is normal to the cylinder’s axis – have a look at the <code class="docutils literal notranslate"><span class="pre">grasp_cylinder</span></code> method. Again, a demo with random bias to show the variety of grasps modelled that way:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(qHome)
@@ -361,33 +263,6 @@ for i in range(10):
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-  -- feasible:
-     { time: 0.012121, evals: 69, done: 1, feasible: 1, sos: 5.1126, f: 0, ineq: 0, eq: 0.00945172 }
-  -- feasible:
-     { time: 0.027136, evals: 128, done: 1, feasible: 1, sos: 21.7747, f: 0, ineq: 0, eq: 2.12634e-06 }
-  -- feasible:
-     { time: 0.013661, evals: 72, done: 1, feasible: 1, sos: 5.39811, f: 0, ineq: 0, eq: 0.00945185 }
-  -- feasible:
-     { time: 0.020003, evals: 73, done: 1, feasible: 1, sos: 5.38886, f: 0, ineq: 1.52415e-05, eq: 1.3364e-05 }
-  -- feasible:
-     { time: 0.025636, evals: 72, done: 1, feasible: 1, sos: 4.72131, f: 0, ineq: 0, eq: 0.00945157 }
-  -- feasible:
-     { time: 0.038793, evals: 201, done: 1, feasible: 1, sos: 3.60318, f: 0, ineq: 0, eq: 0.00257859 }
-  -- feasible:
-     { time: 0.020099, evals: 109, done: 1, feasible: 1, sos: 20.5991, f: 0, ineq: 0, eq: 2.29818e-06 }
-  -- feasible:
-     { time: 0.016809, evals: 54, done: 1, feasible: 1, sos: 3.07853, f: 0, ineq: 0, eq: 9.36283e-06 }
-  -- feasible:
-     { time: 0.027713, evals: 115, done: 1, feasible: 1, sos: 18.8148, f: 0, ineq: 0, eq: 6.12569e-06 }
-  -- feasible:
-     { time: 0.025739, evals: 95, done: 1, feasible: 1, sos: 18.235, f: 0, ineq: 0, eq: 5.73933e-06 }
-</pre></div></div>
-</div>
 </section>
 </section>
 <section id="Sequential-Manipulation-Modelling">
@@ -395,8 +270,8 @@ for i in range(10):
 <p>Sequential manipulation modelling is special, as in some phases the manipulated objects move with the manipulator. Internally, komo models this with a <em>mode switch</em> (where an object becomes attached to the manipulator with a stable (but optimizable) relative transform).</p>
 <p>Using the ManipulationModelling class, the <code class="docutils literal notranslate"><span class="pre">setup_pick_and_place_waypoints</span></code> method creates a two-time-steps komo problem where the relative object-gripper position is constrained to be the same in the 1st and 2st step (as it is parameterized by a shared relative kinematic joint). The <code class="docutils literal notranslate"><span class="pre">grasp_box</span></code> method ensures that the solution <em>also</em> fulfils grasp constraints in the first time step; and the <code class="docutils literal notranslate"><span class="pre">place_box</span></code> method ensures that the solution <em>also</em> fulfils placement constraints in the second
 time step. The additional <code class="docutils literal notranslate"><span class="pre">target_relative_xy_position</span></code> is optional, so see placement to explicit xy-positions on the table. Have a look at the definitions of all these methods.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(qHome)
@@ -436,55 +311,6 @@ C.view()
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-=== pnp 0, grasp orientation y, place orientation z
-  -- feasible:
-     { time: 0.031373, evals: 46, done: 1, feasible: 1, sos: 0.0219559, f: 0, ineq: 0, eq: 3.60174e-06 }
-=== pnp 1, grasp orientation x, place orientation z
-  -- feasible:
-     { time: 0.05742, evals: 87, done: 1, feasible: 1, sos: 0.0411171, f: 0, ineq: 0.000237294, eq: 0.00281096 }
-=== pnp 2, grasp orientation y, place orientation z
-  -- feasible:
-     { time: 0.038541, evals: 57, done: 1, feasible: 1, sos: 0.0225928, f: 0, ineq: 0, eq: 4.94079e-06 }
-=== pnp 3, grasp orientation x, place orientation z
-  -- feasible:
-     { time: 0.04858, evals: 70, done: 1, feasible: 1, sos: 0.03018, f: 0, ineq: 3.36441e-08, eq: 3.86046e-06 }
-=== pnp 4, grasp orientation y, place orientation z
-  -- feasible:
-     { time: 0.017345, evals: 26, done: 1, feasible: 1, sos: 0.0208696, f: 0, ineq: 8.02946e-10, eq: 1.73167e-06 }
-=== pnp 5, grasp orientation z, place orientation z
-  -- infeasible:
-     { time: 0.149316, evals: 201, done: 1, feasible: 0, sos: 0.129976, f: 0, ineq: 0.215704, eq: 1.41809 }
- -- infeasible
-=== pnp 6, grasp orientation y, place orientation z
-  -- feasible:
-     { time: 0.020139, evals: 29, done: 1, feasible: 1, sos: 0.022234, f: 0, ineq: 2.42171e-08, eq: 1.76205e-06 }
-=== pnp 7, grasp orientation y, place orientation z
-  -- feasible:
-     { time: 0.030879, evals: 39, done: 1, feasible: 1, sos: 0.0233775, f: 0, ineq: 0, eq: 1.52519e-06 }
-=== pnp 8, grasp orientation z, place orientation z
-  -- infeasible:
-     { time: 0.143696, evals: 200, done: 1, feasible: 0, sos: 0.107198, f: 0, ineq: 0.219145, eq: 1.40177 }
- -- infeasible
-=== pnp 9, grasp orientation z, place orientation z
-  -- infeasible:
-     { time: 0.147257, evals: 200, done: 1, feasible: 0, sos: 0.108773, f: 0, ineq: 0.216765, eq: 1.43569 }
- -- infeasible
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
 </section>
 <section id="Path-generation">
 <h2>Path generation<a class="headerlink" href="#Path-generation" title="Link to this heading"></a></h2>
@@ -492,8 +318,8 @@ C.view()
 <section id="Smooth-point-to-point-motion">
 <h3>Smooth point-to-point motion<a class="headerlink" href="#Smooth-point-to-point-motion" title="Link to this heading"></a></h3>
 <p>The following demonstrates smooth point-to-point motion between box grasps, there the motion is additionally constrains the endeffector to retract and approach:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(qHome)
@@ -550,160 +376,13 @@ del man
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-=== 0 orientation y
-  -- feasible:
-     { time: 0.007456, evals: 33, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 4.00346e-08, eq: 2.87349e-07 }
-    IK: { time: 0.007456, evals: 33, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 4.00346e-08, eq: 2.87349e-07 }
-  -- feasible:
-     { time: 0.023706, evals: 21, done: 1, feasible: 1, sos: 0.932886, f: 0, ineq: 7.91043e-07, eq: 9.19402e-05 }
-  path: { time: 0.023706, evals: 21, done: 1, feasible: 1, sos: 0.932886, f: 0, ineq: 7.91043e-07, eq: 9.19402e-05 }
-=== 1 orientation x
-  -- feasible:
-     { time: 0.016075, evals: 50, done: 1, feasible: 1, sos: 0.0562458, f: 0, ineq: 7.76546e-08, eq: 7.68614e-07 }
-    IK: { time: 0.016075, evals: 50, done: 1, feasible: 1, sos: 0.0562458, f: 0, ineq: 7.76546e-08, eq: 7.68614e-07 }
-  -- feasible:
-     { time: 0.036401, evals: 34, done: 1, feasible: 1, sos: 1.11044, f: 0, ineq: 1.19127e-06, eq: 0.00066616 }
-  path: { time: 0.036401, evals: 34, done: 1, feasible: 1, sos: 1.11044, f: 0, ineq: 1.19127e-06, eq: 0.00066616 }
-=== 2 orientation z
-  -- feasible:
-     { time: 0.032562, evals: 86, done: 1, feasible: 1, sos: 0.0239472, f: 0, ineq: 0, eq: 0.000981133 }
-    IK: { time: 0.032562, evals: 86, done: 1, feasible: 1, sos: 0.0239472, f: 0, ineq: 0, eq: 0.000981133 }
-  -- feasible:
-     { time: 0.056306, evals: 35, done: 1, feasible: 1, sos: 1.66855, f: 0, ineq: 1.43592e-06, eq: 0.000602045 }
-  path: { time: 0.056306, evals: 35, done: 1, feasible: 1, sos: 1.66855, f: 0, ineq: 1.43592e-06, eq: 0.000602045 }
-=== 3 orientation x
-  -- feasible:
-     { time: 0.005188, evals: 26, done: 1, feasible: 1, sos: 0.00600331, f: 0, ineq: 2.98259e-06, eq: 3.89564e-05 }
-    IK: { time: 0.005188, evals: 26, done: 1, feasible: 1, sos: 0.00600331, f: 0, ineq: 2.98259e-06, eq: 3.89564e-05 }
-  -- feasible:
-     { time: 0.037657, evals: 35, done: 1, feasible: 1, sos: 1.33638, f: 0, ineq: 6.19902e-07, eq: 9.66456e-05 }
-  path: { time: 0.037657, evals: 35, done: 1, feasible: 1, sos: 1.33638, f: 0, ineq: 6.19902e-07, eq: 9.66456e-05 }
-=== 4 orientation z
-  -- feasible:
-     { time: 0.030635, evals: 133, done: 1, feasible: 1, sos: 0.0239472, f: 0, ineq: 0, eq: 0.000980627 }
-    IK: { time: 0.030635, evals: 133, done: 1, feasible: 1, sos: 0.0239472, f: 0, ineq: 0, eq: 0.000980627 }
-  -- feasible:
-     { time: 0.029146, evals: 29, done: 1, feasible: 1, sos: 1.41806, f: 0, ineq: 3.84157e-07, eq: 0.000648851 }
-  path: { time: 0.029146, evals: 29, done: 1, feasible: 1, sos: 1.41806, f: 0, ineq: 3.84157e-07, eq: 0.000648851 }
-=== 5 orientation z
-  -- feasible:
-     { time: 0.041159, evals: 103, done: 1, feasible: 1, sos: 0.0239472, f: 0, ineq: 0, eq: 0.000981301 }
-    IK: { time: 0.041159, evals: 103, done: 1, feasible: 1, sos: 0.0239472, f: 0, ineq: 0, eq: 0.000981301 }
-  -- feasible:
-     { time: 0.022792, evals: 19, done: 1, feasible: 1, sos: 0.413127, f: 0, ineq: 1.14189e-06, eq: 0.00895786 }
-  path: { time: 0.022792, evals: 19, done: 1, feasible: 1, sos: 0.413127, f: 0, ineq: 1.14189e-06, eq: 0.00895786 }
-=== 6 orientation z
-  -- feasible:
-     { time: 0.023386, evals: 65, done: 1, feasible: 1, sos: 0.023973, f: 0, ineq: 0, eq: 0.00358984 }
-    IK: { time: 0.023386, evals: 65, done: 1, feasible: 1, sos: 0.023973, f: 0, ineq: 0, eq: 0.00358984 }
-  -- feasible:
-     { time: 0.021282, evals: 19, done: 1, feasible: 1, sos: 0.413352, f: 0, ineq: 1.14281e-06, eq: 0.00896306 }
-  path: { time: 0.021282, evals: 19, done: 1, feasible: 1, sos: 0.413352, f: 0, ineq: 1.14281e-06, eq: 0.00896306 }
-=== 7 orientation z
-  -- feasible:
-     { time: 0.018809, evals: 76, done: 1, feasible: 1, sos: 0.0239736, f: 0, ineq: 0, eq: 0.00364161 }
-    IK: { time: 0.018809, evals: 76, done: 1, feasible: 1, sos: 0.0239736, f: 0, ineq: 0, eq: 0.00364161 }
-  -- feasible:
-     { time: 0.020456, evals: 19, done: 1, feasible: 1, sos: 0.413583, f: 0, ineq: 1.14338e-06, eq: 0.00897329 }
-  path: { time: 0.020456, evals: 19, done: 1, feasible: 1, sos: 0.413583, f: 0, ineq: 1.14338e-06, eq: 0.00897329 }
-=== 8 orientation z
-  -- feasible:
-     { time: 0.020585, evals: 81, done: 1, feasible: 1, sos: 0.023973, f: 0, ineq: 0, eq: 0.00359373 }
-    IK: { time: 0.020585, evals: 81, done: 1, feasible: 1, sos: 0.023973, f: 0, ineq: 0, eq: 0.00359373 }
-  -- feasible:
-     { time: 0.019626, evals: 19, done: 1, feasible: 1, sos: 0.413551, f: 0, ineq: 1.14295e-06, eq: 0.00896868 }
-  path: { time: 0.019626, evals: 19, done: 1, feasible: 1, sos: 0.413551, f: 0, ineq: 1.14295e-06, eq: 0.00896868 }
-=== 9 orientation y
-  -- feasible:
-     { time: 0.014753, evals: 47, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 2.24743e-08, eq: 1.1737e-07 }
-    IK: { time: 0.014753, evals: 47, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 2.24743e-08, eq: 1.1737e-07 }
-  -- feasible:
-     { time: 0.063948, evals: 30, done: 1, feasible: 1, sos: 1.3114, f: 0, ineq: 6.34269e-07, eq: 6.37245e-05 }
-  path: { time: 0.063948, evals: 30, done: 1, feasible: 1, sos: 1.3114, f: 0, ineq: 6.34269e-07, eq: 6.37245e-05 }
-=== 10 orientation x
-  -- feasible:
-     { time: 0.026599, evals: 59, done: 1, feasible: 1, sos: 0.0562458, f: 0, ineq: 6.84078e-08, eq: 6.71524e-07 }
-    IK: { time: 0.026599, evals: 59, done: 1, feasible: 1, sos: 0.0562458, f: 0, ineq: 6.84078e-08, eq: 6.71524e-07 }
-  -- feasible:
-     { time: 0.076348, evals: 36, done: 1, feasible: 1, sos: 1.11046, f: 0, ineq: 1.19091e-06, eq: 0.000665747 }
-  path: { time: 0.076348, evals: 36, done: 1, feasible: 1, sos: 1.11046, f: 0, ineq: 1.19091e-06, eq: 0.000665747 }
-=== 11 orientation z
-  -- feasible:
-     { time: 0.031593, evals: 73, done: 1, feasible: 1, sos: 0.14064, f: 0, ineq: 4.59684e-05, eq: 2.3159e-05 }
-    IK: { time: 0.031593, evals: 73, done: 1, feasible: 1, sos: 0.14064, f: 0, ineq: 4.59684e-05, eq: 2.3159e-05 }
-  -- feasible:
-     { time: 0.052721, evals: 24, done: 1, feasible: 1, sos: 1.31514, f: 0, ineq: 1.38339e-06, eq: 0.000559158 }
-  path: { time: 0.052721, evals: 24, done: 1, feasible: 1, sos: 1.31514, f: 0, ineq: 1.38339e-06, eq: 0.000559158 }
-=== 12 orientation x
-  -- feasible:
-     { time: 0.021543, evals: 42, done: 1, feasible: 1, sos: 0.0562458, f: 0, ineq: 7.83373e-08, eq: 7.74734e-07 }
-    IK: { time: 0.021543, evals: 42, done: 1, feasible: 1, sos: 0.0562458, f: 0, ineq: 7.83373e-08, eq: 7.74734e-07 }
-  -- feasible:
-     { time: 0.057733, evals: 27, done: 1, feasible: 1, sos: 1.19254, f: 0, ineq: 2.8847e-07, eq: 0.00142866 }
-  path: { time: 0.057733, evals: 27, done: 1, feasible: 1, sos: 1.19254, f: 0, ineq: 2.8847e-07, eq: 0.00142866 }
-=== 13 orientation z
-  -- feasible:
-     { time: 0.033306, evals: 74, done: 1, feasible: 1, sos: 0.0239474, f: 0, ineq: 0, eq: 0.000993568 }
-    IK: { time: 0.033306, evals: 74, done: 1, feasible: 1, sos: 0.0239474, f: 0, ineq: 0, eq: 0.000993568 }
-  -- feasible:
-     { time: 0.077671, evals: 35, done: 1, feasible: 1, sos: 1.66868, f: 0, ineq: 1.43621e-06, eq: 0.000602177 }
-  path: { time: 0.077671, evals: 35, done: 1, feasible: 1, sos: 1.66868, f: 0, ineq: 1.43621e-06, eq: 0.000602177 }
-=== 14 orientation y
-  -- feasible:
-     { time: 0.025681, evals: 56, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 4.27712e-08, eq: 3.56185e-08 }
-    IK: { time: 0.025681, evals: 56, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 4.27712e-08, eq: 3.56185e-08 }
-  -- feasible:
-     { time: 0.065737, evals: 30, done: 1, feasible: 1, sos: 1.31208, f: 0, ineq: 6.35235e-07, eq: 6.3854e-05 }
-  path: { time: 0.065737, evals: 30, done: 1, feasible: 1, sos: 1.31208, f: 0, ineq: 6.35235e-07, eq: 6.3854e-05 }
-=== 15 orientation y
-  -- feasible:
-     { time: 0.012057, evals: 23, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 4.08731e-08, eq: 2.87167e-07 }
-    IK: { time: 0.012057, evals: 23, done: 1, feasible: 1, sos: 0.0164863, f: 0, ineq: 4.08731e-08, eq: 2.87167e-07 }
-  -- feasible:
-     { time: 0.045896, evals: 20, done: 1, feasible: 1, sos: 0.414936, f: 0, ineq: 1.09746e-06, eq: 0.00254327 }
-  path: { time: 0.045896, evals: 20, done: 1, feasible: 1, sos: 0.414936, f: 0, ineq: 1.09746e-06, eq: 0.00254327 }
-=== 16 orientation x
-  -- feasible:
-     { time: 0.00505, evals: 26, done: 1, feasible: 1, sos: 0.00600331, f: 0, ineq: 3.21351e-06, eq: 4.0057e-05 }
-    IK: { time: 0.00505, evals: 26, done: 1, feasible: 1, sos: 0.00600331, f: 0, ineq: 3.21351e-06, eq: 4.0057e-05 }
-  -- feasible:
-     { time: 0.025414, evals: 21, done: 1, feasible: 1, sos: 1.02693, f: 0, ineq: 1.09315e-06, eq: 0.000296578 }
-  path: { time: 0.025414, evals: 21, done: 1, feasible: 1, sos: 1.02693, f: 0, ineq: 1.09315e-06, eq: 0.000296578 }
-=== 17 orientation y
-  -- feasible:
-     { time: 0.022635, evals: 78, done: 1, feasible: 1, sos: 0.0417843, f: 0, ineq: 8.04836e-07, eq: 6.11913e-08 }
-    IK: { time: 0.022635, evals: 78, done: 1, feasible: 1, sos: 0.0417843, f: 0, ineq: 8.04836e-07, eq: 6.11913e-08 }
-  -- feasible:
-     { time: 0.019355, evals: 16, done: 1, feasible: 1, sos: 1.44954, f: 0, ineq: 1.6451e-06, eq: 0.000105207 }
-  path: { time: 0.019355, evals: 16, done: 1, feasible: 1, sos: 1.44954, f: 0, ineq: 1.6451e-06, eq: 0.000105207 }
-=== 18 orientation y
-  -- feasible:
-     { time: 0.019598, evals: 45, done: 1, feasible: 1, sos: 0.0417843, f: 0, ineq: 8.05809e-07, eq: 6.1254e-08 }
-    IK: { time: 0.019598, evals: 45, done: 1, feasible: 1, sos: 0.0417843, f: 0, ineq: 8.05809e-07, eq: 6.1254e-08 }
-  -- feasible:
-     { time: 0.027214, evals: 21, done: 1, feasible: 1, sos: 0.473299, f: 0, ineq: 1.25876e-06, eq: 0.000683813 }
-  path: { time: 0.027214, evals: 21, done: 1, feasible: 1, sos: 0.473299, f: 0, ineq: 1.25876e-06, eq: 0.000683813 }
-=== 19 orientation x
-  -- feasible:
-     { time: 0.012535, evals: 31, done: 1, feasible: 1, sos: 0.00600331, f: 0, ineq: 3.22875e-06, eq: 3.99569e-05 }
-    IK: { time: 0.012535, evals: 31, done: 1, feasible: 1, sos: 0.00600331, f: 0, ineq: 3.22875e-06, eq: 3.99569e-05 }
-  -- feasible:
-     { time: 0.034156, evals: 29, done: 1, feasible: 1, sos: 1.41459, f: 0, ineq: 6.7058e-07, eq: 0.000134684 }
-  path: { time: 0.034156, evals: 29, done: 1, feasible: 1, sos: 1.41459, f: 0, ineq: 6.7058e-07, eq: 0.000134684 }
-</pre></div></div>
-</div>
 </section>
 </section>
 <section id="Integrated-Example">
 <h2>Integrated Example<a class="headerlink" href="#Integrated-Example" title="Link to this heading"></a></h2>
 <p>Let’s start with an integrated example, where the robot endlessly loops through picking and placing a box on a table.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
@@ -716,8 +395,8 @@ import random
 </div>
 </div>
 <p>We define a basic configuration with box on the table:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
@@ -750,160 +429,10 @@ C.view()
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
-<section id="endless-box-pick-and-place-with-random-pick-and-place-orientations">
-<h3>endless box pick and place with random pick and place orientations<a class="headerlink" href="#endless-box-pick-and-place-with-random-pick-and-place-orientations" title="Link to this heading"></a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#reload(manip)
-
-C.setJointState(qHome)
-C.view_raise()
-
-for l in range(20):
-        qStart = C.getJointState()
-
-        graspDirection = random.choice([&#39;y&#39;, &#39;z&#39;]) #&#39;x&#39; not possible: box too large
-        placeDirection = random.choice([&#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;xNeg&#39;, &#39;yNeg&#39;, &#39;zNeg&#39;])
-        info = f&#39;placement {l}: grasp {graspDirection} place {placeDirection}&#39;
-        print(&#39;===&#39;, info)
-
-        M = manip.ManipulationModelling(C, info, helpers=[gripper])
-        M.setup_pick_and_place_waypoints(gripper, box, homing_scale=1e-1)
-        M.grasp_box(1., gripper, box, palm, graspDirection)
-        M.place_box(2., box, table, palm, placeDirection)
-        M.no_collision([], palm, table)
-        M.target_relative_xy_position(2., box, table, [.2, .3])
-        ways = M.solve()
-
-        if not M.feasible:
-            continue
-
-        M2 = M.sub_motion(0)
-        # M = manip.ManipulationModelling(C, info, helpers=[gripper])
-        # M.setup_point_to_point_motion(qStart, ways[0])
-        M2.no_collision([.3,.7], palm, box, margin=.05)
-        M2.retract([.0, .2], gripper)
-        M2.approach([.8, 1.], gripper)
-        M2.solve()
-        if not M2.feasible:
-            continue
-
-        M3 = M.sub_motion(1)
-        #manip.ManipulationModelling(C, info)
-        # M.setup_point_to_point_motion(ways[0], ways[1])
-        M3.no_collision([], table, box)
-        M3.solve()
-        if not M3.ret.feasible:
-            continue
-
-        M2.play(C)
-        C.attach(gripper, box)
-        M3.play(C)
-        C.attach(table, box)
-
-del M
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-=== placement 0: grasp z place z
-  -- infeasible:placement 0: grasp z place z
-     { time: 0.241409, evals: 200, done: 1, feasible: 0, sos: 0.390688, f: 0, ineq: 0.253242, eq: 1.48787 }
-=== placement 1: grasp z place z
-  -- infeasible:placement 1: grasp z place z
-     { time: 0.160418, evals: 200, done: 1, feasible: 0, sos: 0.23797, f: 0, ineq: 0.263042, eq: 1.52741 }
-=== placement 2: grasp y place z
-  -- feasible:placement 2: grasp y place z
-     { time: 0.0348, evals: 53, done: 1, feasible: 1, sos: 0.0529068, f: 0, ineq: 0, eq: 1.86648e-07 }
-  -- feasible:sub_motion_0--placement 2: grasp y place z
-     { time: 0.041684, evals: 33, done: 1, feasible: 1, sos: 0.969778, f: 0, ineq: 5.63453e-07, eq: 6.65802e-05 }
-  -- feasible:sub_motion_1--placement 2: grasp y place z
-     { time: 0.012339, evals: 10, done: 1, feasible: 1, sos: 0.0413613, f: 0, ineq: 0.000265603, eq: 0.00294508 }
-=== placement 3: grasp z place y
-  -- infeasible:placement 3: grasp z place y
-     { time: 0.143251, evals: 200, done: 1, feasible: 0, sos: 0.2503, f: 0, ineq: 0.238968, eq: 1.06058 }
-=== placement 4: grasp z place yNeg
-  -- infeasible:placement 4: grasp z place yNeg
-     { time: 0.148508, evals: 201, done: 1, feasible: 0, sos: 0.22095, f: 0, ineq: 0.247741, eq: 1.04946 }
-=== placement 5: grasp z place y
-  -- infeasible:placement 5: grasp z place y
-     { time: 0.143245, evals: 200, done: 1, feasible: 0, sos: 0.249188, f: 0, ineq: 0.239641, eq: 1.05163 }
-=== placement 6: grasp y place z
-  -- feasible:placement 6: grasp y place z
-     { time: 0.011273, evals: 16, done: 1, feasible: 1, sos: 0.0319309, f: 0, ineq: 2.04473e-07, eq: 7.89712e-06 }
-  -- feasible:sub_motion_0--placement 6: grasp y place z
-     { time: 0.036583, evals: 27, done: 1, feasible: 1, sos: 0.334775, f: 0, ineq: 9.1624e-07, eq: 0.000185542 }
-  -- feasible:sub_motion_1--placement 6: grasp y place z
-     { time: 0.010678, evals: 9, done: 1, feasible: 1, sos: 0.00531546, f: 0, ineq: 0.000324344, eq: 0.0030066 }
-=== placement 7: grasp y place y
-  -- infeasible:placement 7: grasp y place y
-     { time: 0.163254, evals: 200, done: 1, feasible: 0, sos: 0.178276, f: 0, ineq: 0.211898, eq: 1.16843 }
-=== placement 8: grasp z place xNeg
-  -- infeasible:placement 8: grasp z place xNeg
-     { time: 0.173998, evals: 200, done: 1, feasible: 0, sos: 0.121368, f: 0, ineq: 0.241412, eq: 0.981762 }
-=== placement 9: grasp z place yNeg
-  -- infeasible:placement 9: grasp z place yNeg
-     { time: 0.127429, evals: 164, done: 1, feasible: 0, sos: 0.210727, f: 0, ineq: 0.24624, eq: 1.0449 }
-=== placement 10: grasp z place x
-  -- infeasible:placement 10: grasp z place x
-     { time: 0.138124, evals: 201, done: 1, feasible: 0, sos: 0.196817, f: 0, ineq: 0.2662, eq: 1.16024 }
-=== placement 11: grasp y place yNeg
-  -- infeasible:placement 11: grasp y place yNeg
-     { time: 0.139731, evals: 200, done: 1, feasible: 0, sos: 0.182557, f: 0, ineq: 0.217987, eq: 1.16836 }
-=== placement 12: grasp y place zNeg
-  -- infeasible:placement 12: grasp y place zNeg
-     { time: 0.007035, evals: 10, done: 1, feasible: 0, sos: 0.0316882, f: 0, ineq: 1.48994e-07, eq: 1.00071 }
-=== placement 13: grasp z place y
-  -- infeasible:placement 13: grasp z place y
-     { time: 0.141984, evals: 200, done: 1, feasible: 0, sos: 0.248015, f: 0, ineq: 0.245861, eq: 1.06709 }
-=== placement 14: grasp y place zNeg
-  -- infeasible:placement 14: grasp y place zNeg
-     { time: 0.011334, evals: 17, done: 1, feasible: 0, sos: 0.0316861, f: 0, ineq: 1.67187e-07, eq: 1.00048 }
-=== placement 15: grasp z place zNeg
-  -- infeasible:placement 15: grasp z place zNeg
-     { time: 0.143552, evals: 200, done: 1, feasible: 0, sos: 0.1002, f: 0, ineq: 0.282305, eq: 2.54764 }
-=== placement 16: grasp y place zNeg
-  -- infeasible:placement 16: grasp y place zNeg
-     { time: 0.011326, evals: 17, done: 1, feasible: 0, sos: 0.0316844, f: 0, ineq: 1.8107e-07, eq: 1.0003 }
-=== placement 17: grasp y place xNeg
-  -- feasible:placement 17: grasp y place xNeg
-     { time: 0.084062, evals: 127, done: 1, feasible: 1, sos: 0.124028, f: 0, ineq: 1.26889e-05, eq: 0.000126539 }
-  -- feasible:sub_motion_0--placement 17: grasp y place xNeg
-     { time: 0.031991, evals: 25, done: 1, feasible: 1, sos: 0.367745, f: 0, ineq: 9.89948e-07, eq: 0.000230776 }
-  -- feasible:sub_motion_1--placement 17: grasp y place xNeg
-     { time: 0.025316, evals: 23, done: 1, feasible: 1, sos: 0.696706, f: 0, ineq: 0.00145751, eq: 0.00408379 }
-=== placement 18: grasp y place yNeg
-  -- infeasible:placement 18: grasp y place yNeg
-     { time: 0.133699, evals: 201, done: 1, feasible: 0, sos: 0.136453, f: 0, ineq: 0.213211, eq: 1.10912 }
-=== placement 19: grasp z place xNeg
-  -- feasible:placement 19: grasp z place xNeg
-     { time: 0.016114, evals: 26, done: 1, feasible: 1, sos: 0.102508, f: 0, ineq: 4.74034e-09, eq: 1.26667e-07 }
-  -- feasible:sub_motion_0--placement 19: grasp z place xNeg
-     { time: 0.027086, evals: 21, done: 1, feasible: 1, sos: 1.21637, f: 0, ineq: 7.26334e-07, eq: 7.07039e-05 }
-  -- feasible:sub_motion_1--placement 19: grasp z place xNeg
-     { time: 0.011213, evals: 9, done: 1, feasible: 1, sos: 0.0977491, f: 0, ineq: 0.000366275, eq: 0.00248943 }
-</pre></div></div>
-</div>
-</section>
-<section id="box-top-grasps-and-place-over-obstacle">
-<h3>box top grasps and place over obstacle<a class="headerlink" href="#box-top-grasps-and-place-over-obstacle" title="Link to this heading"></a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<section id="tob-grasps-and-pick-and-place-over-an-object">
+<h3>tob grasps and pick-and-place over an object<a class="headerlink" href="#tob-grasps-and-pick-and-place-over-an-object" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#reload(manip)
@@ -960,60 +489,71 @@ del M
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+</section>
+<section id="endless-box-pick-and-place-with-random-pick-and-place-orientations">
+<h3>endless box pick and place with random pick and place orientations<a class="headerlink" href="#endless-box-pick-and-place-with-random-pick-and-place-orientations" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-=== placement 0: grasp yz place z place_pos [-0.3, 0.2] place_ori [0, 1, 0.0]
-  -- feasible:
-     { time: 0.013284, evals: 16, done: 1, feasible: 1, sos: 0.0739063, f: 0, ineq: 0, eq: 0.000157831 }
-  -- feasible:sub_motion_0--
-     { time: 0.040566, evals: 28, done: 1, feasible: 1, sos: 1.02374, f: 0, ineq: 5.78372e-07, eq: 5.9725e-05 }
-  -- feasible:sub_motion_1--
-     { time: 0.013717, evals: 9, done: 1, feasible: 1, sos: 1.53591, f: 0, ineq: 0.000494294, eq: 0.00365479 }
-=== placement 1: grasp yz place z place_pos [0.0, 0.2] place_ori [-1, 0, 0.0]
-  -- feasible:
-     { time: 0.117973, evals: 200, done: 1, feasible: 1, sos: 0.235816, f: 0, ineq: 0, eq: 0.115075 }
-  -- feasible:sub_motion_0--
-     { time: 0.035168, evals: 29, done: 1, feasible: 1, sos: 0.966664, f: 0, ineq: 2.60606e-06, eq: 0.000457442 }
-  -- feasible:sub_motion_1--
-     { time: 0.11104, evals: 73, done: 1, feasible: 1, sos: 5.60099, f: 0, ineq: 0.00263072, eq: 0.00782843 }
-=== placement 2: grasp yz place z place_pos [0.3, 0.2] place_ori [0, 1, 0.0]
-  -- feasible:
-     { time: 0.121326, evals: 200, done: 1, feasible: 1, sos: 0.236199, f: 0, ineq: 0, eq: 0.0922742 }
-  -- feasible:sub_motion_0--
-     { time: 0.028536, evals: 27, done: 1, feasible: 1, sos: 0.899703, f: 0, ineq: 2.53201e-06, eq: 0.000933698 }
-  -- feasible:sub_motion_1--
-     { time: 0.024255, evals: 16, done: 1, feasible: 1, sos: 7.18331, f: 0, ineq: 0.000575062, eq: 0.00377015 }
-=== placement 3: grasp yz place z place_pos [-0.3, 0.2] place_ori [-1, 0, 0.0]
-  -- feasible:
-     { time: 0.011484, evals: 20, done: 1, feasible: 1, sos: 0.169779, f: 0, ineq: 0, eq: 2.81305e-07 }
-  -- feasible:sub_motion_0--
-     { time: 0.029795, evals: 28, done: 1, feasible: 1, sos: 0.78004, f: 0, ineq: 1.80957e-06, eq: 0.000604652 }
-  -- feasible:sub_motion_1--
-     { time: 0.064613, evals: 40, done: 1, feasible: 1, sos: 5.11397, f: 0, ineq: 0.00139285, eq: 0.00486923 }
-=== placement 4: grasp yz place z place_pos [0.0, 0.2] place_ori [0, 1, 0.0]
-  -- feasible:
-     { time: 0.008262, evals: 14, done: 1, feasible: 1, sos: 0.135484, f: 0, ineq: 0, eq: 1.56098e-06 }
-  -- feasible:sub_motion_0--
-     { time: 0.03457, evals: 24, done: 1, feasible: 1, sos: 0.772143, f: 0, ineq: 1.94952e-06, eq: 0.000809872 }
-  -- feasible:sub_motion_1--
-     { time: 0.032471, evals: 12, done: 1, feasible: 1, sos: 4.00886, f: 0, ineq: 0.000855106, eq: 0.00459316 }
-=== placement 5: grasp yz place z place_pos [0.3, 0.2] place_ori [-1, 0, 0.0]
-  -- infeasible:
-     { time: 0.043487, evals: 72, done: 1, feasible: 0, sos: 0.217075, f: 0, ineq: 0, eq: 0.889852 }
-=== placement 6: grasp yz place z place_pos [-0.3, 0.2] place_ori [0, 1, 0.0]
-  -- feasible:
-     { time: 0.013799, evals: 14, done: 1, feasible: 1, sos: 0.0850203, f: 0, ineq: 0, eq: 4.63875e-06 }
-  -- feasible:sub_motion_0--
-     { time: 0.041679, evals: 23, done: 1, feasible: 1, sos: 2.33941, f: 0, ineq: 0, eq: 0.000296438 }
-  -- feasible:sub_motion_1--
-     { time: 0.018976, evals: 12, done: 1, feasible: 1, sos: 2.43404, f: 0, ineq: 0.000498864, eq: 0.00369137 }
-</pre></div></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#reload(manip)
+
+C.delFrame(&#39;obstacle&#39;)
+
+C.setJointState(qHome)
+C.view_raise()
+
+for l in range(20):
+        qStart = C.getJointState()
+
+        graspDirection = random.choice([&#39;y&#39;, &#39;z&#39;]) #&#39;x&#39; not possible: box too large
+        placeDirection = random.choice([&#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;xNeg&#39;, &#39;yNeg&#39;, &#39;zNeg&#39;])
+        info = f&#39;placement {l}: grasp {graspDirection} place {placeDirection}&#39;
+        print(&#39;===&#39;, info)
+
+        M = manip.ManipulationModelling(C, info, helpers=[gripper])
+        M.setup_pick_and_place_waypoints(gripper, box, homing_scale=1e-1)
+        M.grasp_box(1., gripper, box, palm, graspDirection)
+        M.place_box(2., box, table, palm, placeDirection)
+        M.no_collision([], palm, table)
+        M.target_relative_xy_position(2., box, table, [.2, .3])
+        ways = M.solve()
+
+        if not M.feasible:
+            continue
+
+        M2 = M.sub_motion(0)
+        # M = manip.ManipulationModelling(C, info, helpers=[gripper])
+        # M.setup_point_to_point_motion(qStart, ways[0])
+        M2.no_collision([.3,.7], palm, box, margin=.05)
+        M2.retract([.0, .2], gripper)
+        M2.approach([.8, 1.], gripper)
+        M2.solve()
+        if not M2.feasible:
+            continue
+
+        M3 = M.sub_motion(1)
+        #manip.ManipulationModelling(C, info)
+        # M.setup_point_to_point_motion(ways[0], ways[1])
+        M3.no_collision([], table, box)
+        M3.solve()
+        if not M3.ret.feasible:
+            continue
+
+        M2.play(C)
+        C.attach(gripper, box)
+        M3.play(C)
+        C.attach(table, box)
+
+del M
+</pre></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</div>
+</section>
+<section id="random-pushes">
+<h3>random pushes<a class="headerlink" href="#random-pushes" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#reload(manip)
@@ -1024,14 +564,14 @@ obj = box
 C.frame(obj).setRelativePosition([-.0,.3-.055,.095])
 C.frame(obj).setRelativeQuaternion([1.,0,0,0])
 
-for i in range(50):
+for i in range(30):
      qStart = C.getJointState()
 
      info = f&#39;push {i}&#39;
      print(&#39;===&#39;, info)
 
      M = manip.ManipulationModelling(C, info, [&#39;l_gripper&#39;])
-     M.setup_pick_and_place_waypoints(gripper, obj, 1e-1)
+     M.setup_pick_and_place_waypoints(gripper, obj, 1e-1, accumulated_collisions=False)
      M.straight_push([1.,2.], obj, gripper, table)
      #random target position
      M.komo.addObjective([2.], ry.FS.position, [obj], ry.OT.eq, 1e1*np.array([[1,0,0],[0,1,0]]), .4*np.random.rand(3) - .2+np.array([.0,.3,.0]))
@@ -1039,7 +579,7 @@ for i in range(50):
      if not M.ret.feasible:
           continue
 
-     M1 = M.sub_motion(0)
+     M1 = M.sub_motion(0, accumulated_collisions=False)
      M1.retractPush([.0, .15], gripper, .03)
      M1.approachPush([.85, 1.], gripper, .03)
      M1.no_collision([.15,.85], obj, &quot;l_finger1&quot;, .02)
@@ -1051,7 +591,7 @@ for i in range(50):
      if not M1.ret.feasible:
           continue
 
-     M2 = M.sub_motion(1)
+     M2 = M.sub_motion(1, accumulated_collisions=False)
      M2.komo.addObjective([], ry.FS.positionRel, [gripper, &#39;_push_start&#39;], ry.OT.eq, 1e1*np.array([[1,0,0],[0,0,1]]))
      M2.solve()
      if not M2.ret.feasible:
@@ -1061,225 +601,10 @@ for i in range(50):
      C.attach(gripper, obj)
      M2.play(C, 1.)
      C.attach(table, obj)
-<br/></pre></div>
+
+del M
+</pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-=== push 0
-  -- feasible:push 0
-     { time: 0.048366, evals: 70, done: 1, feasible: 1, sos: 0.316815, f: 0, ineq: 4.03625e-05, eq: 0.0353098 }
-  -- feasible:sub_motion_0--push 0
-     { time: 0.072406, evals: 31, done: 1, feasible: 1, sos: 2.39085, f: 0, ineq: 3.78529e-07, eq: 0.000107627 }
-  -- feasible:sub_motion_1--push 0
-     { time: 0.016443, evals: 11, done: 1, feasible: 1, sos: 0.0967844, f: 0, ineq: 0, eq: 0.00127421 }
-=== push 1
-  -- feasible:push 1
-     { time: 0.02048, evals: 39, done: 1, feasible: 1, sos: 0.124928, f: 0, ineq: 0, eq: 0.084521 }
-  -- feasible:sub_motion_0--push 1
-     { time: 0.44944, evals: 201, done: 1, feasible: 1, sos: 1.4798, f: 0, ineq: 0.00252944, eq: 0.000127623 }
-  -- feasible:sub_motion_1--push 1
-     { time: 0.011172, evals: 8, done: 1, feasible: 1, sos: 0.0181492, f: 0, ineq: 0, eq: 0.0187794 }
-=== push 2
-  -- feasible:push 2
-     { time: 0.008888, evals: 16, done: 1, feasible: 1, sos: 0.0430163, f: 0, ineq: 0, eq: 0.0345614 }
-  -- feasible:sub_motion_0--push 2
-     { time: 0.120432, evals: 48, done: 1, feasible: 1, sos: 0.230919, f: 0, ineq: 0.00298857, eq: 0.000565256 }
-  -- feasible:sub_motion_1--push 2
-     { time: 0.014121, evals: 9, done: 1, feasible: 1, sos: 0.0428512, f: 0, ineq: 0, eq: 0.00462583 }
-=== push 3
-  -- feasible:push 3
-     { time: 0.028134, evals: 49, done: 1, feasible: 1, sos: 0.141933, f: 0, ineq: 8.5999e-05, eq: 0.268573 }
-  -- feasible:sub_motion_0--push 3
-     { time: 0.397718, evals: 176, done: 1, feasible: 1, sos: 0.875573, f: 0, ineq: 7.88646e-05, eq: 0.000179139 }
-  -- feasible:sub_motion_1--push 3
-     { time: 0.015133, evals: 10, done: 1, feasible: 1, sos: 0.340353, f: 0, ineq: 0, eq: 0.0180415 }
-=== push 4
-  -- infeasible:push 4
-     { time: 0.108335, evals: 159, done: 1, feasible: 0, sos: 0.281199, f: 0, ineq: 0.218155, eq: 1.00981 }
-=== push 5
-  -- infeasible:push 5
-     { time: 0.063814, evals: 101, done: 1, feasible: 0, sos: 0.231642, f: 0, ineq: 0.269692, eq: 0.878117 }
-=== push 6
-  -- infeasible:push 6
-     { time: 0.032332, evals: 52, done: 1, feasible: 0, sos: 0.373956, f: 0, ineq: 0.131003, eq: 0.792568 }
-=== push 7
-  -- infeasible:push 7
-     { time: 0.052559, evals: 83, done: 1, feasible: 0, sos: 0.0706338, f: 0, ineq: 0.131005, eq: 2.52725 }
-=== push 8
-  -- infeasible:push 8
-     { time: 0.04717, evals: 76, done: 1, feasible: 0, sos: 0.375315, f: 0, ineq: 0.132394, eq: 0.839064 }
-=== push 9
-  -- infeasible:push 9
-     { time: 0.033514, evals: 51, done: 1, feasible: 0, sos: 0.331755, f: 0, ineq: 0.157497, eq: 0.808016 }
-=== push 10
-  -- infeasible:push 10
-     { time: 0.100392, evals: 96, done: 1, feasible: 0, sos: 0.37349, f: 0, ineq: 0.122545, eq: 0.771383 }
-=== push 11
-  -- infeasible:push 11
-     { time: 0.043359, evals: 49, done: 1, feasible: 0, sos: 0.353892, f: 0, ineq: 0.132434, eq: 0.801799 }
-=== push 12
-  -- infeasible:push 12
-     { time: 0.075628, evals: 116, done: 1, feasible: 0, sos: 0.404785, f: 0, ineq: 0.105606, eq: 0.857732 }
-=== push 13
-  -- infeasible:push 13
-     { time: 0.087164, evals: 132, done: 1, feasible: 0, sos: 0.375425, f: 0, ineq: 0.105751, eq: 0.844255 }
-=== push 14
-  -- infeasible:push 14
-     { time: 0.072253, evals: 114, done: 1, feasible: 0, sos: 0.242015, f: 0, ineq: 0.232528, eq: 0.731751 }
-=== push 15
-  -- feasible:push 15
-     { time: 0.06624, evals: 104, done: 1, feasible: 1, sos: 0.134458, f: 0, ineq: 0, eq: 0.0971135 }
-  -- feasible:sub_motion_0--push 15
-     { time: 0.472313, evals: 200, done: 1, feasible: 1, sos: 0.336728, f: 0, ineq: 9.26629e-07, eq: 0.000103537 }
-  -- feasible:sub_motion_1--push 15
-     { time: 0.014167, evals: 10, done: 1, feasible: 1, sos: 0.034717, f: 0, ineq: 0, eq: 0.00190929 }
-=== push 16
-  -- feasible:push 16
-     { time: 0.127719, evals: 201, done: 1, feasible: 1, sos: 0.320489, f: 0, ineq: 0, eq: 0.120706 }
-  -- feasible:sub_motion_0--push 16
-     { time: 0.446004, evals: 200, done: 1, feasible: 1, sos: 1.18708, f: 0, ineq: 0.000491793, eq: 0.00220719 }
-  -- feasible:sub_motion_1--push 16
-     { time: 0.022567, evals: 14, done: 1, feasible: 1, sos: 0.172633, f: 0, ineq: 0, eq: 0.00528536 }
-=== push 17
-  -- feasible:push 17
-     { time: 0.078184, evals: 139, done: 1, feasible: 1, sos: 0.192755, f: 0, ineq: 0, eq: 0.0536684 }
-  -- feasible:sub_motion_0--push 17
-     { time: 0.444997, evals: 157, done: 1, feasible: 1, sos: 1.54406, f: 0, ineq: 0.00177189, eq: 0.00205304 }
-  -- feasible:sub_motion_1--push 17
-     { time: 0.028139, evals: 10, done: 1, feasible: 1, sos: 0.264058, f: 0, ineq: 0, eq: 0.000242646 }
-=== push 18
-  -- feasible:push 18
-     { time: 0.128151, evals: 201, done: 1, feasible: 1, sos: 0.328912, f: 0, ineq: 0, eq: 0.114066 }
-  -- feasible:sub_motion_0--push 18
-     { time: 0.461226, evals: 200, done: 1, feasible: 1, sos: 1.29098, f: 0, ineq: 0.000153658, eq: 0.000477084 }
-  -- feasible:sub_motion_1--push 18
-     { time: 0.019607, evals: 13, done: 1, feasible: 1, sos: 0.223544, f: 0, ineq: 0, eq: 0.00347632 }
-=== push 19
-  -- feasible:push 19
-     { time: 0.065675, evals: 124, done: 1, feasible: 1, sos: 0.167542, f: 0, ineq: 0, eq: 0.0532601 }
-  -- feasible:sub_motion_0--push 19
-     { time: 0.277886, evals: 121, done: 1, feasible: 1, sos: 1.84511, f: 0, ineq: 2.41838e-06, eq: 5.27503e-06 }
-  -- feasible:sub_motion_1--push 19
-     { time: 0.011892, evals: 8, done: 1, feasible: 1, sos: 0.0334778, f: 0, ineq: 0, eq: 0.00225734 }
-=== push 20
-  -- feasible:push 20
-     { time: 0.014261, evals: 26, done: 1, feasible: 1, sos: 0.0676352, f: 0, ineq: 0, eq: 0.0971842 }
-  -- feasible:sub_motion_0--push 20
-     { time: 0.051811, evals: 22, done: 1, feasible: 1, sos: 0.131001, f: 0, ineq: 2.54863e-06, eq: 4.26097e-05 }
-  -- feasible:sub_motion_1--push 20
-     { time: 0.011283, evals: 8, done: 1, feasible: 1, sos: 0.0256114, f: 0, ineq: 0, eq: 0.0115222 }
-=== push 21
-  -- feasible:push 21
-     { time: 0.10861, evals: 201, done: 1, feasible: 1, sos: 0.135753, f: 0, ineq: 0, eq: 0.0569503 }
-  -- feasible:sub_motion_0--push 21
-     { time: 0.142293, evals: 63, done: 1, feasible: 1, sos: 0.446255, f: 0, ineq: 1.47788e-06, eq: 0.000119219 }
-  -- feasible:sub_motion_1--push 21
-     { time: 0.018608, evals: 10, done: 1, feasible: 1, sos: 0.0622818, f: 0, ineq: 0, eq: 0.000480852 }
-=== push 22
-  -- infeasible:push 22
-     { time: 0.10481, evals: 124, done: 1, feasible: 0, sos: 0.405754, f: 0, ineq: 0.261898, eq: 3.50046 }
-=== push 23
-  -- feasible:push 23
-     { time: 0.090321, evals: 158, done: 1, feasible: 1, sos: 0.280288, f: 0, ineq: 0.00168117, eq: 0.145927 }
-  -- feasible:sub_motion_0--push 23
-     { time: 0.527685, evals: 201, done: 1, feasible: 1, sos: 1.61743, f: 0, ineq: 0.0142832, eq: 0.000603623 }
-  -- feasible:sub_motion_1--push 23
-     { time: 0.019607, evals: 13, done: 1, feasible: 1, sos: 0.132722, f: 0, ineq: 0, eq: 0.00809618 }
-=== push 24
-  -- infeasible:push 24
-     { time: 0.065999, evals: 63, done: 1, feasible: 0, sos: 0.358758, f: 0, ineq: 0.0608741, eq: 3.21339 }
-=== push 25
-  -- feasible:push 25
-     { time: 0.075592, evals: 144, done: 1, feasible: 1, sos: 0.201967, f: 0, ineq: 0.00606416, eq: 0.203104 }
-  -- feasible:sub_motion_0--push 25
-     { time: 0.185472, evals: 79, done: 1, feasible: 1, sos: 0.816687, f: 0, ineq: 1.77004e-06, eq: 3.26113e-06 }
-  -- feasible:sub_motion_1--push 25
-     { time: 0.013308, evals: 10, done: 1, feasible: 1, sos: 0.0297521, f: 0, ineq: 0, eq: 0.00124758 }
-=== push 26
-  -- infeasible:push 26
-     { time: 0.064073, evals: 102, done: 1, feasible: 0, sos: 0.399572, f: 0, ineq: 0.129603, eq: 5.04123 }
-=== push 27
-  -- infeasible:push 27
-     { time: 0.032004, evals: 57, done: 1, feasible: 0, sos: 0.270402, f: 0, ineq: 0.564252, eq: 4.64742 }
-=== push 28
-  -- infeasible:push 28
-     { time: 0.053094, evals: 64, done: 1, feasible: 0, sos: 0.400418, f: 0, ineq: 0.0821871, eq: 4.94318 }
-=== push 29
-  -- feasible:push 29
-     { time: 0.117822, evals: 201, done: 1, feasible: 1, sos: 0.392987, f: 0, ineq: 0.0308006, eq: 0.185318 }
-  -- feasible:sub_motion_0--push 29
-     { time: 0.43288, evals: 201, done: 1, feasible: 1, sos: 1.42213, f: 0, ineq: 0.0147111, eq: 0.00488454 }
-  -- feasible:sub_motion_1--push 29
-     { time: 0.017446, evals: 13, done: 1, feasible: 1, sos: 0.0615759, f: 0, ineq: 0, eq: 0.00775009 }
-=== push 30
-  -- infeasible:push 30
-     { time: 0.11937, evals: 201, done: 1, feasible: 0, sos: 0.281822, f: 0, ineq: 0.0142617, eq: 1.13752 }
-=== push 31
-  -- infeasible:push 31
-     { time: 0.017383, evals: 28, done: 1, feasible: 0, sos: 0.319199, f: 0, ineq: 0.0443344, eq: 1.54073 }
-=== push 32
-  -- feasible:push 32
-     { time: 0.112484, evals: 201, done: 1, feasible: 1, sos: 0.281579, f: 0, ineq: 0, eq: 0.167123 }
-  -- feasible:sub_motion_0--push 32
-     { time: 0.190053, evals: 86, done: 1, feasible: 1, sos: 1.88136, f: 0, ineq: 0.000333618, eq: 1.10036e-05 }
-  -- feasible:sub_motion_1--push 32
-     { time: 0.01759, evals: 12, done: 1, feasible: 1, sos: 0.0524747, f: 0, ineq: 0, eq: 0.00706549 }
-=== push 33
-  -- infeasible:push 33
-     { time: 0.173611, evals: 130, done: 1, feasible: 0, sos: 0.332694, f: 0, ineq: 0.38287, eq: 6.93978 }
-=== push 34
-  -- infeasible:push 34
-     { time: 0.121146, evals: 101, done: 1, feasible: 0, sos: 0.332904, f: 0, ineq: 0.226662, eq: 6.40241 }
-=== push 35
-  -- infeasible:push 35
-     { time: 0.102911, evals: 88, done: 1, feasible: 0, sos: 0.333702, f: 0, ineq: 0.288803, eq: 7.14605 }
-=== push 36
-  -- infeasible:push 36
-     { time: 0.117036, evals: 200, done: 1, feasible: 0, sos: 0.23888, f: 0, ineq: 0.052416, eq: 2.88172 }
-=== push 37
-  -- infeasible:push 37
-     { time: 0.064915, evals: 105, done: 1, feasible: 0, sos: 0.335828, f: 0, ineq: 0.0811433, eq: 2.7494 }
-=== push 38
-  -- infeasible:push 38
-     { time: 0.036396, evals: 56, done: 1, feasible: 0, sos: 0.332773, f: 0, ineq: 0.276353, eq: 5.16345 }
-=== push 39
-  -- infeasible:push 39
-     { time: 0.024588, evals: 38, done: 1, feasible: 0, sos: 0.334474, f: 0, ineq: 0.0404053, eq: 2.24322 }
-=== push 40
-  -- infeasible:push 40
-     { time: 0.059159, evals: 98, done: 1, feasible: 0, sos: 0.33147, f: 0, ineq: 0.104103, eq: 5.32559 }
-=== push 41
-  -- infeasible:push 41
-     { time: 0.121527, evals: 200, done: 1, feasible: 0, sos: 0.334042, f: 0, ineq: 0.0709632, eq: 1.79158 }
-=== push 42
-  -- infeasible:push 42
-     { time: 0.08367, evals: 134, done: 1, feasible: 0, sos: 0.337632, f: 0, ineq: 0.200232, eq: 4.87705 }
-=== push 43
-  -- infeasible:push 43
-     { time: 0.032624, evals: 51, done: 1, feasible: 0, sos: 0.332762, f: 0, ineq: 0.204099, eq: 4.23825 }
-=== push 44
-  -- infeasible:push 44
-     { time: 0.025297, evals: 39, done: 1, feasible: 0, sos: 0.332881, f: 0, ineq: 0.0600608, eq: 3.48937 }
-=== push 45
-  -- infeasible:push 45
-     { time: 0.029946, evals: 48, done: 1, feasible: 0, sos: 0.334563, f: 0, ineq: 0.0413217, eq: 2.12113 }
-=== push 46
-  -- infeasible:push 46
-     { time: 0.087418, evals: 141, done: 1, feasible: 0, sos: 0.334809, f: 0, ineq: 0.0765882, eq: 3.04858 }
-=== push 47
-  -- infeasible:push 47
-     { time: 0.045651, evals: 71, done: 1, feasible: 0, sos: 0.332896, f: 0, ineq: 0.261672, eq: 5.62622 }
-=== push 48
-  -- infeasible:push 48
-     { time: 0.040923, evals: 63, done: 1, feasible: 0, sos: 0.33281, f: 0, ineq: 0.251143, eq: 4.52654 }
-=== push 49
-  -- infeasible:push 49
-     { time: 0.051017, evals: 78, done: 1, feasible: 0, sos: 0.333428, f: 0, ineq: 0.237954, eq: 7.10989 }
-</pre></div></div>
 </div>
 </section>
 </section>
@@ -1292,7 +617,7 @@ for i in range(50):
 <li><p>more typical manipulation constraints: camera_look_at, push_straight,</p></li>
 </ul>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
