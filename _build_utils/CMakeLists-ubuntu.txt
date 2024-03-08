@@ -251,5 +251,5 @@ install(
 #  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
 install(
-  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot
+  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

@@ -62,7 +62,7 @@ This assumes a standard Ubuntu 20.04 (or 18.04) machine.
       sudo apt install --yes \
         g++ clang make gnupg cmake git wget \
         liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev libccd-dev \
-        libjsoncpp-dev libyaml-cpp-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
+        libjsoncpp-dev libyaml-cpp-dev libhdf5-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
         libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
         python3-dev python3 python3-pip
       
@@ -105,9 +105,9 @@ This assumes a standard Ubuntu 20.04 (or 18.04) machine.
       sudo usermod -a -G dialout <username>
 
   You need to log out and back in (or even reboot) for this to take
-  effect. Check with `groups` in a terminal. Test the "real robot"
-  tutorial.
+  effect. Check with `groups` in a terminal.
 
+* Follow the [Real Robot Operation Tutorial](https://marctoussaint.github.io/robotic/tutorials/botop_2_real_robot.html) on the [tutorials page](https://marctoussaint.github.io/robotic/tutorials/) to test and debug first steps with the real franka.
 
 ## Building the wheels within a manylinux docker
 

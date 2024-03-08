@@ -18,7 +18,7 @@ jobs:
         python-version: '3.10'
     - name: install ubuntu dependencies
       run: |
-        sudo apt-get install libboost-system-dev libfcl-dev
+        sudo apt-get install libboost-system-dev libfcl-dev=0.5.0
         APTGETYES=1 make -C rai -j1 installUbuntuAll
     - name: install python dependencies
       run: |
@@ -29,7 +29,7 @@ jobs:
         cd $HOME && mkdir -p .local/include && cd .local/include && ln -s /usr/include/libqhull qhull
     - name: cmake configure
       run: |
-        export PY_VERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF -DPY_VERSION=$PY_VERSION -DUSE_QHULL8=ON .
+        export PY_VER=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
+        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF -DUSE_H5=OFF -DPY_VERSION=$PY_VER -DUSE_QHULL8=ON .
     - name: make build
       run: make -C build

@@ -1,0 +1,250 @@
+#!/usr/bin/python3.8
+
+import sys
+from lxml import etree
+import argparse
+import yaml
+#from ruamel import yaml
+
+parser = argparse.ArgumentParser(description='convert urdf to yaml (rai convention)')
+
+parser.add_argument('urdf_file', type=str,
+                    help='required input file')
+
+parser.add_argument('-coll', type=bool, default=False,
+                    help='use collision shapes?')
+
+parser.add_argument('-meshRemove', type=str, default='package://',
+                    help='a prefix from the mesh files to be removed')
+
+parser.add_argument('-meshExt', type=str,
+                    help='overwrite the mesh file extension')
+
+args = parser.parse_args()
+
+# yaml dump tweaks
+class noflow_dict(dict):
+    pass
+def noflow_dict_rep(dumper, data):
+    return dumper.represent_mapping("tag:yaml.org,2002:map", data, flow_style=False)
+yaml.add_representer(noflow_dict, noflow_dict_rep)
+
+class quoted_string(str):
+    pass
+def quoted_string_rep(dumper, data):
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style='"')
+yaml.add_representer(quoted_string, quoted_string_rep)
+
+def writeShape(_elem, link):
+    elem = link.find('origin')
+    if elem is not None:
+        xyz = elem.attrib.get('xyz')
+        rpy = elem.attrib.get('rpy')
+        if rpy=='0 0 0':
+            rpy=None
+        if xyz=='0 0 0':
+            xyz=None
+        if xyz is not None and rpy is not None:
+            _elem['rel'] = quoted_string("t(%s) E(%s)" % (xyz, rpy))
+        else:
+            if rpy is not None:
+                _elem['rel'] = quoted_string("E(%s)" % (rpy))
+            if xyz is not None:
+                _elem['rel'] = quoted_string("[%s]" % (xyz))
+
+    elem = link.find('geometry/box')
+    if elem is not None:
+        _elem['shape']='box'
+        _elem['size'] = [float(s) for s in elem.attrib['size'].split()]
+
+    elem = link.find('geometry/sphere')
+    if elem is not None:
+        _elem['shape']='sphere'
+        _elem['size'] = [float(elem.attrib['radius'])]
+
+    elem = link.find('geometry/cylinder')
+    if elem is not None:
+        _elem['shape']='cylinder'
+        _elem['size'] = [float(elem.attrib['length']), float(elem.attrib['radius'])]
+
+    elem = link.find('geometry/mesh')
+    if elem is not None:
+        filename = elem.attrib['filename'].replace(args.meshRemove,'',1)
+        if args.meshExt is not None:
+            filename = filename[:-3] + args.meshExt
+        _elem['mesh'] = '<%s>' % filename
+        if elem.find('scale') is not None:
+            _elem['meshscale'] = float(elem.attrib['scale'])
+
+    elem = link.find('material/color')
+    if elem is not None:
+        _elem['color'] = elem.attrib['rgba']
+
+#    elem = link.find('material')
+#    if elem is not None:
+#        if elem.attrib['name'] is not None:
+#            print('colorName:%s' % elem.attrib['name'])
+
+
+def addLink(config, link, useCollisionShapes):
+    name = link.attrib['name']
+    _link = dict()
+    config[name] = _link
+
+    elem = link.find('inertial/mass')
+    if elem is not None:
+        _link['mass'] = float(elem.attrib['value'])
+
+    elem = link.find('inertial/inertia')
+    if elem is not None:
+        _link['inertia'] = [float(elem.attrib['ixx']), float(elem.attrib['ixy']), float(elem.attrib['ixz']),
+                            float(elem.attrib['iyy']), float(elem.attrib['iyz']),
+                            float(elem.attrib['izz'])]
+
+    # visual shape
+    for visual in link.findall('visual'):
+        _shape = dict()
+        config[f'{name}_0 ({name})'] = _shape
+        writeShape(_shape, visual)
+        _shape['visual'] = True
+
+    # collision shape
+    if useCollisionShapes:
+        for collision in link.findall('collision'):
+            _shape = dict()
+            config[f'{name}_1 ({name})'] = _shape
+            _shape['color'] = [.8, .2, .2, .5]
+            writeShape(_shape, collision)
+            _shape['contact'] = -2
+
+def addJoint(config, joint):
+    name = joint.attrib['name']
+
+    if joint.find('child') is not None:
+
+        parent = joint.find('parent').attrib['link']
+
+        # add an origin frame as pre frame?
+        elem = joint.find('origin')
+        if elem is not None:
+            xyz = elem.attrib.get('xyz')
+            rpy = elem.attrib.get('rpy')
+            if rpy=='0 0 0':
+                rpy=None
+            if xyz=='0 0 0':
+                xyz=None
+            if xyz is not None and rpy is not None:
+                _joint = dict()
+                config[f'{name+"_origin"} ({parent})'] = _joint
+                _joint['Q'] = quoted_string("t(%s) E(%s)" % (xyz, rpy))
+                parent = name+'_origin'
+            elif rpy is not None:
+                _joint = dict()
+                config[f'{name+"_origin"} ({parent})'] = _joint
+                _joint['Q'] = quoted_string("E(%s)" % (rpy))
+                parent = name+'_origin'
+            elif xyz is not None:
+                _joint = dict()
+                config[f'{name+"_origin"} ({parent})'] = _joint
+                _joint['Q'] = quoted_string("t(%s)" % (xyz))
+                parent = name+'_origin'
+
+        _joint = dict()
+        config[f'{name} ({parent} {joint.find("child").attrib["link"]})'] = _joint
+
+        # figure out joint type
+        att = joint.attrib.get('type')
+        
+        if att in ['revolute', 'continuous']:
+            elem = joint.find('axis')
+            if elem is not None:
+                axis = elem.attrib['xyz']
+                if axis=='1 0 0':
+                    _joint['joint'] = 'hingeX'
+                elif axis=='0 1 0':
+                    _joint['joint'] = 'hingeY'
+                elif axis=='0 0 1':
+                    _joint['joint'] = 'hingeZ'
+                elif axis=='0 0 -1':
+                    _joint['joint'] = 'hingeZ'
+                    _joint['joint_scale'] = -1
+                else:
+                    raise Exception('CAN ONLY PROCESS X Y Z prismatic joints, not', axis)
+            else:
+                _joint['joint'] = 'hingeX'
+                
+        if att == 'prismatic':
+            elem = joint.find('axis')
+            if elem is not None:
+                axis = elem.attrib['xyz']
+                if axis=='1 0 0':
+                    _joint['joint'] = 'transX'
+                elif axis=='-1 0 0':
+                    _joint['joint'] = 'transX'
+                    _joint['joint_scale'] = -1
+                elif axis=='0 1 0':
+                    _joint['joint'] = 'transY'
+                elif axis=='0 -1 0':
+                    _joint['joint'] = 'transY'
+                    _joint['joint_scale'] = -1
+                elif axis=='0 0 1':
+                    _joint['joint'] = 'transZ'
+                elif axis=='0 0 -1':
+                    _joint['joint'] = 'transZ'
+                    _joint['joint_scale'] = -1
+                else:
+                    raise Exception('CAN ONLY PROCESS X Y Z prismatic joints, not', axis)
+            else:
+                _joint['joint'] = 'transX'
+                
+        if att == 'fixed':
+            _joint['joint'] = 'rigid'
+
+        elem = joint.find('mimic')
+        if elem is not None:
+            _joint['mimic'] = elem.attrib['joint']
+
+        elem = joint.find('limit')
+        if elem is not None:
+            lo = elem.attrib.get('lower')
+            up = elem.attrib.get('upper')
+            eff = elem.attrib.get('effort')
+            vel = elem.attrib.get('velocity')
+            if eff=='0':
+                eff=None
+            if vel=='0':
+                vel=None
+            if lo is not None:
+                _joint['limits'] = [float(lo), float(up)]
+            if vel is not None:
+                _joint['ctrl_limits'] = [float(vel), -1, float(eff)] #the 2nd value is an acceleration limit
+        else:
+            elem = joint.find('safety_controller')
+            if elem is not None:
+                lo = float(elem.attrib.get('soft_lower_limit'))
+                up = float(elem.attrib.get('soft_upper_limit'))
+                if lo is not None:
+                    _joint['limits'] = [lo, up]
+
+#print(etree.tostring(links[22]))
+#print(etree.tostring(joints[0]))
+
+def main():
+    inFile = args.urdf_file
+    xmlData = etree.parse(inFile)
+
+    config = dict()
+
+    links = xmlData.findall('/link')
+    for link in links:
+        addLink(config, link, args.coll)
+
+    joints = xmlData.findall('/joint')
+    for joint in joints:
+        addJoint(config, joint)
+
+    with open('z.yaml', 'w') as fil:
+        yaml.dump(noflow_dict(config), fil, default_flow_style=True, sort_keys=False, width=500)
+    
+if __name__ == "__main__":
+    main()
