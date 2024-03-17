@@ -32,19 +32,19 @@ setup(
     #packages=['robotic'],
     packages=setuptools.find_namespace_packages(),
     package_data={
-        'robotic': ['_robotic.so', 'librai.so', '_robotic.pyi', 'version.py', 'render.py',
+        'robotic': ['_robotic.so', 'librai.so', 'meshTool', '_robotic.pyi', 'version.py', 'render.py',
                     'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*', 'rai-robotModels/*/*/*/*/*', 'rai-robotModels/*/*/*/*/*/*',
                     'include/rai/*/*', 'include/rai/*/*/*']
     },
     include_package_data=True,
     # cmdclass={ 'build_ext': CustomCommand },
-    scripts=['rai/bin/urdf2rai.py', 'robotic/ry-view', 'robotic/ry-bot', 'robotic/ry-info', 'robotic/ry-urdf2yaml'],
+    scripts=['rai/bin/urdf2rai.py', 'robotic/ry-view', 'robotic/ry-bot', 'robotic/ry-info', 'robotic/ry-urdf2yaml', 'robotic/ry-meshTool.sh'],
 
     description="Robotic Control Interface & Manipulation Planning Library",
     long_description=long_description,
     long_description_content_type="text/markdown",
 
-    install_requires=[ 'numpy' ],
+    #install_requires=[ 'numpy' ],
     
     distclass=BinaryDistribution,
     version=myversion['__version__'],

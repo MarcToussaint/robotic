@@ -43,7 +43,7 @@ add_definitions(
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
   -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
-  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DRAI_VHACD
   -BOOST_ERROR_CODE_HEADER_ONLY
   -DRAI_BotOp
   )
@@ -110,14 +110,6 @@ add_library(rai SHARED
 #
 # rai include/link
 
-# default/required dependencies
-target_link_libraries(rai PRIVATE
-  # ORDER MATTERS! test with -no-undefined linker flag (above)
-  jsoncpp lapack blas
-  assimp fcl ccd ann qhull
-  glfw GLEW glut GLU GL png
-  )
-
 #find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 #target_link_libraries (rai Eigen3::Eigen)
 find_package(PkgConfig REQUIRED)
@@ -170,8 +162,14 @@ if(USE_LIBFRANKA)
   message(STATUS "[rai] using libfranka")
 endif()
 
+# default/required dependencies
 target_link_libraries(rai PRIVATE
-  pthread rt X11 boost_system
+  # ORDER MATTERS! test with -no-undefined linker flag (above)
+  lapack blas
+  glfw GLEW glut GLU GL
+  jsoncpp png assimp z
+  fcl ccd ann qhull
+  boost_system pthread rt X11 dl
   )
 
 ################################################################################
@@ -198,10 +196,6 @@ if(USE_PYBIND)
     rai
   )
 endif()
-
-target_link_libraries(rai PRIVATE
-  z dl
-  )
 
 ################################################################################
 #
@@ -246,10 +240,10 @@ install(
   PATTERN "retired" EXCLUDE
   )
 
-#install(
-#  TARGETS kinEdit meshTool bot
-#  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(
+  TARGETS meshTool #kinEdit meshTool bot
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
-  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml
+  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool.sh
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

@@ -13,7 +13,7 @@ set(PY_VERSION 3.8 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
-#set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH "\$ORIGIN")
 #only for testing: python module needs to link to python later!
@@ -43,7 +43,7 @@ add_definitions(
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
   -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
-  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DRAI_VHACD
   -DRAI_NO_STB_IMPL
   -DRAI_BotOp
   )
@@ -53,14 +53,13 @@ add_definitions(
 include_directories(
   rai/src
   botop/src
-  /usr/local/include/eigen3
-  /usr/include/eigen3
   $ENV{HOME}/.local/include
+  /usr/local/include/eigen3
   )
 
 link_directories(
-  /usr/lib64/atlas
   $ENV{HOME}/.local/lib
+  /usr/lib64/atlas
   )
 
 if(USE_PHYSX)
@@ -105,21 +104,9 @@ add_library(rai SHARED
   ${SRC_Audio}
   )
 
-
 ################################################################################
 #
 # rai include/link
-
-target_link_libraries(rai PRIVATE
-    # ORDER MATTERS! test with -no-undefined linker flag (above)
-    libjsoncpp.a lapack libatlas.a
-    libassimp.a libglfw3.a libGLEW.a glut GLU GL libpng16.a libzlibstatic.a libqhull.a libANN.a libfcl.a libccd.a
-    libhdf5_cpp.a libhdf5.a
-    #${BULLET_LIBRARIES}
-    libBullet2FileLoader.a  libBullet3Common.a    libBullet3Geometry.a     libBulletCollision.a  libBulletInverseDynamics.a
-    libBullet3Collision.a   libBullet3Dynamics.a  libBullet3OpenCL_clew.a  libBulletDynamics.a   libBulletSoftBody.a
-    libLinearMath.a
-  )
 
 #find_package (FindEigen3 REQUIRED)
 #target_link_libraries (rai FindEigen3::Eigen)
@@ -127,7 +114,7 @@ target_link_libraries(rai PRIVATE
 
 if(USE_H5)
   add_definitions(-DRAI_H5)
-  target_link_libraries(rai PRIVATE libhdf5_cpp.a libhdf5.a libzlibstatic.a)
+  target_link_libraries(rai PRIVATE libhdf5_cpp.a libhdf5.a)
   message(STATUS "[rai] using H5 libs: hdf5 hdf5_cpp in " ${HDF5_INCLUDE_DIRS})
 endif()
 
@@ -135,7 +122,13 @@ if(USE_BULLET)
   find_package(Bullet REQUIRED)
   add_definitions(-DRAI_BULLET)
   include_directories(${BULLET_INCLUDE_DIRS})
-  target_link_libraries(rai PRIVATE ${BULLET_LIBRARIES})
+  target_link_libraries(rai PRIVATE
+    libBullet2FileLoader.a          
+    libBullet3Dynamics.a libBullet3Collision.a libBullet3Geometry.a libBullet3Common.a libBullet3OpenCL_clew.a  
+    libBulletInverseDynamics.a
+    libBulletDynamics.a libBulletCollision.a libBulletSoftBody.a libLinearMath.a
+  )
+  #target_link_libraries(rai PRIVATE ${BULLET_LIBRARIES})
   message(STATUS "[rai] using bullet libs:" ${BULLET_LIBRARIES})
 endif()
 
@@ -164,7 +157,13 @@ if(USE_LIBFRANKA)
   message(STATUS "[rai] using libfranka")
 endif()
 
+# default/required dependencies
 target_link_libraries(rai PRIVATE
+  # ORDER MATTERS! test with -no-undefined linker flag (above)
+  lapack libatlas.a
+  libglfw3.a libGLEW.a glut GLU GL
+  libjsoncpp.a libpng16.a libassimp.a libzlibstatic.a
+  libfcl.a libccd.a libANN.a libqhull.a
   pthread rt X11 dl
   )
 
@@ -181,6 +180,7 @@ if(USE_PYBIND)
   
   find_package(pybind11)
   add_definitions(-DRAI_PYBIND)
+  include_directories(${pybind11_INCLUDE_DIRS})
 
   pybind11_add_module(_robotic SHARED
     rai/src/ry/unity.cxx
@@ -200,3 +200,7 @@ get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 message(STATUS "[rai] compiler flags: " "${_defs}")
 
 ################################################################################
+
+add_executable(meshTool rai/bin/src_meshTool/main.cpp)
+target_link_libraries(meshTool rai)
+

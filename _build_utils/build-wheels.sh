@@ -33,7 +33,7 @@ export PYTHONPATH=.
 for ver in 8 9 10 11 6 7; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPY_VERSION=3.$ver .
-    make -C build_wheel _robotic
+    make -C build_wheel rai _robotic meshTool --quiet
     if [ "$?" != 0 ]; then
 	echo "--- compile failed ---"
 	exit
@@ -42,12 +42,15 @@ for ver in 8 9 10 11 6 7; do
     echo -e "\n\n======== cleanup libs (python version " $ver ") ========"
     cp -f build_wheel/_robotic.*3$ver*.so robotic/_robotic.so
     cp -f build_wheel/librai.so robotic/
+    cp -f build_wheel/meshTool robotic/
     strip --strip-unneeded robotic/_robotic.so
     strip --strip-unneeded robotic/librai.so
+    strip --strip-unneeded robotic/meshTool
 
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
-    python3.$ver setup.py --quiet bdist_wheel
-    #break
+    #python3.$ver setup.py --quiet bdist_wheel
+    python3.$ver -m build -C--global-option=--quiet
+    break
 done
 
 ### delete setup temp files
