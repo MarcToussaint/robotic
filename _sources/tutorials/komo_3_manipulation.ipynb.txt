@@ -5,7 +5,7 @@
    "id": "94bf0959",
    "metadata": {},
    "source": [
-    "# Manipulation Modelling & Execution\n",
+    "# KOMO-3: Manipulation Modelling & Execution\n",
     "\n",
     "The discussed components (KOMO, BotOp, NLP_Solver, RRT) provide basic ingredients for manipulation planning and execution. This tutorial is about how to practically use these in typical manipulation settings.\n",
     "\n",

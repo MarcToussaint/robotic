@@ -5,7 +5,7 @@
    "id": "89f8bc99",
    "metadata": {},
    "source": [
-    "# Configurations: Importing, editing & manipulating them\n",
+    "# Config-3: Importing, editing & manipulating them\n",
     "* This scripts loads a mini scene defined in 'mini.g'.\n",
     "* The 'watchFile' command allows you to edit the file in some other editor, while it is being redisplayed whenever you save.\n",
     "* 'set/getJointState' shows how to access degrees-of-freedom of the scene\n",
@@ -99,7 +99,7 @@
    "id": "d7badd49",
    "metadata": {},
    "source": [
-    "# Creating a grid of duplicated configurations\n",
+    "## Creating a grid of duplicated configurations\n",
     "It's become populat to setup simulations to include a grid of copies of the scene. Here how to do this:"
    ]
   },

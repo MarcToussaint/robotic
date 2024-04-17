@@ -5,7 +5,7 @@
    "id": "e519d99b",
    "metadata": {},
    "source": [
-    "# KOMO: Reporting & explaining convergence\n",
+    "# KOMO-2: Reporting & explaining convergence\n",
     "\n",
     "When designing motion problems using KOMO, it is really important to check feasibility and -- if the point of convergence is infeasible or different to what you expected -- know how to introspect the result. The key here is get information about which constraints were actually active, what their constraint violation is, and \"how much each constraint is pulling\" at the point of convergence. I recently figured a way to quantify the latter (inspecting the gradients the constraints contribute to the underlying Lagrangian), which really \"explains\" the point of convergence as good as it gets.\n",
     "\n",

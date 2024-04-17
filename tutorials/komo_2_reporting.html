@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KOMO: Reporting &amp; explaining convergence &mdash; Robotic Python Library 0.1.0 documentation</title>
+  <title>KOMO-2: Reporting &amp; explaining convergence &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -17,7 +17,7 @@
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../_static/documentation_options.js?v=01f34227"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -25,8 +25,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Manipulation Modelling &amp; Execution" href="komo_3_manipulation.html" />
-    <link rel="prev" title="Configurations: Importing, editing &amp; manipulating them" href="config_3_import_edit.html" /> 
+    <link rel="next" title="KOMO-3: Manipulation Modelling &amp; Execution" href="komo_3_manipulation.html" />
+    <link rel="prev" title="Config-3: Importing, editing &amp; manipulating them" href="config_3_import_edit.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,23 +55,22 @@
 <li class="toctree-l2"><a class="reference internal" href="config_1_intro.html">Intro: Configurations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">Real robot operation: Checklist &amp; first steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Features: Computing differentiable features &amp; collision evaluation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Configurations: Importing, editing &amp; manipulating them</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html#Creating-a-grid-of-duplicated-configurations">Creating a grid of duplicated configurations</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">KOMO: Reporting &amp; explaining convergence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Config-3: Importing, editing &amp; manipulating them</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">KOMO-2: Reporting &amp; explaining convergence</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Problem-specs-reporting">Problem specs reporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Constraints-error-reporting">Constraints error reporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Lagrange-gradients-reporting">Lagrange gradients reporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Plotting-constraint-errors-over-time-for-paths">Plotting constraint errors over time for paths</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="komo_3_manipulation.html">Manipulation Modelling &amp; Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ext_physx_simulation.html">Simulation: Low-level stepping interface &amp; gym environments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ext_rendering.html">Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ext_rrt.html">RRT: basic finding example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ext_nlp_solvers.html">NLP interface: Low-level NLP formulation and solving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ext_gym_environment.html">Gym Environment Interface: minimal example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_3_manipulation.html">KOMO-3: Manipulation Modelling &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_physx_simulation.html">Extension - Simulation: Low-level stepping interface &amp; gym environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_rendering.html">Extension - Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_rrt.html">Extension - RRT: basic finding example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_nlp_solvers.html">Extension - NLP interface: Low-level NLP formulation and solving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_gym_environment.html">Extension - Gym Environment Interface: minimal example</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
@@ -93,7 +92,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">KOMO: Reporting &amp; explaining convergence</li>
+      <li class="breadcrumb-item active">KOMO-2: Reporting &amp; explaining convergence</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/komo_2_reporting.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -103,8 +102,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="KOMO:-Reporting-&amp;-explaining-convergence">
-<h1>KOMO: Reporting &amp; explaining convergence<a class="headerlink" href="#KOMO:-Reporting-&-explaining-convergence" title="Link to this heading"></a></h1>
+  <section id="KOMO-2:-Reporting-&amp;-explaining-convergence">
+<h1>KOMO-2: Reporting &amp; explaining convergence<a class="headerlink" href="#KOMO-2:-Reporting-&-explaining-convergence" title="Link to this heading"></a></h1>
 <p>When designing motion problems using KOMO, it is really important to check feasibility and – if the point of convergence is infeasible or different to what you expected – know how to introspect the result. The key here is get information about which constraints were actually active, what their constraint violation is, and “how much each constraint is pulling” at the point of convergence. I recently figured a way to quantify the latter (inspecting the gradients the constraints contribute to the
 underlying Lagrangian), which really “explains” the point of convergence as good as it gets.</p>
 <p>You should have done the <a class="reference internal" href="komo_1_intro.html"><span class="doc">first KOMO tutorial</span></a> first.</p>
@@ -314,8 +313,8 @@ del C
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="config_3_import_edit.html" class="btn btn-neutral float-left" title="Configurations: Importing, editing &amp; manipulating them" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="komo_3_manipulation.html" class="btn btn-neutral float-right" title="Manipulation Modelling &amp; Execution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="config_3_import_edit.html" class="btn btn-neutral float-left" title="Config-3: Importing, editing &amp; manipulating them" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="komo_3_manipulation.html" class="btn btn-neutral float-right" title="KOMO-3: Manipulation Modelling &amp; Execution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# NLP interface: Low-level NLP formulation and solving\n",
+    "# Extension - NLP interface: Low-level NLP formulation and solving\n",
     "\n",
     "This is completely independent from all robotics code. Provides a generic interface to NLP formulation and calling various solvers."
    ]

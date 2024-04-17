@@ -5,7 +5,7 @@
    "id": "48bcf763",
    "metadata": {},
    "source": [
-    "# RRT: basic finding example\n",
+    "# Extension - RRT: basic finding example\n",
     "* Path finding is using sample-based (RRT) methods rather than constrained optimization to find a collision free path\n",
     "* Path finding is much easier if a final robot pose is given. We here use IK (formulated as KOMO problem) to first compute a final configuration 'qT'. (Path optimization does this jointly with optimizing the path.)\n",
     "* Then we can pass the current state and qT to a bi-directional RRT to find a collision free path.\n",
