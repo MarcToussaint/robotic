@@ -184,17 +184,15 @@ if(USE_PYBIND)
   message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR} )
   
   find_package(pybind11)
-  add_definitions(-DRAI_PYBIND)
-  include_directories(${pybind11_INCLUDE_DIRS})
   
   pybind11_add_module(_robotic SHARED
     rai/src/ry/unity.cxx
     botop/src/BotOp/py-BotOp.cxx
   )
 
-  target_link_libraries(_robotic PRIVATE
-    rai
-  )
+  target_compile_definitions(_robotic PUBLIC RAI_PYBIND)
+  target_include_directories(_robotic PUBLIC ${pybind11_INCLUDE_DIRS})
+  target_link_libraries(_robotic PRIVATE rai)
 endif()
 
 ################################################################################
@@ -245,5 +243,5 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
-  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool.sh
+  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
