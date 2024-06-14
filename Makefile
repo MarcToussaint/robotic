@@ -1,4 +1,5 @@
 PY_VER = $(shell python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))")
+PY_SITE = $(shell python3 -m site --user-site)
 
 default: docs
 
@@ -12,11 +13,11 @@ local-install:
 	ln -f -s _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
 	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build
-	+make -C build _robotic docstrings install
-	cp build/_robotic.pyi ${HOME}/.local/lib/python$(PY_VER)/site-packages/robotic
+	+make -C build _robotic docstrings install -j $(command nproc --ignore 2)
+	cp build/_robotic.pyi $(PY_SITE)
 
 local-clean:
-	-rm -Rf ${HOME}/.local/lib/python$(PY_VER)/site-packages/robotic*
+	-rm -Rf $(PY_SITE)
 	-rm -f ${HOME}/.local/lib/*rai*
 	-rm -f ${HOME}/.local/bin/*ry*
 
@@ -36,14 +37,17 @@ wheels-install:
 test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
 
+test2:
+	ry-view $(PY_SITE)/rai-robotModels/scenarios/pandasTable.g
+
 test-tutorials:
-	make -j1 -C rai-docs/rai-tutorials run
+	make -j1 -C rai-tutorials run
 
 pull:
 	cd rai && git pull
 	cd rai-robotModels && git pull
 	cd rai-docs && git pull
-	cd rai-docs/rai-tutorials && git pull
+	cd rai-tutorials && git pull
 	cd botop && git pull
 
 docker-clean:

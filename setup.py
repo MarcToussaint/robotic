@@ -32,7 +32,7 @@ setup(
     #packages=['robotic'],
     packages=setuptools.find_namespace_packages(),
     package_data={
-        'robotic': ['_robotic.so', 'librai.so', 'meshTool', '_robotic.pyi', 'version.py', 'render.py',
+        'robotic': ['_robotic.so', 'librai.so', 'meshTool', '_robotic.pyi', 'version.py', 'render.py', 'nlp.py',
                     'rai-robotModels/*/*', 'rai-robotModels/*/*/*', 'rai-robotModels/*/*/*/*', 'rai-robotModels/*/*/*/*/*', 'rai-robotModels/*/*/*/*/*/*',
                     'include/rai/*/*', 'include/rai/*/*/*']
     },

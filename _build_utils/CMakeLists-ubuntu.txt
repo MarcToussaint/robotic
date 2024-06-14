@@ -64,6 +64,7 @@ link_directories(
 if(USE_PHYSX)
   link_directories($ENV{HOME}/.local/lib/PhysX)
 endif()
+
 if(USE_H5)
   link_directories(/usr/lib/x86_64-linux-gnu/hdf5/serial)
 endif()
@@ -227,7 +228,7 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/_robotic.pyi
+  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/_robotic.pyi
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE}/robotic)
 
 install(

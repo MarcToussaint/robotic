@@ -30,32 +30,23 @@ pip install robotic
 ry-info
 ```
 ```
-python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
-```
-```
 python3 -c 'import robotic as ry; ry.test.RndScene()'
 ```
-<!--
-If the `rai-robotModels` path fails, find rai-robotModels and try something like
 ```
-python3 -c 'import robotic as ry; ry.setRaiPath("/usr/local/rai-robotModels"); ry.test.RndScene()'
+ry-view `python3 -m site --user-site`/robotic/rai-robotModels/scenarios/pandaSingle.g
 ```
-When rai-robotModels is still messed up, try cloning it completely:
+* Run all tutorial notebooks as a test and showcase (takes long):
 ```
-cd ~/.local; rm -Rf rai-robotModels;
-git clone https://github.com/MarcToussaint/rai-robotModels.git
-```
-* You can download other examples and test:
-```
-wget https://github.com/MarcToussaint/robotic/raw/master/examples/skeleton-solving-example.py
-python3 skeleton-solving-example.py
-```
--->
+pip install jupyter nbconvert matplotlib
+git clone https://github.com/MarcToussaint/rai-tutorials.git
+cd rai-tutorials
+make run -j1
+``
 
 
 ## Installation from source with real Franka & realsense support
 
-This assumes a standard Ubuntu 20.04 (or 18.04) machine.
+This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
 
 * Install Ubuntu and python packages:
 
@@ -107,7 +98,7 @@ This assumes a standard Ubuntu 20.04 (or 18.04) machine.
   You need to log out and back in (or even reboot) for this to take
   effect. Check with `groups` in a terminal.
 
-* Follow the [Real Robot Operation Tutorial](https://marctoussaint.github.io/robotic/tutorials/botop_2_real_robot.html) on the [tutorials page](https://marctoussaint.github.io/robotic/tutorials/) to test and debug first steps with the real franka.
+* Follow the [Real Robot Operation Tutorial](https://marctoussaint.github.io/robotic/tutorials/botop_2_real_robot.html) on the [tutorials page](https://marctoussaint.github.io/robotic/tutorials.html) to test and debug first steps with the real franka.
 
 ## Building the wheels within a manylinux docker
 
@@ -116,13 +107,10 @@ This assumes a standard Ubuntu 20.04 (or 18.04) machine.
 _build_utils/build-docker.sh
 ```
 
-* Run docker and compile wheels inside
+* Compile wheels (this runs `local/_build_utils/build-wheels.sh`
+inside the docker -- see `Makefile`)
 ```
-_build_utils/run-docker.sh
-## inside docker:
-cd local #this mounts robotic/
-_build_utils/build-wheels.sh
-exit
+make wheels
 ```
 
 * Outside of docker, install locally with pip or push wheels to pypi

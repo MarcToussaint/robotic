@@ -23,9 +23,9 @@ jobs:
           pip install sphinx sphinx_rtd_theme myst_parser nbsphinx robotic numpy
       - name: Sphinx build
         run: |
-          cd rai-docs && git fetch --all && git reset --hard origin/main
           cd rai-tutorials && git fetch --all && git reset --hard origin/main
-          cd .. && sphinx-build doc ../html
+          cd ../rai-docs && git fetch --all && git reset --hard origin/main
+          sphinx-build doc ../html
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
