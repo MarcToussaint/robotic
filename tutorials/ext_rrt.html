@@ -146,7 +146,7 @@ C.view(False)
 qT = [+.2, 0, 0]
 
 ry.params_clear()
-ry.params_add({&#39;rrt/stepsize&#39;:.1, &#39;rrt/verbose&#39;: 3}) #this makes it very slow, and displays result, and wait keypress..
+ry.params_add({&#39;rrt/stepsize&#39;:.1, &#39;rrt/verbose&#39;: 3}) #verbose=3 makes it very slow, and displays result, and verbose=4 waits keypress..
 
 rrt = ry.PathFinder()
 rrt.setProblem(C, [q0], [qT])

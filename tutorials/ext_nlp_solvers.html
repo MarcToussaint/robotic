@@ -223,8 +223,7 @@ solver.setOptions(maxStep=.5, damping=1e-4)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for i in range(20):
-    solver.restart()
-    ret = solver.solve()
+    ret = solver.solve(1)
     print(ret)
 x = solver.getTrace_x()
 z = solver.getTrace_costs()

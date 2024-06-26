@@ -315,8 +315,12 @@ C.view(True, &#39;floating=True, damping=True -- Try moving the robot by hand!\n
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.moveTo(bot.get_qHome(), 1.)
 bot.wait(C)
 
+timeout = bot.get_t() + 5.
+
 while bot.getKeyPressed()!=ord(&#39;q&#39;):
-    bot.sync(C, .1)
+    if bot.get_t()&gt;timeout:
+        break
+    bot.sync(C, .1, &#39;testing compliance&#39;)
     y, J = C.eval(ry.FS.position, [&quot;l_gripper&quot;], [[1,0,0]])
     bot.setCompliance(J, 1.)
     print(&#39; direct:&#39;, J @ bot.get_tauExternal(),
@@ -390,11 +394,16 @@ bot = ry.BotOp(C, True)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
 
+timeout = bot.get_t() + 5.
+
 while bot.getKeyPressed()!=ord(&#39;q&#39;):
+    if bot.get_t()&gt;timeout:
+        break
+
     rgb, depth, points = bot.getImageDepthPcl(&#39;cameraWrist&#39;)
     pclFrame.setPointCloud(points, rgb)
 
-    bot.sync(C, .1)
+    bot.sync(C, .1, &#39;testing the depth camera&#39;)
 </pre></div>
 </div>
 </div>
