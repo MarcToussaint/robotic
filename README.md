@@ -37,7 +37,7 @@ ry-view `python3 -m site --user-site`/robotic/rai-robotModels/scenarios/pandaSin
 ```
 * Run all tutorial notebooks as a test and showcase (takes long):
 ```
-pip install jupyter nbconvert matplotlib
+pip install jupyter nbconvert matplotlib ipympl
 git clone https://github.com/MarcToussaint/rai-tutorials.git
 cd rai-tutorials
 make run -j1

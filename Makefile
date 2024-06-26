@@ -14,10 +14,10 @@ local-install:
 	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build
 	+make -C build _robotic docstrings install -j $(command nproc --ignore 2)
-	cp build/_robotic.pyi $(PY_SITE)
+	cp build/_robotic.pyi $(PY_SITE)/robotic
 
 local-clean:
-	-rm -Rf $(PY_SITE)
+	-rm -Rf $(PY_SITE)/robotic
 	-rm -f ${HOME}/.local/lib/*rai*
 	-rm -f ${HOME}/.local/bin/*ry*
 
@@ -38,7 +38,7 @@ test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
 
 test2:
-	ry-view $(PY_SITE)/rai-robotModels/scenarios/pandasTable.g
+	ry-view $(PY_SITE)/robotic/rai-robotModels/scenarios/pandasTable.g
 
 test-tutorials:
 	make -j1 -C rai-tutorials run
