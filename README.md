@@ -41,7 +41,7 @@ pip install jupyter nbconvert matplotlib ipympl
 git clone https://github.com/MarcToussaint/rai-tutorials.git
 cd rai-tutorials
 make run -j1
-``
+```
 
 
 ## Installation from source with real Franka & realsense support
@@ -52,7 +52,7 @@ This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
 
       sudo apt install --yes \
         g++ clang make gnupg cmake git wget \
-        liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev libccd-dev \
+        liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev \
         libjsoncpp-dev libyaml-cpp-dev libhdf5-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
         libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
         python3-dev python3 python3-pip
@@ -67,6 +67,7 @@ This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
   To standardize installations, I use a basic script:
 
       wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
+      ./install.sh libccd
       ./install.sh fcl
       ./install.sh physx
       ./install.sh librealsense
@@ -82,12 +83,15 @@ This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
       cmake -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON . -B build
       make -C build _robotic install
 
-  (Docstrings could be made with `make docstrings`, but this is not yet robust across distributions.)
+* The following should also compile docstrings, but might fail as this
+  is not yet robust across Ubuntu distributions:
+
+      make -C build _robotic docstrings install
 
 * This should install everything in .local/lib/python*/site-packages/robotic. Test:
 
       cd $HOME
-      python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
+      ry-info
       python3 -c 'import robotic as ry; ry.test.RndScene()'
 
 * Recall that the user needs to be part of the `realtime` and `dialout` unix group:
@@ -98,7 +102,12 @@ This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
   You need to log out and back in (or even reboot) for this to take
   effect. Check with `groups` in a terminal.
 
-* Follow the [Real Robot Operation Tutorial](https://marctoussaint.github.io/robotic/tutorials/botop_2_real_robot.html) on the [tutorials page](https://marctoussaint.github.io/robotic/tutorials.html) to test and debug first steps with the real franka.
+* Now follow the
+  [Real Robot Operation Tutorial](https://marctoussaint.github.io/robotic/tutorials/botop_2_real_robot.html)
+  on the
+  [tutorials page](https://marctoussaint.github.io/robotic/tutorials.html)
+  to test and debug first steps with the real franka. In particular
+  test `ry-bot -real -up -home` and debug as explained there.
 
 ## Building the wheels within a manylinux docker
 

@@ -33,7 +33,7 @@ export PYTHONPATH=.
 for ver in 10 11 7 8 9; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPY_VERSION=3.$ver .
-    make -C build_wheel rai _robotic meshTool --quiet
+    make -j8 -C build_wheel rai _robotic meshTool --quiet
     if [ "$?" != 0 ]; then
 	echo "--- compile failed ---"
 	exit

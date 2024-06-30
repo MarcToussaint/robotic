@@ -29,7 +29,7 @@ wheels:
 #	_build_utils/run-docker.sh local/_build_utils/build-wheels.sh
 
 wheels-upload:
-	twine upload dist/*.whl --repository robotic
+	twine upload dist/*.whl
 
 wheels-install:
 	python$(PY_VER) -m pip install --user dist/robotic-*cp38*.whl --force-reinstall
