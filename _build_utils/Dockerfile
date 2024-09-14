@@ -10,8 +10,9 @@ ENV MAKEFLAGS="-j3"
 RUN yum -y install gcc wget \
     atlas-devel f2c-devel glut-devel zlib-devel \
     libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel \
-    clang lapack-static atlas-static
-
+    clang lapack-static atlas-static \
+    glm-devel freetype-devel
+    
 RUN cd /usr/lib64; ln -s libstdc++.so.6.0.19 libstdc++.so
 
 RUN wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh

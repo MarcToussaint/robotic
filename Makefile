@@ -12,7 +12,7 @@ docs-clean:
 local-install:
 	ln -f -s _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
 	-rm -f ${HOME}/.local/lib/*rai*
-	cmake . -B build
+	cmake . -B build -DPY_VERSION=$(PY_VER)
 	+make -C build _robotic docstrings install -j $(command nproc --ignore 2)
 	cp build/_robotic.pyi $(PY_SITE)/robotic
 
@@ -32,7 +32,7 @@ wheels-upload:
 	twine upload dist/*.whl
 
 wheels-install:
-	python$(PY_VER) -m pip install --user dist/robotic-*cp38*.whl --force-reinstall
+	python$(PY_VER) -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
 
 test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
