@@ -29,6 +29,7 @@ The remaining tutorials cover various topics in more depth:
    tutorials/config_3_import_edit
    tutorials/komo_2_reporting
    tutorials/komo_3_manipulation
+   tutorials/lgp_1_intro
    tutorials/ext_physx_simulation
    tutorials/ext_rendering
    tutorials/ext_rrt

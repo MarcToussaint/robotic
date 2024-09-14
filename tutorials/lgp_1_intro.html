@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Extension - NLP interface: Low-level NLP formulation and solving &mdash; Robotic Python Library 0.1.0 documentation</title>
+  <title>LGP-1: First Mini Interface &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -25,8 +25,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Extension - Gym Environment Interface: minimal example" href="ext_gym_environment.html" />
-    <link rel="prev" title="Extension - RRT: basic finding example" href="ext_rrt.html" /> 
+    <link rel="next" title="Extension - Simulation: Low-level stepping interface &amp; gym environments" href="ext_physx_simulation.html" />
+    <link rel="prev" title="KOMO-3: Manipulation Modelling &amp; Execution" href="komo_3_manipulation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -60,11 +60,11 @@
 <li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Config-3: Importing, editing &amp; manipulating them</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_2_reporting.html">KOMO-2: Reporting &amp; explaining convergence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_3_manipulation.html">KOMO-3: Manipulation Modelling &amp; Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lgp_1_intro.html">LGP-1: First Mini Interface</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LGP-1: First Mini Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_physx_simulation.html">Extension - Simulation: Low-level stepping interface &amp; gym environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_rendering.html">Extension - Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_rrt.html">Extension - RRT: basic finding example</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Extension - NLP interface: Low-level NLP formulation and solving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ext_nlp_solvers.html">Extension - NLP interface: Low-level NLP formulation and solving</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_gym_environment.html">Extension - Gym Environment Interface: minimal example</a></li>
 </ul>
 </li>
@@ -87,9 +87,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">Extension - NLP interface: Low-level NLP formulation and solving</li>
+      <li class="breadcrumb-item active">LGP-1: First Mini Interface</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/ext_nlp_solvers.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/lgp_1_intro.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -97,54 +97,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="Extension---NLP-interface:-Low-level-NLP-formulation-and-solving">
-<h1>Extension - NLP interface: Low-level NLP formulation and solving<a class="headerlink" href="#Extension---NLP-interface:-Low-level-NLP-formulation-and-solving" title="Link to this heading"></a></h1>
-<p>This is completely independent from all robotics code. Provides a generic interface to NLP formulation and calling various solvers.</p>
+  <section id="LGP-1:-First-Mini-Interface">
+<h1>LGP-1: First Mini Interface<a class="headerlink" href="#LGP-1:-First-Mini-Interface" title="Link to this heading"></a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
-import numpy as np
-import matplotlib.pylab as plt
-</pre></div>
-</div>
-</div>
-<p>Define a function to compute differentiable features</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#the function needs to have the signature (array) -&gt; (array, array) with dimensionalities (n) -&gt; (d, d-times-n)
-def sqrPot(x):
-    y = np.array(x)
-    y[0] = y[0] - 1.
-    J = np.eye(y.size)
-    return y,J
-</pre></div>
-</div>
-</div>
-<p>Define a NLP (non-linear mathematical program)</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nlp = ry.NLP_Factory()
-nlp.setDimension(3)
-nlp.setBounds([-2,-2,-2],[2,2,2])
-nlp.setFeatureTypes([ry.OT.sos, ry.OT.sos, ry.OT.sos])
-nlp.setEvalCallback(sqrPot)
-</pre></div>
-</div>
-</div>
-<p>Define a solver</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver = ry.NLP_Solver()
-solver.setProblem(nlp)
-solver.setSolver(ry.NLP_SolverID.newton)
+ry.compiled()
 </pre></div>
 </div>
 </div>
@@ -152,7 +112,18 @@ solver.setSolver(ry.NLP_SolverID.newton)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.solve(True)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<p>The LGP tool needs three things as input: * a configuration * A TAMP_Provider, which provides a method ‘getNewPlan’, which returns a next possible sequence of logical actions (action=string tuple) * A Logic2KOMO_Translator, which provides a method ‘add_action_constraints’, which adds KOMO constraints for any action</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.addFile(&#39;data/lgp_single_pnp.g&#39;) # change the config geometry (including size of trays) to check if solver still works
+#C.view() #or C.watchFile(&#39;data/lgp_single_pnp.g&#39;) #to edit
 </pre></div>
 </div>
 </div>
@@ -160,7 +131,9 @@ solver.setSolver(ry.NLP_SolverID.newton)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.getTrace_costs()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>trans = ry.default_Logic2KOMO_Translator()
+tamp = ry.default_TAMP_Provider(C, &#39;data/lgp_single_pnp.lgp&#39;) # change the logic goal (&#39;terminal&#39;) to check is solver still works
+lgp = ry.LGP_Tool(C, tamp, trans)
 </pre></div>
 </div>
 </div>
@@ -168,10 +141,11 @@ solver.setSolver(ry.NLP_SolverID.newton)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
-from robotic import nlp
-import numpy as np
-import matplotlib.pylab as plt
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for k in range(10):
+    lgp.solve(0)
+    print(f&#39;** solution {k}: {lgp.getSolvedPlan()}&#39;, flush=True)
+    lgp.view_solved(pause=False) #change to inspect each plan
+lgp.view_close()
 </pre></div>
 </div>
 </div>
@@ -179,89 +153,7 @@ import matplotlib.pylab as plt
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class MyNLP(nlp.NLP):
-    b = 3
-    def evaluate(self, x):
-        phi = np.array([ x[0]-1,
-                         self.b*(x[1]-x[0]**2) ])
-        J = np.array([[ 1, 0 ],
-                      [ -2*self.b*x[0], self.b ]])
-        return phi, J
-
-    def f(self, x):
-        phi, _ = self.evaluate(x)
-        return np.sum(phi**2)
-
-    def getDimension(self):
-        return 2
-    def getFeatureTypes(self):
-        return [ry.nlp.OT.sos] * 2
-    def getBounds(self):
-        return np.array([[-2,-1], [2,3]])
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>p = MyNLP()
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver = ry.NLP_Solver()
-solver.setPyProblem(p)
-solver.setOptions(maxStep=.5, damping=1e-4)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for i in range(20):
-    ret = solver.solve(1)
-    print(ret)
-x = solver.getTrace_x()
-z = solver.getTrace_costs()
-plt.plot(x[:,0], x[:,1], &#39;o-&#39;)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>X = np.arange(-2, 2, 0.15)
-Y = np.arange(-1, 3, 0.15)
-X, Y = np.meshgrid(X, Y)
-xy = np.hstack((X.reshape(-1,1),Y.reshape(-1,1)))
-Z = np.apply_along_axis(p.f, 1, xy).reshape(X.shape)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots()
-ax.contour(X,Y,Z, 200)
-ax.plot(x[:,0], x[:,1], &#39;o-r&#39;, ms=3)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for i in range(20):
-    x = solver.getProblem().getInitializationSample()
-    r = solver.getProblem().checkJacobian(x, 1e-6)
-    print(r, x)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
 </pre></div>
 </div>
 </div>
@@ -279,8 +171,8 @@ ax.plot(x[:,0], x[:,1], &#39;o-r&#39;, ms=3)
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="ext_rrt.html" class="btn btn-neutral float-left" title="Extension - RRT: basic finding example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ext_gym_environment.html" class="btn btn-neutral float-right" title="Extension - Gym Environment Interface: minimal example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="komo_3_manipulation.html" class="btn btn-neutral float-left" title="KOMO-3: Manipulation Modelling &amp; Execution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ext_physx_simulation.html" class="btn btn-neutral float-right" title="Extension - Simulation: Low-level stepping interface &amp; gym environments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

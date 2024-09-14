@@ -1,0 +1,119 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "94bf0959",
+   "metadata": {},
+   "source": [
+    "# LGP-1: First Mini Interface\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a13d9bd0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import robotic as ry\n",
+    "ry.compiled()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7cb82f86-c00a-4a14-8d00-b9a771ec4dcd",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "db984ee6-4129-47da-ab06-7d1a7a076ab1",
+   "metadata": {},
+   "source": [
+    "The LGP tool needs three things as input:\n",
+    "* a configuration\n",
+    "* A TAMP_Provider, which provides a method 'getNewPlan', which returns a next possible sequence of logical actions (action=string tuple)\n",
+    "* A Logic2KOMO_Translator, which provides a method 'add_action_constraints', which adds KOMO constraints for any action"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "caf624e0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "C = ry.Config()\n",
+    "C.addFile('data/lgp_single_pnp.g') # change the config geometry (including size of trays) to check if solver still works\n",
+    "#C.view() #or C.watchFile('data/lgp_single_pnp.g') #to edit"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "36e43d13-d1d5-4df5-8238-cf187474a6ff",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "trans = ry.default_Logic2KOMO_Translator()\n",
+    "tamp = ry.default_TAMP_Provider(C, 'data/lgp_single_pnp.lgp') # change the logic goal ('terminal') to check is solver still works\n",
+    "lgp = ry.LGP_Tool(C, tamp, trans)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "98949c6c-698d-44bc-b948-9e8a69007bf6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for k in range(10):\n",
+    "    lgp.solve(0)\n",
+    "    print(f'** solution {k}: {lgp.getSolvedPlan()}', flush=True)\n",
+    "    lgp.view_solved(pause=False) #change to inspect each plan\n",
+    "lgp.view_close()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3f67eeb3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "del C"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ca604aa1",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
