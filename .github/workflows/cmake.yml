@@ -18,7 +18,7 @@ jobs:
         python-version: '3.10'
     - name: install ubuntu dependencies
       run: |
-        sudo apt-get install libboost-system-dev
+        sudo apt-get install libboost-system-dev libjsoncpp-dev
         APTGETYES=1 make -C rai -j1 installUbuntuAll
     - name: install source dependencies
       run: |

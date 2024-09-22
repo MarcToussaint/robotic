@@ -1,7 +1,10 @@
 PY_VER = $(shell python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))")
 PY_SITE = $(shell python3 -m site --user-site)
 
-default: docs
+default: compile
+
+compile:
+	make -C build
 
 docs:
 	cd rai-docs && sphinx-build doc ../html
@@ -18,6 +21,7 @@ local-install:
 
 local-clean:
 	-rm -Rf $(PY_SITE)/robotic
+	-rm -Rf $(PY_SITE)/robotic-*
 	-rm -f ${HOME}/.local/lib/*rai*
 	-rm -f ${HOME}/.local/bin/*ry*
 
@@ -38,6 +42,9 @@ test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'
 
 test2:
+	cd ${HOME} && python3 -c 'import robotic as ry; ry.test.RndScene()'
+
+test3:
 	ry-view $(PY_SITE)/robotic/rai-robotModels/scenarios/pandasTable.g
 
 test-tutorials:
