@@ -668,7 +668,7 @@
   "widgets": {
    "application/vnd.jupyter.widget-state+json": {
     "state": {
-     "83a34248db3346fd9b42634e021fad43": {
+     "428ac1181ec8423c9c7341dc0bdc41a8": {
       "model_module": "@jupyter-widgets/base",
       "model_module_version": "2.0.0",
       "model_name": "LayoutModel",
@@ -721,7 +721,7 @@
        "width": null
       }
      },
-     "b2d63810ccb6412cbdecda7acfe93af7": {
+     "4dde92936e784e839ea57b099b3384d8": {
       "model_module": "jupyter-matplotlib",
       "model_module_version": "^0.11",
       "model_name": "ToolbarModel",
@@ -737,7 +737,7 @@
        "_view_name": "ToolbarView",
        "button_style": "",
        "collapsed": true,
-       "layout": "IPY_MODEL_83a34248db3346fd9b42634e021fad43",
+       "layout": "IPY_MODEL_f63910a33bd949b394daa8df2621dba0",
        "orientation": "vertical",
        "tabbable": null,
        "toolitems": [
@@ -781,7 +781,7 @@
        "tooltip": null
       }
      },
-     "c2eaaf1690304bed95898730e42b0eb6": {
+     "ead302cc908549f5b2e65c72610a7abe": {
       "model_module": "jupyter-matplotlib",
       "model_module_version": "^0.11",
       "model_name": "MPLCanvasModel",
@@ -810,17 +810,17 @@
        "capture_scroll": false,
        "footer_visible": false,
        "header_visible": false,
-       "layout": "IPY_MODEL_c3f26346e42f4f85a6382e57813a8a76",
+       "layout": "IPY_MODEL_428ac1181ec8423c9c7341dc0bdc41a8",
        "pan_zoom_throttle": 33.0,
        "resizable": true,
        "tabbable": null,
-       "toolbar": "IPY_MODEL_b2d63810ccb6412cbdecda7acfe93af7",
+       "toolbar": "IPY_MODEL_4dde92936e784e839ea57b099b3384d8",
        "toolbar_position": "left",
        "toolbar_visible": false,
        "tooltip": null
       }
      },
-     "c3f26346e42f4f85a6382e57813a8a76": {
+     "f63910a33bd949b394daa8df2621dba0": {
       "model_module": "@jupyter-widgets/base",
       "model_module_version": "2.0.0",
       "model_name": "LayoutModel",

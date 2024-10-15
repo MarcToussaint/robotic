@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,22 +8,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LGP-1: First Mini Interface &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=01f34227"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -101,6 +99,7 @@
 <h1>LGP-1: First Mini Interface<a class="headerlink" href="#LGP-1:-First-Mini-Interface" title="Link to this heading"></a></h1>
 <p><strong>Disclaimer:</strong> The algorithm interfaced here is absolutely not made or tuned for performance. The purpose of this first interface less to provide the algorithm, but rather to think about: 1. what are interfaces to <em>specify</em> a TAMP problem (see TAMP_Provider, and Logic2KOMO_Translator below), and 2. what are basic computational components that an underlying kinematics/optimization engine should provide, so that a good algorithm could be build on top.</p>
 <p>In the current version, the LGP tool needs three things as input: * a configuration, * a TAMP_Provider, which provides a method ‘getNewPlan’, which returns a next possible sequence of logical actions (action=string tuple), * a Logic2KOMO_Translator, which provides a method ‘add_action_constraints’, which adds KOMO constraints for any action.</p>
+<p>Eventually, both should be specified by the user in python. For the TAMP_Provider, the user should use plain PDDL and a planner to provide more and more plans. For the Logic2KOMO_Translater, the user can define any translation of logic predicates to geometric constraints - beyond just pick’n’place or push. But for now, for development, I’m using intransparent C++ implementations of these classes to provide defaults.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -144,12 +143,12 @@ lgp = ry.LGP_Tool(C, tamp, trans)
     lgp.view_solved(pause=False) #change to inspect each plan
 
     for k in range(len(plan)):
-        piece = lgp.get_piecewiseMotionProblem(k)
+        piece = lgp.get_piecewiseMotionProblem(k, True)
         ret = ry.NLP_Solver(piece.nlp(), verbose=0 ) .solve()
         piece.set_viewer(C.get_viewer()) # to prevent too many windows popping up
         piece.view_play(False, f&#39;PIECE solution {k} {plan[k]}&#39;)
 
-    path = lgp.get_fullMotionProblem()
+    path = lgp.get_fullMotionProblem(True)
     ret = ry.NLP_Solver(path.nlp(), verbose=0 ) .solve()
     path.set_viewer(C.get_viewer()) # to prevent too many windows popping up
     path.view_play(False, f&#39;FULL PATH solution {plan}&#39;)

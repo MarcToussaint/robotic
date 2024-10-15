@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,22 +8,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KOMO-3: Manipulation Modelling &amp; Execution &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=01f34227"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -155,7 +153,7 @@ C.addFrame(&#39;box&#39;) \
     .setColor([1,.5,0]) \
     .setContact(1)
 
-C.addFrame(&quot;capsule&quot;) \
+C.addFrame(&#39;capsule&#39;) \
     .setShape(ry.ST.capsule, [.2,.02]) \
     .setPosition([.25,.1,1.]) \
     .setColor([1,.5,0]) \
@@ -163,11 +161,11 @@ C.addFrame(&quot;capsule&quot;) \
 
 # for convenience, a few definitions:
 qHome = C.getJointState()
-gripper = &quot;l_gripper&quot;;
-palm = &quot;l_palm&quot;;
-box = &quot;box&quot;;
-table = &quot;table&quot;;
-boxSize = C.frame(box).getSize()
+gripper = &#39;l_gripper&#39;
+palm = &#39;l_palm&#39;
+box = &#39;box&#39;
+table = &#39;table&#39;
+boxSize = C.getFrame(box).getSize()
 
 C.view()
 </pre></div>
@@ -184,8 +182,8 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(qHome)
 for orientation in [&#39;xy&#39;, &#39;xz&#39;, &#39;yx&#39;, &#39;yz&#39;, &#39;zx&#39;, &#39;zy&#39;]: #loops over the 6 possible grasps
     # setup the manipulation problem
-    man = manip.ManipulationModelling(C)
-    man.setup_inverse_kinematics()
+    man = manip.ManipulationModelling()
+    man.setup_inverse_kinematics(C)
     man.grasp_top_box(1., gripper, box, orientation)
 
     # solve it
@@ -213,8 +211,8 @@ limits = C.getJointLimits()
 for orientation in [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]:
     for i in range(10):
         # setup the manipulation problem
-        man = manip.ManipulationModelling(C)
-        man.setup_inverse_kinematics()
+        man = manip.ManipulationModelling()
+        man.setup_inverse_kinematics(C)
         # ... with random bias in joint space
         qBias = limits[0]+np.random.uniform(qHome.shape)%(limits[1]-limits[0])
         man.bias(1., qBias, 1e0)
@@ -245,8 +243,8 @@ for orientation in [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]:
 limits = C.getJointLimits()
 for i in range(10):
     # setup the manipulation problem
-    man = manip.ManipulationModelling(C)
-    man.setup_inverse_kinematics()
+    man = manip.ManipulationModelling()
+    man.setup_inverse_kinematics(C)
     qBias = limits[0]+np.random.uniform(qHome.shape)%(limits[1]-limits[0])
     man.bias(1., qBias, 1e0)
     man.grasp_cylinder(1., gripper, &#39;capsule&#39;, palm)
@@ -283,8 +281,8 @@ for i in range(10):
     print(&#39;===&#39;, info)
 
     # setup manipulation problem
-    man = manip.ManipulationModelling(C)
-    man.setup_pick_and_place_waypoints(gripper, box)
+    man = manip.ManipulationModelling()
+    man.setup_pick_and_place_waypoints(C, gripper, box)
     man.grasp_box(1., gripper, box, palm, grasp_ori)
     man.place_box(2., box, table, palm, place_ori)
     man.target_relative_xy_position(2., box, table, [(i%5)*.1-.2, .2])
@@ -306,7 +304,7 @@ for i in range(10):
         print(&#39; -- infeasible&#39;)
 
 del man
-C.frame(&#39;box&#39;).setPosition([-.25,.1,1.])
+C.getFrame(&#39;box&#39;).setPosition([-.25,.1,1.])
 C.view()
 </pre></div>
 </div>
@@ -334,8 +332,8 @@ for i in range(20):
     print(&#39;===&#39;, i, &#39;orientation&#39;, orientation)
 
     # setup the grasp problem
-    man = manip.ManipulationModelling(C)
-    man.setup_inverse_kinematics(accumulated_collisions=True)
+    man = manip.ManipulationModelling()
+    man.setup_inverse_kinematics(C, accumulated_collisions=True)
     man.grasp_box(1., gripper, box, palm, orientation)
 
     # solve
@@ -353,10 +351,10 @@ for i in range(20):
         continue
 
     # setup the motion problem
-    man = manip.ManipulationModelling(C, helpers=[gripper])
-    man.setup_point_to_point_motion(qStart, pose[0])
+    man = manip.ManipulationModelling()
+    man.setup_point_to_point_motion(C, pose[0])
     man.retract([.0, .2], gripper)
-    man.approach([.8, 1.], gripper)
+    # man.approach([.8, 1.], gripper)
 
     # solve
     path = man.solve()
@@ -402,28 +400,28 @@ import random
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
 C.addFile(ry.raiPath(&#39;../rai-robotModels/scenarios/pandaSingle.g&#39;))
 
-C.addFrame(&quot;box&quot;, &quot;table&quot;) \
+C.addFrame(&#39;box&#39;, &#39;table&#39;) \
     .setJoint(ry.JT.rigid) \
     .setShape(ry.ST.ssBox, [.15,.06,.06,.005]) \
     .setRelativePosition([-.0,.3-.055,.095]) \
     .setContact(1) \
     .setMass(.1)
 
-C.addFrame(&quot;obstacle&quot;, &quot;table&quot;) \
+C.addFrame(&#39;obstacle&#39;, &#39;table&#39;) \
     .setShape(ry.ST.ssBox, [.06,.15,.06,.005]) \
     .setColor([.1]) \
     .setRelativePosition([-.15,.3-.055,.095]) \
     .setContact(1)
 
-C.delFrame(&quot;panda_collCameraWrist&quot;)
+C.delFrame(&#39;panda_collCameraWrist&#39;)
 
 # for convenience, a few definitions:
 qHome = C.getJointState()
-gripper = &quot;l_gripper&quot;;
-palm = &quot;l_palm&quot;;
-box = &quot;box&quot;;
-table = &quot;table&quot;;
-boxSize = C.frame(box).getSize()
+gripper = &#39;l_gripper&#39;
+palm = &#39;l_palm&#39;
+box = &#39;box&#39;
+table = &#39;table&#39;
+boxSize = C.getFrame(box).getSize()
 
 C.view()
 </pre></div>
@@ -440,8 +438,8 @@ C.view()
 C.setJointState(qHome)
 C.view_raise()
 
-C.frame(box).setRelativePosition([-.0,.3-.055,.095])
-C.frame(box).setRelativeQuaternion([1.,0,0,0])
+C.getFrame(box).setRelativePosition([-.0,.3-.055,.095])
+C.getFrame(box).setRelativeQuaternion([1.,0,0,0])
 
 for i in range(7):
         qStart = C.getJointState()
@@ -453,8 +451,8 @@ for i in range(7):
         info = f&#39;placement {i}: grasp {graspDirection} place {placeDirection} place_pos {place_position} place_ori {place_orientation}&#39;
         print(&#39;===&#39;, info)
 
-        M = manip.ManipulationModelling(C, helpers=[gripper])
-        M.setup_pick_and_place_waypoints(gripper, box, homing_scale=1e-1, joint_limits=False)
+        M = manip.ManipulationModelling()
+        M.setup_pick_and_place_waypoints(C, gripper, box, homing_scale=1e-1, joint_limits=False)
         M.grasp_top_box(1., gripper, box, graspDirection)
         M.place_box(2., box, table, palm, placeDirection)
         M.target_relative_xy_position(2., box, table, place_position)
@@ -473,8 +471,8 @@ for i in range(7):
         M3 = M.sub_motion(1)
 #         M3.retract([.0, .2], box, distance=.05)
 #         M3.approach([.8, 1.], box, distance=.05)
-        M3.no_collision([], table, box)
-        M3.no_collision([], box, &#39;obstacle&#39;)
+        M3.no_collisions([], [table, box])
+        M3.no_collisions([], [box, &#39;obstacle&#39;])
         M3.bias(.5, qHome, 1e0)
         M3.solve()
         if not M3.ret.feasible:
@@ -511,11 +509,11 @@ for l in range(20):
         info = f&#39;placement {l}: grasp {graspDirection} place {placeDirection}&#39;
         print(&#39;===&#39;, info)
 
-        M = manip.ManipulationModelling(C, info, helpers=[gripper])
-        M.setup_pick_and_place_waypoints(gripper, box, homing_scale=1e-1)
+        M = manip.ManipulationModelling(info)
+        M.setup_pick_and_place_waypoints(C, gripper, box, homing_scale=1e-1)
         M.grasp_box(1., gripper, box, palm, graspDirection)
         M.place_box(2., box, table, palm, placeDirection)
-        M.no_collision([], palm, table)
+        M.no_collisions([], [palm, table])
         M.target_relative_xy_position(2., box, table, [.2, .3])
         ways = M.solve()
 
@@ -525,7 +523,7 @@ for l in range(20):
         M2 = M.sub_motion(0)
         # M = manip.ManipulationModelling(C, info, helpers=[gripper])
         # M.setup_point_to_point_motion(qStart, ways[0])
-        M2.no_collision([.3,.7], palm, box, margin=.05)
+        M2.no_collisions([.3,.7], [palm, box], margin=.05)
         M2.retract([.0, .2], gripper)
         M2.approach([.8, 1.], gripper)
         M2.solve()
@@ -535,7 +533,7 @@ for l in range(20):
         M3 = M.sub_motion(1)
         #manip.ManipulationModelling(C, info)
         # M.setup_point_to_point_motion(ways[0], ways[1])
-        M3.no_collision([], table, box)
+        M3.no_collisions([], [table, box])
         M3.solve()
         if not M3.ret.feasible:
             continue
@@ -559,11 +557,11 @@ del M
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#from importlib import reload
 #reload(manip)
 
-C.frame(&quot;l_panda_finger_joint1&quot;).setJointState(np.array([.0]))
+C.getFrame(&#39;l_panda_finger_joint1&#39;).setJointState(np.array([.0]))
 
 obj = box
-C.frame(obj).setRelativePosition([-.0,.3-.055,.095])
-C.frame(obj).setRelativeQuaternion([1.,0,0,0])
+C.getFrame(obj).setRelativePosition([-.0,.3-.055,.095])
+C.getFrame(obj).setRelativeQuaternion([1.,0,0,0])
 
 for i in range(30):
      qStart = C.getJointState()
@@ -571,9 +569,9 @@ for i in range(30):
      info = f&#39;push {i}&#39;
      print(&#39;===&#39;, info)
 
-     M = manip.ManipulationModelling(C, info, [&#39;l_gripper&#39;])
-     M.setup_pick_and_place_waypoints(gripper, obj, 1e-1, accumulated_collisions=False)
-     M.straight_push([1.,2.], obj, gripper, table)
+     M = manip.ManipulationModelling(info)
+     M.setup_pick_and_place_waypoints(C, gripper, obj, 1e-1, accumulated_collisions=False)
+     pushStart = M.straight_push([1.,2.], obj, gripper, table)
      #random target position
      M.komo.addObjective([2.], ry.FS.position, [obj], ry.OT.eq, 1e1*np.array([[1,0,0],[0,1,0]]), .4*np.random.rand(3) - .2+np.array([.0,.3,.0]))
      M.solve()
@@ -583,17 +581,17 @@ for i in range(30):
      M1 = M.sub_motion(0, accumulated_collisions=False)
      M1.retractPush([.0, .15], gripper, .03)
      M1.approachPush([.85, 1.], gripper, .03)
-     M1.no_collision([.15,.85], obj, &quot;l_finger1&quot;, .02)
-     M1.no_collision([.15,.85], obj, &quot;l_finger2&quot;, .02)
-     M1.no_collision([.15,.85], obj, &#39;l_palm&#39;, .02)
-     M1.no_collision([], table, &quot;l_finger1&quot;, .0)
-     M1.no_collision([], table, &quot;l_finger2&quot;, .0)
+     M1.no_collisions([.15,.85], [obj, &#39;l_finger1&#39;], .02)
+     M1.no_collisions([.15,.85], [obj, &#39;l_finger2&#39;], .02)
+     M1.no_collisions([.15,.85], [obj, &#39;l_palm&#39;], .02)
+     M1.no_collisions([], [table, &#39;l_finger1&#39;], .0)
+     M1.no_collisions([], [table, &#39;l_finger2&#39;], .0)
      M1.solve()
      if not M1.ret.feasible:
           continue
 
      M2 = M.sub_motion(1, accumulated_collisions=False)
-     M2.komo.addObjective([], ry.FS.positionRel, [gripper, &#39;_push_start&#39;], ry.OT.eq, 1e1*np.array([[1,0,0],[0,0,1]]))
+     M2.komo.addObjective([], ry.FS.positionRel, [gripper, pushStart], ry.OT.eq, 1e1*np.array([[1,0,0],[0,0,1]]))
      M2.solve()
      if not M2.ret.feasible:
           continue
