@@ -239,7 +239,7 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/_robotic.pyi
+  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/manipulation.py robotic/_robotic.pyi
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
 
 install(

@@ -31,7 +31,7 @@ mv robotic/include/src robotic/include/rai
 export PYTHONPATH=.
 
 ### build each version
-for ver in 10 11 7 8 9; do
+for ver in 10 11 12 8 9; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPY_VERSION=3.$ver .
     make -j8 -C build_wheel rai _robotic meshTool --quiet

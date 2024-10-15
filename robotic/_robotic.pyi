@@ -648,6 +648,8 @@ class Frame:
         ...
     def getRotationMatrix(self) -> arr:
         ...
+    def getShapeType(self) -> ST:
+        ...
     def getSize(self) -> arr:
         ...
     def getTransform(self) -> arr:
@@ -708,6 +710,8 @@ class JT:
     """
     Members:
     
+      none
+    
       hingeX
     
       hingeY
@@ -745,12 +749,13 @@ class JT:
       tau
     """
     XBall: typing.ClassVar[JT]  # value = <JT.XBall: 15>
-    __members__: typing.ClassVar[dict[str, JT]]  # value = {'hingeX': <JT.hingeX: 1>, 'hingeY': <JT.hingeY: 2>, 'hingeZ': <JT.hingeZ: 3>, 'transX': <JT.transX: 4>, 'transY': <JT.transY: 5>, 'transZ': <JT.transZ: 6>, 'transXY': <JT.transXY: 7>, 'trans3': <JT.trans3: 8>, 'transXYPhi': <JT.transXYPhi: 9>, 'transYPhi': <JT.transYPhi: 10>, 'universal': <JT.universal: 11>, 'rigid': <JT.rigid: 12>, 'quatBall': <JT.quatBall: 13>, 'phiTransXY': <JT.phiTransXY: 14>, 'XBall': <JT.XBall: 15>, 'free': <JT.free: 16>, 'generic': <JT.generic: 17>, 'tau': <JT.tau: 18>}
+    __members__: typing.ClassVar[dict[str, JT]]  # value = {'none': <JT.none: 0>, 'hingeX': <JT.hingeX: 1>, 'hingeY': <JT.hingeY: 2>, 'hingeZ': <JT.hingeZ: 3>, 'transX': <JT.transX: 4>, 'transY': <JT.transY: 5>, 'transZ': <JT.transZ: 6>, 'transXY': <JT.transXY: 7>, 'trans3': <JT.trans3: 8>, 'transXYPhi': <JT.transXYPhi: 9>, 'transYPhi': <JT.transYPhi: 10>, 'universal': <JT.universal: 11>, 'rigid': <JT.rigid: 12>, 'quatBall': <JT.quatBall: 13>, 'phiTransXY': <JT.phiTransXY: 14>, 'XBall': <JT.XBall: 15>, 'free': <JT.free: 16>, 'generic': <JT.generic: 17>, 'tau': <JT.tau: 18>}
     free: typing.ClassVar[JT]  # value = <JT.free: 16>
     generic: typing.ClassVar[JT]  # value = <JT.generic: 17>
     hingeX: typing.ClassVar[JT]  # value = <JT.hingeX: 1>
     hingeY: typing.ClassVar[JT]  # value = <JT.hingeY: 2>
     hingeZ: typing.ClassVar[JT]  # value = <JT.hingeZ: 3>
+    none: typing.ClassVar[JT]  # value = <JT.none: 0>
     phiTransXY: typing.ClassVar[JT]  # value = <JT.phiTransXY: 14>
     quatBall: typing.ClassVar[JT]  # value = <JT.quatBall: 13>
     rigid: typing.ClassVar[JT]  # value = <JT.rigid: 12>
@@ -828,7 +833,9 @@ class KOMO:
         """
     def addQuaternionNorms(self, times: arr = ..., scale: float = 3.0, hard: bool = True) -> None:
         ...
-    def addStableFrame(self, name: str, parent: str, jointType: JT, stable: bool, initFrame: str = 0) -> Frame:
+    def addRigidSwitch(self, times: float, frames: StringA, noJumpStart: bool = True) -> None:
+        ...
+    def addStableFrame(self, name: str, parent: str, jointType: JT, stable: bool, initFrame: Frame = None) -> Frame:
         """
         complicated...
         """
@@ -836,11 +843,15 @@ class KOMO:
         ...
     def clearObjectives(self) -> None:
         ...
+    def getConfig(self) -> Config:
+        ...
     def getFeatureNames(self) -> StringA:
         """
         (This is to be passed to the NLP_Solver when needed.) returns a long list of features (per time slice!)
         """
     def getForceInteractions(self) -> list:
+        ...
+    def getFrame(self, frameName: str, phaseTime: float) -> Frame:
         ...
     def getFrameState(self, arg0: int) -> arr:
         ...
@@ -1058,7 +1069,7 @@ class NLP_Solver:
         """
         returns steps-times-n array with queries points in each row
         """
-    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, maxStep: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, maxLambda: float = -1.0) -> NLP_Solver:
+    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, maxStep: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, maxLambda: float = -1.0) -> NLP_Solver:
         """
         set solver options
         """
@@ -1169,6 +1180,10 @@ class NLP_SolverOptions:
     def set_stopFTolerance(self, arg0: float) -> NLP_SolverOptions:
         ...
     def set_stopGTolerance(self, arg0: float) -> NLP_SolverOptions:
+        ...
+    def set_stopInners(self, arg0: int) -> NLP_SolverOptions:
+        ...
+    def set_stopOuters(self, arg0: int) -> NLP_SolverOptions:
         ...
     def set_stopTolerance(self, arg0: float) -> NLP_SolverOptions:
         ...

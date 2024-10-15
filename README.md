@@ -17,13 +17,14 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 
 ## Installation via pip (simulation only, no real Franka & realsense support)
 
-* The pip package was compiled for python3.6 .. 3.11, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
+* The pip package was compiled for python3.8 .. 3.12, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
 ```
-sudo apt install liblapack3 freeglut3 libglew-dev python3 python3-pip
+sudo apt install liblapack3 freeglut3 libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip
+#latest Ubuntu: libglut3.12 and 'cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libglut.so.3.12 libglut.so.3'
 ```
 * pip-install robotic
 ```
-pip install robotic
+pip install robotic numpy
 ```
 * Tests:
 ```
