@@ -203,7 +203,7 @@ class Config:
         """
     def addConfigurationCopy(self, config: Config, prefix: ... = '', tau: float = 1.0) -> Frame:
         ...
-    def addFile(self, filename: str, namePrefix: str = '') -> Frame:
+    def addFile(self, filename: str, namePrefix: str = None) -> Frame:
         """
         add the contents of the file to C
         """
@@ -835,7 +835,7 @@ class KOMO:
         ...
     def addRigidSwitch(self, times: float, frames: StringA, noJumpStart: bool = True) -> None:
         ...
-    def addStableFrame(self, name: str, parent: str, jointType: JT, stable: bool, initFrame: Frame = None) -> Frame:
+    def addStableFrame(self, name: str, parent: str, jointType: JT, stable: bool, initName: str = None, initFrame: Frame = None) -> Frame:
         """
         complicated...
         """

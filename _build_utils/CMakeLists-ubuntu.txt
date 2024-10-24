@@ -35,6 +35,7 @@ add_compile_options(
   -O3 -g -Wall -Wpedantic -fPIC
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++14>
   $<$<COMPILE_LANGUAGE:CXX>:-Wno-terminate>
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-array-bounds>
   )
 
 ################################################################################
@@ -179,7 +180,7 @@ target_link_libraries(rai PRIVATE
   lapack blas
   glfw GLEW glut GLU GL
   jsoncpp png assimp z
-  fcl ccd ann qhull
+  fcl ccd ANN qhull
   boost_system pthread rt X11 dl
   )
 
@@ -263,5 +264,5 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
 
 install(
-  PROGRAMS robotic/ry-info robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool
+  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

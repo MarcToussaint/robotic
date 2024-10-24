@@ -38,7 +38,7 @@ setup(
     },
     include_package_data=True,
     # cmdclass={ 'build_ext': CustomCommand },
-    scripts=['rai/bin/urdf2rai.py', 'robotic/ry-view', 'robotic/ry-bot', 'robotic/ry-info', 'robotic/ry-test.py', 'robotic/ry-urdf2yaml', 'robotic/ry-meshTool'],
+    scripts=['rai/bin/urdf2rai.py', 'robotic/ry-view', 'robotic/ry-bot', 'robotic/ry-info', 'robotic/ry-test', 'robotic/ry-urdf2yaml', 'robotic/ry-meshTool'],
 
     description="Robotic Control Interface & Manipulation Planning Library",
     long_description=long_description,

@@ -18,31 +18,30 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 ## Installation via pip (simulation only, no real Franka & realsense support)
 
 * The pip package was compiled for python3.8 .. 3.12, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
-```
-sudo apt install liblapack3 freeglut3 libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip
-#latest Ubuntu: libglut3.12 and 'cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libglut.so.3.12 libglut.so.3'
-```
-* pip-install robotic
-```
-pip install robotic numpy
-```
+
+      sudo apt install liblapack3 freeglut3 libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip
+      #latest Ubuntu: libglut3.12 and 'cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libglut.so.3.12 libglut.so.3'
+
+* Pip install:
+
+      pip install robotic numpy
+
 * Tests:
-```
-ry-info
-```
-```
-python3 -c 'import robotic as ry; ry.test.RndScene()'
-```
-```
-ry-view `python3 -m site --user-site`/robotic/rai-robotModels/scenarios/pandaSingle.g
-```
+
+      ry-info
+
+      ry-test
+
+      python3 -c 'import robotic as ry; ry.test.RndScene()'
+
+      ry-view `python3 -m site --user-site`/robotic/rai-robotModels/scenarios/pandaSingle.g
+
 * Run all tutorial notebooks as a test and showcase (takes long):
-```
-pip install jupyter nbconvert matplotlib ipympl
-git clone https://github.com/MarcToussaint/rai-tutorials.git
-cd rai-tutorials
-make run -j1
-```
+
+      pip install jupyter nbconvert matplotlib ipympl
+      git clone https://github.com/MarcToussaint/rai-tutorials.git
+      cd rai-tutorials
+      make run -j1
 
 
 ## Installation from source with real Franka & realsense support
