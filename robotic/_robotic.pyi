@@ -4,8 +4,9 @@ rai bindings
 from __future__ import annotations
 import numpy
 import typing
+from . import DataGen
 from . import test
-__all__ = ['ArgWord', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'Logic2KOMO_Translator', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Logic2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
+__all__ = ['ArgWord', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'Logic2KOMO_Translator', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Logic2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
 class ArgWord:
     """
     [todo: replace by str]
@@ -247,8 +248,6 @@ class Config:
         """
         get access to a frame by name; use the Frame methods to set/get frame properties
         """
-    def frames(self) -> list[Frame]:
-        ...
     def getCollidablePairs(self) -> StringA:
         """
         returns the list of collisable pairs -- this should help debugging the 'contact' flag settings in a configuration
@@ -281,6 +280,8 @@ class Config:
         """
         get the frame state as a n-times-7 numpy matrix, with a 7D pose per frame
         """
+    def getFrames(self) -> list[Frame]:
+        ...
     def getJointDimension(self) -> int:
         """
         get the total number of degrees of freedom
@@ -627,6 +628,8 @@ class Frame:
     def getJointState(self) -> arr:
         ...
     def getMesh(self) -> tuple:
+        ...
+    def getMeshColors(self) -> ...:
         ...
     def getMeshPoints(self) -> arr:
         ...
@@ -1042,11 +1045,6 @@ class NLP_Solver:
     """
     An interface to portfolio of solvers
     """
-    @staticmethod
-    def reportLagrangeGradients(*args, **kwargs) -> dict:
-        """
-        return dictionary of Lagrange gradients per objective
-        """
     @typing.overload
     def __init__(self) -> None:
         ...
@@ -1068,6 +1066,10 @@ class NLP_Solver:
     def getTrace_x(self) -> arr:
         """
         returns steps-times-n array with queries points in each row
+        """
+    def reportLagrangeGradients(self, featureNames: StringA = []) -> dict:
+        """
+        return dictionary of Lagrange gradients per objective
         """
     def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, maxStep: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, maxLambda: float = -1.0) -> NLP_Solver:
         """

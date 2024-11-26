@@ -35,6 +35,7 @@ add_compile_options(
   -O3 -g -w -fPIC
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++14>
   $<$<COMPILE_LANGUAGE:CXX>:-Wno-terminate>
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-array-bounds>
   )
 
 ################################################################################
@@ -97,6 +98,7 @@ add_library(rai SHARED
   rai/src/LGP/unity.cxx
   rai/src/Logic/unity.cxx
   rai/src/Control/unity.cxx
+  rai/src/DataGen/unity.cxx
   ${SRC_BotOp}
   ${SRC_Franka}
   ${SRC_Omnibase}

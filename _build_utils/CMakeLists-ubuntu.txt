@@ -9,7 +9,7 @@ endif()
 
 ## variable default values
 set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
-set(PY_VERSION 3.8 CACHE STRING "python version")
+set(PY_VERSION 3.10 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
@@ -101,6 +101,7 @@ add_library(rai SHARED
   rai/src/LGP/unity.cxx
   rai/src/Logic/unity.cxx
   rai/src/Control/unity.cxx
+  rai/src/DataGen/unity.cxx
   ${SRC_BotOp}
   ${SRC_Franka}
   ${SRC_Omnibase}
@@ -220,7 +221,8 @@ add_custom_target(docstrings #ALL
   DEPENDS _robotic
   COMMAND env PYTHONPATH="." pybind11-stubgen --ignore-all-errors _robotic
   COMMAND mv stubs/_robotic*/__init__.pyi _robotic.pyi
-  COMMAND cp _robotic.pyi ${CMAKE_CURRENT_SOURCE_DIR}/robotic/_robotic.pyi)
+  COMMAND mv stubs/_robotic*/*.pyi .
+  COMMAND cp *.pyi ${CMAKE_CURRENT_SOURCE_DIR}/robotic/)
 
 add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
 target_link_libraries(kinEdit rai)
@@ -240,7 +242,7 @@ install(
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/manipulation.py robotic/_robotic.pyi
+  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi 
   DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
 
 install(
