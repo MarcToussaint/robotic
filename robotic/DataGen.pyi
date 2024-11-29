@@ -28,17 +28,37 @@ class ShapenetGrasps:
     """
     def __init__(self) -> None:
         ...
-    def displaySamples(self, samples: arr, context: arr, scores: arr = ...) -> None:
+    def displaySamples(self, samples: arr, context: uintA, scores: arr = ...) -> None:
         """
-        displays all samples
+        (batch interface) displays all samples
         """
-    def evaluateSample(self, sample: arr, context: arr) -> arr:
+    def evaluateGrasp(self) -> arr:
         """
-        returns scores for a single sample - this (row) are numbers where a single 'negative' means fail
+        (direct interface) return scores of grasp candidate (min(scores)<0. means fail)
         """
-    def getSamples(self, nSamples: int) -> tuple[arr, arr, arr]:
+    def evaluateSample(self, sample: arr, context: int) -> arr:
         """
-        return three arrays: samples X, contexts Z, scores S (each row are scores for one sample - see evaluateSamples)
+        (batch interface) returns scores for a single sample - this (row) are numbers where a single 'negative' means fail
+        """
+    def getPointCloud(self) -> arr:
+        """
+        (direct interface) return pcl of loaded object
+        """
+    def getSamples(self, nSamples: int) -> tuple[arr, uintA, arr]:
+        """
+        (batch interface) return three arrays: samples X, contexts Z, scores S (each row are scores for one sample - see evaluateSamples)
+        """
+    def loadObject(self, shape: int, rndPose: bool = True) -> bool:
+        """
+        (direct interface) clear scene and load object and gripper
+        """
+    def sampleGraspPose(self) -> arr:
+        """
+        (direct interface) return (relative) pose of random sampled grasp candidate
+        """
+    def setGraspPose(self, pose: arr, objPts: str = 'objPts0') -> None:
+        """
+        (direct interface) set (relative) pose of grasp candidate
         """
     def setOptions(self, verbose: int = 1, filesPrefix: ... = 'shapenet/models/', numShapes: int = -1, startShape: int = 0, simVerbose: int = 0, optVerbose: int = 0, simTau: float = 0.01, gripperCloseSpeed: float = 0.001, moveSpeed: float = 0.005, pregraspNormalSdv: float = 0.2) -> ShapenetGrasps:
         """
