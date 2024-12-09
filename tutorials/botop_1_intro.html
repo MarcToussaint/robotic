@@ -57,6 +57,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#Aborting-motion">Aborting motion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Gripper-operation">Gripper operation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Camera-&amp;-Point-Could">Camera &amp; Point Could</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Grasp-Test">Grasp Test</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Shutdown">Shutdown</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Parameters">Parameters</a></li>
 </ul>
@@ -351,6 +354,104 @@ C.view()
 </div>
 </div>
 </section>
+</section>
+<section id="Grasp-Test">
+<h1>Grasp Test<a class="headerlink" href="#Grasp-Test" title="Link to this heading"></a></h1>
+<p>This is a minimalistic demo for box grasm It hard-codes the grasp using waypoints (-&gt; should be replaced by model-based grasp planning (see komo-3-manipulation), or pcl-based grasp prediction) It uses the PhysX engine behind botop to actually simulate the grasp, using PD gains in the fingers to excert foces The focus of this test is how PhysX responds to setting PD and friction parameters of the grasp To this end, the lift is pretty fast… we want to potentially force a slip</p>
+<p>[literally translated from c++ test/21-grasp]</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+
+# these are global parameters by which you can influence the friction, grasp force, etc...
+ry.params_add({
+    &#39;physx/angularDamping&#39;: 0.1,
+    &#39;physx/defaultFriction&#39;: 1.,  #reduce -&gt; slip
+    &#39;physx/defaultRestitution&#39;: .7, #quit bouncy
+    &#39;physx/motorKp&#39;: 1000.,
+    &#39;physx/motorKd&#39;: 100.,
+    &#39;physx/gripperKp&#39;: 1000., #reduce -&gt; slip
+    &#39;physx/gripperKd&#39;: 100.,
+    &#39;botsim/verbose&#39;: 0})
+
+C = ry.Config()
+C.addFile(ry.raiPath(&quot;../rai-robotModels/scenarios/pandaSingle.g&quot;))
+
+C.addFrame(&quot;obj&quot;) \
+      .setPosition([-.25,.1,.7]) \
+      .setShape(ry.ST.ssBox, [.04,.2,.1,.005]) \
+      .setColor([1,.5,0]) \
+      .setMass(.1) \
+      .setContact(True)
+
+way0 = C.addFrame(&quot;way0&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePose(&quot;t(0 0 .2)&quot;)
+way1 = C.addFrame(&quot;way1&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePose(&quot;t(0 .0 .03)&quot;)
+
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># compute 2 joint space waypoints from these endeff pose waypoints using komo
+komo = ry.KOMO()
+komo.setConfig(C, True)
+komo.setTiming(2., 1, 5., 0)
+komo.addControlObjective([], 0, 1e-0)
+komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)
+komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq)
+komo.addObjective([1.], ry.FS.poseDiff, [&quot;l_gripper&quot;, &quot;way0&quot;], ry.OT.eq, [1e1])
+komo.addObjective([2.], ry.FS.poseDiff, [&quot;l_gripper&quot;, &quot;way1&quot;], ry.OT.eq, [1e1])
+
+ret = ry.NLP_Solver() \
+    .setProblem(komo.nlp()) \
+    .setOptions(stopTolerance=1e-2, verbose=4 ) \
+    .solve()
+print(ret)
+komo.set_viewer(C.get_viewer())
+komo.view(False, &#39;these are the joint space waypoints,\n which are used as control points of the BotOp spline execution&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ways = komo.getPath()
+
+back_ways = np.concatenate([ways[0], C.getJointState()]) .reshape([2, C.getJointDimension()])
+print(back_ways)
+
+bot = ry.BotOp(C, useRealRobot=False)
+bot.home(C)
+
+# open gripper
+bot.gripperMove(ry.ArgWord._left, +1., .5)
+bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
+
+# send a spline for execution, and wait til it&#39;s done
+bot.move(ways, [2., 3.])
+bot.wait(C, forKeyPressed=False, forTimeToEnd=True)
+
+# close gripper
+bot.gripperMove(ry.ArgWord._left, .015, .5)
+bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
+
+# send a spline for execution, and wait til it&#39;s done
+bot.move(back_ways, [.1, .5]) #very fast upward motion!
+bot.wait(C, forKeyPressed=False, forTimeToEnd=True)
+
+# open gripper
+bot.gripperMove(ry.ArgWord._left, +1., .5)
+bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
+</pre></div>
+</div>
+</div>
 <section id="Shutdown">
 <h2>Shutdown<a class="headerlink" href="#Shutdown" title="Link to this heading"></a></h2>
 <p>You always need to shut down processes (e.g. communication with the real robot) properly. That’s done here by explicitly destroying the objects:</p>

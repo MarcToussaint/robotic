@@ -52,6 +52,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="config_1_intro.html">Intro: Configurations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html#Grasp-Test">Grasp Test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
@@ -121,7 +122,7 @@ import time
 C.addFrame(&quot;base&quot;) .setPosition([0,0,.5])
 
 C.addFrame(&quot;ego&quot;, &quot;base&quot;) \
-    .setJoint(ry.JT.transXYPhi, [-1.,1.,-1.,1.,-3.,3.]) \
+    .setJoint(ry.JT.transXYPhi, [-1.,-1.,-3.,1.,1.,3.]) \
     .setRelativePosition([.2, .0, .0]) \
     .setShape(ry.ST.ssBox, size=[.05, .3, .05, .01]) \
     .setColor([0, 1., 1.]) \

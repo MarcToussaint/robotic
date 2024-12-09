@@ -52,6 +52,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="config_1_intro.html">Intro: Configurations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html#Grasp-Test">Grasp Test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
@@ -198,13 +199,13 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Cgrid = ry.Config()
-d = 3
+d = 6
 for x in range(d):
     for y in range(d):
         base = Cgrid.addConfigurationCopy(C, f&#39;x{x}_y{y}_&#39;) #the string adds a prefix to all frame names
         base.setPosition([x-(d-1)/2,y-(d-1)/2,1])
 print(&#39;#frame in grid:&#39;, Cgrid.getFrameDimension())
-print(&#39;1st frame\&#39;s name:&#39;, Cgrid.frames()[0].name)
+print(&#39;1st frame\&#39;s name:&#39;, Cgrid.getFrames()[0].name)
 Cgrid.view()
 </pre></div>
 </div>

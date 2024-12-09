@@ -54,6 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#Building-a-configuration-from-scratch">Building a configuration from scratch</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Specifying-transformations:-Quaternions-&amp;-turtle-strings">Specifying transformations: Quaternions &amp; turtle strings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Loading-existing-configurations">Loading existing configurations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Looping-through-frames-and-retrieving-frame-information">Looping through frames and retrieving frame information</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Features:-computing-geometric-properties">Features: computing geometric properties</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Joint-and-Frame-State">Joint and Frame State</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#View-interaction-and-releasing-objects">View interaction and releasing objects</a></li>
@@ -61,6 +62,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html#Grasp-Test">Grasp Test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
@@ -302,6 +304,34 @@ for t in range(20):
 </div>
 </div>
 </section>
+<section id="Looping-through-frames-and-retrieving-frame-information">
+<h2>Looping through frames and retrieving frame information<a class="headerlink" href="#Looping-through-frames-and-retrieving-frame-information" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+C.clear()
+C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+q0 = C.getJointState()
+C.view(False)
+
+for f in C.getFrames():
+    print(f.name, f.info()) #info returns all attributes, similar to what is defined in the .g-files
+    #see also all the f.get... methods
+
+# setting attributes:
+f = C.getFrames()[0]
+f.addAttributes({&#39;myvalue&#39;: 12.345, &#39;myname&#39;: &#39;Hari Seldon&#39;})
+print(f.info())
+
+# writing a configuration to a file:
+with open(&quot;z.g&quot;, &quot;w&quot;) as fil:
+    fil.write(C.write())
+</pre></div>
+</div>
+</div>
+</section>
 <section id="Features:-computing-geometric-properties">
 <h2>Features: computing geometric properties<a class="headerlink" href="#Features:-computing-geometric-properties" title="Link to this heading"></a></h2>
 <p>For every frame we can query its pose:</p>
@@ -309,7 +339,7 @@ for t in range(20):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.getFrame(&#39;r_gripper&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.getFrame(&#39;gripper&#39;)
 print(&#39;gripper pos:&#39;, f.getPosition())
 print(&#39;gripper quat:&#39;, f.getQuaternion())
 print(&#39;gripper rot:&#39;, f.getRotationMatrix())
@@ -333,7 +363,7 @@ print(&#39;position of gripper:&#39;, y, &#39;\nJacobian:&#39;, J)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># negative(!) distance between two convex shapes (or origin of marker)
-C.eval(ry.FS.negDistance, [&#39;panda_coll7&#39;, &#39;r_panda_coll7&#39;])
+C.eval(ry.FS.negDistance, [&#39;panda_coll7&#39;, &#39;panda_coll7&#39;])
 </pre></div>
 </div>
 </div>
@@ -401,7 +431,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([&#39;panda_joint1&#39;, &#39;r_panda_joint1&#39;])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([&#39;panda_joint1&#39;, &#39;panda_joint2&#39;])
 print(&#39;joint state: &#39;, C.getJointState())
 print(&#39;joint names: &#39;, C.getJointNames() )
 </pre></div>
