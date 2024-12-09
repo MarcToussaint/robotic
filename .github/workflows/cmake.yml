@@ -22,9 +22,10 @@ jobs:
         APTGETYES=1 make -C rai -j1 installUbuntuAll
     - name: install source dependencies
       run: |
-        wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
+        wget https://github.com/MarcToussaint/rai/raw/refs/heads/marc/_make/install.sh; chmod a+x install.sh
         ./install.sh libccd
         ./install.sh fcl
+        ./install.sh libann
     - name: install python dependencies
       run: |
         pip install numpy pybind11

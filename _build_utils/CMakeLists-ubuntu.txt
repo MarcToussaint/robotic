@@ -13,7 +13,11 @@ set(PY_VERSION 3.10 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
-set(PY_SITE "lib/python${PY_VERSION}/site-packages")
+if(DEFINED ENV{VIRTUAL_ENV})
+  set(PY_LIB_SITE "$ENV{VIRTUAL_ENV}/lib/python${PY_VERSION}/site-packages")
+else()
+  set(PY_LIB_SITE "${CMAKE_INSTALL_PREFIX}/lib/python${PY_VERSION}/site-packages")
+endif()
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH "\$ORIGIN;${CMAKE_INSTALL_PREFIX}/lib")
 #only for testing: python module needs to link to python later!
@@ -235,19 +239,19 @@ target_link_libraries(bot rai)
 
 ################################################################################
 
-message(STATUS "[rai] installing python packages in " ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic )
+message(STATUS "[rai] installing python packages in " ${PY_LIB_SITE}/robotic )
 
 install(
   TARGETS _robotic rai
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
+  DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
   FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi 
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
+  DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
   DIRECTORY rai-robotModels
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic
+  DESTINATION ${PY_LIB_SITE}/robotic
   FILES_MATCHING
   PATTERN "*.g" PATTERN "*.ply"
   PATTERN "retired" EXCLUDE
@@ -255,7 +259,7 @@ install(
 
 install(
   DIRECTORY rai/src/
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic/include/rai
+  DESTINATION ${PY_LIB_SITE}/robotic/include/rai
   FILES_MATCHING
   PATTERN "*.h" PATTERN "*.ipp"
   PATTERN "*retired*" EXCLUDE
@@ -263,7 +267,7 @@ install(
 
 install(
   TARGETS meshTool #kinEdit meshTool bot
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${PY_SITE}/robotic)
+  DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
   PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool

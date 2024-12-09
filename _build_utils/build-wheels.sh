@@ -28,10 +28,13 @@ cp --parents $(find rai/src -not -path "*retired*" -name "*.h" -or -name "*.ipp"
 mv robotic/rai robotic/include
 mv robotic/include/src robotic/include/rai
 
+### copy scripts
+cp rai/bin/urdf2rai.py robotic/ry-urdf2rai
+
 export PYTHONPATH=.
 
 ### build each version
-for ver in 10 11 12 8 9; do
+for ver in 12 11 10 9 8; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPY_VERSION=3.$ver .
     make -j8 -C build_wheel rai _robotic meshTool --quiet

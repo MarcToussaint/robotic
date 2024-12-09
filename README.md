@@ -52,7 +52,7 @@ This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
 
       sudo apt install --yes \
         g++ clang make gnupg cmake git wget \
-        liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev libann-dev \
+        liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev \
         libjsoncpp-dev libyaml-cpp-dev libhdf5-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
         libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
         python3-dev python3 python3-pip
@@ -66,9 +66,10 @@ This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
   
   To standardize installations, I use a basic script:
 
-      wget https://github.com/MarcToussaint/rai-extern/raw/main/install.sh; chmod a+x install.sh
+      wget https://github.com/MarcToussaint/rai/raw/refs/heads/marc/_make/install.sh; chmod a+x install.sh
       ./install.sh libccd
       ./install.sh fcl
+      ./install.sh libann
       ./install.sh physx
       ./install.sh librealsense
       ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.7.1 libfranka

@@ -1,1 +1,1 @@
-`python3 -c "import robotic, os; print(os.path.dirname(robotic.__file__))"`/meshTool $*
+`/usr/bin/env python3 -c "import robotic, os; print(os.path.dirname(robotic.__file__))"`/meshTool $*

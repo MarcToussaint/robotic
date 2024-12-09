@@ -8,6 +8,9 @@ class RndStableConfigs:
     """
     A generator of random stable configurations
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         ...
     def getSample(self, config: _robotic.Config, supports: StringA) -> bool:
@@ -26,6 +29,9 @@ class ShapenetGrasps:
     """
     A generator of random grasps on random shapenet objects
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         ...
     def displaySamples(self, samples: arr, context: uintA, scores: arr = ...) -> None:

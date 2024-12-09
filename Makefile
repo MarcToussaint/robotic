@@ -1,5 +1,6 @@
-PY_VER = $(shell python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))")
-PY_SITE = $(shell python3 -m site --user-site)
+PY_VER = $(shell /usr/bin/env python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))")
+#PY_SITE = $(shell /usr/bin/env python3 -m site --user-site)
+PY_SITE = $(VIRTUAL_ENV)/lib/python$(PY_VER)/site-packages
 
 default: compile
 
@@ -8,6 +9,10 @@ compile:
 
 docs:
 	cd rai-docs && sphinx-build doc ../html
+
+info:
+	@echo "PY_VER:" $(PY_VER)
+	@echo "PY_SITE:" $(PY_SITE)
 
 docs-clean:
 	rm -Rf html
@@ -36,7 +41,7 @@ wheels-upload:
 	twine upload dist/*.whl
 
 wheels-install:
-	python$(PY_VER) -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
+	python$(PY_VER) -m pip install dist/robotic-*cp312*.whl --force-reinstall
 
 test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'

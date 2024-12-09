@@ -26,6 +26,9 @@ class ArgWord:
     _path: typing.ClassVar[ArgWord]  # value = <ArgWord._path: 3>
     _right: typing.ClassVar[ArgWord]  # value = <ArgWord._right: 1>
     _sequence: typing.ClassVar[ArgWord]  # value = <ArgWord._sequence: 2>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -56,6 +59,9 @@ class BotOp:
     """
     Robot Operation interface -- see https://marctoussaint.github.io/robotics-course/tutorials/1b-botop.html
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, C: Config, useRealRobot: bool) -> None:
         """
         constructor
@@ -168,6 +174,9 @@ class CameraView:
     """
     Offscreen rendering
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, config: Config, offscreen: bool = True) -> None:
         """
         constructor
@@ -193,11 +202,16 @@ class CameraView:
         select a camera, typically a frame that has camera info attributes
         """
 class CameraViewSensor:
-    pass
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
 class Config:
     """
     Core data structure to represent a kinematic configuration (essentially a tree of frames). See https://marctoussaint.github.io/robotics-course/tutorials/1a-configurations.html
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         """
         initializes to an empty configuration, with no frames
@@ -394,6 +408,9 @@ class ConfigurationViewer:
     """
     internal viewer handle (gl window)
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
 class ControlMode:
     """
     Members:
@@ -414,6 +431,9 @@ class ControlMode:
     position: typing.ClassVar[ControlMode]  # value = <ControlMode.position: 1>
     spline: typing.ClassVar[ControlMode]  # value = <ControlMode.spline: 5>
     velocity: typing.ClassVar[ControlMode]  # value = <ControlMode.velocity: 2>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -586,6 +606,9 @@ class FS:
     vectorZ: typing.ClassVar[FS]  # value = <FS.vectorZ: 15>
     vectorZDiff: typing.ClassVar[FS]  # value = <FS.vectorZDiff: 16>
     vectorZRel: typing.ClassVar[FS]  # value = <FS.vectorZRel: 17>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -617,6 +640,9 @@ class Frame:
     A (coordinate) frame of a configuration, which can have a parent, and associated shape, joint, and/or inertia
     """
     name: ...
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def addAttributes(self, arg0: dict) -> None:
         """
         add/set attributes for the frame
@@ -705,6 +731,10 @@ class Frame:
         ...
     def setRelativeQuaternion(self, arg0: arr) -> Frame:
         ...
+    def setRelativeRotationMatrix(self, arg0: arr) -> Frame:
+        ...
+    def setRotationMatrix(self, arg0: arr) -> Frame:
+        ...
     def setShape(self, type: ST, size: arr) -> Frame:
         ...
     def unLink(self) -> Frame:
@@ -771,6 +801,9 @@ class JT:
     transYPhi: typing.ClassVar[JT]  # value = <JT.transYPhi: 10>
     transZ: typing.ClassVar[JT]  # value = <JT.transZ: 6>
     universal: typing.ClassVar[JT]  # value = <JT.universal: 11>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -801,6 +834,9 @@ class KOMO:
     """
     A framework to define manipulation problems (IK, path optimization, sequential manipulation) as Nonlinear Mathematical Program (NLP). The actual NLP_Solver class is separate. (KOMO = k-order Markov Optimization) -- see https://marctoussaint.github.io/robotics-course/tutorials/1c-komo.html
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     @typing.overload
     def __init__(self) -> None:
         """
@@ -933,11 +969,16 @@ class KOMO:
     def view_slice(self, t: int, pause: bool = False) -> int:
         ...
 class KOMO_Objective:
-    pass
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
 class LGP_Tool:
     """
     Tools to compute things (and solve) a Task-and-Motion Planning problem formulated as Logic-Geometric Program
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, arg0: Config, arg1: TAMP_Provider, arg2: Logic2KOMO_Translator) -> None:
         """
         initialization
@@ -980,10 +1021,16 @@ class Logic2KOMO_Translator:
     """
     Logic2KOMO_Translator
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
 class NLP:
     """
     Representation of a Nonlinear Mathematical Program
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def checkHessian(self, x: arr, tolerance: float) -> bool:
         ...
     def checkJacobian(self, x: arr, tolerance: float, featureNames: StringA = []) -> bool:
@@ -1017,6 +1064,9 @@ class NLP:
         displays semantic information on the last query
         """
 class NLP_Factory(NLP):
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         ...
     def setBounds(self, arg0: arr, arg1: arr) -> None:
@@ -1033,6 +1083,9 @@ class NLP_Sampler:
     """
     An interface to an NLP sampler
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, problem: NLP) -> None:
         ...
     def sample(self) -> SolverReturn:
@@ -1045,6 +1098,9 @@ class NLP_Solver:
     """
     An interface to portfolio of solvers
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     @typing.overload
     def __init__(self) -> None:
         ...
@@ -1123,6 +1179,9 @@ class NLP_SolverID:
     rprop: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.rprop: 1>
     singleSquaredPenalty: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.singleSquaredPenalty: 7>
     squaredPenalty: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.squaredPenalty: 5>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -1153,6 +1212,9 @@ class NLP_SolverOptions:
     """
     solver options
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         ...
     def dict(self) -> dict:
@@ -1219,6 +1281,9 @@ class OT:
     ineqP: typing.ClassVar[OT]  # value = <OT.ineqP: 6>
     none: typing.ClassVar[OT]  # value = <OT.none: 0>
     sos: typing.ClassVar[OT]  # value = <OT.sos: 2>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -1246,21 +1311,33 @@ class OT:
     def value(self) -> int:
         ...
 class OptBench_Skeleton_Handover:
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, arg0: ArgWord) -> None:
         ...
     def get(self) -> NLP:
         ...
 class OptBench_Skeleton_Pick:
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, arg0: ArgWord) -> None:
         ...
     def get(self) -> NLP:
         ...
 class OptBench_Skeleton_StackAndBalance:
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, arg0: ArgWord) -> None:
         ...
     def get(self) -> NLP:
         ...
 class OptBenchmark_InvKin_Endeff:
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, arg0: str, arg1: bool) -> None:
         ...
     def get(self) -> NLP:
@@ -1269,6 +1346,9 @@ class PathFinder:
     """
     todo doc
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         ...
     def get_resampledPath(self, arg0: int) -> arr:
@@ -1331,6 +1411,9 @@ class ST:
     ssBoxElip: typing.ClassVar[ST]  # value = <ST.ssBoxElip: 10>
     ssCvx: typing.ClassVar[ST]  # value = <ST.ssCvx: 7>
     ssCylinder: typing.ClassVar[ST]  # value = <ST.ssCylinder: 9>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -1497,6 +1580,9 @@ class SY:
     touchBoxNormalX: typing.ClassVar[SY]  # value = <SY.touchBoxNormalX: 35>
     touchBoxNormalY: typing.ClassVar[SY]  # value = <SY.touchBoxNormalY: 36>
     touchBoxNormalZ: typing.ClassVar[SY]  # value = <SY.touchBoxNormalZ: 37>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -1527,6 +1613,9 @@ class Simulation:
     """
     A direct simulation interface to physics engines (Nvidia PhysX, Bullet) -- see https://marctoussaint.github.io/robotics-course/tutorials/simulation.html
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self, C: Config, engine: SimulationEngine, verbose: int = 2) -> None:
         """
         create a Simulation that is associated/attached to the given configuration
@@ -1596,6 +1685,9 @@ class SimulationEngine:
     bullet: typing.ClassVar[SimulationEngine]  # value = <SimulationEngine.bullet: 2>
     kinematic: typing.ClassVar[SimulationEngine]  # value = <SimulationEngine.kinematic: 3>
     physx: typing.ClassVar[SimulationEngine]  # value = <SimulationEngine.physx: 1>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -1623,6 +1715,9 @@ class SimulationEngine:
     def value(self) -> int:
         ...
 class Skeleton:
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         ...
     def add(self, arg0: list) -> None:
@@ -1658,6 +1753,9 @@ class SolverReturn:
     sos: float
     time: float
     x: arr
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
     def __init__(self) -> None:
         ...
     def __str__(self) -> str:
@@ -1668,6 +1766,9 @@ class TAMP_Provider:
     """
     TAMP_Provider
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
 def compiled() -> str:
     """
     return a compile date+time version string
