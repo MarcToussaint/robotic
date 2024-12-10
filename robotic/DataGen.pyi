@@ -46,6 +46,8 @@ class ShapenetGrasps:
         """
         (batch interface) returns scores for a single sample - this (row) are numbers where a single 'negative' means fail
         """
+    def getConfig(self) -> _robotic.Config:
+        ...
     def getPointCloud(self) -> arr:
         """
         (direct interface) return pcl of loaded object
