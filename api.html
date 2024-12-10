@@ -162,6 +162,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.getPose"><code class="docutils literal notranslate"><span class="pre">Frame.getPose()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.getPosition"><code class="docutils literal notranslate"><span class="pre">Frame.getPosition()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.getQuaternion"><code class="docutils literal notranslate"><span class="pre">Frame.getQuaternion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.getRelativePose"><code class="docutils literal notranslate"><span class="pre">Frame.getRelativePose()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.getRelativePosition"><code class="docutils literal notranslate"><span class="pre">Frame.getRelativePosition()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.getRelativeQuaternion"><code class="docutils literal notranslate"><span class="pre">Frame.getRelativeQuaternion()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.getRelativeTransform"><code class="docutils literal notranslate"><span class="pre">Frame.getRelativeTransform()</span></code></a></li>
@@ -190,6 +191,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.setRelativePose"><code class="docutils literal notranslate"><span class="pre">Frame.setRelativePose()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.setRelativePosition"><code class="docutils literal notranslate"><span class="pre">Frame.setRelativePosition()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.setRelativeQuaternion"><code class="docutils literal notranslate"><span class="pre">Frame.setRelativeQuaternion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.setRelativeRotationMatrix"><code class="docutils literal notranslate"><span class="pre">Frame.setRelativeRotationMatrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.setRotationMatrix"><code class="docutils literal notranslate"><span class="pre">Frame.setRotationMatrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.setShape"><code class="docutils literal notranslate"><span class="pre">Frame.setShape()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Frame.unLink"><code class="docutils literal notranslate"><span class="pre">Frame.unLink()</span></code></a></li>
 </ul>
@@ -1072,6 +1075,11 @@
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.Frame.getRelativePose">
+<span class="sig-name descname"><span class="pre">getRelativePose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">arr</span></span></span><a class="headerlink" href="#robotic._robotic.Frame.getRelativePose" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Frame.getRelativePosition">
 <span class="sig-name descname"><span class="pre">getRelativePosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">arr</span></span></span><a class="headerlink" href="#robotic._robotic.Frame.getRelativePosition" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1212,6 +1220,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Frame.setRelativeQuaternion">
 <span class="sig-name descname"><span class="pre">setRelativeQuaternion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></span><a class="headerlink" href="#robotic._robotic.Frame.setRelativeQuaternion" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.Frame.setRelativeRotationMatrix">
+<span class="sig-name descname"><span class="pre">setRelativeRotationMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></span><a class="headerlink" href="#robotic._robotic.Frame.setRelativeRotationMatrix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.Frame.setRotationMatrix">
+<span class="sig-name descname"><span class="pre">setRotationMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a></span></span><a class="headerlink" href="#robotic._robotic.Frame.setRotationMatrix" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
