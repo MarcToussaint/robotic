@@ -51,7 +51,7 @@ This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
 * Install Ubuntu and python packages:
 
       sudo apt install --yes \
-        g++ clang make gnupg cmake git wget \
+        g++ clang make gnupg cmake git wget libstdc++-14-dev \
         liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev \
         libjsoncpp-dev libyaml-cpp-dev libhdf5-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
         libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \

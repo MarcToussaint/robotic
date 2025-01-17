@@ -72,7 +72,7 @@ class ShapenetGrasps:
         """
         set options
         """
-    def setPhysxOptions(self, verbose: int = 1, yGravity: bool = False, softBody: bool = False, multiBody: bool = True, multiBodyDisableGravity: bool = True, jointedBodies: bool = False, angularDamping: float = 0.1, defaultFriction: float = 1.0, defaultRestitution: float = 0.1, motorKp: float = 1000.0, motorKd: float = 100.0, gripperKp: float = 10000.0, gripperKd: float = 100.0) -> ShapenetGrasps:
+    def setPhysxOptions(self, verbose: int = 1, yGravity: bool = False, angularDamping: float = 0.1, defaultFriction: float = 1.0, defaultRestitution: float = 0.1, motorKp: float = 1000.0, motorKd: float = 100.0, gripperKp: float = 10000.0, gripperKd: float = 100.0) -> ShapenetGrasps:
         """
         set options
         """

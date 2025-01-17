@@ -39,5 +39,5 @@ jobs:
         cmake . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF -DUSE_H5=OFF -DPY_VERSION=$PY_VER -DUSE_QHULL8=ON
     - name: build
       run: make -C build _robotic bot install
-#    - name: test
-#      run: ry-info
+    - name: test
+      run: ry-info

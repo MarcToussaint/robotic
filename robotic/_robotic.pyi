@@ -6,7 +6,7 @@ import numpy
 import typing
 from . import DataGen
 from . import test
-__all__ = ['ArgWord', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'Logic2KOMO_Translator', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Logic2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
+__all__ = ['ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'Logic2KOMO_Translator', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Logic2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
 class ArgWord:
     """
     [todo: replace by str]
@@ -55,6 +55,36 @@ class ArgWord:
     @property
     def value(self) -> int:
         ...
+class BSpline:
+    """
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
+    def __init__(self) -> None:
+        """
+        non-initialized
+        """
+    def eval(self, sampleTimes: arr, derivative: int = 0) -> arr:
+        """
+        evaluate the spline (or its derivative) for given sampleTimes
+        """
+    def getBmatrix(self, sampleTimes: arr, startDuplicates: bool = False, endDuplicates: bool = False) -> arr:
+        """
+        return the B-matrix mapping from ctrlPoints to (e.g. finer) sampleTimes (e.g. uniform linspace(0,1,T)
+        """
+    def getCtrlPoints(self) -> arr:
+        ...
+    def getKnots(self) -> arr:
+        ...
+    def setCtrlPoints(self, points: arr, addStartDuplicates: bool = True, addEndDuplicates: bool = True, setStartVel: arr = ..., setEndVel: arr = ...) -> None:
+        """
+        set the ctrl points, automatically duplicating them as needed at start/end, optionally setting vels at start/end
+        """
+    def setKnots(self, degree: int, times: arr) -> None:
+        """
+        set degree and knots by providing *times* (e.g. uniform linspace(0,1,T) -- duplicated knots at start/end and inter-time placing for even degrees is done internally
+        """
 class BotOp:
     """
     Robot Operation interface -- see https://marctoussaint.github.io/robotics-course/tutorials/1b-botop.html
@@ -699,8 +729,6 @@ class Frame:
         """
         attach a convex mesh as shape
         """
-    def setDensity(self, data: ..., size: arr) -> Frame:
-        ...
     def setImplicitSurface(self, data: ..., size: arr, blur: int, resample: float = -1.0) -> Frame:
         ...
     def setJoint(self, jointType: JT, limits: arr = ...) -> Frame:
@@ -738,6 +766,8 @@ class Frame:
     def setRotationMatrix(self, arg0: arr) -> Frame:
         ...
     def setShape(self, type: ST, size: arr) -> Frame:
+        ...
+    def setTensorShape(self, data: ..., size: arr) -> Frame:
         ...
     def unLink(self) -> Frame:
         ...
@@ -1028,7 +1058,7 @@ class Logic2KOMO_Translator:
         ...
 class NLP:
     """
-    Representation of a Nonlinear Mathematical Program
+    A Nonlinear Mathematical Program (bindings to the c++ object - distinct from the python template nlp.NLP
     """
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
@@ -1057,7 +1087,7 @@ class NLP:
         """
         features (entries of $phi$) can be of one of (ry.OT.f, ry.OT.sos, ry.OT.ineq, ry.OT.eq), which means (cost, sum-of-square, inequality, equality). The total cost $f(x)$ is the sum of all f-terms plus sum-of-squares of sos-terms.
         """
-    def getInitializationSample(self, previousOptima: arr = ...) -> arr:
+    def getInitializationSample(self) -> arr:
         """
         returns a sample (e.g. uniform within bounds) to initialize an optimization -- not necessarily feasible
         """
@@ -1100,6 +1130,8 @@ class NLP_Solver:
     """
     An interface to portfolio of solvers
     """
+    dual: arr
+    x: arr
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
@@ -1112,7 +1144,9 @@ class NLP_Solver:
     def getOptions(self) -> NLP_SolverOptions:
         ...
     def getProblem(self) -> NLP:
-        ...
+        """
+        returns the NLP problem
+        """
     def getTrace_J(self) -> arr:
         ...
     def getTrace_costs(self) -> arr:
@@ -1129,6 +1163,8 @@ class NLP_Solver:
         """
         return dictionary of Lagrange gradients per objective
         """
+    def setInitialization(self, arg0: arr) -> NLP_Solver:
+        ...
     def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, maxStep: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, maxLambda: float = -1.0) -> NLP_Solver:
         """
         set solver options
@@ -1141,8 +1177,10 @@ class NLP_Solver:
         ...
     def setTracing(self, arg0: bool, arg1: bool, arg2: bool, arg3: bool) -> NLP_Solver:
         ...
-    def solve(self, resampleInitialization: int = -1, verbose: int = -1) -> SolverReturn:
-        ...
+    def solve(self, resampleInitialization: int = -1, verbose: int = -100) -> SolverReturn:
+        """
+        resampleInitialization=-1 means: only when not already solved
+        """
 class NLP_SolverID:
     """
     Members:
@@ -1344,7 +1382,7 @@ class OptBenchmark_InvKin_Endeff:
         ...
     def get(self) -> NLP:
         ...
-class PathFinder:
+class RRT_PathFinder:
     """
     todo doc
     """
@@ -1359,7 +1397,9 @@ class PathFinder:
         """
         only after setProblem
         """
-    def setProblem(self, Configuration: Config, starts: arr, goals: arr, collisionTolerance: float = 0.0001) -> None:
+    def setProblem(self, Configuration: Config) -> None:
+        ...
+    def setStartGoal(self, starts: arr, goals: arr) -> None:
         ...
     def solve(self) -> SolverReturn:
         ...
@@ -1730,8 +1770,6 @@ class Skeleton:
         ...
     def addLiftPriors(self, lift: StringA) -> None:
         ...
-    def enableAccumulatedCollisions(self, enable: bool = True) -> None:
-        ...
     def getKomo_finalSlice(self, Configuration: Config, lenScale: float, homingScale: float, collScale: float) -> KOMO:
         ...
     def getKomo_path(self, Configuration: Config, stepsPerPhase: int, accScale: float, lenScale: float, homingScale: float, collScale: float) -> KOMO:
@@ -1741,6 +1779,8 @@ class Skeleton:
     def getMaxPhase(self) -> float:
         ...
     def getTwoWaypointProblem(self, t2: int, komoWays: KOMO) -> tuple:
+        ...
+    def useBroadCollisions(self, enable: bool = True) -> None:
         ...
 class SolverReturn:
     """
