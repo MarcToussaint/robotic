@@ -19,12 +19,12 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 
 * The pip package was compiled for python3.8 .. 3.12, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
 
-      sudo apt install liblapack3 freeglut3 libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip
+      sudo apt install liblapack3 freeglut3-dev libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip
       #latest Ubuntu: libglut3.12 and 'cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libglut.so.3.12 libglut.so.3'
 
 * Pip install:
 
-      pip install robotic numpy
+       pip install robotic numpy
 
 * Tests:
 
@@ -43,6 +43,17 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       cd rai-tutorials
       make run -j1
 
+* Tested in latest ubuntu docker (using a venv):
+
+      alias sudo=
+      sudo apt install --yes liblapack3 freeglut3-dev libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip python3-venv
+      cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libglut.so.3.12 libglut.so.3
+      cd
+      mkdir -p ~/.local
+      python3 -m venv ~/.local/venv
+      source ~/.local/venv/bin/activate
+      pip install robotic numpy
+      ry-test
 
 ## Installation from source with real Franka & realsense support
 

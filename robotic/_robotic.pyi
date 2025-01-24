@@ -677,6 +677,10 @@ class Frame:
         """
         add/set attributes for the frame
         """
+    def computeCompoundInertia(self, clearChildInertias: bool = True) -> Frame:
+        ...
+    def convertDecomposedShapeToChildFrames(self) -> Frame:
+        ...
     def getAttributes(self) -> dict:
         """
         get frame attributes
@@ -769,6 +773,8 @@ class Frame:
         ...
     def setTensorShape(self, data: ..., size: arr) -> Frame:
         ...
+    def transformToDiagInertia(self) -> Frame:
+        ...
     def unLink(self) -> Frame:
         ...
 class JT:
@@ -813,26 +819,26 @@ class JT:
     
       tau
     """
-    XBall: typing.ClassVar[JT]  # value = <JT.XBall: 15>
-    __members__: typing.ClassVar[dict[str, JT]]  # value = {'none': <JT.none: 0>, 'hingeX': <JT.hingeX: 1>, 'hingeY': <JT.hingeY: 2>, 'hingeZ': <JT.hingeZ: 3>, 'transX': <JT.transX: 4>, 'transY': <JT.transY: 5>, 'transZ': <JT.transZ: 6>, 'transXY': <JT.transXY: 7>, 'trans3': <JT.trans3: 8>, 'transXYPhi': <JT.transXYPhi: 9>, 'transYPhi': <JT.transYPhi: 10>, 'universal': <JT.universal: 11>, 'rigid': <JT.rigid: 12>, 'quatBall': <JT.quatBall: 13>, 'phiTransXY': <JT.phiTransXY: 14>, 'XBall': <JT.XBall: 15>, 'free': <JT.free: 16>, 'generic': <JT.generic: 17>, 'tau': <JT.tau: 18>}
-    free: typing.ClassVar[JT]  # value = <JT.free: 16>
-    generic: typing.ClassVar[JT]  # value = <JT.generic: 17>
+    XBall: typing.ClassVar[JT]  # value = <JT.XBall: 16>
+    __members__: typing.ClassVar[dict[str, JT]]  # value = {'none': <JT.none: 0>, 'hingeX': <JT.hingeX: 1>, 'hingeY': <JT.hingeY: 2>, 'hingeZ': <JT.hingeZ: 3>, 'transX': <JT.transX: 4>, 'transY': <JT.transY: 5>, 'transZ': <JT.transZ: 6>, 'transXY': <JT.transXY: 8>, 'trans3': <JT.trans3: 9>, 'transXYPhi': <JT.transXYPhi: 10>, 'transYPhi': <JT.transYPhi: 11>, 'universal': <JT.universal: 12>, 'rigid': <JT.rigid: 13>, 'quatBall': <JT.quatBall: 14>, 'phiTransXY': <JT.phiTransXY: 15>, 'XBall': <JT.XBall: 16>, 'free': <JT.free: 17>, 'generic': <JT.generic: 18>, 'tau': <JT.tau: 19>}
+    free: typing.ClassVar[JT]  # value = <JT.free: 17>
+    generic: typing.ClassVar[JT]  # value = <JT.generic: 18>
     hingeX: typing.ClassVar[JT]  # value = <JT.hingeX: 1>
     hingeY: typing.ClassVar[JT]  # value = <JT.hingeY: 2>
     hingeZ: typing.ClassVar[JT]  # value = <JT.hingeZ: 3>
     none: typing.ClassVar[JT]  # value = <JT.none: 0>
-    phiTransXY: typing.ClassVar[JT]  # value = <JT.phiTransXY: 14>
-    quatBall: typing.ClassVar[JT]  # value = <JT.quatBall: 13>
-    rigid: typing.ClassVar[JT]  # value = <JT.rigid: 12>
-    tau: typing.ClassVar[JT]  # value = <JT.tau: 18>
-    trans3: typing.ClassVar[JT]  # value = <JT.trans3: 8>
+    phiTransXY: typing.ClassVar[JT]  # value = <JT.phiTransXY: 15>
+    quatBall: typing.ClassVar[JT]  # value = <JT.quatBall: 14>
+    rigid: typing.ClassVar[JT]  # value = <JT.rigid: 13>
+    tau: typing.ClassVar[JT]  # value = <JT.tau: 19>
+    trans3: typing.ClassVar[JT]  # value = <JT.trans3: 9>
     transX: typing.ClassVar[JT]  # value = <JT.transX: 4>
-    transXY: typing.ClassVar[JT]  # value = <JT.transXY: 7>
-    transXYPhi: typing.ClassVar[JT]  # value = <JT.transXYPhi: 9>
+    transXY: typing.ClassVar[JT]  # value = <JT.transXY: 8>
+    transXYPhi: typing.ClassVar[JT]  # value = <JT.transXYPhi: 10>
     transY: typing.ClassVar[JT]  # value = <JT.transY: 5>
-    transYPhi: typing.ClassVar[JT]  # value = <JT.transYPhi: 10>
+    transYPhi: typing.ClassVar[JT]  # value = <JT.transYPhi: 11>
     transZ: typing.ClassVar[JT]  # value = <JT.transZ: 6>
-    universal: typing.ClassVar[JT]  # value = <JT.universal: 11>
+    universal: typing.ClassVar[JT]  # value = <JT.universal: 12>
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
@@ -890,6 +896,10 @@ class KOMO:
         * order: Do we penalize the jointState directly (order=0: penalizing sqr distance to qHome, order=1: penalizing sqr distances between consecutive configurations (velocities), order=2: penalizing accelerations across 3 configurations)
         * scale: as usual, but modulated by a factor 'sqrt(delta t)' that somehow ensures total control costs in approximately independent of the choice of stepsPerPhase
         """
+    def addFrameDof(self, name: str, parent: str, jointType: JT, stable: bool, initName: str = None, initFrame: Frame = None) -> Frame:
+        """
+        complicated...
+        """
     def addModeSwitch(self, times: arr, newMode: SY, frames: StringA, firstSwitch: bool = True) -> None:
         ...
     def addObjective(self, times: arr, feature: FS, frames: StringA, type: ObjectiveType, scale: arr = ..., target: arr = ..., order: int = -1) -> None:
@@ -906,10 +916,6 @@ class KOMO:
         ...
     def addRigidSwitch(self, times: float, frames: StringA, noJumpStart: bool = True) -> None:
         ...
-    def addStableFrame(self, name: str, parent: str, jointType: JT, stable: bool, initName: str = None, initFrame: Frame = None) -> Frame:
-        """
-        complicated...
-        """
     def addTimeOptimization(self) -> None:
         ...
     def clearObjectives(self) -> None:
@@ -1313,14 +1319,14 @@ class OT:
     
       ineqP
     """
-    __members__: typing.ClassVar[dict[str, OT]]  # value = {'none': <OT.none: 0>, 'f': <OT.f: 1>, 'sos': <OT.sos: 2>, 'ineq': <OT.ineq: 3>, 'eq': <OT.eq: 4>, 'ineqB': <OT.ineqB: 5>, 'ineqP': <OT.ineqP: 6>}
-    eq: typing.ClassVar[OT]  # value = <OT.eq: 4>
-    f: typing.ClassVar[OT]  # value = <OT.f: 1>
-    ineq: typing.ClassVar[OT]  # value = <OT.ineq: 3>
-    ineqB: typing.ClassVar[OT]  # value = <OT.ineqB: 5>
-    ineqP: typing.ClassVar[OT]  # value = <OT.ineqP: 6>
-    none: typing.ClassVar[OT]  # value = <OT.none: 0>
-    sos: typing.ClassVar[OT]  # value = <OT.sos: 2>
+    __members__: typing.ClassVar[dict[str, OT]]  # value = {'none': <OT.none: 6>, 'f': <OT.f: 0>, 'sos': <OT.sos: 1>, 'ineq': <OT.ineq: 2>, 'eq': <OT.eq: 3>, 'ineqB': <OT.ineqB: 4>, 'ineqP': <OT.ineqP: 5>}
+    eq: typing.ClassVar[OT]  # value = <OT.eq: 3>
+    f: typing.ClassVar[OT]  # value = <OT.f: 0>
+    ineq: typing.ClassVar[OT]  # value = <OT.ineq: 2>
+    ineqB: typing.ClassVar[OT]  # value = <OT.ineqB: 4>
+    ineqP: typing.ClassVar[OT]  # value = <OT.ineqP: 5>
+    none: typing.ClassVar[OT]  # value = <OT.none: 6>
+    sos: typing.ClassVar[OT]  # value = <OT.sos: 1>
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...

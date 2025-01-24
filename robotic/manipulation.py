@@ -85,8 +85,10 @@ class ManipulationModelling():
 
     def add_stable_frame(self, jointType, parent, name, initFrame=None, markerSize=-1.):
         if isinstance(initFrame, str):
-            initFrame = self.komo.getConfig().getFrame(initFrame)
-        f = self.komo.addStableFrame(name, parent, jointType, True, initFrame)
+            #initFrame = self.komo.getConfig().getFrame(initFrame)
+            f = self.komo.addFrameDof(name, parent, jointType, True, initFrame, None)
+        else:
+            f = self.komo.addFrameDof(name, parent, jointType, True, None, initFrame)
         if markerSize>0.:
             f.setShape(ry.ST.marker, [.2])
             f.setColor([1., 0., 1.])
@@ -430,7 +432,7 @@ class ManipulationModelling():
         manip = ManipulationModelling(f'sub_rrt_{phase}--{self.info}')
         manip.setup_point_to_point_rrt(C, q0, q1, explicitCollisionPairs)
         return manip
-    
+
     @property
     def feasible(self):
         return self.ret.feasible
