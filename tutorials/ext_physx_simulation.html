@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Extension - Simulation: Low-level stepping interface &amp; gym environments &mdash; Robotic Python Library 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
@@ -438,7 +438,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, 1)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=1)
 move_a_bit()
 </pre></div>
 </div>
@@ -466,7 +466,6 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>S.setState(X)
-#updates also the simulation window
 </pre></div>
 </div>
 </div>

@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KOMO-3: Manipulation Modelling &amp; Execution &mdash; Robotic Python Library 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
@@ -120,8 +120,14 @@
 <h1>KOMO-3: Manipulation Modelling &amp; Execution<a class="headerlink" href="#KOMO-3:-Manipulation-Modelling-&-Execution" title="Link to this heading"></a></h1>
 <p>The discussed components (KOMO, BotOp, NLP_Solver, RRT) provide basic ingredients for manipulation planning and execution. This tutorial is about how to practically use these in typical manipulation settings.</p>
 <p>The first focus is on <em>manipulation modelling</em>. While KOMO provides a very powerful abstract framework to define all kinds of constraints, here we discuss what are concrete useful constraints for typical actions, e.g., picking and placing a box, or capsule. The <em>ManipulationModelling</em> class is meant to translate between typical actions and the abstract KOMO specification of the corresponding constraints.</p>
-<p>The second focus is on the whole pipeline. We follow a basic sense-plan-act pipeline (not yet a fully integrated reactive framework such as SecMPC). To be more detailed, we assume the following basic steps in each loop: * Perception: Update the configuration model to be in sync with the real world - using perception. * Discrete decisions (task planning): Decide on discrete next actions, such as which object to pick or place next. * Waypoint planning: Model the manipulation constraints for the
-next few actions and solve them to get a plan for the next few waypoints. * Path planning: Create a fine-grained path/trajectory between waypoints, sometimes justing quick interpolation &amp; optimization, sometimes using full fledge path finding (bi-directional RRT). * Execution: Sending the path to BotOp for running it on the real system.</p>
+<p>The second focus is on the whole pipeline. We follow a basic sense-plan-act pipeline (not yet a fully integrated reactive framework such as SecMPC). To be more detailed, we assume the following basic steps in each loop:</p>
+<ul class="simple">
+<li><p>Perception: Update the configuration model to be in sync with the real world - using perception.</p></li>
+<li><p>Discrete decisions (task planning): Decide on discrete next actions, such as which object to pick or place next.</p></li>
+<li><p>Waypoint planning: Model the manipulation constraints for the next few actions and solve them to get a plan for the next few waypoints.</p></li>
+<li><p>Path planning: Create a fine-grained path/trajectory between waypoints, sometimes justing quick interpolation &amp; optimization, sometimes using full fledge path finding (bi-directional RRT).</p></li>
+<li><p>Execution: Sending the path to BotOp for running it on the real system.</p></li>
+</ul>
 <p>We neglect perception and discrete decision making here.</p>
 <section id="Manipulation-Modelling">
 <h2>Manipulation Modelling<a class="headerlink" href="#Manipulation-Modelling" title="Link to this heading"></a></h2>

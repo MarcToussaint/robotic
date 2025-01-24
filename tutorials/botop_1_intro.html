@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Intro: BotOp (Robot Operation) interface &mdash; Robotic Python Library 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
@@ -112,7 +112,12 @@
 <p>BotOp (=robot operation) defines a very narrow interface to control a real or simulated robot. While in initial years we tried all kinds of other interfaces (ROS-given, operational space control interfaces, controller state machines, etc), this one seems most pragmatic, simple, transparent, and compatible to our research work at the LIS research team. There is no ROS or complex IPC involved, just a few threads (communicating with hardwares) interfaced via BotOp.</p>
 <p>The interface essentially provides move methods to set/overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera.</p>
 <p>This interface is quite different to a more <em>generic physical simulation</em> interface. If you’re interested in the latter (e.g. to implement a gym environment) look at the <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> tutorial. BotOp uses a <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> (optionally) as an underlying engine, but is quite different in that it is wrapped as a real-time threaded process that emulates the specific BotOp interface to a real robot – to make it swappable with a real robot. If BotOp is run in simulation mode, the simulation can be
-run in many different modes: - pure kinematic (no physics for objects) - a physics simulator with physics for objects but still kinematic robot - a physic simulator with PD motors for the robot.</p>
+run in many different modes:</p>
+<ul class="simple">
+<li><p>pure kinematic (no physics for objects)</p></li>
+<li><p>a physics simulator with physics for objects but still kinematic robot</p></li>
+<li><p>a physic simulator with PD motors for the robot.</p></li>
+</ul>
 <section id="Sending-motion-based-on-IK">
 <h2>Sending motion based on IK<a class="headerlink" href="#Sending-motion-based-on-IK" title="Link to this heading"></a></h2>
 <p>We’ll show how to make the robot move to pre-computed joint space poses, e.g. computed via IK. Later we modify this to <em>overwriting</em> the motion reference with high frequency, which essentially realizes MPC-style control.</p>

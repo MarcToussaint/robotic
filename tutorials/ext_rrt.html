@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Extension - RRT: basic finding example &mdash; Robotic Python Library 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
@@ -148,8 +148,9 @@ qT = [+.2, 0, 0]
 ry.params_clear()
 ry.params_add({&#39;rrt/stepsize&#39;:.1, &#39;rrt/verbose&#39;: 3}) #verbose=3 makes it very slow, and displays result, and verbose=4 waits keypress..
 
-rrt = ry.PathFinder()
-rrt.setProblem(C, [q0], [qT])
+rrt = ry.RRT_PathFinder()
+rrt.setProblem(C)
+rrt.setStartGoal([q0], [qT])
 ret = rrt.solve()
 print(ret)
 path = ret.x
@@ -198,11 +199,11 @@ C.view()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame(&#39;boxR&#39;,&#39;table&#39;) \
     .setRelativePosition([.15,0,.1]) \
-    .setShape(ry.ST.ssBox, size=[.1,.1,.1,.02]) \
+    .setShape(ry.ST.sphere, size=[.03]) \
     .setColor([1,1,0])
 C.addFrame(&#39;boxL&#39;,&#39;table&#39;) \
     .setRelativePosition([-.15,0,.1]) \
-    .setShape(ry.ST.ssBox, size=[.1,.1,.1,.02]) \
+    .setShape(ry.ST.sphere, size=[.03]) \
     .setColor([1,.5,0])
 C.view()
 </pre></div>
@@ -261,8 +262,9 @@ C.view(False, &quot;IK solution&quot;)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#define a path finding problem
-rrt = ry.PathFinder()
-rrt.setProblem(C, [q0], [qT])
+rrt = ry.RRT_PathFinder()
+rrt.setProblem(C)
+rrt.setStartGoal([q0], [qT])
 </pre></div>
 </div>
 </div>

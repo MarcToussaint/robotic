@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LGP-1: First Mini Interface &mdash; Robotic Python Library 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
@@ -98,8 +98,17 @@
              
   <section id="LGP-1:-First-Mini-Interface">
 <h1>LGP-1: First Mini Interface<a class="headerlink" href="#LGP-1:-First-Mini-Interface" title="Link to this heading"></a></h1>
-<p><strong>Disclaimer:</strong> The algorithm interfaced here is absolutely not made or tuned for performance. The purpose of this first interface less to provide the algorithm, but rather to think about: 1. what are interfaces to <em>specify</em> a TAMP problem (see TAMP_Provider, and Logic2KOMO_Translator below), and 2. what are basic computational components that an underlying kinematics/optimization engine should provide, so that a good algorithm could be build on top.</p>
-<p>In the current version, the LGP tool needs three things as input: * a configuration, * a TAMP_Provider, which provides a method ‘getNewPlan’, which returns a next possible sequence of logical actions (action=string tuple), * a Logic2KOMO_Translator, which provides a method ‘add_action_constraints’, which adds KOMO constraints for any action.</p>
+<p><strong>Disclaimer:</strong> The algorithm interfaced here is absolutely not made or tuned for performance. The purpose of this first interface less to provide the algorithm, but rather to think about:</p>
+<ol class="arabic simple">
+<li><p>what are interfaces to <em>specify</em> a TAMP problem (see TAMP_Provider, and Logic2KOMO_Translator below), and</p></li>
+<li><p>what are basic computational components that an underlying kinematics/optimization engine should provide, so that a good algorithm could be build on top.</p></li>
+</ol>
+<p>In the current version, the LGP tool needs three things as input:</p>
+<ul class="simple">
+<li><p>a configuration,</p></li>
+<li><p>a TAMP_Provider, which provides a method ‘getNewPlan’, which returns a next possible sequence of logical actions (action=string tuple),</p></li>
+<li><p>a Logic2KOMO_Translator, which provides a method ‘add_action_constraints’, which adds KOMO constraints for any action.</p></li>
+</ul>
 <p>Eventually, both should be specified by the user in python. For the TAMP_Provider, the user should use plain PDDL and a planner to provide more and more plans. For the Logic2KOMO_Translater, the user can define any translation of logic predicates to geometric constraints - beyond just pick’n’place or push. But for now, for development, I’m using intransparent C++ implementations of these classes to provide defaults.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
