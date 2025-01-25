@@ -7,5 +7,7 @@ _path = ArgWord._path
 
 from .version import __version__
 
+from .manipulation import KOMO_ManipulationHelper
+
 import os
 setRaiPath( os.path.abspath(os.path.dirname(__file__)) + '/rai-robotModels' )

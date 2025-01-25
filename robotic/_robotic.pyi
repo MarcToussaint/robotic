@@ -196,7 +196,7 @@ class BotOp:
         """
         sync your workspace configuration C with the robot state
         """
-    def wait(self, C: Config, forKeyPressed: bool = True, forTimeToEnd: bool = True, forGripper: bool = False) -> int:
+    def wait(self, C: Config, forKeyPressed: bool = True, forTimeToEnd: bool = True, forGripper: bool = False, syncFrequency: float = 0.05) -> int:
         """
         repeatedly sync your workspace C until a key is pressed or motion ends (optionally)
         """
