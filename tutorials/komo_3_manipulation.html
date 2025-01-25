@@ -140,9 +140,6 @@
 import numpy as np
 import random
 import time
-
-# this import the local manipulation.py .. to be integrated in robotic..
-import manipulation as manip
 </pre></div>
 </div>
 </div>
@@ -189,17 +186,17 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.setJointState(qHome)
 for orientation in [&#39;xy&#39;, &#39;xz&#39;, &#39;yx&#39;, &#39;yz&#39;, &#39;zx&#39;, &#39;zy&#39;]: #loops over the 6 possible grasps
     # setup the manipulation problem
-    man = manip.ManipulationModelling()
+    man = ry.KOMO_ManipulationHelper()
     man.setup_inverse_kinematics(C)
     man.grasp_top_box(1., gripper, box, orientation)
 
     # solve it
-    pose = man.solve()
+    ret = man.solve()
 
     # check feasibility and display
-    if man.ret.feasible:
-        C.setJointState(pose[0])
-        C.view(True, f&#39;grasp_top_box with orientation {orientation}\nret: {man.ret}&#39;)
+    if ret.feasible:
+        C.setJointState(man.path[0])
+        C.view(True, f&#39;grasp_top_box with orientation {orientation}\nret: {ret}&#39;)
     else:
         print(&#39; -- infeasible&#39;)
 </pre></div>
@@ -218,7 +215,7 @@ limits = C.getJointLimits()
 for orientation in [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]:
     for i in range(10):
         # setup the manipulation problem
-        man = manip.ManipulationModelling()
+        man = ry.KOMO_ManipulationHelper()
         man.setup_inverse_kinematics(C)
         # ... with random bias in joint space
         qBias = limits[0]+np.random.uniform(qHome.shape)%(limits[1]-limits[0])
@@ -227,12 +224,12 @@ for orientation in [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]:
         man.grasp_box(1., gripper, box, palm, orientation, margin=.02)
 
         # solve
-        pose = man.solve()
+        ret = man.solve()
 
         # if feasible, display
-        if man.ret.feasible:
-            C.setJointState(pose[0])
-            C.view(True, f&#39;grasp_box with orientation {orientation}\nret: {man.ret}&#39;)
+        if ret.feasible:
+            C.setJointState(man.path[0])
+            C.view(True, f&#39;grasp_box with orientation {orientation}\nret: {ret}&#39;)
         else:
             print(&#39;-- infeasible&#39;, i, orientation)
 </pre></div>
@@ -250,19 +247,19 @@ for orientation in [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]:
 limits = C.getJointLimits()
 for i in range(10):
     # setup the manipulation problem
-    man = manip.ManipulationModelling()
+    man = ry.KOMO_ManipulationHelper()
     man.setup_inverse_kinematics(C)
     qBias = limits[0]+np.random.uniform(qHome.shape)%(limits[1]-limits[0])
     man.bias(1., qBias, 1e0)
     man.grasp_cylinder(1., gripper, &#39;capsule&#39;, palm)
 
     # solve
-    pose = man.solve()
+    ret = man.solve()
 
     # if feasible, display
-    if man.ret.feasible:
-        C.setJointState(pose[0])
-        C.view(True, f&#39;grasp_cylinder\nret: {man.ret}&#39;)
+    if ret.feasible:
+        C.setJointState(man.path[0])
+        C.view(True, f&#39;grasp_cylinder\nret: {ret}&#39;)
     else:
         print(&#39;-- infeasible&#39;, i, orientation)
 </pre></div>
@@ -288,21 +285,21 @@ for i in range(10):
     print(&#39;===&#39;, info)
 
     # setup manipulation problem
-    man = manip.ManipulationModelling()
+    man = ry.KOMO_ManipulationHelper()
     man.setup_pick_and_place_waypoints(C, gripper, box)
     man.grasp_box(1., gripper, box, palm, grasp_ori)
     man.place_box(2., box, table, palm, place_ori)
     man.target_relative_xy_position(2., box, table, [(i%5)*.1-.2, .2])
 
     # solve
-    q = man.solve()
+    ret = man.solve()
 
     # if feasible, display (including &#39;fake&#39; simulation with kinematic attach)
-    if man.ret.feasible:
-        C.setJointState(q[0])
-        C.view(True, f&#39;{info}\nwaypoint 0\nret: {man.ret}&#39;)
+    if ret.feasible:
+        C.setJointState(man.path[0])
+        C.view(True, f&#39;{info}\nwaypoint 0\nret: {ret}&#39;)
         C.attach(gripper, box)
-        C.setJointState(q[1])
+        C.setJointState(man.path[1])
         C.view(True, f&#39;{info}\nwaypoint 1\nret: {man.ret}&#39;)
         C.attach(table, box)
         C.setJointState(qHome)
@@ -339,39 +336,40 @@ for i in range(20):
     print(&#39;===&#39;, i, &#39;orientation&#39;, orientation)
 
     # setup the grasp problem
-    man = manip.ManipulationModelling()
+    man = ry.KOMO_ManipulationHelper()
     man.setup_inverse_kinematics(C, accumulated_collisions=True)
     man.grasp_box(1., gripper, box, palm, orientation)
 
     # solve
-    pose = man.solve()
-    print(&#39;    IK:&#39;, man.ret)
+    ret = man.solve()
+    path = man.path
+    print(&#39;    IK:&#39;, ret)
 
     # if feasible, display; otherwise try another grasp
-    if man.ret.feasible:
+    if ret.feasible:
         if verbose&gt;0:
-            C.setJointState(pose[0])
-            C.view(True, f&#39;grasp {i} with orientation {orientation}\nret: {man.ret}&#39;)
+            C.setJointState(man.path[0])
+            C.view(True, f&#39;grasp {i} with orientation {orientation}\nret: {ret}&#39;)
     else:
         print(&#39;  -- infeasible&#39;)
         C.setJointState(qStart)
         continue
 
     # setup the motion problem
-    man = manip.ManipulationModelling()
-    man.setup_point_to_point_motion(C, pose[0])
+    man = ry.KOMO_ManipulationHelper()
+    man.setup_point_to_point_motion(C, path[0])
     man.retract([.0, .2], gripper)
     # man.approach([.8, 1.], gripper)
 
     # solve
-    path = man.solve()
-    print(&#39;  path:&#39;, man.ret)
+    ret = man.solve()
+    print(&#39;  path:&#39;, ret)
 
     # if feasible, display trivially (no real execution in BotOp here)
-    if man.ret.feasible:
-        for t in range(path.shape[0]):
-            C.setJointState(path[t])
-            C.view(False, f&#39;grasp {i} with orientation {orientation}, path step {t}\n{man.ret}&#39;)
+    if ret.feasible:
+        for t in range(man.path.shape[0]):
+            C.setJointState(man.path[t])
+            C.view(False, f&#39;grasp {i} with orientation {orientation}, path step {t}\n{ret}&#39;)
             time.sleep(.05)
         C.view(verbose&gt;0, f&#39;path done&#39;)
     else:
@@ -458,7 +456,7 @@ for i in range(7):
         info = f&#39;placement {i}: grasp {graspDirection} place {placeDirection} place_pos {place_position} place_ori {place_orientation}&#39;
         print(&#39;===&#39;, info)
 
-        M = manip.ManipulationModelling()
+        M = ry.KOMO_ManipulationHelper()
         M.setup_pick_and_place_waypoints(C, gripper, box, homing_scale=1e-1, joint_limits=False)
         M.grasp_top_box(1., gripper, box, graspDirection)
         M.place_box(2., box, table, palm, placeDirection)
@@ -516,7 +514,7 @@ for l in range(20):
         info = f&#39;placement {l}: grasp {graspDirection} place {placeDirection}&#39;
         print(&#39;===&#39;, info)
 
-        M = manip.ManipulationModelling(info)
+        M = ry.KOMO_ManipulationHelper(info)
         M.setup_pick_and_place_waypoints(C, gripper, box, homing_scale=1e-1)
         M.grasp_box(1., gripper, box, palm, graspDirection)
         M.place_box(2., box, table, palm, placeDirection)
@@ -528,7 +526,7 @@ for l in range(20):
             continue
 
         M2 = M.sub_motion(0)
-        # M = manip.ManipulationModelling(C, info, helpers=[gripper])
+        # M = ry.KOMO_ManipulationHelper(C, info, helpers=[gripper])
         # M.setup_point_to_point_motion(qStart, ways[0])
         M2.no_collisions([.3,.7], [palm, box], margin=.05)
         M2.retract([.0, .2], gripper)
@@ -538,7 +536,7 @@ for l in range(20):
             continue
 
         M3 = M.sub_motion(1)
-        #manip.ManipulationModelling(C, info)
+        #ry.KOMO_ManipulationHelper(C, info)
         # M.setup_point_to_point_motion(ways[0], ways[1])
         M3.no_collisions([], [table, box])
         M3.solve()
@@ -576,11 +574,11 @@ for i in range(30):
      info = f&#39;push {i}&#39;
      print(&#39;===&#39;, info)
 
-     M = manip.ManipulationModelling(info)
+     M = ry.KOMO_ManipulationHelper(info)
      M.setup_pick_and_place_waypoints(C, gripper, obj, 1e-1, accumulated_collisions=False)
      pushStart = M.straight_push([1.,2.], obj, gripper, table)
      #random target position
-     M.komo.addObjective([2.], ry.FS.position, [obj], ry.OT.eq, 1e1*np.array([[1,0,0],[0,1,0]]), .4*np.random.rand(3) - .2+np.array([.0,.3,.0]))
+     M.addObjective([2.], ry.FS.position, [obj], ry.OT.eq, 1e1*np.array([[1,0,0],[0,1,0]]), .4*np.random.rand(3) - .2+np.array([.0,.3,.0]))
      M.solve()
      if not M.ret.feasible:
           continue
@@ -598,7 +596,7 @@ for i in range(30):
           continue
 
      M2 = M.sub_motion(1, accumulated_collisions=False)
-     M2.komo.addObjective([], ry.FS.positionRel, [gripper, pushStart], ry.OT.eq, 1e1*np.array([[1,0,0],[0,0,1]]))
+     M2.addObjective([], ry.FS.positionRel, [gripper, pushStart], ry.OT.eq, 1e1*np.array([[1,0,0],[0,0,1]]))
      M2.solve()
      if not M2.ret.feasible:
           continue

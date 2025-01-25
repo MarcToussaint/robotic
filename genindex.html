@@ -112,19 +112,19 @@
 </li>
       <li><a href="api.html#robotic._robotic.Config.addFrame">addFrame() (robotic._robotic.Config method)</a>
 </li>
+      <li><a href="api.html#robotic._robotic.KOMO.addFrameDof">addFrameDof() (robotic._robotic.KOMO method)</a>
+</li>
       <li><a href="api.html#robotic._robotic.KOMO.addModeSwitch">addModeSwitch() (robotic._robotic.KOMO method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.KOMO.addObjective">addObjective() (robotic._robotic.KOMO method)</a>
 </li>
-      <li><a href="api.html#robotic._robotic.KOMO.addQuaternionNorms">addQuaternionNorms() (robotic._robotic.KOMO method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#robotic._robotic.KOMO.addQuaternionNorms">addQuaternionNorms() (robotic._robotic.KOMO method)</a>
+</li>
       <li><a href="api.html#robotic._robotic.KOMO.addRigidSwitch">addRigidSwitch() (robotic._robotic.KOMO method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.Simulation.addSensor">addSensor() (robotic._robotic.Simulation method)</a>
-</li>
-      <li><a href="api.html#robotic._robotic.KOMO.addStableFrame">addStableFrame() (robotic._robotic.KOMO method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.KOMO.addTimeOptimization">addTimeOptimization() (robotic._robotic.KOMO method)</a>
 </li>
@@ -168,11 +168,13 @@
 </li>
       <li><a href="api.html#robotic._robotic.Simulation.closeGripper">closeGripper() (robotic._robotic.Simulation method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#robotic._robotic.compiled">compiled() (in module robotic._robotic)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#robotic._robotic.Config.computeCollisions">computeCollisions() (robotic._robotic.Config method)</a>
+</li>
+      <li><a href="api.html#robotic._robotic.Frame.computeCompoundInertia">computeCompoundInertia() (robotic._robotic.Frame method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.CameraView.computeImageAndDepth">computeImageAndDepth() (robotic._robotic.CameraView method)</a>
 </li>
@@ -185,6 +187,8 @@
       <li><a href="api.html#robotic._robotic.ConfigurationViewer">ConfigurationViewer (class in robotic._robotic)</a>
 </li>
       <li><a href="api.html#robotic._robotic.ControlMode">ControlMode (class in robotic._robotic)</a>
+</li>
+      <li><a href="api.html#robotic._robotic.Frame.convertDecomposedShapeToChildFrames">convertDecomposedShapeToChildFrames() (robotic._robotic.Frame method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -262,7 +266,7 @@
       </ul></li>
       <li><a href="api.html#robotic._robotic.BotOp.get_qHome">get_qHome() (robotic._robotic.BotOp method)</a>
 </li>
-      <li><a href="api.html#robotic._robotic.PathFinder.get_resampledPath">get_resampledPath() (robotic._robotic.PathFinder method)</a>
+      <li><a href="api.html#robotic._robotic.RRT_PathFinder.get_resampledPath">get_resampledPath() (robotic._robotic.RRT_PathFinder method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.BotOp.get_t">get_t() (robotic._robotic.BotOp method)</a>
 </li>
@@ -585,13 +589,11 @@
 </li>
       <li><a href="api.html#robotic._robotic.params_clear">params_clear() (in module robotic._robotic)</a>
 </li>
-      <li><a href="api.html#robotic._robotic.params_file">params_file() (in module robotic._robotic)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#robotic._robotic.params_print">params_print() (in module robotic._robotic)</a>
+      <li><a href="api.html#robotic._robotic.params_file">params_file() (in module robotic._robotic)</a>
 </li>
-      <li><a href="api.html#robotic._robotic.PathFinder">PathFinder (class in robotic._robotic)</a>
+      <li><a href="api.html#robotic._robotic.params_print">params_print() (in module robotic._robotic)</a>
 </li>
       <li><a href="api.html#robotic._robotic.Simulation.pushConfigurationToSimulator">pushConfigurationToSimulator() (robotic._robotic.Simulation method)</a>
 </li>
@@ -624,6 +626,8 @@
         <li><a href="api.html#module-robotic._robotic">module</a>
 </li>
       </ul></li>
+      <li><a href="api.html#robotic._robotic.RRT_PathFinder">RRT_PathFinder (class in robotic._robotic)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -698,13 +702,11 @@
 </li>
       <li><a href="api.html#robotic._robotic.Frame.setConvexMesh">setConvexMesh() (robotic._robotic.Frame method)</a>
 </li>
-      <li><a href="api.html#robotic._robotic.Frame.setDensity">setDensity() (robotic._robotic.Frame method)</a>
-</li>
       <li><a href="api.html#robotic._robotic.NLP_Factory.setDimension">setDimension() (robotic._robotic.NLP_Factory method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.NLP_Factory.setEvalCallback">setEvalCallback() (robotic._robotic.NLP_Factory method)</a>
 </li>
-      <li><a href="api.html#robotic._robotic.PathFinder.setExplicitCollisionPairs">setExplicitCollisionPairs() (robotic._robotic.PathFinder method)</a>
+      <li><a href="api.html#robotic._robotic.RRT_PathFinder.setExplicitCollisionPairs">setExplicitCollisionPairs() (robotic._robotic.RRT_PathFinder method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.NLP_Factory.setFeatureTypes">setFeatureTypes() (robotic._robotic.NLP_Factory method)</a>
 </li>
@@ -712,16 +714,18 @@
 </li>
       <li><a href="api.html#robotic._robotic.Frame.setImplicitSurface">setImplicitSurface() (robotic._robotic.Frame method)</a>
 </li>
+      <li><a href="api.html#robotic._robotic.NLP_Solver.setInitialization">setInitialization() (robotic._robotic.NLP_Solver method)</a>
+</li>
       <li><a href="api.html#robotic._robotic.Frame.setJoint">setJoint() (robotic._robotic.Frame method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#robotic._robotic.Config.setJointState">setJointState() (robotic._robotic.Config method)</a>
 
       <ul>
         <li><a href="api.html#robotic._robotic.Frame.setJointState">(robotic._robotic.Frame method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#robotic._robotic.Config.setJointStateSlice">setJointStateSlice() (robotic._robotic.Config method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.Frame.setMass">setMass() (robotic._robotic.Frame method)</a>
@@ -747,7 +751,7 @@
       <li><a href="api.html#robotic._robotic.NLP_Solver.setProblem">setProblem() (robotic._robotic.NLP_Solver method)</a>
 
       <ul>
-        <li><a href="api.html#robotic._robotic.PathFinder.setProblem">(robotic._robotic.PathFinder method)</a>
+        <li><a href="api.html#robotic._robotic.RRT_PathFinder.setProblem">(robotic._robotic.RRT_PathFinder method)</a>
 </li>
       </ul></li>
       <li><a href="api.html#robotic._robotic.NLP_Solver.setPyProblem">setPyProblem() (robotic._robotic.NLP_Solver method)</a>
@@ -772,7 +776,11 @@
 </li>
       <li><a href="api.html#robotic._robotic.Simulation.setSplineRef">setSplineRef() (robotic._robotic.Simulation method)</a>
 </li>
+      <li><a href="api.html#robotic._robotic.RRT_PathFinder.setStartGoal">setStartGoal() (robotic._robotic.RRT_PathFinder method)</a>
+</li>
       <li><a href="api.html#robotic._robotic.Simulation.setState">setState() (robotic._robotic.Simulation method)</a>
+</li>
+      <li><a href="api.html#robotic._robotic.Frame.setTensorShape">setTensorShape() (robotic._robotic.Frame method)</a>
 </li>
       <li><a href="api.html#robotic._robotic.KOMO.setTiming">setTiming() (robotic._robotic.KOMO method)</a>
 </li>
@@ -787,7 +795,7 @@
       <ul>
         <li><a href="api.html#robotic._robotic.NLP_Solver.solve">(robotic._robotic.NLP_Solver method)</a>
 </li>
-        <li><a href="api.html#robotic._robotic.PathFinder.solve">(robotic._robotic.PathFinder method)</a>
+        <li><a href="api.html#robotic._robotic.RRT_PathFinder.solve">(robotic._robotic.RRT_PathFinder method)</a>
 </li>
       </ul></li>
       <li><a href="api.html#robotic._robotic.LGP_Tool.solveFullMotion">solveFullMotion() (robotic._robotic.LGP_Tool method)</a>
@@ -817,6 +825,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#robotic._robotic.NLP_Factory.testCallingEvalCallback">testCallingEvalCallback() (robotic._robotic.NLP_Factory method)</a>
+</li>
+      <li><a href="api.html#robotic._robotic.Frame.transformToDiagInertia">transformToDiagInertia() (robotic._robotic.Frame method)</a>
 </li>
   </ul></td>
 </tr></table>
