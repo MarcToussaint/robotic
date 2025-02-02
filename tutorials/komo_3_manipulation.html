@@ -560,25 +560,27 @@ del M
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#from importlib import reload
-#reload(manip)
+#reload(ry)
 
-C.getFrame(&#39;l_panda_finger_joint1&#39;).setJointState(np.array([.0]))
+C.getFrame(&#39;l_panda_finger_joint1&#39;).setJointState(np.array([.01]))
 
 obj = box
 C.getFrame(obj).setRelativePosition([-.0,.3-.055,.095])
 C.getFrame(obj).setRelativeQuaternion([1.,0,0,0])
 
-for i in range(30):
+for i in range(10):
      qStart = C.getJointState()
 
      info = f&#39;push {i}&#39;
      print(&#39;===&#39;, info)
 
      M = ry.KOMO_ManipulationHelper(info)
-     M.setup_pick_and_place_waypoints(C, gripper, obj, 1e-1, accumulated_collisions=False)
+     M.setup_sequence(C, 2, 1e-1, accumulated_collisions=False)
+     M.komo.addFrameDof(&#39;obj_trans&#39;, table, ry.JT.transXY, False, obj) #a permanent moving(!) transXY joint table-&gt;trans, and a snap trans-&gt;obj
+     M.komo.addRigidSwitch(1., [&#39;obj_trans&#39;, obj])
      pushStart = M.straight_push([1.,2.], obj, gripper, table)
      #random target position
-     M.addObjective([2.], ry.FS.position, [obj], ry.OT.eq, 1e1*np.array([[1,0,0],[0,1,0]]), .4*np.random.rand(3) - .2+np.array([.0,.3,.0]))
+     M.komo.addObjective([2.], ry.FS.position, [obj], ry.OT.eq, 1e1*np.array([[1,0,0],[0,1,0]]), .4*np.random.rand(3) - .2+np.array([.0,.3,.0]))
      M.solve()
      if not M.ret.feasible:
           continue
@@ -596,7 +598,9 @@ for i in range(30):
           continue
 
      M2 = M.sub_motion(1, accumulated_collisions=False)
-     M2.addObjective([], ry.FS.positionRel, [gripper, pushStart], ry.OT.eq, 1e1*np.array([[1,0,0],[0,0,1]]))
+     #M2.komo.addObjective([], ry.FS.positionRel, [gripper, pushStart], ry.OT.eq, 1e1*np.array([[1,0,0],[0,0,1]]))
+     #move1-&gt;komo-&gt;addObjective({}, FS_poseRel, {gripper, obj}, OT_eq, {1e1}, {}, 1); //constant relative pose! (redundant for first switch option)
+
      M2.solve()
      if not M2.ret.feasible:
           continue
