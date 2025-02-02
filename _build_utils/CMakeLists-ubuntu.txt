@@ -67,12 +67,12 @@ link_directories(
   $ENV{HOME}/.local/lib
   )
 
-if(USE_PHYSX)
-  link_directories($ENV{HOME}/.local/lib/PhysX)
-endif()
-
 if(USE_H5)
   link_directories(/usr/lib/x86_64-linux-gnu/hdf5/serial)
+endif()
+
+if(USE_PHYSX)
+  link_directories($ENV{HOME}/.local/lib/PhysX)
 endif()
 
 file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
@@ -116,8 +116,6 @@ add_library(rai SHARED
   )
 
 ################################################################################
-#
-# rai include/link
 
 #find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 #target_link_libraries (rai Eigen3::Eigen)
@@ -213,11 +211,10 @@ if(USE_PYBIND)
 endif()
 
 ################################################################################
-#
-# verbosity: info on eventual compiler flags
 
 get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 message(STATUS "[rai] compiler flags: " "${_defs}")
+message(STATUS "[rai] source dir: " "${CMAKE_SOURCE_DIR}")
 
 ################################################################################
 

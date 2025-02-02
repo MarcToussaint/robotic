@@ -6,7 +6,14 @@ import numpy
 import typing
 from . import DataGen
 from . import test
-__all__ = ['ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'Logic2KOMO_Translator', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Logic2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
+__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
+class Actions2KOMO_Translator:
+    """
+    Actions2KOMO_Translator
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
 class ArgWord:
     """
     [todo: replace by str]
@@ -330,6 +337,10 @@ class Config:
         """
         get the total number of degrees of freedom
         """
+    def getJointIDs(self) -> uintA:
+        """
+        get indeces (which are the indices of their frames) of all joints
+        """
     def getJointLimits(self) -> arr:
         """
         get the joint limits as a n-by-2 matrix; for dofs that do not have limits defined, the entries are [0,-1] (i.e. upper limit < lower limit)
@@ -587,8 +598,20 @@ class FS:
       transAccelerations
     
       transVelocities
+    
+      qQuaternionNorms
+    
+      opposeCentral
+    
+      linangVel
+    
+      AlignXWithDiff
+    
+      AlignYWithDiff
     """
-    __members__: typing.ClassVar[dict[str, FS]]  # value = {'position': <FS.position: 0>, 'positionDiff': <FS.positionDiff: 1>, 'positionRel': <FS.positionRel: 2>, 'quaternion': <FS.quaternion: 3>, 'quaternionDiff': <FS.quaternionDiff: 4>, 'quaternionRel': <FS.quaternionRel: 5>, 'pose': <FS.pose: 6>, 'poseDiff': <FS.poseDiff: 7>, 'poseRel': <FS.poseRel: 8>, 'vectorX': <FS.vectorX: 9>, 'vectorXDiff': <FS.vectorXDiff: 10>, 'vectorXRel': <FS.vectorXRel: 11>, 'vectorY': <FS.vectorY: 12>, 'vectorYDiff': <FS.vectorYDiff: 13>, 'vectorYRel': <FS.vectorYRel: 14>, 'vectorZ': <FS.vectorZ: 15>, 'vectorZDiff': <FS.vectorZDiff: 16>, 'vectorZRel': <FS.vectorZRel: 17>, 'scalarProductXX': <FS.scalarProductXX: 18>, 'scalarProductXY': <FS.scalarProductXY: 19>, 'scalarProductXZ': <FS.scalarProductXZ: 20>, 'scalarProductYX': <FS.scalarProductYX: 21>, 'scalarProductYY': <FS.scalarProductYY: 22>, 'scalarProductYZ': <FS.scalarProductYZ: 23>, 'scalarProductZZ': <FS.scalarProductZZ: 24>, 'gazeAt': <FS.gazeAt: 25>, 'angularVel': <FS.angularVel: 26>, 'accumulatedCollisions': <FS.accumulatedCollisions: 27>, 'jointLimits': <FS.jointLimits: 28>, 'distance': <FS.distance: 29>, 'negDistance': <FS.distance: 29>, 'oppose': <FS.oppose: 30>, 'qItself': <FS.qItself: 31>, 'jointState': <FS.qItself: 31>, 'aboveBox': <FS.aboveBox: 33>, 'insideBox': <FS.insideBox: 34>, 'pairCollision_negScalar': <FS.pairCollision_negScalar: 35>, 'pairCollision_vector': <FS.pairCollision_vector: 36>, 'pairCollision_normal': <FS.pairCollision_normal: 37>, 'pairCollision_p1': <FS.pairCollision_p1: 38>, 'pairCollision_p2': <FS.pairCollision_p2: 39>, 'standingAbove': <FS.standingAbove: 40>, 'physics': <FS.physics: 41>, 'contactConstraints': <FS.contactConstraints: 42>, 'energy': <FS.energy: 43>, 'transAccelerations': <FS.transAccelerations: 44>, 'transVelocities': <FS.transVelocities: 45>}
+    AlignXWithDiff: typing.ClassVar[FS]  # value = <FS.AlignXWithDiff: 49>
+    AlignYWithDiff: typing.ClassVar[FS]  # value = <FS.AlignYWithDiff: 50>
+    __members__: typing.ClassVar[dict[str, FS]]  # value = {'position': <FS.position: 0>, 'positionDiff': <FS.positionDiff: 1>, 'positionRel': <FS.positionRel: 2>, 'quaternion': <FS.quaternion: 3>, 'quaternionDiff': <FS.quaternionDiff: 4>, 'quaternionRel': <FS.quaternionRel: 5>, 'pose': <FS.pose: 6>, 'poseDiff': <FS.poseDiff: 7>, 'poseRel': <FS.poseRel: 8>, 'vectorX': <FS.vectorX: 9>, 'vectorXDiff': <FS.vectorXDiff: 10>, 'vectorXRel': <FS.vectorXRel: 11>, 'vectorY': <FS.vectorY: 12>, 'vectorYDiff': <FS.vectorYDiff: 13>, 'vectorYRel': <FS.vectorYRel: 14>, 'vectorZ': <FS.vectorZ: 15>, 'vectorZDiff': <FS.vectorZDiff: 16>, 'vectorZRel': <FS.vectorZRel: 17>, 'scalarProductXX': <FS.scalarProductXX: 18>, 'scalarProductXY': <FS.scalarProductXY: 19>, 'scalarProductXZ': <FS.scalarProductXZ: 20>, 'scalarProductYX': <FS.scalarProductYX: 21>, 'scalarProductYY': <FS.scalarProductYY: 22>, 'scalarProductYZ': <FS.scalarProductYZ: 23>, 'scalarProductZZ': <FS.scalarProductZZ: 24>, 'gazeAt': <FS.gazeAt: 25>, 'angularVel': <FS.angularVel: 26>, 'accumulatedCollisions': <FS.accumulatedCollisions: 27>, 'jointLimits': <FS.jointLimits: 28>, 'distance': <FS.distance: 29>, 'negDistance': <FS.distance: 29>, 'oppose': <FS.oppose: 30>, 'qItself': <FS.qItself: 31>, 'jointState': <FS.qItself: 31>, 'aboveBox': <FS.aboveBox: 33>, 'insideBox': <FS.insideBox: 34>, 'pairCollision_negScalar': <FS.pairCollision_negScalar: 35>, 'pairCollision_vector': <FS.pairCollision_vector: 36>, 'pairCollision_normal': <FS.pairCollision_normal: 37>, 'pairCollision_p1': <FS.pairCollision_p1: 38>, 'pairCollision_p2': <FS.pairCollision_p2: 39>, 'standingAbove': <FS.standingAbove: 40>, 'physics': <FS.physics: 41>, 'contactConstraints': <FS.contactConstraints: 42>, 'energy': <FS.energy: 43>, 'transAccelerations': <FS.transAccelerations: 44>, 'transVelocities': <FS.transVelocities: 45>, 'qQuaternionNorms': <FS.qQuaternionNorms: 46>, 'opposeCentral': <FS.opposeCentral: 47>, 'linangVel': <FS.linangVel: 48>, 'AlignXWithDiff': <FS.AlignXWithDiff: 49>, 'AlignYWithDiff': <FS.AlignYWithDiff: 50>}
     aboveBox: typing.ClassVar[FS]  # value = <FS.aboveBox: 33>
     accumulatedCollisions: typing.ClassVar[FS]  # value = <FS.accumulatedCollisions: 27>
     angularVel: typing.ClassVar[FS]  # value = <FS.angularVel: 26>
@@ -599,8 +622,10 @@ class FS:
     insideBox: typing.ClassVar[FS]  # value = <FS.insideBox: 34>
     jointLimits: typing.ClassVar[FS]  # value = <FS.jointLimits: 28>
     jointState: typing.ClassVar[FS]  # value = <FS.qItself: 31>
+    linangVel: typing.ClassVar[FS]  # value = <FS.linangVel: 48>
     negDistance: typing.ClassVar[FS]  # value = <FS.distance: 29>
     oppose: typing.ClassVar[FS]  # value = <FS.oppose: 30>
+    opposeCentral: typing.ClassVar[FS]  # value = <FS.opposeCentral: 47>
     pairCollision_negScalar: typing.ClassVar[FS]  # value = <FS.pairCollision_negScalar: 35>
     pairCollision_normal: typing.ClassVar[FS]  # value = <FS.pairCollision_normal: 37>
     pairCollision_p1: typing.ClassVar[FS]  # value = <FS.pairCollision_p1: 38>
@@ -614,6 +639,7 @@ class FS:
     positionDiff: typing.ClassVar[FS]  # value = <FS.positionDiff: 1>
     positionRel: typing.ClassVar[FS]  # value = <FS.positionRel: 2>
     qItself: typing.ClassVar[FS]  # value = <FS.qItself: 31>
+    qQuaternionNorms: typing.ClassVar[FS]  # value = <FS.qQuaternionNorms: 46>
     quaternion: typing.ClassVar[FS]  # value = <FS.quaternion: 3>
     quaternionDiff: typing.ClassVar[FS]  # value = <FS.quaternionDiff: 4>
     quaternionRel: typing.ClassVar[FS]  # value = <FS.quaternionRel: 5>
@@ -669,7 +695,6 @@ class Frame:
     """
     A (coordinate) frame of a configuration, which can have a parent, and associated shape, joint, and/or inertia
     """
-    name: ...
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
@@ -773,9 +798,22 @@ class Frame:
         ...
     def setTensorShape(self, data: ..., size: arr) -> Frame:
         ...
-    def transformToDiagInertia(self) -> Frame:
+    def transformToDiagInertia(self) -> ...:
         ...
     def unLink(self) -> Frame:
+        ...
+    @property
+    def ID(self) -> int:
+        """
+        the unique ID of the frame, which is also its index in lists/arrays (e.g. when the frameState is returned as matrix) (readonly)
+        """
+    @property
+    def name(self) -> ...:
+        """
+        the name of the frame (editable)
+        """
+    @name.setter
+    def name(self, arg0: ...) -> None:
         ...
 class JT:
     """
@@ -932,8 +970,10 @@ class KOMO:
         ...
     def getFrameState(self, arg0: int) -> arr:
         ...
-    def getPath(self) -> arr:
-        ...
+    def getPath(self, dofIndices: uintA = ...) -> arr:
+        """
+        get path for selected dofs (default: all original config dofs)
+        """
     def getPathFrames(self) -> arr:
         ...
     def getPathTau(self) -> arr:
@@ -1017,7 +1057,7 @@ class LGP_Tool:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
-    def __init__(self, arg0: Config, arg1: TAMP_Provider, arg2: Logic2KOMO_Translator) -> None:
+    def __init__(self, arg0: Config, arg1: TAMP_Provider, arg2: Actions2KOMO_Translator) -> None:
         """
         initialization
         """
@@ -1055,13 +1095,6 @@ class LGP_Tool:
         """
         view last computed solution
         """
-class Logic2KOMO_Translator:
-    """
-    Logic2KOMO_Translator
-    """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):
-        ...
 class NLP:
     """
     A Nonlinear Mathematical Program (bindings to the c++ object - distinct from the python template nlp.NLP
@@ -1171,7 +1204,7 @@ class NLP_Solver:
         """
     def setInitialization(self, arg0: arr) -> NLP_Solver:
         ...
-    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, maxStep: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, maxLambda: float = -1.0) -> NLP_Solver:
+    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, stepMax: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, lambdaMax: float = -1.0) -> NLP_Solver:
         """
         set solver options
         """
@@ -1213,11 +1246,11 @@ class NLP_SolverID:
     
       Ceres
     """
-    Ceres: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.Ceres: 10>
-    Ipopt: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.Ipopt: 9>
+    Ceres: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.Ceres: 11>
+    Ipopt: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.Ipopt: 10>
     LBFGS: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.LBFGS: 2>
-    NLopt: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.NLopt: 8>
-    __members__: typing.ClassVar[dict[str, NLP_SolverID]]  # value = {'gradientDescent': <NLP_SolverID.gradientDescent: 0>, 'rprop': <NLP_SolverID.rprop: 1>, 'LBFGS': <NLP_SolverID.LBFGS: 2>, 'newton': <NLP_SolverID.newton: 3>, 'augmentedLag': <NLP_SolverID.augmentedLag: 4>, 'squaredPenalty': <NLP_SolverID.squaredPenalty: 5>, 'logBarrier': <NLP_SolverID.logBarrier: 6>, 'singleSquaredPenalty': <NLP_SolverID.singleSquaredPenalty: 7>, 'NLopt': <NLP_SolverID.NLopt: 8>, 'Ipopt': <NLP_SolverID.Ipopt: 9>, 'Ceres': <NLP_SolverID.Ceres: 10>}
+    NLopt: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.NLopt: 9>
+    __members__: typing.ClassVar[dict[str, NLP_SolverID]]  # value = {'gradientDescent': <NLP_SolverID.gradientDescent: 0>, 'rprop': <NLP_SolverID.rprop: 1>, 'LBFGS': <NLP_SolverID.LBFGS: 2>, 'newton': <NLP_SolverID.newton: 3>, 'augmentedLag': <NLP_SolverID.augmentedLag: 4>, 'squaredPenalty': <NLP_SolverID.squaredPenalty: 5>, 'logBarrier': <NLP_SolverID.logBarrier: 6>, 'singleSquaredPenalty': <NLP_SolverID.singleSquaredPenalty: 7>, 'NLopt': <NLP_SolverID.NLopt: 9>, 'Ipopt': <NLP_SolverID.Ipopt: 10>, 'Ceres': <NLP_SolverID.Ceres: 11>}
     augmentedLag: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.augmentedLag: 4>
     gradientDescent: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.gradientDescent: 0>
     logBarrier: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.logBarrier: 6>
@@ -1267,9 +1300,7 @@ class NLP_SolverOptions:
         ...
     def set_damping(self, arg0: float) -> NLP_SolverOptions:
         ...
-    def set_maxLambda(self, arg0: float) -> NLP_SolverOptions:
-        ...
-    def set_maxStep(self, arg0: float) -> NLP_SolverOptions:
+    def set_lambdaMax(self, arg0: float) -> NLP_SolverOptions:
         ...
     def set_muInc(self, arg0: float) -> NLP_SolverOptions:
         ...
@@ -1284,6 +1315,8 @@ class NLP_SolverOptions:
     def set_stepDec(self, arg0: float) -> NLP_SolverOptions:
         ...
     def set_stepInc(self, arg0: float) -> NLP_SolverOptions:
+        ...
+    def set_stepMax(self, arg0: float) -> NLP_SolverOptions:
         ...
     def set_stopEvals(self, arg0: int) -> NLP_SolverOptions:
         ...
@@ -1692,6 +1725,8 @@ class Simulation:
         """
     def getTimeToSplineEnd(self) -> float:
         ...
+    def get_frameVelocities(self) -> arr:
+        ...
     def get_q(self) -> arr:
         ...
     def get_qDot(self) -> arr:
@@ -1821,7 +1856,7 @@ def compiled() -> str:
     """
     return a compile date+time version string
     """
-def default_Logic2KOMO_Translator() -> Logic2KOMO_Translator:
+def default_Actions2KOMO_Translator() -> Actions2KOMO_Translator:
     ...
 def default_TAMP_Provider(C: Config, lgp_config_file: str) -> TAMP_Provider:
     ...
