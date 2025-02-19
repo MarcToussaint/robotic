@@ -267,5 +267,5 @@ install(
   DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
-  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool
+  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool robotic/ry-h5info 
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

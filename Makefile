@@ -2,10 +2,12 @@ PY_VER = $(shell /usr/bin/env python3 -c "import sys; print(str(sys.version_info
 #PY_SITE = $(shell /usr/bin/env python3 -m site --user-site)
 PY_SITE = $(VIRTUAL_ENV)/lib/python$(PY_VER)/site-packages
 
+.NOTPARALLEL:
+
 default: compile
 
 compile:
-	make -C build
+	$(MAKE) -C build
 
 docs:
 	cd rai-docs && sphinx-build doc ../html
@@ -21,7 +23,7 @@ local-install:
 	ln -f -s _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
 	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build -DPY_VERSION=$(PY_VER)
-	+make -C build _robotic docstrings install -j $(command nproc --ignore 2)
+	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
 	cp build/_robotic.pyi $(PY_SITE)/robotic
 
 local-clean:
@@ -53,7 +55,7 @@ test3:
 	ry-view $(PY_SITE)/robotic/rai-robotModels/scenarios/pandasTable.g
 
 test-tutorials:
-	make -j1 -C rai-tutorials run
+	$(MAKE) -j1 -C rai-tutorials run
 
 pull:
 	cd rai && git pull

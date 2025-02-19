@@ -268,11 +268,8 @@ class KOMO_ManipulationHelper():
         '''
         inequality on distance between pairs of objects
         '''
-        while len(objs) > 1:
-            comp = objs[0]
-            del objs[0]
-            for obj in objs:
-                self.komo.addObjective(time_interval, ry.FS.negDistance, [comp, obj], ry.OT.ineq, [scale], [-margin])
+        for i in range(0, len(objs), 2):
+            self.komo.addObjective(time_interval, ry.FS.negDistance, [objs[i], objs[i+1]], ry.OT.ineq, [scale], [-margin])
 
     def freeze_joint(self, time_interval, joints):
         '''
@@ -388,13 +385,15 @@ class KOMO_ManipulationHelper():
     #     cout <<'  == scroll through solution in display window using SHIFT-scroll' <<endl
         self.komo.view(True, f'debug: {info}\n{self.ret}')
 
-    def play(self, C: ry.Config, duration=1.):
+    def play(self, C: ry.Config, duration=1., savePngs=False):
         dofs = C.getJointIDs()
         path = self.komo.getPath(dofs)
         for t in range(self.path.shape[0]):
             C.setJointState(path[t])
             C.view(False, f'step {t}\n{self.info}')
             time.sleep(duration/self.path.shape[0])
+            if savePngs:
+                C.get_viewer().savePng()
 
     def sub_motion(self, phase, fixEnd=True, homing_scale=1e-2, acceleration_scale=1e-1, accumulated_collisions=True, quaternion_norms=False):
         (C, q0, q1) = self.komo.getSubProblem(phase)

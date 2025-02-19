@@ -3,7 +3,7 @@ rai data generators
 """
 from __future__ import annotations
 import _robotic
-__all__ = ['RndStableConfigs', 'ShapenetGrasps']
+__all__ = ['RndStableConfigs', 'ShapenetGrasps', 'sampleGraspCandidate']
 class RndStableConfigs:
     """
     A generator of random stable configurations
@@ -68,7 +68,7 @@ class ShapenetGrasps:
         """
         (direct interface) set (relative) pose of grasp candidate
         """
-    def setOptions(self, verbose: int = 1, filesPrefix: ... = 'shapenet/models/', numShapes: int = -1, startShape: int = 0, simVerbose: int = 0, optVerbose: int = 0, simTau: float = 0.01, gripperCloseSpeed: float = 0.001, moveSpeed: float = 0.005, pregraspNormalSdv: float = 0.2) -> ShapenetGrasps:
+    def setOptions(self, verbose: int = 1, filesPrefix: ... = 'shapenet/models/', endShape: int = -1, startShape: int = 0, simVerbose: int = 0, optVerbose: int = 0, simTau: float = 0.01, gripperCloseSpeed: float = 0.001, moveSpeed: float = 0.005, pregraspNormalSdv: float = 0.2) -> ShapenetGrasps:
         """
         set options
         """
@@ -76,3 +76,7 @@ class ShapenetGrasps:
         """
         set options
         """
+def sampleGraspCandidate(C: _robotic.Config, ptsFrame: str, refFrame: str, pregraspNormalSdv: float = 0.2, verbose: int = 1) -> arr:
+    """
+    sample random grasp candidates on an object represented as points
+    """

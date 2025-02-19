@@ -6,7 +6,7 @@ import numpy
 import typing
 from . import DataGen
 from . import test
-__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
+__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
 class Actions2KOMO_Translator:
     """
     Actions2KOMO_Translator
@@ -263,6 +263,10 @@ class Config:
         """
         add a new frame to C; optionally make this a child to the given parent; use the Frame methods to set properties of the new frame
         """
+    def addH5Object(self, framename: str, filename: str, verbose: int = 0) -> Frame:
+        """
+        add the contents of the file to C
+        """
     def animate(self) -> None:
         """
         displays while articulating all dofs in a row
@@ -295,9 +299,9 @@ class Config:
         """
         evaluate a feature -- see https://marctoussaint.github.io/robotics-course/tutorials/features.html
         """
-    def frame(self, frameName: str, warnIfNotExist: bool = True) -> Frame:
+    def frame(self, frameID: int) -> Frame:
         """
-        get access to a frame by name; use the Frame methods to set/get frame properties
+        get access to a frame by index (< getFrameDimension)
         """
     def getCollidablePairs(self) -> StringA:
         """
@@ -452,6 +456,14 @@ class ConfigurationViewer:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
+    def savePng(self, saveVideoPath: str = 'z.vid/', count: int = -1) -> None:
+        """
+        save enumerated pngs in a path - for video making
+        """
+    def visualsOnly(self, _visualsOnly: bool = True) -> None:
+        """
+        display only visuals (no markers/transparent/text)
+        """
 class ControlMode:
     """
     Members:
@@ -772,19 +784,27 @@ class Frame:
         """
     def setMeshAsLines(self, arg0: list[float]) -> None:
         ...
+    def setMeshFile(self, filename: ...) -> Frame:
+        """
+        attach a mesh shape from a file
+        """
     def setParent(self, parent: Frame, keepAbsolutePose_and_adaptRelativePose: bool = False, checkForLoop: bool = False) -> Frame:
         ...
     def setPointCloud(self, points: arr, colors: ... = ..., normals: arr = ...) -> Frame:
         """
         attach a point cloud shape
         """
-    def setPose(self, arg0: str) -> None:
+    def setPose(self, arg0: arr) -> None:
+        ...
+    def setPoseByText(self, arg0: str) -> None:
         ...
     def setPosition(self, arg0: arr) -> Frame:
         ...
     def setQuaternion(self, arg0: arr) -> Frame:
         ...
-    def setRelativePose(self, arg0: str) -> None:
+    def setRelativePose(self, arg0: arr) -> None:
+        ...
+    def setRelativePoseByText(self, arg0: str) -> None:
         ...
     def setRelativePosition(self, arg0: arr) -> Frame:
         ...
@@ -798,7 +818,7 @@ class Frame:
         ...
     def setTensorShape(self, data: ..., size: arr) -> Frame:
         ...
-    def transformToDiagInertia(self) -> ...:
+    def transformToDiagInertia(self, arg0: bool) -> ...:
         ...
     def unLink(self) -> Frame:
         ...
@@ -934,7 +954,7 @@ class KOMO:
         * order: Do we penalize the jointState directly (order=0: penalizing sqr distance to qHome, order=1: penalizing sqr distances between consecutive configurations (velocities), order=2: penalizing accelerations across 3 configurations)
         * scale: as usual, but modulated by a factor 'sqrt(delta t)' that somehow ensures total control costs in approximately independent of the choice of stepsPerPhase
         """
-    def addFrameDof(self, name: str, parent: str, jointType: JT, stable: bool, initName: str = None, initFrame: Frame = None) -> Frame:
+    def addFrameDof(self, name: str, parent: str, jointType: JT, stable: bool, originFrameName: str = None, originFrame: Frame = None) -> Frame:
         """
         complicated...
         """
@@ -1420,6 +1440,62 @@ class OptBenchmark_InvKin_Endeff:
     def __init__(self, arg0: str, arg1: bool) -> None:
         ...
     def get(self) -> NLP:
+        ...
+class Quaternion:
+    """
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
+    def __init__(self) -> None:
+        """
+        non-initialized
+        """
+    def append(self, q: Quaternion) -> None:
+        ...
+    def applyOnPointArray(self, pts: arr) -> None:
+        ...
+    def flipSign(self) -> None:
+        ...
+    def getArr(self) -> arr:
+        ...
+    def getJacobian(self) -> arr:
+        ...
+    def getLog(self) -> Vector:
+        ...
+    def getMatrix(self) -> arr:
+        ...
+    def getRad(self) -> float:
+        ...
+    def getRollPitchYaw(self) -> arr:
+        ...
+    def invert(self) -> None:
+        ...
+    def multiply(self, f: float) -> None:
+        ...
+    def normalize(self) -> None:
+        ...
+    def set(self, q: arr) -> Quaternion:
+        ...
+    def setDiff(self, from: Vector, to: Vector) -> Quaternion:
+        ...
+    def setExp(self, vector_w: Vector) -> Quaternion:
+        ...
+    def setInterpolateEmbedded(self, t: float, from: Quaternion, to: Quaternion) -> Quaternion:
+        ...
+    def setInterpolateProper(self, t: float, from: Quaternion, to: Quaternion) -> Quaternion:
+        ...
+    def setMatrix(self, R: arr) -> Quaternion:
+        ...
+    def setRad(self, radians: float, axis: Vector) -> Quaternion:
+        ...
+    def setRandom(self) -> Quaternion:
+        ...
+    def setRollPitchYaw(self, roll_pitch_yaw: Vector) -> Quaternion:
+        ...
+    def setZero(self) -> Quaternion:
+        ...
+    def sqrNorm(self) -> float:
         ...
 class RRT_PathFinder:
     """

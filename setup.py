@@ -29,7 +29,7 @@ setup(
     },
     include_package_data=True,
     # cmdclass={ 'build_ext': CustomCommand },
-    scripts=['robotic/ry-view', 'robotic/ry-bot', 'robotic/ry-info', 'robotic/ry-test', 'robotic/ry-urdf2rai', 'robotic/ry-urdf2yaml', 'robotic/ry-meshTool'],
+    scripts=['robotic/ry-view', 'robotic/ry-bot', 'robotic/ry-info', 'robotic/ry-test', 'robotic/ry-urdf2rai', 'robotic/ry-urdf2yaml', 'robotic/ry-meshTool', 'robotic/ry-h5info'],
 
     description="Robotic Control Interface & Manipulation Planning Library",
     long_description=long_description,
