@@ -18,6 +18,7 @@ mkdir -p pr2; cp ../../rai-robotModels/pr2/*.g pr2;  cp -R ../../rai-robotModels
 mkdir -p baxter; cp ../../rai-robotModels/baxter/*.g baxter;  cp -R ../../rai-robotModels/baxter/*_description baxter
 mkdir -p robotiq; cp ../../rai-robotModels/robotiq/*.g robotiq;  cp -R ../../rai-robotModels/robotiq/meshes robotiq
 mkdir -p g1; cp ../../rai-robotModels/g1/*.g g1;  cp -R ../../rai-robotModels/g1/meshes g1
+mkdir -p ranger; cp ../../rai-robotModels/ranger/*.g ranger;  cp -R ../../rai-robotModels/ranger/meshes ranger
 mkdir -p scenarios; cp ../../rai-robotModels/scenarios/*.g scenarios
 mkdir -p tests; cp ../../rai-robotModels/tests/*.g tests
 cd ../..

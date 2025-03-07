@@ -6,7 +6,7 @@ import numpy
 import typing
 from . import DataGen
 from . import test
-__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverID', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
+__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
 class Actions2KOMO_Translator:
     """
     Actions2KOMO_Translator
@@ -275,6 +275,10 @@ class Config:
         """
         animate with random spline in limits bounding box [T=#spline points]
         """
+    def asDict(self) -> dict:
+        """
+        return the configuration description as a dict, e.g. for file export
+        """
     def attach(self, arg0: str, arg1: str) -> None:
         """
         change the configuration by creating a rigid joint from frame1 to frame2, adopting their current relative pose. This also breaks the first joint that is parental to frame2 and reverses the topological order from frame2 to the broken joint
@@ -387,6 +391,10 @@ class Config:
         ...
     def set_viewer(self, arg0: ...) -> None:
         ...
+    def simplify(self, pruneNamed: bool, pruneNonContactNonMarker: bool, pruneTransparent: bool) -> None:
+        """
+        structurally simplify the Configuration (deleting frames, relinking to minimal tree)
+        """
     def view(self, pause: bool = False, message: str = None) -> int:
         """
         open a view window for the configuration
@@ -429,9 +437,9 @@ class Config:
         """
         launch a viewer that listents (inode) to changes of a file (made by you in an editor), and reloads, displays and animates the configuration whenever the file is changed
         """
-    def write(self) -> str:
+    def write(self) -> ...:
         """
-        write the full configuration in a string (roughly yaml), e.g. for file export
+        return the configuration description as a str (similar to YAML), e.g. for file export
         """
     def writeCollada(self, filename: str, format: str = 'collada') -> None:
         """
@@ -441,7 +449,7 @@ class Config:
         """
         write the full configuration in a ply mesh file
         """
-    def writeMeshes(self, pathPrefix: str) -> None:
+    def writeMeshes(self, pathPrefix: ...) -> None:
         """
         write all object meshes in a directory
         """
@@ -456,7 +464,7 @@ class ConfigurationViewer:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
-    def savePng(self, saveVideoPath: str = 'z.vid/', count: int = -1) -> None:
+    def savePng(self, saveVideoPath: ... = 'z.vid/', count: int = -1) -> None:
         """
         save enumerated pngs in a path - for video making
         """
@@ -714,6 +722,8 @@ class Frame:
         """
         add/set attributes for the frame
         """
+    def asDict(self) -> dict:
+        ...
     def computeCompoundInertia(self, clearChildInertias: bool = True) -> Frame:
         ...
     def convertDecomposedShapeToChildFrames(self) -> Frame:
@@ -722,7 +732,11 @@ class Frame:
         """
         get frame attributes
         """
+    def getChildren(self) -> list[Frame]:
+        ...
     def getJointState(self) -> arr:
+        ...
+    def getJointType(self) -> JT:
         ...
     def getMesh(self) -> tuple:
         ...
@@ -756,8 +770,6 @@ class Frame:
         ...
     def getTransform(self) -> arr:
         ...
-    def info(self) -> dict:
-        ...
     def makeRoot(self, untilPartBreak: bool) -> None:
         ...
     def setAttribute(self, arg0: str, arg1: float) -> Frame:
@@ -784,7 +796,7 @@ class Frame:
         """
     def setMeshAsLines(self, arg0: list[float]) -> None:
         ...
-    def setMeshFile(self, filename: ...) -> Frame:
+    def setMeshFile(self, filename: ..., scale: float = 1.0) -> Frame:
         """
         attach a mesh shape from a file
         """
@@ -818,6 +830,10 @@ class Frame:
         ...
     def setTensorShape(self, data: ..., size: arr) -> Frame:
         ...
+    def setTextureFile(self, image_filename: ..., texCoords: arr = ...) -> Frame:
+        """
+        set the texture of the mesh of a shape
+        """
     def transformToDiagInertia(self, arg0: bool) -> ...:
         ...
     def unLink(self) -> Frame:
@@ -1232,7 +1248,7 @@ class NLP_Solver:
         ...
     def setPyProblem(self, arg0: typing.Any) -> None:
         ...
-    def setSolver(self, arg0: NLP_SolverID) -> NLP_Solver:
+    def setSolver(self, arg0: ...) -> NLP_Solver:
         ...
     def setTracing(self, arg0: bool, arg1: bool, arg2: bool, arg3: bool) -> NLP_Solver:
         ...
@@ -1240,73 +1256,6 @@ class NLP_Solver:
         """
         resampleInitialization=-1 means: only when not already solved
         """
-class NLP_SolverID:
-    """
-    Members:
-    
-      gradientDescent
-    
-      rprop
-    
-      LBFGS
-    
-      newton
-    
-      augmentedLag
-    
-      squaredPenalty
-    
-      logBarrier
-    
-      singleSquaredPenalty
-    
-      NLopt
-    
-      Ipopt
-    
-      Ceres
-    """
-    Ceres: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.Ceres: 11>
-    Ipopt: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.Ipopt: 10>
-    LBFGS: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.LBFGS: 2>
-    NLopt: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.NLopt: 9>
-    __members__: typing.ClassVar[dict[str, NLP_SolverID]]  # value = {'gradientDescent': <NLP_SolverID.gradientDescent: 0>, 'rprop': <NLP_SolverID.rprop: 1>, 'LBFGS': <NLP_SolverID.LBFGS: 2>, 'newton': <NLP_SolverID.newton: 3>, 'augmentedLag': <NLP_SolverID.augmentedLag: 4>, 'squaredPenalty': <NLP_SolverID.squaredPenalty: 5>, 'logBarrier': <NLP_SolverID.logBarrier: 6>, 'singleSquaredPenalty': <NLP_SolverID.singleSquaredPenalty: 7>, 'NLopt': <NLP_SolverID.NLopt: 9>, 'Ipopt': <NLP_SolverID.Ipopt: 10>, 'Ceres': <NLP_SolverID.Ceres: 11>}
-    augmentedLag: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.augmentedLag: 4>
-    gradientDescent: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.gradientDescent: 0>
-    logBarrier: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.logBarrier: 6>
-    newton: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.newton: 3>
-    rprop: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.rprop: 1>
-    singleSquaredPenalty: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.singleSquaredPenalty: 7>
-    squaredPenalty: typing.ClassVar[NLP_SolverID]  # value = <NLP_SolverID.squaredPenalty: 5>
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):
-        ...
-    def __eq__(self, other: typing.Any) -> bool:
-        ...
-    def __getstate__(self) -> int:
-        ...
-    def __hash__(self) -> int:
-        ...
-    def __index__(self) -> int:
-        ...
-    def __init__(self, value: int) -> None:
-        ...
-    def __int__(self) -> int:
-        ...
-    def __ne__(self, other: typing.Any) -> bool:
-        ...
-    def __repr__(self) -> str:
-        ...
-    def __setstate__(self, state: int) -> None:
-        ...
-    def __str__(self) -> str:
-        ...
-    @property
-    def name(self) -> str:
-        ...
-    @property
-    def value(self) -> int:
-        ...
 class NLP_SolverOptions:
     """
     solver options
@@ -1358,8 +1307,6 @@ class OT:
     """
     Members:
     
-      none
-    
       f
     
       sos
@@ -1371,8 +1318,10 @@ class OT:
       ineqB
     
       ineqP
+    
+      none
     """
-    __members__: typing.ClassVar[dict[str, OT]]  # value = {'none': <OT.none: 6>, 'f': <OT.f: 0>, 'sos': <OT.sos: 1>, 'ineq': <OT.ineq: 2>, 'eq': <OT.eq: 3>, 'ineqB': <OT.ineqB: 4>, 'ineqP': <OT.ineqP: 5>}
+    __members__: typing.ClassVar[dict[str, OT]]  # value = {'f': <OT.f: 0>, 'sos': <OT.sos: 1>, 'ineq': <OT.ineq: 2>, 'eq': <OT.eq: 3>, 'ineqB': <OT.ineqB: 4>, 'ineqP': <OT.ineqP: 5>, 'none': <OT.none: 6>}
     eq: typing.ClassVar[OT]  # value = <OT.eq: 3>
     f: typing.ClassVar[OT]  # value = <OT.f: 0>
     ineq: typing.ClassVar[OT]  # value = <OT.ineq: 2>
@@ -1441,6 +1390,79 @@ class OptBenchmark_InvKin_Endeff:
         ...
     def get(self) -> NLP:
         ...
+class OptMethod:
+    """
+    Members:
+    
+      none
+    
+      gradientDescent
+    
+      rprop
+    
+      LBFGS
+    
+      newton
+    
+      augmentedLag
+    
+      squaredPenalty
+    
+      logBarrier
+    
+      singleSquaredPenalty
+    
+      slackGN
+    
+      NLopt
+    
+      Ipopt
+    
+      Ceres
+    """
+    Ceres: typing.ClassVar[OptMethod]  # value = <OptMethod.Ceres: 12>
+    Ipopt: typing.ClassVar[OptMethod]  # value = <OptMethod.Ipopt: 11>
+    LBFGS: typing.ClassVar[OptMethod]  # value = <OptMethod.LBFGS: 3>
+    NLopt: typing.ClassVar[OptMethod]  # value = <OptMethod.NLopt: 10>
+    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'gradientDescent': <OptMethod.gradientDescent: 1>, 'rprop': <OptMethod.rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'newton': <OptMethod.newton: 4>, 'augmentedLag': <OptMethod.augmentedLag: 5>, 'squaredPenalty': <OptMethod.squaredPenalty: 6>, 'logBarrier': <OptMethod.logBarrier: 7>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 8>, 'slackGN': <OptMethod.slackGN: 9>, 'NLopt': <OptMethod.NLopt: 10>, 'Ipopt': <OptMethod.Ipopt: 11>, 'Ceres': <OptMethod.Ceres: 12>}
+    augmentedLag: typing.ClassVar[OptMethod]  # value = <OptMethod.augmentedLag: 5>
+    gradientDescent: typing.ClassVar[OptMethod]  # value = <OptMethod.gradientDescent: 1>
+    logBarrier: typing.ClassVar[OptMethod]  # value = <OptMethod.logBarrier: 7>
+    newton: typing.ClassVar[OptMethod]  # value = <OptMethod.newton: 4>
+    none: typing.ClassVar[OptMethod]  # value = <OptMethod.none: 0>
+    rprop: typing.ClassVar[OptMethod]  # value = <OptMethod.rprop: 2>
+    singleSquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.singleSquaredPenalty: 8>
+    slackGN: typing.ClassVar[OptMethod]  # value = <OptMethod.slackGN: 9>
+    squaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.squaredPenalty: 6>
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
+    def __eq__(self, other: typing.Any) -> bool:
+        ...
+    def __getstate__(self) -> int:
+        ...
+    def __hash__(self) -> int:
+        ...
+    def __index__(self) -> int:
+        ...
+    def __init__(self, value: int) -> None:
+        ...
+    def __int__(self) -> int:
+        ...
+    def __ne__(self, other: typing.Any) -> bool:
+        ...
+    def __repr__(self) -> str:
+        ...
+    def __setstate__(self, state: int) -> None:
+        ...
+    def __str__(self) -> str:
+        ...
+    @property
+    def name(self) -> str:
+        ...
+    @property
+    def value(self) -> int:
+        ...
 class Quaternion:
     """
     """
@@ -1478,6 +1500,8 @@ class Quaternion:
     def set(self, q: arr) -> Quaternion:
         ...
     def setDiff(self, from: Vector, to: Vector) -> Quaternion:
+        ...
+    def setEuler(self, euler_zxz: Vector) -> Quaternion:
         ...
     def setExp(self, vector_w: Vector) -> Quaternion:
         ...
@@ -1781,13 +1805,9 @@ class Simulation:
         ...
     def attach(self, gripper: Frame, obj: Frame) -> None:
         ...
-    def closeGripper(self, gripperFrameName: str, width: float = 0.05, speed: float = 0.3, force: float = 20.0) -> None:
-        ...
     def depthData2pointCloud(self, arg0: numpy.ndarray[numpy.float32], arg1: list[float]) -> numpy.ndarray[numpy.float64]:
         ...
     def detach(self, obj: Frame) -> None:
-        ...
-    def getGripperIsGrasping(self, gripperFrameName: str) -> bool:
         ...
     def getGripperWidth(self, gripperFrameName: str) -> float:
         ...
@@ -1807,7 +1827,9 @@ class Simulation:
         ...
     def get_qDot(self) -> arr:
         ...
-    def openGripper(self, gripperFrameName: str, width: float = 0.075, speed: float = 0.3) -> None:
+    def gripperIsDone(self, gripperFrameName: str) -> bool:
+        ...
+    def moveGripper(self, gripperFrameName: str, width: float, speed: float = 0.3) -> None:
         ...
     def pushConfigurationToSimulator(self, frameVelocities: arr = ..., jointVelocities: arr = ...) -> None:
         """
