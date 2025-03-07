@@ -53,7 +53,8 @@
 <li class="toctree-l2"><a class="reference internal" href="config_1_intro.html">Intro: Configurations</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Intro: BotOp (Robot Operation) interface</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Sending-motion-based-on-IK">Sending motion based on IK</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Reactive-control:-Overwriting-the-reference">Reactive control: Overwriting the reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Sending-paths-from-KOMO">Sending paths from KOMO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Reactive-control:-Overwriting-the-reference-(typical-way-to-run-medium-frequency-RL-policies)">Reactive control: Overwriting the reference (typical way to run medium frequency RL policies)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Aborting-motion">Aborting motion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Gripper-operation">Gripper operation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Camera-&amp;-Point-Could">Camera &amp; Point Could</a></li>
@@ -110,13 +111,15 @@
   <section id="Intro:-BotOp-(Robot-Operation)-interface">
 <h1>Intro: BotOp (Robot Operation) interface<a class="headerlink" href="#Intro:-BotOp-(Robot-Operation)-interface" title="Link to this heading"></a></h1>
 <p>BotOp (=robot operation) defines a very narrow interface to control a real or simulated robot. While in initial years we tried all kinds of other interfaces (ROS-given, operational space control interfaces, controller state machines, etc), this one seems most pragmatic, simple, transparent, and compatible to our research work at the LIS research team. There is no ROS or complex IPC involved, just a few threads (communicating with hardwares) interfaced via BotOp.</p>
-<p>The interface essentially provides move methods to set/overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera.</p>
-<p>This interface is quite different to a more <em>generic physical simulation</em> interface. If you’re interested in the latter (e.g. to implement a gym environment) look at the <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> tutorial. BotOp uses a <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> (optionally) as an underlying engine, but is quite different in that it is wrapped as a real-time threaded process that emulates the specific BotOp interface to a real robot – to make it swappable with a real robot. If BotOp is run in simulation mode, the simulation can be
-run in many different modes:</p>
+<p>The interface essentially provides move methods to set or smoothly overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera. That’s basically it.</p>
+<p>There might be confusion about whether <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> and <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> are the same or similar or what’s different. While they both are “robot simulation interfaces”, they actually play very different roles and that’s important to understand: <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> is a direct interface to physics engines (by default Nvidia Physx), similar to a gym environment, with a <em>non-threaded</em> step function that you call explicitly. You typically use <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> to train RL, evaluate controllers, or generate data
+offline, much faster than real time. In constrast, <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> interfaces or emulates a real robot, running in real time. The interface methods are not a step function, but the exact same as for controlling the real robot: setter methods for control (setting reference splines, impedances, gripper states) and getter methods to get state information (getImage, get_q, etc). Your code runs in parallel to the real world (or the <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> emulation) and needs to explicitly sync or get the state
+information. But yes, under the hood <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> uses a <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> as the underlying engine when in simulation mode.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> is run in simulation mode, the simulation can be run in different modes:</p>
 <ul class="simple">
 <li><p>pure kinematic (no physics for objects)</p></li>
 <li><p>a physics simulator with physics for objects but still kinematic robot</p></li>
-<li><p>a physic simulator with PD motors for the robot.</p></li>
+<li><p>a physics simulator with PD motors for the robot</p></li>
 </ul>
 <section id="Sending-motion-based-on-IK">
 <h2>Sending motion based on IK<a class="headerlink" href="#Sending-motion-based-on-IK" title="Link to this heading"></a></h2>
@@ -147,7 +150,8 @@ C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATIO
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot = ry.BotOp(C, useRealRobot=False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({&#39;botsim/verbose&#39;: 2})
+bot = ry.BotOp(C, useRealRobot=False)
 </pre></div>
 </div>
 </div>
@@ -195,10 +199,65 @@ while bot.getTimeToEnd()&gt;0:
 </div>
 </div>
 </section>
-<section id="Reactive-control:-Overwriting-the-reference">
-<h2>Reactive control: Overwriting the reference<a class="headerlink" href="#Reactive-control:-Overwriting-the-reference" title="Link to this heading"></a></h2>
-<p>Setting splines becomes reactive, when we can smoothly overwrite the spline reference with high frequency. Technically (internally), smoothly overwriting means to take the current dynamic state (pose, velocity) and create a new cubic B-spline with current state as start and given target as end, with optimal timing.</p>
-<p>To demonstrate this let’s consider a more involved scenario, where the target is a frame that is randomly moving, and we use repeated IK in each cycle to track it.</p>
+<section id="Sending-paths-from-KOMO">
+<h2>Sending paths from KOMO<a class="headerlink" href="#Sending-paths-from-KOMO" title="Link to this heading"></a></h2>
+<p>The above shows moving towards a single target, where BopTo decides on the timing (see timeCost parameter of <code class="docutils literal notranslate"><span class="pre">moveTo</span></code>). But we can also send a spline computed, e.g., with path optimization. The example is taken from the KOMO tutorial: we transition smoothly through 4 waypoint:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame(&#39;way1&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
+C.addFrame(&#39;way2&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
+C.addFrame(&#39;way3&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
+C.addFrame(&#39;way4&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
+C.view()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo = ry.KOMO(C, 4, 10, 2, False)
+komo.addControlObjective([], 0, 1e-1)
+komo.addControlObjective([], 2, 1e0)
+komo.addObjective([1], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way1&#39;], ry.OT.eq, [1e1])
+komo.addObjective([2], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way2&#39;], ry.OT.eq, [1e1])
+komo.addObjective([3], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way3&#39;], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way4&#39;], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.jointState, [], ry.OT.eq, [1e1], [], order=1)
+
+ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
+print(&#39;solver return:&#39;, ret)
+path = komo.getPath()
+print(&#39;size of path:&#39;, path.shape)
+komo.view()
+</pre></div>
+</div>
+</div>
+<p>We send this motion with the <code class="docutils literal notranslate"><span class="pre">move</span></code> method, explicitly specifying the timing to be 4 seconds:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.move(path, [4.])
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del komo
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Reactive-control:-Overwriting-the-reference-(typical-way-to-run-medium-frequency-RL-policies)">
+<h2>Reactive control: Overwriting the reference (typical way to run medium frequency RL policies)<a class="headerlink" href="#Reactive-control:-Overwriting-the-reference-(typical-way-to-run-medium-frequency-RL-policies)" title="Link to this heading"></a></h2>
+<p>Note: RL policies output new commands in every time step, let’s say in 10Hz or so). The following is a default way to run such policies. The example below corresponds to when the policy outputs endeffector space targets. Then the policy outputs joint space targets, the IK can be skipped; then the policy outputs endeffector space deltas, just add them up to become targets. The IK method below is simple – for more robust RL execution it should also check collisions and limits.</p>
+<p>BotOp is based on setting a spline reference. This becomes reactive, when we can smoothly overwrite the spline reference at any time. Technically (internally), smoothly overwriting means to take the current dynamic state (pose, velocity) and create a new cubic B-spline with current state as start and given target as end, with optimal timing. (See my B-Spline lecture notes.)</p>
+<p>To demonstrate this let’s consider a more involved scenario, where the target is a frame that is randomly moving, and we use repeated IK in each cycle to track it. Let’s first setup the scene:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -213,7 +272,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>The following defines a very basic Inverse Kinematics method – you’ll learn more about this in the next tutorial.</p>
+<p>The following defines a very basic Inverse Kinematics method – check the KOMO tutorials for more elaborate formulations. You can use a poseDiff instead of positionDiff, if you want full 6DOF endeffector control. Robust systems should also solve for collisions and limits.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -231,7 +290,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>The following does <em>not</em> really move the robot: it is just ‘setting’ the workspace C to the IK solution. No motion is sent to the real/simulated robot:</p>
+<p>The following does <em>not</em> move the robot: We use illustrate random IK solutions using the workspace C. No motion is sent to the real/simulated robot:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -259,7 +318,8 @@ C.view()
     target.setPosition(pos)
 
     q_target, ret = IK(C, pos)
-    bot.moveTo(q_target, timeCost=5., overwrite=True)
+    if ret.feasible:
+        bot.moveTo(q_target, timeCost=5., overwrite=True)
 </pre></div>
 </div>
 </div>
@@ -306,6 +366,8 @@ bot.gripperMove(ry._left, width=.075, speed=1)
 
 while not bot.gripperDone(ry._left):
     bot.sync(C, .1)
+
+bot.sync(C)
 </pre></div>
 </div>
 </div>
@@ -392,8 +454,8 @@ C.addFrame(&quot;obj&quot;) \
       .setMass(.1) \
       .setContact(True)
 
-way0 = C.addFrame(&quot;way0&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePose(&quot;t(0 0 .2)&quot;)
-way1 = C.addFrame(&quot;way1&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePose(&quot;t(0 .0 .03)&quot;)
+way0 = C.addFrame(&quot;way0&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, 0, .2])
+way1 = C.addFrame(&quot;way1&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, .0, .03])
 
 C.view()
 </pre></div>

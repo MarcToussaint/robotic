@@ -9,12 +9,14 @@
     "\n",
     "BotOp (=robot operation) defines a very narrow interface to control a real or simulated robot. While in initial years we tried all kinds of other interfaces (ROS-given, operational space control interfaces, controller state machines, etc), this one seems most pragmatic, simple, transparent, and compatible to our research work at the LIS research team. There is no ROS or complex IPC involved, just a few threads (communicating with hardwares) interfaced via BotOp.\n",
     "\n",
-    "The interface essentially provides move methods to set/overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera.\n",
+    "The interface essentially provides move methods to set or smoothly overwrite a spline reference for the robot. (Also compliance around the reference can be set.) Gripper methods to operate grippers. And getImage.. methods grab images or point clouds from the camera. That's basically it.\n",
     "\n",
-    "This interface is quite different to a more *generic physical simulation* interface. If you're interested in the latter (e.g. to implement a gym environment) look at the `Simulation` tutorial. BotOp uses a `Simulation` (optionally) as an underlying engine, but is quite different in that it is wrapped as a real-time threaded process that emulates the specific BotOp interface to a real robot -- to make it swappable with a real robot. If BotOp is run in simulation mode, the simulation can be run in many different modes: \n",
+    "There might be confusion about whether `BotOp` and `Simulation` are the same or similar or what's different. While they both are \"robot simulation interfaces\", they actually play very different roles and that's important to understand: `Simulation` is a direct interface to physics engines (by default Nvidia Physx), similar to a gym environment, with a *non-threaded* step function that you call explicitly. You typically use `Simulation` to train RL, evaluate controllers, or generate data offline, much faster than real time. In constrast, `BotOp` interfaces or emulates a real robot, running in real time. The interface methods are not a step function, but the exact same as for controlling the real robot: setter methods for control (setting reference splines, impedances, gripper states) and getter methods to get state information (getImage, get_q, etc). Your code runs in parallel to the real world (or the `BotOp` emulation) and needs to explicitly sync or get the state information. But yes, under the hood `BotOp` uses a `Simulation` as the underlying engine when in simulation mode.\n",
+    "\n",
+    "If `BotOp` is run in simulation mode, the simulation can be run in different modes:\n",
     "- pure kinematic (no physics for objects)\n",
     "- a physics simulator with physics for objects but still kinematic robot\n",
-    "- a physic simulator with PD motors for the robot."
+    "- a physics simulator with PD motors for the robot"
    ]
   },
   {
@@ -68,6 +70,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
+    "ry.params_add({'botsim/verbose': 2})\n",
     "bot = ry.BotOp(C, useRealRobot=False)"
    ]
   },
@@ -144,14 +147,91 @@
   },
   {
    "cell_type": "markdown",
+   "id": "7470f5db-251f-4917-9fbb-67d7107e70de",
+   "metadata": {},
+   "source": [
+    "## Sending paths from KOMO\n",
+    "\n",
+    "The above shows moving towards a single target, where BopTo decides on the timing (see timeCost parameter of `moveTo`). But we can also send a spline computed, e.g., with path optimization. The example is taken from the KOMO tutorial: we transition smoothly through 4 waypoint:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e67c6a53-f382-4d7f-879b-71f61428766a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "C.addFrame('way1'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])\n",
+    "C.addFrame('way2'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])\n",
+    "C.addFrame('way3'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])\n",
+    "C.addFrame('way4'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])\n",
+    "C.view()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d89b845a-60ab-450c-a097-c5cc20f8ee73",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "komo = ry.KOMO(C, 4, 10, 2, False)\n",
+    "komo.addControlObjective([], 0, 1e-1)\n",
+    "komo.addControlObjective([], 2, 1e0)\n",
+    "komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])\n",
+    "komo.addObjective([4], ry.FS.jointState, [], ry.OT.eq, [1e1], [], order=1)\n",
+    "\n",
+    "ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
+    "print('solver return:', ret)\n",
+    "path = komo.getPath()\n",
+    "print('size of path:', path.shape)\n",
+    "komo.view()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "71b1734a-8761-430f-a3d0-c255aae76cac",
+   "metadata": {},
+   "source": [
+    "We send this motion with the `move` method, explicitly specifying the timing to be 4 seconds:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2444e4f7-2b9e-49a0-ae61-6f1f781f6762",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bot.move(path, [4.])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9f404d45-43e0-4159-9fc0-6c36a73c9c94",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "del komo"
+   ]
+  },
+  {
+   "cell_type": "markdown",
    "id": "abc71ed9",
    "metadata": {},
    "source": [
-    "## Reactive control: Overwriting the reference\n",
+    "## Reactive control: Overwriting the reference (typical way to run medium frequency RL policies)\n",
     "\n",
-    "Setting splines becomes reactive, when we can smoothly overwrite the spline reference with high frequency. Technically (internally), smoothly overwriting means to take the current dynamic state (pose, velocity) and create a new cubic B-spline with current state as start and given target as end, with optimal timing.\n",
+    "Note: RL policies output new commands in every time step, let's say in 10Hz or so). The following is a default way to run such policies. The example below corresponds to when the policy outputs endeffector space targets. Then the policy outputs joint space targets, the IK can be skipped; then the policy outputs endeffector space deltas, just add them up to become targets. The IK method below is simple -- for more robust RL execution it should also check collisions and limits.\n",
     "\n",
-    "To demonstrate this let's consider a more involved scenario, where the target is a frame that is randomly moving, and we use repeated IK in each cycle to track it."
+    "BotOp is based on setting a spline reference. This becomes reactive, when we can smoothly overwrite the spline reference at any time. Technically (internally), smoothly overwriting means to take the current dynamic state (pose, velocity) and create a new cubic B-spline with current state as start and given target as end, with optimal timing. (See my B-Spline lecture notes.)\n",
+    "\n",
+    "To demonstrate this let's consider a more involved scenario, where the target is a frame that is randomly moving, and we use repeated IK in each cycle to track it. Let's first setup the scene:"
    ]
   },
   {
@@ -175,7 +255,7 @@
    "id": "3b8fb304",
    "metadata": {},
    "source": [
-    "The following defines a very basic Inverse Kinematics method -- you'll learn more about this in the next tutorial."
+    "The following defines a very basic Inverse Kinematics method -- check the KOMO tutorials for more elaborate formulations. You can use a poseDiff instead of positionDiff, if you want full 6DOF endeffector control. Robust systems should also solve for collisions and limits."
    ]
   },
   {
@@ -202,7 +282,7 @@
    "id": "76e13a25",
    "metadata": {},
    "source": [
-    "The following does *not* really move the robot: it is just 'setting' the workspace C to the IK solution. No motion is sent to the real/simulated robot:"
+    "The following does *not* move the robot: We use illustrate random IK solutions using the workspace C. No motion is sent to the real/simulated robot:"
    ]
   },
   {
@@ -244,7 +324,8 @@
     "    target.setPosition(pos)\n",
     "    \n",
     "    q_target, ret = IK(C, pos)\n",
-    "    bot.moveTo(q_target, timeCost=5., overwrite=True)"
+    "    if ret.feasible:\n",
+    "        bot.moveTo(q_target, timeCost=5., overwrite=True)"
    ]
   },
   {
@@ -306,7 +387,9 @@
     "bot.gripperMove(ry._left, width=.075, speed=1)\n",
     "\n",
     "while not bot.gripperDone(ry._left):\n",
-    "    bot.sync(C, .1)"
+    "    bot.sync(C, .1)\n",
+    "\n",
+    "bot.sync(C)"
    ]
   },
   {
@@ -433,8 +516,8 @@
     "      .setMass(.1) \\\n",
     "      .setContact(True)\n",
     "\n",
-    "way0 = C.addFrame(\"way0\", \"obj\") .setShape(ry.ST.marker, [.1]) .setRelativePose(\"t(0 0 .2)\")\n",
-    "way1 = C.addFrame(\"way1\", \"obj\") .setShape(ry.ST.marker, [.1]) .setRelativePose(\"t(0 .0 .03)\")\n",
+    "way0 = C.addFrame(\"way0\", \"obj\") .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, 0, .2])\n",
+    "way1 = C.addFrame(\"way1\", \"obj\") .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, .0, .03])\n",
     "\n",
     "C.view()"
    ]

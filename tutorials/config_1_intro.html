@@ -240,7 +240,7 @@ C.view()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.clear()
 f = C.addFrame(&#39;A&#39;) .setShape(ry.ST.marker, [.3])
-f.setPose(&#39;t(0 0 .5) d(30 1 0 0) t(0 0 .5) d(30 1 0 0)&#39;) #t=translate, #d=rotate-by-degrees around axis
+f.setPoseByText(&#39;t(0 0 .5) d(30 1 0 0) t(0 0 .5) d(30 1 0 0)&#39;) #t=translate, #d=rotate-by-degrees around axis
 C.view()
 </pre></div>
 </div>
@@ -317,13 +317,13 @@ q0 = C.getJointState()
 C.view(False)
 
 for f in C.getFrames():
-    print(f.name, f.info()) #info returns all attributes, similar to what is defined in the .g-files
+    print(f.name, f.asDict()) #info returns all attributes, similar to what is defined in the .g-files
     #see also all the f.get... methods
 
 # setting attributes:
 f = C.getFrames()[0]
 f.addAttributes({&#39;myvalue&#39;: 12.345, &#39;myname&#39;: &#39;Hari Seldon&#39;})
-print(f.info())
+print(f.asDict())
 
 # writing a configuration to a file:
 with open(&quot;z.g&quot;, &quot;w&quot;) as fil:
