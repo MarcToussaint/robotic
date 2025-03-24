@@ -363,6 +363,14 @@ class Config:
         """
     def get_viewer(self, window_title: str = None, offscreen: bool = False) -> ...:
         ...
+    def processInertias(self, recomputeInertias: bool = True, transformToDiagInertia: bool = False) -> None:
+        """
+        collect all inertia at root frame of links, optionally reestimate all inertias based on standard surface density, optionally relocate the link frame to the COM with diagonalized I)
+        """
+    def processStructure(self, pruneNamed: bool, pruneNonContactNonMarker: bool, pruneTransparent: bool) -> None:
+        """
+        structurally simplify the Configuration (deleting frames, relinking to minimal tree)
+        """
     def report(self) -> str:
         """
         return a string with basic info (#frames, etc)
@@ -391,10 +399,6 @@ class Config:
         ...
     def set_viewer(self, arg0: ...) -> None:
         ...
-    def simplify(self, pruneNamed: bool, pruneNonContactNonMarker: bool, pruneTransparent: bool) -> None:
-        """
-        structurally simplify the Configuration (deleting frames, relinking to minimal tree)
-        """
     def view(self, pause: bool = False, message: str = None) -> int:
         """
         open a view window for the configuration
@@ -449,7 +453,7 @@ class Config:
         """
         write the full configuration in a ply mesh file
         """
-    def writeMeshes(self, pathPrefix: ...) -> None:
+    def writeMeshes(self, pathPrefix: ..., copyTextures: bool) -> None:
         """
         write all object meshes in a directory
         """
@@ -724,7 +728,7 @@ class Frame:
         """
     def asDict(self) -> dict:
         ...
-    def computeCompoundInertia(self, clearChildInertias: bool = True) -> Frame:
+    def computeCompoundInertia(self) -> Frame:
         ...
     def convertDecomposedShapeToChildFrames(self) -> Frame:
         ...

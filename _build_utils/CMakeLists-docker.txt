@@ -9,7 +9,7 @@ endif()
 
 ## variable default values
 set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
-set(PY_VERSION 3.8 CACHE STRING "python version")
+set(PY_VERSION 3.12 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
@@ -21,7 +21,7 @@ set(CMAKE_INSTALL_RPATH "\$ORIGIN")
 
 ## options
 option(USE_PYBIND "build python bindings" ON)
-option(USE_BULLET "link to bullet" ON)
+option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
 option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
@@ -109,8 +109,6 @@ add_library(rai SHARED
   )
 
 ################################################################################
-#
-# rai include/link
 
 #find_package (FindEigen3 REQUIRED)
 #target_link_libraries (rai FindEigen3::Eigen)
@@ -173,7 +171,7 @@ endif()
 target_link_libraries(rai PRIVATE
   # ORDER MATTERS! test with -no-undefined linker flag (above)
   lapack libatlas.a
-  libglfw3.a libGLEW.a glut GLU GL
+  libglfw3.a libGLEW.a libglut.a Xrandr Xxf86vm Xi GLU GL
   libjsoncpp.a libpng16.a libassimp.a libzlibstatic.a
   libfcl.a libccd.a libANN.a libqhull.a
   pthread rt X11 dl
@@ -203,11 +201,10 @@ if(USE_PYBIND)
 endif()
 
 ################################################################################
-#
-# verbosity: info on eventual compiler flags
 
 get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 message(STATUS "[rai] compiler flags: " "${_defs}")
+message(STATUS "[rai] source dir: " "${CMAKE_SOURCE_DIR}")
 
 ################################################################################
 

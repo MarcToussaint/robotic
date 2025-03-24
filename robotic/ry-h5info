@@ -10,7 +10,11 @@ parser.add_argument('FILE', type=str,
 
 def print_attrs(name, obj):
     if isinstance(obj, h5py.Dataset):
-        print('   ', name, obj.name, obj.shape, obj.dtype)
+        print('   ', name, obj.name, obj.shape, obj.dtype, f'{obj.size*obj.dtype.itemsize/1024:.2f}kB')
+        if obj.dtype=='int8':
+            print(''.join([chr(x) for x in obj[()]]))
+        elif obj.size<20:
+            print(obj[()])
     else:
         print('---', name)
 

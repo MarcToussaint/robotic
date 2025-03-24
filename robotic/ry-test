@@ -16,7 +16,7 @@ q0 = C.getJointState()
 qT = q0
 qT[0] += 1.
 
-sim = ry.Simulation(C, ry.SimulationEngine.physx, verbose=1) #try verbose=2
+sim = ry.Simulation(C, ry.SimulationEngine.physx, verbose=2) #try verbose=3 or 1
 
 [X, q, V, qDot] = sim.getState()
 

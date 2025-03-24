@@ -9,7 +9,7 @@ endif()
 
 ## variable default values
 set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ version selection")
-set(PY_VERSION 3.10 CACHE STRING "python version")
+set(PY_VERSION 3.12 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
 endif()
@@ -181,7 +181,7 @@ endif()
 target_link_libraries(rai PRIVATE
   # ORDER MATTERS! test with -no-undefined linker flag (above)
   lapack blas
-  glfw GLEW glut GLU GL
+  glfw GLEW glut Xrandr Xxf86vm Xi GLU GL
   jsoncpp png assimp z
   fcl ccd ANN qhull
   boost_system pthread rt X11 dl
