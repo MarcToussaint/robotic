@@ -37,12 +37,12 @@ def writeShape(link):
         if xyz=='0 0 0':
             xyz=None
         if xyz is not None and rpy is not None:
-            print(' rel: "t(%s) E(%s)",' % (xyz, rpy), end='')
+            print(' pose: "t(%s) E(%s)",' % (xyz, rpy), end='')
         else:
             if rpy is not None:
-                print(' rel: "E(%s)",' % (rpy), end='')
+                print(' pose: "E(%s)",' % (rpy), end='')
             if xyz is not None:
-                print(' rel: [%s],' % (xyz), end='')
+                print(' pose: [%s],' % (xyz), end='')
 
     elem = link.find('geometry/box')
     if elem is not None:

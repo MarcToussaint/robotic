@@ -45,12 +45,12 @@ def writeShape(_elem, link):
         if xyz=='0 0 0':
             xyz=None
         if xyz is not None and rpy is not None:
-            _elem['rel'] = quoted_string("t(%s) E(%s)" % (xyz, rpy))
+            _elem['pose'] = quoted_string("t(%s) E(%s)" % (xyz, rpy))
         else:
             if rpy is not None:
-                _elem['rel'] = quoted_string("E(%s)" % (rpy))
+                _elem['pose'] = quoted_string("E(%s)" % (rpy))
             if xyz is not None:
-                _elem['rel'] = quoted_string("[%s]" % (xyz))
+                _elem['pose'] = quoted_string("[%s]" % (xyz))
 
     elem = link.find('geometry/box')
     if elem is not None:

@@ -243,14 +243,14 @@ install(
   DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi 
+  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi
   DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
-  DIRECTORY rai-robotModels
+  DIRECTORY rai-robotModels robotic/src
   DESTINATION ${PY_LIB_SITE}/robotic
   FILES_MATCHING
-  PATTERN "*.g" PATTERN "*.ply"
+  PATTERN "*.yml" PATTERN "*.g" PATTERN "*.h5" PATTERN "*.ply" PATTERN "*.png" PATTERN "*.py"
   PATTERN "retired" EXCLUDE
   )
 
@@ -267,5 +267,5 @@ install(
   DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
-  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-urdf2yaml robotic/ry-meshTool robotic/ry-h5info 
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-meshTool robotic/ry-h5info robotic/ry-urdfConvert.py
+  DESTINATION $ENV{VIRTUAL_ENV}/bin)

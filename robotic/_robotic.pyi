@@ -275,7 +275,7 @@ class Config:
         """
         animate with random spline in limits bounding box [T=#spline points]
         """
-    def asDict(self) -> dict:
+    def asDict(self, parentsInKeys: bool = True) -> dict:
         """
         return the configuration description as a dict, e.g. for file export
         """
@@ -367,7 +367,7 @@ class Config:
         """
         collect all inertia at root frame of links, optionally reestimate all inertias based on standard surface density, optionally relocate the link frame to the COM with diagonalized I)
         """
-    def processStructure(self, pruneNamed: bool, pruneNonContactNonMarker: bool, pruneTransparent: bool) -> None:
+    def processStructure(self, pruneRigidJoints: bool = False, reconnectToLinks: bool = True, pruneNonContactShapes: bool = False, pruneTransparent: bool = False) -> None:
         """
         structurally simplify the Configuration (deleting frames, relinking to minimal tree)
         """
@@ -453,7 +453,7 @@ class Config:
         """
         write the full configuration in a ply mesh file
         """
-    def writeMeshes(self, pathPrefix: ..., copyTextures: bool) -> None:
+    def writeMeshes(self, pathPrefix: ..., copyTextures: bool = True, enumerateTextures: bool = False) -> None:
         """
         write all object meshes in a directory
         """
@@ -788,11 +788,11 @@ class Frame:
         """
     def setImplicitSurface(self, data: ..., size: arr, blur: int, resample: float = -1.0) -> Frame:
         ...
-    def setJoint(self, jointType: JT, limits: arr = ...) -> Frame:
+    def setJoint(self, jointType: JT, limits: arr = ..., scale: float = 1.0, mimic: Frame = None) -> Frame:
         ...
     def setJointState(self, arg0: arr) -> Frame:
         ...
-    def setMass(self, arg0: float) -> Frame:
+    def setMass(self, mass: float, inertiaMatrix: arr = ...) -> Frame:
         ...
     def setMesh(self, vertices: arr, triangles: uintA, colors: ... = ..., cvxParts: uintA = ...) -> Frame:
         """

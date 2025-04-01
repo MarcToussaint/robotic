@@ -20,7 +20,7 @@ docs-clean:
 	rm -Rf html
 
 local-install:
-	ln -f -s _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
+	ln -f -s _make/CMakeLists-ubuntu.txt CMakeLists.txt
 	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build -DPY_VERSION=$(PY_VER)
 	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
@@ -33,11 +33,11 @@ local-clean:
 	-rm -f ${HOME}/.local/bin/*ry*
 
 wheels:
-	$(eval id = $(shell _build_utils/run-docker.sh -d))
+	$(eval id = $(shell _make/run-docker.sh -d))
 	@echo "started docker " ${id}
-	docker exec -it ${id} /bin/bash -C local/_build_utils/build-wheels.sh
+	docker exec -it ${id} /bin/bash -C local/_make/build-wheels.sh
 	docker stop ${id}
-#	_build_utils/run-docker.sh local/_build_utils/build-wheels.sh
+#	_make/run-docker.sh local/_make/build-wheels.sh
 
 wheels-upload:
 	twine upload dist/*.whl
