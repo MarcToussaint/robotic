@@ -16,6 +16,7 @@ parser.add_argument('file', type=str, help='urdf file', nargs='?', default='none
 
 parser.add_argument('-view', help='view mesh', action="store_true", default=True)
 parser.add_argument('-flipDaeYZ', help='view mesh', action="store_true", default=False)
+parser.add_argument('-pruneRigidJoints', help='view mesh', action="store_true")
 parser.add_argument('-recomputeInertias', help='view mesh', action="store_true")
 parser.add_argument('-processMeshes', help='view mesh', action="store_true", default=True)
 parser.add_argument('-meshlab', help='apply meshlab filters', action="store_true", default=False)
@@ -39,9 +40,9 @@ def main():
 
     C = ry.URDFLoader(args.file, visualsOnly=True, meshPathRemove='package://').C
 
-    C.processStructure(False, True, False, False)
+    C.processStructure(args.pruneRigidJoints, True, False, False)
     C.processInertias(args.recomputeInertias)
-    C.processStructure(False, True, False, False)
+    C.processStructure(args.pruneRigidJoints, True, False, False)
 
     os.system('rm -Rf meshes/')
     C.writeMeshes('meshes/', copyTextures=True)

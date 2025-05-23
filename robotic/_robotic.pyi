@@ -291,6 +291,10 @@ class Config:
         """
         clear all frames and additional data; becomes the empty configuration, with no frames
         """
+    def coll_totalViolation(self) -> float:
+        """
+        returns the sum of all penetrations (using FCL for broadphase; and low-level GJK/MRP for fine pair-wise distance/penetration computation)
+        """
     def computeCollisions(self) -> None:
         """
         [should be obsolete; getCollision* methods auto ensure proxies] call the broadphase collision engine (SWIFT++ or FCL) to generate the list of collisions (or near proximities) between all frame shapes that have the collision tag set non-zero
@@ -311,17 +315,9 @@ class Config:
         """
         returns the list of collisable pairs -- this should help debugging the 'contact' flag settings in a configuration
         """
-    def getCollisionFree(self) -> bool:
-        """
-        returns if the configuration is collision free (binary collision check, using FCL only; collidable objects need to have contact flag)
-        """
     def getCollisions(self, belowMargin: float = 1.0) -> list:
         """
         return the results of collision computations: a list of 3 tuples with (frame1, frame2, distance). Optionally report only on distances below a margin To get really precise distances and penetrations use the FS.distance feature with the two frame names
-        """
-    def getCollisionsTotalPenetration(self) -> float:
-        """
-        returns the sum of all penetrations (using FCL for broadphase; and low-level GJK/MRP for fine pair-wise distance/penetration computation)
         """
     def getFrame(self, frameName: str, warnIfNotExist: bool = True) -> Frame:
         """
@@ -411,6 +407,10 @@ class Config:
         """
         return the focal length of the view camera (only intrinsic parameter)
         """
+    def view_focus(self, frameName: str, absHeight: float = 2.0) -> None:
+        """
+        focus on a particular frame, given via name; second argument distances camara so that view window has roughly given absHeight around object
+        """
     def view_fxycxy(self) -> arr:
         """
         return (fx, fy, cx, cy): the focal length and image center in PIXEL UNITS
@@ -453,7 +453,7 @@ class Config:
         """
         write the full configuration in a ply mesh file
         """
-    def writeMeshes(self, pathPrefix: ..., copyTextures: bool = True, enumerateTextures: bool = False) -> None:
+    def writeMeshes(self, pathPrefix: ..., copyTextures: bool = True, enumerateAssets: bool = False) -> None:
         """
         write all object meshes in a directory
         """

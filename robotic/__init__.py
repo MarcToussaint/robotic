@@ -9,7 +9,7 @@ from .version import __version__
 
 from .manipulation import KOMO_ManipulationHelper
 
-from .src.config_mujoco import MujocoLoader
+from .src.mujoco_io import MujocoLoader
 from .src.config_urdf import URDFLoader
 from .src.mesh_helper import MeshHelper
 

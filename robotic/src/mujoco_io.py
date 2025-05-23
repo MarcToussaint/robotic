@@ -7,8 +7,11 @@ from copy import copy
 
 class MujocoLoader():
 
-    def __init__(self, file, visualsOnly=True):
+    def __init__(self, file, visualsOnly=True, defaultConType='0', basePos=[0,0,0], baseQuat=[0,0,0,1]):
+        ry.params_add({'cd_into_mesh_files': False})
+
         self.visualsOnly = visualsOnly
+        self.defaultConType = defaultConType
         self.debug_counter = 0
         self.muj2rai_joint_map = {
             '1 0 0': ry.JT.hingeX,
@@ -32,7 +35,8 @@ class MujocoLoader():
         self.C = ry.Config()
         self.base = self.C.addFrame('base')
         self.base.addAttributes({'multibody':True})
-        self.base.setQuaternion([0,0,0,1])
+        self.base.setPosition(basePos)
+        self.base.setQuaternion(baseQuat)
         self.add_node(root, self.base, path, 0)
 
     def as_floats(self, input_string):
@@ -104,7 +108,7 @@ class MujocoLoader():
         for i, joint in enumerate(body.findall('./joint')):
             axis = joint.attrib.get('axis', None)
             limits = joint.attrib.get('range', None)
-            joint_name = joint.attrib.get('name', f'{body_name}_joint{i*'_'}')
+            joint_name = joint.attrib.get('name', f'{body_name}_joint{i*"_"}')
             f_origin = self.C.addFrame(f'{joint_name}_origin')
             f_origin.setParent(f_body)
             self.setRelativePose(f_origin, joint.attrib)
@@ -145,7 +149,7 @@ class MujocoLoader():
             f_body.setParent(f_parent, True)
 
         for i, geom in enumerate(body.findall('./geom')):
-            isColl = ('contype' in geom.attrib and geom.attrib.get('contype', '')!='0') or 'col' in geom.attrib.get('class','')
+            isColl = geom.attrib.get('contype', self.defaultConType)!='0' or 'coll' in geom.attrib.get('class','')
             if self.visualsOnly and isColl:
                 continue
 
@@ -185,23 +189,24 @@ class MujocoLoader():
 
                 elif geom.attrib['type']=='box':
                     assert len(size)==3
-                    f_shape.setShape(ry.ST.box, [2.*f for f in size])
+                    size = [2.*f for f in size]
+                    f_shape.setShape(ry.ST.box, size)
                     if geom.attrib.get('material', None):
                         texture_path = self.materials[geom.attrib.get('material', None)]
                         if len(texture_path.split()) == 4:  # Is a color rgba
                             f_shape.setColor(self.as_floats(texture_path))
                         else:
                             print('applying to box:', texture_path)
-                            #TODO incorperate <texrepeat> tag correctly    
+                            #TODO incorperate <texrepeat> tag correctly
                             uv_coords = np.array([
                             [0, 0],  # vertex 0
-                            [1, 0],  # vertex 1
-                            [1, 1],  # vertex 2
-                            [0, 1],  # vertex 3
-                            [0, 0],  # vertex 4
-                            [1, 0],  # vertex 5
-                            [1, 1],  # vertex 6
-                            [0, 1]   # vertex 7
+                            [size[0], 0],  # vertex 1
+                            [size[0], size[1]],  # vertex 2
+                            [0, size[1]],  # vertex 3
+                            [0, 0],  # vertex 0
+                            [size[0], 0],  # vertex 1
+                            [size[0], size[1]],  # vertex 2
+                            [0, size[1]],  # vertex 3
                             ])
                             
                             f_shape.setTextureFile(texture_path, uv_coords)
