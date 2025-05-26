@@ -55,7 +55,7 @@ for ver in 12 11 10 9 8; do
     echo -e "\n\n======== build wheel (python version " $ver ") ========"
     #python3.$ver setup.py --quiet bdist_wheel
     python3.$ver -m build -C--global-option=--quiet
-    break
+    #break
 done
 
 ### delete setup temp files

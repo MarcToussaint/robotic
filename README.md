@@ -29,12 +29,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 * Tests:
 
       ry-info
-
       ry-test
-
-      python3 -c 'import robotic as ry; ry.test.RndScene()'
-
-      ry-view `python3 -m site --user-site`/robotic/rai-robotModels/scenarios/pandaSingle.g
 
 * Run all tutorial notebooks as a test and showcase (takes long):
 
@@ -42,6 +37,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       git clone https://github.com/MarcToussaint/rai-tutorials.git
       cd rai-tutorials
       make run -j1
+	  make run_demos -j1
 
 * Tested in latest ubuntu docker (using a venv):
 
@@ -57,7 +53,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 
 ## Installation from source with real Franka & realsense support
 
-This assumes a standard Ubuntu 22.04 (or 20.04, 18.04) machine.
+This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
 
 * Install Ubuntu and python packages:
 

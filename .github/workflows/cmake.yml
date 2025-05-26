@@ -31,7 +31,7 @@ jobs:
         pip install numpy pybind11
     - name: setup build files
       run: |
-        cp _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
+        cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
         cd $HOME && mkdir -p .local/include && cd .local/include && ln -s /usr/include/libqhull qhull
     - name: cmake configure
       run: |
