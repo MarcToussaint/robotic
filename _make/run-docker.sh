@@ -13,7 +13,7 @@ thispath="$(dirname "$(realpath "$0")")"
 
 xhost +local:root > /dev/null
 
-docker run -it $1 \
+docker run -it $2 \
        --volume="$thispath/..:/root/local" \
        --volume="$HOME:/root/home" \
        --volume="$thispath/docker.bashrc:/root/.bash_aliases" \
@@ -23,7 +23,7 @@ docker run -it $1 \
        --network host \
        --device /dev/input \
        --device /dev/dri \
-       rai-manylinux /bin/bash
+       $1 /bin/bash
 
 #       -v $XSOCK:$XSOCK \
 #       -v $XAUTH:$XAUTH \

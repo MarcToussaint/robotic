@@ -10,7 +10,8 @@ C.addFile(ry.raiPath('panda/panda.g'), 'b_').setPosition([0,0,.5])
 C.addFrame('box1') .setShape(ry.ST.ssBox,[.3, .3, .3, .05]) .setPosition([1.3, 0, 2.]) .setMass(3)
 C.addFrame('box2') .setShape(ry.ST.ssBox,[.3, .3, .3, .05]) .setPosition([.5, .0, 1.8]) .setMass(3)
 
-#C.view(False)
+C.view(False)
+time.sleep(.5)
 
 q0 = C.getJointState()
 qT = q0

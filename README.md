@@ -86,7 +86,7 @@ This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
       cd $HOME/git
       git clone --recursive https://github.com/MarcToussaint/robotic.git
       cd robotic
-      cp _build_utils/CMakeLists-ubuntu.txt CMakeLists.txt
+      cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
       export PY_VERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
       cmake -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON . -B build
       make -C build _robotic install

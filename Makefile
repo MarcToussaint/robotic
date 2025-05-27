@@ -33,7 +33,7 @@ local-clean:
 	-rm -f ${HOME}/.local/bin/*ry*
 
 wheels:
-	$(eval id = $(shell _make/run-docker.sh -d))
+	$(eval id = $(shell _make/run-docker.sh rai-manylinux -d))
 	@echo "started docker " ${id}
 	docker exec -it ${id} /bin/bash -C local/_make/build-wheels.sh
 	docker stop ${id}
@@ -44,6 +44,12 @@ wheels-upload:
 
 wheels-install:
 	python$(PY_VER) -m pip install dist/robotic-*cp312*.whl --force-reinstall
+
+test-buildFromScratch:
+	$(eval id = $(shell _make/run-docker.sh ubuntu -d))
+	@echo "started docker " ${id}
+	docker exec -it ${id} /bin/bash -C /root/local/_make/test-build.sh
+	docker stop ${id}
 
 test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'

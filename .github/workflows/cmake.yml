@@ -8,31 +8,36 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: 'recursive'
     - uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
+        python-version: '3.12'
     - name: install ubuntu dependencies
       run: |
-        sudo apt-get install libboost-system-dev libjsoncpp-dev
-        APTGETYES=1 make -C rai -j1 installUbuntuAll
+	sudo apt install --yes \
+	  g++ clang make gnupg cmake git wget libstdc++-14-dev \
+	  liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev \
+	  libjsoncpp-dev libyaml-cpp-dev libhdf5-dev libpoco-dev \
+	  libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
+	  libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev \
+	  freeglut3-dev libpng-dev libassimp-dev
+    - name: install python dependencies
+      run: |
+        python3 -m pip install --user numpy pybind11 pybind11-stubgen
     - name: install source dependencies
       run: |
         wget https://github.com/MarcToussaint/rai/raw/refs/heads/marc/_make/install.sh; chmod a+x install.sh
         ./install.sh libccd
         ./install.sh fcl
         ./install.sh libann
-    - name: install python dependencies
-      run: |
-        pip install numpy pybind11
     - name: setup build files
       run: |
         cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
-        cd $HOME && mkdir -p .local/include && cd .local/include && ln -s /usr/include/libqhull qhull
+        cd $HOME	
     - name: cmake configure
       run: |
         export PY_VER=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
