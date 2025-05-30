@@ -121,7 +121,7 @@ class MujocoLoader():
                 else:
                     vec1 = np.array([0., 0., 1.])
                     vec2 = np.array(self.as_floats(axis))
-                    quat = ry.Quaternion().setDiff(vec1, vec2).getArr()
+                    quat = ry.Quaternion().setDiff(vec1, vec2).asArr()
                     f_origin.setRelativeQuaternion(quat)
                     axis = ry.JT.hingeZ
             else:
@@ -178,7 +178,7 @@ class MujocoLoader():
                         l = np.linalg.norm(b-a)
                         q = ry.Quaternion().setDiff([0,0,1],(b-a)/l)
                         f_shape.setRelativePosition(0.5*(a+b))
-                        f_shape.setRelativeQuaternion(q.getArr())
+                        f_shape.setRelativeQuaternion(q.asArr())
                         f_shape.setShape(ry.ST.capsule, [l, size[0]])
                     elif len(size)==2:
                         f_shape.setShape(ry.ST.capsule, [2.*size[1], size[0]])
@@ -239,4 +239,4 @@ class MujocoLoader():
         if rpy:
             q = ry.Quaternion()
             q.setRollPitchYaw(self.as_floats(rpy))
-            f.setRelativeQuaternion(q.getArr())
+            f.setRelativeQuaternion(q.asArr())

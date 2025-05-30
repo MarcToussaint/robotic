@@ -31,7 +31,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       ry-info
       ry-test
 
-* Run all tutorial notebooks as a test and showcase (takes long):
+* Run all tutorial notebooks as a test and showcase:
 
       pip install jupyter nbconvert matplotlib ipympl
       git clone https://github.com/MarcToussaint/rai-tutorials.git
@@ -41,13 +41,11 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 
 * Tested in latest ubuntu docker (using a venv):
 
-      alias sudo=
-      sudo apt install --yes liblapack3 freeglut3-dev libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip python3-venv
-      cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libglut.so.3.12 libglut.so.3
+      apt install --yes liblapack3 xorg freeglut3-dev libglu1-mesa libfreetype6 fonts-ubuntu python3 python3-pip python3-venv
+      cd /usr/lib/x86_64-linux-gnu/ && ln -s libglut.so.3.12 libglut.so.3
       cd
-      mkdir -p ~/.local
-      python3 -m venv ~/.local/venv
-      source ~/.local/venv/bin/activate
+      python3 -m venv ~/venv
+      source ~/venv/bin/activate
       pip install robotic numpy
       ry-test
 

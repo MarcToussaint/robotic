@@ -1477,13 +1477,17 @@ class Quaternion:
         """
         non-initialized
         """
+    def __mul__(self, arg0: Quaternion) -> Quaternion:
+        """
+        concatenation (quaternion multiplication) of two transforms
+        """
     def append(self, q: Quaternion) -> None:
         ...
     def applyOnPointArray(self, pts: arr) -> None:
         ...
-    def flipSign(self) -> None:
+    def asArr(self) -> arr:
         ...
-    def getArr(self) -> arr:
+    def flipSign(self) -> None:
         ...
     def getJacobian(self) -> arr:
         ...
@@ -1843,6 +1847,8 @@ class Simulation:
         """
         reset the spline reference, i.e., clear the current spline buffer and initialize it to constant spline at current position (to which setSplineRef can append)
         """
+    def resetTime(self) -> None:
+        ...
     def selectSensor(self, sensorName: str) -> ...:
         ...
     def setSplineRef(self, path: arr, times: arr, append: bool = True) -> None:
