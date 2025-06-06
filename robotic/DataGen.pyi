@@ -52,6 +52,10 @@ class ShapenetGrasps:
         """
         (direct interface) return pcl of loaded object
         """
+    def getPointNormals(self) -> arr:
+        """
+        (direct interface) return point normals of the pcl of loaded object
+        """
     def getSamples(self, nSamples: int) -> tuple[arr, uintA, arr]:
         """
         (batch interface) return three arrays: samples X, contexts Z, scores S (each row are scores for one sample - see evaluateSamples)
@@ -64,7 +68,7 @@ class ShapenetGrasps:
         """
         (direct interface) return (relative) pose of random sampled grasp candidate
         """
-    def setGraspPose(self, pose: arr, objPts: str = 'objPts0') -> None:
+    def setGraspPose(self, pose: arr, objPts: str = 'obj0_pts') -> None:
         """
         (direct interface) set (relative) pose of grasp candidate
         """

@@ -792,6 +792,10 @@ class Frame:
         ...
     def setJointState(self, arg0: arr) -> Frame:
         ...
+    def setLines(self, verts: arr, colors: ... = ...) -> Frame:
+        """
+        attach lines as shape
+        """
     def setMass(self, mass: float, inertiaMatrix: arr = ...) -> Frame:
         ...
     def setMesh(self, vertices: arr, triangles: uintA, colors: ... = ..., cvxParts: uintA = ...) -> Frame:
