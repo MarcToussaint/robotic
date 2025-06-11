@@ -64,16 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ext_rendering.html">Extension - Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_rrt.html">Extension - RRT: basic finding example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_nlp_solvers.html">Extension - NLP interface: Low-level NLP formulation and solving</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Extension - Gym Environment Interface: minimal example</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Task-1:">Task 1:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Task-3:">Task 3:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Test-Functionality-of-the-components-you-implemented-and-the-physx-simulator">Test Functionality of the components you implemented and the physx simulator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Now-the-actual-policy-learning-happens">Now the actual policy learning happens</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Rollout-of-the-trained-policy">Rollout of the trained policy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Task-4:">Task 4:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#(Bonus)-Task-5:">(Bonus) Task 5:</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Extension - Gym Environment Interface: minimal example</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
@@ -114,217 +105,188 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import gymnasium as gym
 import numpy as np
+import time
 print(&#39;ry version:&#39;, ry.__version__, ry.compiled())
 </pre></div>
 </div>
 </div>
+<p>Let’s first create a configuration</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
 C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
-C.view(False)
+C.setJointState([.007], [&#39;l_panda_finger_joint1&#39;]) #only cosmetics
+#the following makes it a LOT simpler
+C.setJointState([.0], [&#39;l_panda_joint2&#39;])
+C.setJointState([.7], [&#39;l_panda_joint7&#39;])
+gripper = &#39;l_gripper&#39;
 
-C.addFrame(&#39;box&#39;) \
+box = C.addFrame(&#39;box&#39;) \
     .setShape(ry.ST.ssBox, size=[.1,.1,.1,.005]) .setColor([1,.5,0]) \
     .setPosition([.06,.35,.7]) \
     .setMass(.1) \
-    .setAttribute(&#39;friction&#39;, 0.01) # friction definition # initial noise with falling box?
+    .setAttributes({&#39;friction&#39;: .5})
+box.setPosition([.1,.35,.7]) # this is the initial position of the box - change manually to make harder
 
-C.addFrame(&#39;plate&#39;, &#39;l_gripper&#39;) \
-    .setShape(ry.ST.ssBox, size=[.01,.2,.36,.0025]) .setColor([.5,1,0]) \
-    .setRelativePosition([0,0,-.16])
+C.addFrame(&#39;plate&#39;, gripper) \
+    .setShape(ry.ST.ssBox, size=[.02,.2,.36,.005]) .setColor([.5,1,0]) \
+    .setRelativePosition([0,0,-.16]) \
+    .setAttributes({&#39;friction&#39;: .1})
 
 C.addFrame(&#39;target&#39;) \
     .setShape(ry.ST.marker, size=[.1]) .setColor([0,1,0]) \
-    .setPosition([.4,.3,.7]) \
-
-#the following would make it a LOT simpler
-C.setJointState([.0], [&#39;l_panda_joint2&#39;])
-C.setJointState([.7], [&#39;l_panda_joint7&#39;])
-
-C.setJointState([.007], [&#39;l_panda_finger_joint1&#39;]) #only cosmetics
-
-q0 = C.getJointState()
-X0 = C.getFrameState()
+    .setPosition([.3,.3,.7])
 
 C.view()
 </pre></div>
 </div>
 </div>
-<section id="Task-1:">
-<h2>Task 1:<a class="headerlink" href="#Task-1:" title="Link to this heading"></a></h2>
-<p>The following code consists of a minimal Implementation of an environment in which the robot can operate. Currently the policy receives information about the internal state but no further information about the environment state. This is called open-loop Reinforcement Learning.</p>
-<p>What do you need to change to make it a closed-loop Reinforcement Learning setting? Apply the changes to the current environment.</p>
+<p>Here is a basic class implementing a gym.Env:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class RaiGym(gym.Env):
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class RoboticGym(gym.Env):
     metadata = {&quot;render_modes&quot;: [&quot;human&quot;, &quot;rgb_array&quot;], &quot;render_fps&quot;: 4}
-    tau = .05
+    tau_env = .05 #a gym environment step corresponds to 0.05 sec
+    tau_sim = .01 #the underlying physics simulation is stepped with 0.01 sec (5 sim steps in each env step)
     time = 0.
+    render_mode = &#39;human&#39;
 
-    def __init__(self, C, time_limit, reward_fct, render_mode=None):
-        self.C : ry.Config = C
+    viewSteps = False
+    random_reset = False
+
+    def __init__(self, C:ry.Config, time_limit, sim_verbose=0):
         self.time_limit = time_limit
-        self.reward_fct = reward_fct
-        self.render_mode = render_mode
-        # self.limits = self.C.getJointLimits()
-        self.limits = [-10., 10.]
+
+        # create/load the robotic configuration
+        self.C = C
         self.q0 = self.C.getJointState()
         self.X0 = self.C.getFrameState()
+        self.box = self.C.getFrame(&#39;box&#39;)
+        n = self.q0.size
 
-        # here they need to configure open loop or closed loop RL, with and without box position
-        #self.observation_space = gym.spaces.box.Box(self.limits[0], self.limits[1], shape=(self.q0.size,), dtype=np.float32)
-        self.observation_space = gym.spaces.box.Box(self.limits[0], self.limits[1], shape=(self.q0.size + 3,), dtype=np.float32)
+        # define the observation space (see also observation_fct())
+        self.observation_space = gym.spaces.Box(-2., +2., shape=(2*n + 6,), dtype=np.float32)
 
-        #self.action_space = gym.spaces.box.Box(low=-1., high=1., shape=(self.q0.size,), dtype=np.float32)
-        self.action_space = gym.spaces.Box(low=np.array([-1, -1, -1]), high=np.array([1, 1, 1]), dtype=np.float32)
+        # define the action space
+        action_scale = 5
+        action_dim = n
+        self.action_space = gym.spaces.Box(-action_scale, +action_scale, shape=(action_dim,), dtype=np.float32)
 
-        assert render_mode is None or render_mode in self.metadata[&quot;render_modes&quot;]
-        self.render_mode = render_mode
-
-        self.sim = ry.Simulation(self.C, ry.SimulationEngine.physx, verbose=4)
+        # create the underlying physics simulation (using PhysX from Nvidia)
+        self.sim = ry.Simulation(self.C, ry.SimulationEngine.physx, verbose=sim_verbose)
 
     def __del__(self):
         del self.sim
         del self.C
 
-    # different step functions implemntation, once with direct actions and one with a komo solver endeffector
-
-    # def step(self, action):
-    #     self.sim.step(action, self.tau, ry.ControlMode.velocity)
-    #     self.time += self.tau
-
-    #     observation_joint = self.C.getJointState()
-    #     observation_box = self.C.getFrame(&#39;box&#39;).getPosition()
-    #     observation = np.concatenate((observation_joint, observation_box), axis=0)
-    #     reward = self.reward_fct(C)
-    #     truncated = (self.time &gt;= self.time_limit) # terminated and truncated difference is super important
-    #     info = {&quot;no&quot;: &quot;additional info&quot;}
-
-    #     return observation, reward, False, truncated, info
-
     def step(self, action):
-        dx, dy, dtheta = action
+        &#39;&#39;&#39;essential to implement gym.Env&#39;&#39;&#39;
+        self.step_qDelta(action)
 
-        ee = self.C.getFrame(&quot;plate&quot;)
-        pos = ee.getPosition()
-        quat = ee.getQuaternion()
+        self.time += self.tau_env
 
-        target_pos = pos + np.array([dx, dy, 0.0])
-        R_current = ry.Quaternion().set(quat)
-        R_delta = ry.Quaternion().setExp([0., 0., dtheta])
-        target_quat = (R_delta * R_current).asArr()
-
-        komo = ry.KOMO()
-        komo.setConfig(self.C, True)
-        komo.setTiming(1, 1, 1., 2)
-        komo.addObjective([], ry.FS.position, [&#39;plate&#39;], ry.OT.eq, [1e1], target_pos)
-        komo.addObjective([], ry.FS.quaternion, [&#39;plate&#39;], ry.OT.eq, [1e1], target_quat)
-        ret = ry.NLP_Solver(komo.nlp(), verbose=4).solve()
-
-        q_target = komo.getPath()[0]
-        self.sim.step(q_target - self.C.getJointState(), self.tau, ry.ControlMode.velocity)
-        self.time += self.tau
-
-        # self.C.view(False, &#39;simulating&#39;)
-
-        observation_joint = self.C.getJointState() #more information
-        observation_box = self.C.getFrame(&#39;box&#39;).getPosition()
-        observation = np.concatenate((observation_joint, observation_box), axis=0)
-        reward = self.reward_fct(C)
+        observation = self.observation_fct()
+        reward = self.reward_fct()
         terminated = False
         truncated = (self.time &gt;= self.time_limit) # terminated and truncated difference is super important
         info = {&quot;no&quot;: &quot;additional info&quot;}
-
-        # mistake in former repository
         return observation, reward, terminated, truncated, info
 
+    def observation_fct(self):
+        &#39;&#39;&#39;observations are joint pos/vel, and box pos/vel&#39;&#39;&#39;
+        X, q, Xdot, qdot = self.sim.getState()
+        box_pos = X[self.box.ID, :3]
+        box_vel = Xdot[self.box.ID, 0]
+        observation = np.concatenate((q, qdot, box_pos, box_vel), axis=0)
+        return observation
+
+    def reward_fct(self):
+        &#39;&#39;&#39;two reward terms: box-at-goal reward (peaked) and touch object reward (negDistance)&#39;&#39;&#39;
+        goalDist, _ = self.C.eval(ry.FS.positionDiff, [&quot;box&quot;, &quot;target&quot;])
+        sigma = .2
+        r = 1. - np.tanh(np.linalg.norm(goalDist)/sigma)
+
+        negObjDistance, _ = self.C.eval(ry.FS.negDistance, [&quot;plate&quot;, &quot;box&quot;])
+        r += negObjDistance[0]
+        return r
+
+    def step_qDelta(self, delta):
+        &#39;&#39;&#39;sending deltas in joint space; where deltas have semantic of velocity&#39;&#39;&#39;
+        # the sim needs to run at least with 100Hz (to properly simulate collisions)
+        # that&#39;s why we have multiple sim steps for each env step
+        sim_steps = int(self.tau_env/self.tau_sim)
+        delta[-1] *= 5.
+        for s in range(sim_steps):
+            #the following converts the deltas to position references for the underlying sim PD controller
+            q = self.sim.get_q()
+            self.sim.step(q + self.tau_sim * delta, self.tau_sim, ry.ControlMode.position)
+            if self.viewSteps:
+                self.C.view()
+                time.sleep(self.tau_sim)
 
     def reset(self, seed=None):
+        &#39;&#39;&#39;essential to implement gym.Env&#39;&#39;&#39;
         super().reset(seed=seed)
 
+        X = self.X0.copy()
+        if self.random_reset:
+            # resetting the box position to a random initial position -- makes it MUCH harder
+            X[self.box.ID, :2] += .3 * np.random.randn(2)
+
+        # resetting the sim
         self.time = 0.
-        self.sim.setState(X0, q0)
+        self.sim.resetTime()
+        self.sim.setState(X, self.q0)
         self.sim.resetSplineRef()
 
-        observation_joint = self.C.getJointState()
-        observation_box = self.C.getFrame(&#39;box&#39;).getPosition()
-        observation = np.concatenate((observation_joint, observation_box), axis=0)
+        observation = self.observation_fct()
         info = {&quot;no&quot;: &quot;additional info&quot;}
-
-        if self.render_mode == &quot;human&quot;:
-            self.C.view(False)
-
         return observation, info
 
+    def rollout(self, pi):
+        &#39;&#39;&#39;helper to play and view a policy&#39;&#39;&#39;
+        self.viewSteps=True #triggers display within the low level step functions
+        obs, info = self.reset()
+        t = 0
+        R = 0
+        while True:
+            action = pi(obs, t)
+            obs, reward, terminated, truncated, info = self.step(action)
+            R += reward
+            t += 1
+            print(&quot;reward: &quot;, reward)
+            if terminated or truncated:
+                break
+        print(&#39;total return:&#39;, R)
+        self.viewSteps=False #disables display within the low level step functions
+
     def render(self):
-        self.C.view(False, f&#39;RaiGym time {self.time} / {self.time_limit}&#39;)
+        &#39;&#39;&#39;also part of the env.Gym&#39;&#39;&#39;
+        self.C.view(False, f&#39;RoboticGym time {self.time} / {self.time_limit}&#39;)
         if self.render_mode == &quot;rgb_array&quot;:
             return self.C.view_getRgb()
-<br/></pre></div>
+</pre></div>
 </div>
 </div>
-</section>
-<section id="Task-3:">
-<h2>Task 3:<a class="headerlink" href="#Task-3:" title="Link to this heading"></a></h2>
-<p>Great, the environment is currently set up. You defined the observation space, the action space and already defined the step function. One essential ingredient is missing: The Reward Function. You should pose the question: How do I make sure that the goal of pushing the ‘box’ with the ‘plate’ to the ‘target’ position?</p>
-<p>Tipp: C.eval(ry.FS.{members}, [{frames}]) will help you defining the reward. Familiarize yourself with the different members of the class FS.</p>
+<p>Note in particular the reward_fct and observation_fct above, using the <code class="docutils literal notranslate"><span class="pre">eval</span></code> methods to access geometric features.</p>
+<p>Let’s first rollout a trivial policy:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def reward_function(C):
-    touch, _ = C.eval(ry.FS.negDistance, [&quot;plate&quot;, &quot;box&quot;])
-    dist, _ = C.eval(ry.FS.positionDiff, [&quot;box&quot;, &quot;target&quot;])
-    r = touch[0] - np.linalg.norm(dist)
-    return r
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>env = RaiGym(C, 10., reward_function)
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Test-Functionality-of-the-components-you-implemented-and-the-physx-simulator">
-<h2>Test Functionality of the components you implemented and the physx simulator<a class="headerlink" href="#Test-Functionality-of-the-components-you-implemented-and-the-physx-simulator" title="Link to this heading"></a></h2>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>env.reset()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>env = RoboticGym(C, time_limit=3., sim_verbose=0)  #verbosity of underlying sim - set to 2 once to see actual exploration during training
 
-v = np.zeros(3)
-v[0] = 0.2 # 3 joints, linear velocity - + mit rechte daumen regel
-# v = np.zeros(env.q0.size)
-# v[0] = -1. # 7 joints, radial velocity - + mit rechte daumen regel
-print(v)
-
-t = 0
-while True:
-    t += 1
-    observation, reward, terminated, truncated, info = env.step(v)
-    done = terminated or truncated
-    if done:
-        break
-    # print(&quot;reward: &quot;, reward)
-    # if not (t%5):
-    #     env.render()
+pi = lambda obs, t : np.array([-1.,0.,-1.,0,0,0,0])
+env.rollout(pi)
+env.C.view()
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Now-the-actual-policy-learning-happens">
-<h2>Now the actual policy learning happens<a class="headerlink" href="#Now-the-actual-policy-learning-happens" title="Link to this heading"></a></h2>
-<p>We import SAC and PPO from the stable_baselines3 library, define checkpoints and a tensorboard logger. Learning the policy takes some time on a normal CPU, consider a total_timesteps of 200_000 or even more. Observe the training dynamics in the tensorbaord logger.</p>
+<p>And we can train standard RL:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -341,7 +303,26 @@ print(torch.__version__)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>checkpoint_callback = CheckpointCallback(save_freq=10000, save_path=&#39;./checkpoints_endeffectorActions/&#39;, name_prefix=&#39;rl_model&#39;)
-model = SAC(&quot;MlpPolicy&quot;, env, gamma=0.99, learning_rate=1e-4, verbose=1, tensorboard_log=&quot;./tensorboard/&quot;)
+
+model = SAC(&quot;MlpPolicy&quot;, env, gamma=0.99, learning_rate=3e-3, verbose=1, tensorboard_log=&quot;./tensorboard/&quot;)
+# model = PPO(&quot;MlpPolicy&quot;, env, gamma=0.99, learning_rate=3e-3, n_steps=1024, verbose=1, tensorboard_log=&quot;./tensorboard/&quot;)
+
+model.learn(total_timesteps=1_000, callback=checkpoint_callback)
+</pre></div>
+</div>
+</div>
+<p>… and roll out the trained policy</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># model = SAC.load(&#39;./checkpoints_endeffectorActions/rl_model_199498_steps.zip&#39;, env=env)
+
+while True:
+    pi = lambda obs, t : model.predict(obs, deterministic=True)[0] #change deterministic to False to see with noise
+    env.rollout(pi)
+    if env.C.view(True, &#39;press q to stop looping&#39;) == ord(&#39;q&#39;):
+        break
 </pre></div>
 </div>
 </div>
@@ -349,57 +330,10 @@ model = SAC(&quot;MlpPolicy&quot;, env, gamma=0.99, learning_rate=1e-4, verbose=
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.learn(total_timesteps=500_000, callback=checkpoint_callback)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Rollout-of-the-trained-policy">
-<h2>Rollout of the trained policy<a class="headerlink" href="#Rollout-of-the-trained-policy" title="Link to this heading"></a></h2>
-<p>Once the policy is trained, you can load it from a certain checkpoint</p>
-</section>
-<section id="Task-4:">
-<h2>Task 4:<a class="headerlink" href="#Task-4:" title="Link to this heading"></a></h2>
-<p>Now you want to actually play the policy, therefore you need to implement a simple loop. Make sure that you observe the reward.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = SAC.load(&#39;./checkpoints_endeffectorActions/rl_model_199498_steps.zip&#39;, env=env)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>obs, info = env.reset()
-for t in range(200):
-    action, _state = model.predict(obs, deterministic=True)
-    obs, reward, terminated, truncated, info = env.step(action) # super relevant Achim the legend
-    if not (t%10):
-        env.render()
-        print(&quot;reward: &quot;, reward)
-</pre></div>
-</div>
-</div>
-</section>
-<section id="(Bonus)-Task-5:">
-<h2>(Bonus) Task 5:<a class="headerlink" href="#(Bonus)-Task-5:" title="Link to this heading"></a></h2>
-<p>You did a great job! The last task considers again the step function of the environment. Beforehand the step function considered directly the joint space positions actions which were directly fed into the physx simulator.</p>
-<p>But what about reducing the action space to for example the x, y positions and theta orientation of the endeffector (‘plate’)? Define a new step function in the environment.</p>
-<p>Tipp: You will need to solve a komo problem in the step function to move the endeffector. Consider adjustments in the actionspace and in the functionality test function.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># del model
-# del g
-# del C
-</pre></div>
-</div>
-</div>
-</section>
 </section>
 
 

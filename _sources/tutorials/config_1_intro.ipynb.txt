@@ -8,7 +8,7 @@
     "\n",
     "A configuration is essentially a tree of (coordinate) frames, where each frame can have an associated shape, joint, inertia, etc. This tutorial introduces first steps to creating & loading configurations in rai, setting/getting the joint and frame state, computing features, and handling the view window.\n",
     "\n",
-    "Please see the [Script:Configurations](https://marctoussaint.github.io/robotics-course/script/script.html#scene-robot-description) of configurations and degrees-of-freedom."
+    "Please see the [Robot Kinematics and Dynamics Essentials](https://www.user.tu-berlin.de/mtoussai/notes/robotKin.html) lecture notes for some background."
    ]
   },
   {
@@ -29,7 +29,7 @@
     "import robotic as ry\n",
     "import numpy as np\n",
     "import time\n",
-    "print('version:', ry.__version__, ry.compiled())"
+    "print('robotic package version:', ry.__version__, ry.compiled())"
    ]
   },
   {
@@ -57,7 +57,7 @@
    "source": [
     "The `C.view()` command will open a window that shows an empty configuration. \n",
     "\n",
-    "A configuration is essentially a tree (or forest) of frames. You usually add models from files, but let's do it manually here. We declare it a **marker** frame, which means it has no real shape, but is displayed using its base vectors in the view."
+    "A configuration is essentially a tree (or forest) of frames. You often add models from files, but let's do it manually here. We declare it a *marker* frame, which means it has no real shape, but is displayed using its base vectors in the view."
    ]
   },
   {
@@ -130,9 +130,9 @@
    "outputs": [],
    "source": [
     "# Add new frames: a box, a ball and a capsule\n",
-    "C.addFrame('ball', 'second') .setShape(ry.ST.sphere, [.1]) .setColor([1.,.5,.0]) .setRelativePosition([-.3,.0,.2])\n",
-    "C.addFrame('box', 'second') .setShape(ry.ST.ssBox, [.3,.2,.1,.02]) .setColor([.5,1.,.0]) .setRelativePosition([.0,.0,.2])\n",
-    "C.addFrame('capsule', 'second') .setShape(ry.ST.capsule, [.3, .05]) .setColor([.0,1.,.5]) .setRelativePosition([.3,.0,.2])\n",
+    "C.addFrame('ball', 'second') .setShape(ry.ST.sphere, [.1]) .setColor([.7,.0,.0]) .setRelativePosition([-.3,.0,.2])\n",
+    "C.addFrame('box', 'second') .setShape(ry.ST.ssBox, [.3,.2,.1,.02]) .setColor([.0,.7,.0]) .setRelativePosition([.0,.0,.2])\n",
+    "C.addFrame('capsule', 'second') .setShape(ry.ST.capsule, [.3, .05]) .setColor([.0,.0,.7]) .setRelativePosition([.3,.0,.2])\n",
     "\n",
     "# Articulate the new configuration by moving the hinge joint\n",
     "for t in range(50):\n",
@@ -161,7 +161,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "For most of these, the `size` fully specifies them (box: 3 widths, sphere: radius, capsule: [length radius], cylinder: [length radius], marker: [axes lengths]). The `ssBox` is a sphere-swept-Box with a 4D size: [3 widths, corner radius], which is used a lot. Also mesh shapes can be set manually from python (`setMesh`) by directly giving vertex and triangle arrays. `ssCvx` means sphere-swept convex mesh, which is specified by a mesh and 1D size (radius), and also a very useful shape type."
+    "For most of these, the `size` fully specifies them (box: 3 widths, sphere: radius, capsule: [length radius], cylinder: [length radius], marker: [axes lengths]). The `ssBox` is a sphere-swept-Box with a 4D size: [3 widths, corner radius], which is used a lot. Also mesh shapes can be set manually from python (`setMesh`) by directly giving vertex and triangle arrays, or loaded from a file (`setMeshFile`). `setConvexMesh` means sphere-swept convex mesh, which is specified by a mesh and 1D size (radius), and also a very useful shape type.\n",
+    "\n",
+    "Other methods to set shapes include: `setImplicitSurface` (for a given 3D tensor, using Marching Cube to find the iso-surface mesh), `setTensorShape` (a 3D tensor with densities, displayed as transparent density), `setPointCloud` (optionally with normals), and `setLines`."
    ]
   },
   {
@@ -184,9 +186,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Please see the [Script:Kinematics](https://marctoussaint.github.io/robotics-course/script/script.html#kinematics) on the basics of such joints (=parameterized transformations). The `quatBall` perhaps deserves special explanation: it realizes a ball joint by introducing the 4D quaternion as joint state - this sometimes requires special attention. But the rai code implements correct Jacobians (accounting also for implicit normalization) w.r.t. the quaternion parameterization. The `free` joint is a 7D joint with 3D position and `quatBall`.\n",
+    "Please see the [Robot Kinematics and Dynamics Essentials](https://www.user.tu-berlin.de/mtoussai/notes/robotKin.html) for background on such joints (=parameterized transformations). The `quatBall` perhaps deserves special mentioning: it realizes a ball joint by introducing the 4D quaternion as joint state - this sometimes requires special attention. But the library implements correct Jacobians (accounting also for implicit normalization) w.r.t. the quaternion parameterization. The `free` joint is a 7D joint with 3D position and `quatBall`.\n",
     "\n",
-    "There is also a `rigid` joint, which simply means no DOF and seems fully redundant: having no joint or a rigid joint is the same. However, there is a semantic difference. A child frame without joint is really considered to be *a part* of the parent: The parent could be a *link* with multiple shapes (e.g. convex parts) or masses associated, but it is semantically one big link. When a frame has a joint (including a `rigid` joint), it is not considered part of its parent. That semantics rarely makes a difference, but it does in certain picking or walking scenarios, where objects, endeffectors or feet *attach* to other objects via a rigid joint."
+    "There is also a `rigid` joint, which simply means no DOF and seems fully redundant: having no joint or a rigid joint is the same. However, there is a semantic difference. A child frame without joint is really considered to be *a part* of the parent: The parent could be a *link* with multiple shapes (e.g. convex parts) or masses associated, but it is semantically one big link. When a frame has a joint (including a `rigid` joint), it is not considered part of its parent. That semantics makes a difference, e.g. in picking or walking scenarios, where objects may *kinematically switch* their parent."
    ]
   },
   {
@@ -195,7 +197,7 @@
    "source": [
     "## Specifying transformations: Quaternions & turtle strings\n",
     "\n",
-    "See the [Script:Transformations](https://marctoussaint.github.io/robotics-course/script/script.html#d-transformations-rotations-quaternions) on background on 3D transformations, rotations, and quaternions. We use the (w,x,y,z) convention for quaternions. Whenever you set a quaternion manually, it is internally normalized. So setting a quaterniong (1,1,0,0) is totally fine and means 90-degrees around x:"
+    "See the [Quaternions](https://www.user.tu-berlin.de/mtoussai/notes/quaternions.html) lecture note for background. Note that `ry.Quaternion` implements exactly the methods described in that note for converting between rotation representations. We use the (w,x,y,z) convention for quaternions. Whenever you set a quaternion manually, it is internally normalized. So setting a quaterniong (1,1,0,0) is totally fine and means 90-degrees around x:"
    ]
   },
   {
@@ -213,7 +215,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "But to specify transformations using translation and quaternion is not always intuitive as a human.\n",
+    "But specifying transformations using translation and quaternion is not always intuitive as a human.\n",
     "Therefore, we also allow for a *turtle string* notation, namely a string that \n",
     "chains little interpretable 'translate' and 'rotate' commands to define a \n",
     "transformation, as in the old turtle language. Here is an example:"
@@ -251,7 +253,7 @@
    "source": [
     "## Loading existing configurations\n",
     "\n",
-    "You will usually load predefined configurations from file, and then perhaps edit and combine them manually. The rai package has several robot models predefined and installed in the `raiPath`. They typically have the `.g`-file extension (see [Script:gFiles](https://marctoussaint.github.io/robotics-course/script/script.html#graph-yaml-files) on this file format, which is a yaml-conform graph file). Converting from URDF to configuration files is possible (see advanced tutorial)."
+    "You will usually load predefined configurations from file, and then perhaps edit and combine them manually. The rai package has several robot models predefined and installed in the `raiPath`. These are yaml files listing the frames (for historical reasons have the `.g`-file extension (see [Script:gFiles](https://marctoussaint.github.io/robotics-course/script/script.html#graph-yaml-files)). See the *Import/Export* tutorial, e.g. for loading URDF or Mujoco."
    ]
   },
   {
@@ -327,7 +329,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Looping through frames and retrieving frame information"
+    "## Looping through frames and retrieving frame information\n",
+    "\n",
+    "Sometimes we want to loop through all frames (e.g. to export a configuration). In python, we can get the specs of a frame as a dict, and set/add attributes of a frame. And we can write all frames in a fresh .yml file:"
    ]
   },
   {
@@ -348,11 +352,11 @@
     "\n",
     "# setting attributes:\n",
     "f = C.getFrames()[0]\n",
-    "f.addAttributes({'myvalue': 12.345, 'myname': 'Hari Seldon'})\n",
+    "f.setAttributes({'myvalue': 12.345, 'myname': 'Hari Seldon'})\n",
     "print(f.asDict())\n",
     "\n",
     "# writing a configuration to a file:\n",
-    "with open(\"z.g\", \"w\") as fil:\n",
+    "with open(\"z.yml\", \"w\") as fil:\n",
     "    fil.write(C.write())"
    ]
   },
@@ -361,6 +365,7 @@
    "metadata": {},
    "source": [
     "## Features: computing geometric properties\n",
+    "\n",
     "For every frame we can query its pose:"
    ]
   },
@@ -382,7 +387,7 @@
    "source": [
     "The above provides basic forward kinematics: After `setJointState` you can query the pose of any configuration frame.\n",
     "\n",
-    "However, there is a more general way to query *features* (see [Script:Features](https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features)), i.e. properties of the configuration in a differentiable manner. You might not use this often; but it is important to understand as these differentiable features are the foundation of how optimization problems are formulated, which you will need a lot.\n",
+    "However, there is a more general way to query *features* (see [Script:Features](https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features)), i.e. properties of the configuration in a differentiable manner. You might not use this often; but it is a core underlying functionality of the `robotic` library, and essential when formulating optimization problems (via KOMO) over configurations.\n",
     "\n",
     "Here are some example features to evaluate:"
    ]
@@ -415,6 +420,13 @@
    "source": [
     "# the x-axis of the given frame in world coordinates\n",
     "C.eval(ry.FS.vectorX, ['gripper'])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "See the next tutorial *Features* on all the things you can compute over configurations, and that can be used to formulate optimization problems."
    ]
   },
   {
@@ -483,7 +495,7 @@
    "source": [
     "That totally broke the original design of the robot! Setting global frame states overwrites the relative transformations between frames.\n",
     "\n",
-    "(Also, the rows of X have non-normalized quaternions! These are normalized when setting the frame state.)\n",
+    "(Also, the rows of X have non-normalized quaternions. But these are normalized when setting the frame state.)\n",
     "\n",
     "Let's reset:"
    ]
@@ -504,7 +516,7 @@
    "source": [
     " ## Selecting joints\n",
     "\n",
-    "Often one would like to choose which joints are actually active, that is, which joints are referred to in q. This allows one to sub-select joints and work only with projections of the full configuration state. This changes the joint state dimensionality, including ordering of entries in q. The frame state is not affected by such a selection of active joints."
+    "Often one would like to choose which joints are actually active, that is, which joints are referred to in q. This allows one to sub-select joints and work only with projections of the full dof state. This changes the joint state dimensionality, including ordering of entries in q. The frame state is not affected by such a selection of active joints."
    ]
   },
   {
@@ -594,7 +606,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "img = C.view_getRgb()\n",
+    "img = C.viewer().getRgb()\n",
     "print(type(img), img.shape)"
    ]
   },

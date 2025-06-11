@@ -345,14 +345,14 @@ for i in range(10):
     f.setShape(ry.ST.ssBox, [.1,.2,.1,.02]) .setColor([1,.1*i,1-.1*i])
     f.setPosition([.7 - .15*i,-.2,1.])
     f.setMass(1.)
-    f.setAttribute(&#39;friction&#39;, .05*i)
+    f.setAttributes({&#39;friction&#39;: .05*i})
 
 for i in range(10):
     f = C.addFrame(f&#39;ball_{i}&#39;)
     f.setShape(ry.ST.sphere, [.05]) .setColor([1,.1*i,1-.1*i])
     f.setPosition([.7 - .15*i,.2,1.])
     f.setMass(.2)
-    f.setAttribute(&#39;restitution&#39;, .5+.1*i)
+    f.setAttributes({&#39;restitution&#39;: .5+.1*i})
 C.view()
 </pre></div>
 </div>
@@ -405,7 +405,7 @@ for i in range(5):
     f.setPosition([0,0, .25*(i+1)])
     f.setMass(.1)
 
-C.addFrame(&#39;base&#39;) .setPosition([1., 0, .5]) .addAttributes({&#39;multibody&#39;: True})
+C.addFrame(&#39;base&#39;) .setPosition([1., 0, .5]) .setAttributes({&#39;multibody&#39;: True})
 
 C.addFrame(&#39;finger&#39;, &#39;base&#39;) .setShape(ry.ST.ssBox, [.3, .1, .1, .02]) .setColor([.9]) \
     .setMass(.1) \

@@ -109,7 +109,7 @@
   <section id="Intro:-Configurations">
 <h1>Intro: Configurations<a class="headerlink" href="#Intro:-Configurations" title="Link to this heading"></a></h1>
 <p>A configuration is essentially a tree of (coordinate) frames, where each frame can have an associated shape, joint, inertia, etc. This tutorial introduces first steps to creating &amp; loading configurations in rai, setting/getting the joint and frame state, computing features, and handling the view window.</p>
-<p>Please see the <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#scene-robot-description">Script:Configurations</a> of configurations and degrees-of-freedom.</p>
+<p>Please see the <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/robotKin.html">Robot Kinematics and Dynamics Essentials</a> lecture notes for some background.</p>
 <section id="Building-a-configuration-from-scratch">
 <h2>Building a configuration from scratch<a class="headerlink" href="#Building-a-configuration-from-scratch" title="Link to this heading"></a></h2>
 <p>Let’s first build a configuration from scratch by adding frames and setting properties such as pose, shape and parentship of frames.</p>
@@ -120,7 +120,7 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import numpy as np
 import time
-print(&#39;version:&#39;, ry.__version__, ry.compiled())
+print(&#39;robotic package version:&#39;, ry.__version__, ry.compiled())
 </pre></div>
 </div>
 </div>
@@ -136,7 +136,7 @@ C.view()
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">C.view()</span></code> command will open a window that shows an empty configuration.</p>
-<p>A configuration is essentially a tree (or forest) of frames. You usually add models from files, but let’s do it manually here. We declare it a <strong>marker</strong> frame, which means it has no real shape, but is displayed using its base vectors in the view.</p>
+<p>A configuration is essentially a tree (or forest) of frames. You often add models from files, but let’s do it manually here. We declare it a <em>marker</em> frame, which means it has no real shape, but is displayed using its base vectors in the view.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -184,9 +184,9 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Add new frames: a box, a ball and a capsule
-C.addFrame(&#39;ball&#39;, &#39;second&#39;) .setShape(ry.ST.sphere, [.1]) .setColor([1.,.5,.0]) .setRelativePosition([-.3,.0,.2])
-C.addFrame(&#39;box&#39;, &#39;second&#39;) .setShape(ry.ST.ssBox, [.3,.2,.1,.02]) .setColor([.5,1.,.0]) .setRelativePosition([.0,.0,.2])
-C.addFrame(&#39;capsule&#39;, &#39;second&#39;) .setShape(ry.ST.capsule, [.3, .05]) .setColor([.0,1.,.5]) .setRelativePosition([.3,.0,.2])
+C.addFrame(&#39;ball&#39;, &#39;second&#39;) .setShape(ry.ST.sphere, [.1]) .setColor([.7,.0,.0]) .setRelativePosition([-.3,.0,.2])
+C.addFrame(&#39;box&#39;, &#39;second&#39;) .setShape(ry.ST.ssBox, [.3,.2,.1,.02]) .setColor([.0,.7,.0]) .setRelativePosition([.0,.0,.2])
+C.addFrame(&#39;capsule&#39;, &#39;second&#39;) .setShape(ry.ST.capsule, [.3, .05]) .setColor([.0,.0,.7]) .setRelativePosition([.3,.0,.2])
 
 # Articulate the new configuration by moving the hinge joint
 for t in range(50):
@@ -205,7 +205,9 @@ for t in range(50):
 </pre></div>
 </div>
 </div>
-<p>For most of these, the <code class="docutils literal notranslate"><span class="pre">size</span></code> fully specifies them (box: 3 widths, sphere: radius, capsule: [length radius], cylinder: [length radius], marker: [axes lengths]). The <code class="docutils literal notranslate"><span class="pre">ssBox</span></code> is a sphere-swept-Box with a 4D size: [3 widths, corner radius], which is used a lot. Also mesh shapes can be set manually from python (<code class="docutils literal notranslate"><span class="pre">setMesh</span></code>) by directly giving vertex and triangle arrays. <code class="docutils literal notranslate"><span class="pre">ssCvx</span></code> means sphere-swept convex mesh, which is specified by a mesh and 1D size (radius), and also a very useful shape type.</p>
+<p>For most of these, the <code class="docutils literal notranslate"><span class="pre">size</span></code> fully specifies them (box: 3 widths, sphere: radius, capsule: [length radius], cylinder: [length radius], marker: [axes lengths]). The <code class="docutils literal notranslate"><span class="pre">ssBox</span></code> is a sphere-swept-Box with a 4D size: [3 widths, corner radius], which is used a lot. Also mesh shapes can be set manually from python (<code class="docutils literal notranslate"><span class="pre">setMesh</span></code>) by directly giving vertex and triangle arrays, or loaded from a file (<code class="docutils literal notranslate"><span class="pre">setMeshFile</span></code>). <code class="docutils literal notranslate"><span class="pre">setConvexMesh</span></code> means sphere-swept convex mesh, which is specified by a mesh and 1D
+size (radius), and also a very useful shape type.</p>
+<p>Other methods to set shapes include: <code class="docutils literal notranslate"><span class="pre">setImplicitSurface</span></code> (for a given 3D tensor, using Marching Cube to find the iso-surface mesh), <code class="docutils literal notranslate"><span class="pre">setTensorShape</span></code> (a 3D tensor with densities, displayed as transparent density), <code class="docutils literal notranslate"><span class="pre">setPointCloud</span></code> (optionally with normals), and <code class="docutils literal notranslate"><span class="pre">setLines</span></code>.</p>
 <p>Let’s also briefly list the possible joint types:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -215,14 +217,14 @@ for t in range(50):
 </pre></div>
 </div>
 </div>
-<p>Please see the <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#kinematics">Script:Kinematics</a> on the basics of such joints (=parameterized transformations). The <code class="docutils literal notranslate"><span class="pre">quatBall</span></code> perhaps deserves special explanation: it realizes a ball joint by introducing the 4D quaternion as joint state - this sometimes requires special attention. But the rai code implements correct Jacobians (accounting also for implicit normalization) w.r.t. the quaternion parameterization. The <code class="docutils literal notranslate"><span class="pre">free</span></code>
+<p>Please see the <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/robotKin.html">Robot Kinematics and Dynamics Essentials</a> for background on such joints (=parameterized transformations). The <code class="docutils literal notranslate"><span class="pre">quatBall</span></code> perhaps deserves special mentioning: it realizes a ball joint by introducing the 4D quaternion as joint state - this sometimes requires special attention. But the library implements correct Jacobians (accounting also for implicit normalization) w.r.t. the quaternion parameterization. The <code class="docutils literal notranslate"><span class="pre">free</span></code>
 joint is a 7D joint with 3D position and <code class="docutils literal notranslate"><span class="pre">quatBall</span></code>.</p>
-<p>There is also a <code class="docutils literal notranslate"><span class="pre">rigid</span></code> joint, which simply means no DOF and seems fully redundant: having no joint or a rigid joint is the same. However, there is a semantic difference. A child frame without joint is really considered to be <em>a part</em> of the parent: The parent could be a <em>link</em> with multiple shapes (e.g. convex parts) or masses associated, but it is semantically one big link. When a frame has a joint (including a <code class="docutils literal notranslate"><span class="pre">rigid</span></code> joint), it is not considered part of its parent. That semantics rarely
-makes a difference, but it does in certain picking or walking scenarios, where objects, endeffectors or feet <em>attach</em> to other objects via a rigid joint.</p>
+<p>There is also a <code class="docutils literal notranslate"><span class="pre">rigid</span></code> joint, which simply means no DOF and seems fully redundant: having no joint or a rigid joint is the same. However, there is a semantic difference. A child frame without joint is really considered to be <em>a part</em> of the parent: The parent could be a <em>link</em> with multiple shapes (e.g. convex parts) or masses associated, but it is semantically one big link. When a frame has a joint (including a <code class="docutils literal notranslate"><span class="pre">rigid</span></code> joint), it is not considered part of its parent. That semantics makes a
+difference, e.g. in picking or walking scenarios, where objects may <em>kinematically switch</em> their parent.</p>
 </section>
 <section id="Specifying-transformations:-Quaternions-&amp;-turtle-strings">
 <h2>Specifying transformations: Quaternions &amp; turtle strings<a class="headerlink" href="#Specifying-transformations:-Quaternions-&-turtle-strings" title="Link to this heading"></a></h2>
-<p>See the <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#d-transformations-rotations-quaternions">Script:Transformations</a> on background on 3D transformations, rotations, and quaternions. We use the (w,x,y,z) convention for quaternions. Whenever you set a quaternion manually, it is internally normalized. So setting a quaterniong (1,1,0,0) is totally fine and means 90-degrees around x:</p>
+<p>See the <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/quaternions.html">Quaternions</a> lecture note for background. Note that <code class="docutils literal notranslate"><span class="pre">ry.Quaternion</span></code> implements exactly the methods described in that note for converting between rotation representations. We use the (w,x,y,z) convention for quaternions. Whenever you set a quaternion manually, it is internally normalized. So setting a quaterniong (1,1,0,0) is totally fine and means 90-degrees around x:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -233,7 +235,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>But to specify transformations using translation and quaternion is not always intuitive as a human. Therefore, we also allow for a <em>turtle string</em> notation, namely a string that chains little interpretable ‘translate’ and ‘rotate’ commands to define a transformation, as in the old turtle language. Here is an example:</p>
+<p>But specifying transformations using translation and quaternion is not always intuitive as a human. Therefore, we also allow for a <em>turtle string</em> notation, namely a string that chains little interpretable ‘translate’ and ‘rotate’ commands to define a transformation, as in the old turtle language. Here is an example:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -255,7 +257,7 @@ C.view()
 </pre></section>
 <section id="Loading-existing-configurations">
 <h2>Loading existing configurations<a class="headerlink" href="#Loading-existing-configurations" title="Link to this heading"></a></h2>
-<p>You will usually load predefined configurations from file, and then perhaps edit and combine them manually. The rai package has several robot models predefined and installed in the <code class="docutils literal notranslate"><span class="pre">raiPath</span></code>. They typically have the <code class="docutils literal notranslate"><span class="pre">.g</span></code>-file extension (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#graph-yaml-files">Script:gFiles</a> on this file format, which is a yaml-conform graph file). Converting from URDF to configuration files is possible (see advanced tutorial).</p>
+<p>You will usually load predefined configurations from file, and then perhaps edit and combine them manually. The rai package has several robot models predefined and installed in the <code class="docutils literal notranslate"><span class="pre">raiPath</span></code>. These are yaml files listing the frames (for historical reasons have the <code class="docutils literal notranslate"><span class="pre">.g</span></code>-file extension (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#graph-yaml-files">Script:gFiles</a>). See the <em>Import/Export</em> tutorial, e.g. for loading URDF or Mujoco.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -306,6 +308,7 @@ for t in range(20):
 </section>
 <section id="Looping-through-frames-and-retrieving-frame-information">
 <h2>Looping through frames and retrieving frame information<a class="headerlink" href="#Looping-through-frames-and-retrieving-frame-information" title="Link to this heading"></a></h2>
+<p>Sometimes we want to loop through all frames (e.g. to export a configuration). In python, we can get the specs of a frame as a dict, and set/add attributes of a frame. And we can write all frames in a fresh .yml file:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -322,11 +325,11 @@ for f in C.getFrames():
 
 # setting attributes:
 f = C.getFrames()[0]
-f.addAttributes({&#39;myvalue&#39;: 12.345, &#39;myname&#39;: &#39;Hari Seldon&#39;})
+f.setAttributes({&#39;myvalue&#39;: 12.345, &#39;myname&#39;: &#39;Hari Seldon&#39;})
 print(f.asDict())
 
 # writing a configuration to a file:
-with open(&quot;z.g&quot;, &quot;w&quot;) as fil:
+with open(&quot;z.yml&quot;, &quot;w&quot;) as fil:
     fil.write(C.write())
 </pre></div>
 </div>
@@ -347,7 +350,7 @@ print(&#39;gripper rot:&#39;, f.getRotationMatrix())
 </div>
 </div>
 <p>The above provides basic forward kinematics: After <code class="docutils literal notranslate"><span class="pre">setJointState</span></code> you can query the pose of any configuration frame.</p>
-<p>However, there is a more general way to query <em>features</em> (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features">Script:Features</a>), i.e. properties of the configuration in a differentiable manner. You might not use this often; but it is important to understand as these differentiable features are the foundation of how optimization problems are formulated, which you will need a lot.</p>
+<p>However, there is a more general way to query <em>features</em> (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features">Script:Features</a>), i.e. properties of the configuration in a differentiable manner. You might not use this often; but it is a core underlying functionality of the <code class="docutils literal notranslate"><span class="pre">robotic</span></code> library, and essential when formulating optimization problems (via KOMO) over configurations.</p>
 <p>Here are some example features to evaluate:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -376,6 +379,7 @@ C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
 </pre></div>
 </div>
 </div>
+<p>See the next tutorial <em>Features</em> on all the things you can compute over configurations, and that can be used to formulate optimization problems.</p>
 </section>
 <section id="Joint-and-Frame-State">
 <h2>Joint and Frame State<a class="headerlink" href="#Joint-and-Frame-State" title="Link to this heading"></a></h2>
@@ -414,7 +418,7 @@ C.view()
 </div>
 </div>
 <p>That totally broke the original design of the robot! Setting global frame states overwrites the relative transformations between frames.</p>
-<p>(Also, the rows of X have non-normalized quaternions! These are normalized when setting the frame state.)</p>
+<p>(Also, the rows of X have non-normalized quaternions. But these are normalized when setting the frame state.)</p>
 <p>Let’s reset:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -426,7 +430,7 @@ C.view()
 </div>
 </div>
 <p>## Selecting joints</p>
-<p>Often one would like to choose which joints are actually active, that is, which joints are referred to in q. This allows one to sub-select joints and work only with projections of the full configuration state. This changes the joint state dimensionality, including ordering of entries in q. The frame state is not affected by such a selection of active joints.</p>
+<p>Often one would like to choose which joints are actually active, that is, which joints are referred to in q. This allows one to sub-select joints and work only with projections of the full dof state. This changes the joint state dimensionality, including ordering of entries in q. The frame state is not affected by such a selection of active joints.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -484,7 +488,7 @@ print(&#39;pressed key:&#39;, pressed_key, chr(pressed_key))
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>img = C.view_getRgb()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>img = C.viewer().getRgb()
 print(type(img), img.shape)
 </pre></div>
 </div>

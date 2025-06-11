@@ -62,10 +62,14 @@
 <li class="toctree-l2"><a class="reference internal" href="lgp_1_intro.html">LGP-1: First Mini Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_physx_simulation.html">Extension - Simulation: Low-level stepping interface &amp; gym environments</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Extension - Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Meshes,-Densities,-Implicit-Surfaces,-Point-Cloud,-Normals">Meshes, Densities, Implicit Surfaces, Point Cloud, Normals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Modifying-the-shader">Modifying the shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Basic-Event-Handling">Basic Event Handling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Grabbing-images-and-depth-from-the-view-window">Grabbing images and depth from the view window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Setting/initializing-camera-pose-and-specs">Setting/initializing camera pose and specs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Saving-pngs-for-video-generation">Saving pngs for video generation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Offscreen-(headless)-CameraView">Offscreen (headless) CameraView</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Point-Cloud">Point Cloud</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Point-Cloud-Rendering">Point Cloud Rendering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Physics-based-Rendering-using-Nvidia-NVISII">Physics-based Rendering using Nvidia NVISII</a></li>
 </ul>
 </li>
@@ -105,12 +109,46 @@
              
   <section id="Extension---Rendering:-Basic-opengl,-offscreen-(headless),-and-interface-to-physics-based-rendering">
 <h1>Extension - Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering<a class="headerlink" href="#Extension---Rendering:-Basic-opengl,-offscreen-(headless),-and-interface-to-physics-based-rendering" title="Link to this heading"></a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">view</span></code> is realized using very basic OpenGL rendering. It is straight-forward to grab the image (and, e.g., make a video from such images), as well as the depth (e.g. to simulate a depth camera).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">view</span></code> is realized using glfw and OpenGL shaders. It is straight-forward to grab the image (and, e.g., make a video from such images), as well as the depth (e.g. to simulate a depth camera).</p>
 <p>However, grabbing from the actual view window is brittle, as it depends on the window manager and might give weird results if the window is not visible. The package provides an offscreen (headless) implementation of the OpenGL rendering, which allows to compute images and depth (also object segmentation labels) without window or X.</p>
 <p>The simple OpenGL rendering is ok for depth camera simulation, but not visually realistic. An interface to Nvidia’s NVISSI physics-based rendering enables very flexible realistic rendering.</p>
+<section id="Meshes,-Densities,-Implicit-Surfaces,-Point-Cloud,-Normals">
+<h2>Meshes, Densities, Implicit Surfaces, Point Cloud, Normals<a class="headerlink" href="#Meshes,-Densities,-Implicit-Surfaces,-Point-Cloud,-Normals" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+
+X = np.random.rand(3,3,3)
+Y = np.random.rand(30,30,30)
+Z = np.random.rand(100,3)
+col = 255.*np.random.rand(100,3)
+
+C = ry.Config()
+C.addFrame(&#39;mesh&#39;) .setMeshFile(ry.raiPath(&#39;g1/meshes/head_link.h5&#39;)) .setPosition([0,0,.7])
+C.addFrame(&#39;tensor&#39;) .setTensorShape(0.01*X, [1.,1.,1.]) .setPosition([0,0,.5])
+C.addFrame(&#39;implicit&#39;) .setImplicitSurface(Y-0.5, [1.,1.,1.], 8) .setPosition([1,0,.5])
+C.addFrame(&#39;lines&#39;) .setLines(Z-.5, col) .setPosition([-1,0,.5])
+C.addFrame(&#39;points&#39;) .setPointCloud(Z-.5, col) .setPosition([-1,0,.5])
+C.view()
+</pre></div>
+</div>
+</div>
+<p>Note that the points of the point cloud coincide with the line vertices. And the random colors per vertex are being interpolated by the lines.</p>
+<p>The setMeshFile works for any mesh file format supported by lib assimp. The .h5-file used here (use <code class="docutils literal notranslate"><span class="pre">ry-h5info</span></code> on command line to inspect .h5-files) trivially stores meshes as vertex, triangle, and color arrays.</p>
+</section>
+<section id="Modifying-the-shader">
+<h2>Modifying the shader<a class="headerlink" href="#Modifying-the-shader" title="Link to this heading"></a></h2>
+<p>For those knowing about about shaders: Setting the <code class="docutils literal notranslate"><span class="pre">userShaderFiles</span></code> parameter, the code uses local vertex and fragment shader files which you can modify arbitrarily.</p>
+</section>
+<section id="Basic-Event-Handling">
+<h2>Basic Event Handling<a class="headerlink" href="#Basic-Event-Handling" title="Link to this heading"></a></h2>
+</section>
 <section id="Grabbing-images-and-depth-from-the-view-window">
 <h2>Grabbing images and depth from the view window<a class="headerlink" href="#Grabbing-images-and-depth-from-the-view-window" title="Link to this heading"></a></h2>
-<p>The view is internally implemented using glfw and most basic opengl. It’s simple to grab the rgb and depth buffers.</p>
+<p>It’s simple to grab the rgb and depth buffers from the underlying opengl:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -138,8 +176,8 @@ time.sleep(.5)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb = C.view_getRgb()
-depth = C.view_getDepth()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb = C.viewer().getRgb()
+depth = C.viewer().getDepth()
 print(rgb.shape, depth.shape)
 </pre></div>
 </div>
@@ -157,24 +195,26 @@ plt.show()
 </pre></div>
 </div>
 </div>
+</section>
+<section id="Setting/initializing-camera-pose-and-specs">
+<h2>Setting/initializing camera pose and specs<a class="headerlink" href="#Setting/initializing-camera-pose-and-specs" title="Link to this heading"></a></h2>
 <p>The camera pose can be set to be at a particular frame. (Create a dedicated frame, if you want freedom to set the camera). Also camera intrinsics (focalLength, width, height) can be set with frame attributes. Our scene has a <code class="docutils literal notranslate"><span class="pre">cameraTop</span></code> predefined:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.getFrame(&#39;cameraTop&#39;)
-f.setAttribute(&#39;focalLength&#39;, .5) # wide angle
-f.setAttribute(&#39;width&#39;, 500)
-f.setAttribute(&#39;height&#39;, 500)
-C.view_setCamera(f)
+f.setAttributes({&#39;focalLength&#39;: .5, &#39;width&#39;: 500, &#39;height&#39;: 500, &#39;zRange&#39;: [.01, 10.]})
+C.viewer().setCamera(f)
 </pre></div>
 </div>
 </div>
+<p>When a configuration has a <code class="docutils literal notranslate"><span class="pre">camera_init</span></code> frame (e.g. defined in a file), then the camera is initialized to its pose and specs at the first creation of a view. When a configuration has a <code class="docutils literal notranslate"><span class="pre">camera_track</span></code> frame, then camera is set to its pose and specs at each update of the view. To set the default camera:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.view_setCamera(None)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.viewer().setCamera(None)
 </pre></div>
 </div>
 </div>
@@ -202,7 +242,7 @@ for t in range(30):
     q = q + .02
     C.setJointState(q)
     C.view()
-    C.view_savePng(&#39;z.vid/&#39;)
+    C.viewer().savePng(&#39;z.vid/&#39;)
 </pre></div>
 </div>
 </div>
@@ -278,8 +318,8 @@ plt.show()
 </div>
 </div>
 </section>
-<section id="Point-Cloud">
-<h2>Point Cloud<a class="headerlink" href="#Point-Cloud" title="Link to this heading"></a></h2>
+<section id="Point-Cloud-Rendering">
+<h2>Point Cloud Rendering<a class="headerlink" href="#Point-Cloud-Rendering" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -315,7 +355,7 @@ pcl = ry.depthImage2PointCloud(depth, cam.getFxycxy())
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(rgb.shape, depth.shape, pcl.shape)
-print(C.view_fxycxy())
+print(C.viewer().getCamera_fxycxy())
 </pre></div>
 </div>
 </div>
@@ -349,10 +389,10 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
-from matplotlib import pyplot as plt
-from robotic import render
-print(&#39;version&#39;, ry.compiled())
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import robotic as ry
+# from matplotlib import pyplot as plt
+# from robotic import render
+# print(&#39;version&#39;, ry.compiled())
 </pre></div>
 </div>
 </div>
@@ -360,9 +400,9 @@ print(&#39;version&#39;, ry.compiled())
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
-C.view()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># C = ry.Config()
+# C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+# C.view()
 </pre></div>
 </div>
 </div>
@@ -370,9 +410,9 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame(&#39;light1&#39;) .setPosition([1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.5]) .setAttribute(&#39;temperature&#39;, 6000)
-C.addFrame(&#39;light2&#39;) .setPosition([-1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.8]) .setAttribute(&#39;temperature&#39;, 6000)
-C.view()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># C.addFrame(&#39;light1&#39;) .setPosition([1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.5]) .setAttribute(&#39;temperature&#39;, 6000)
+# C.addFrame(&#39;light2&#39;) .setPosition([-1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.8]) .setAttribute(&#39;temperature&#39;, 6000)
+# C.view()
 </pre></div>
 </div>
 </div>
@@ -380,8 +420,8 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nv = render.NvisiiRenderer(600, 400, C.view_focalLength())
-nv.addConfig(C)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># nv = render.NvisiiRenderer(600, 400, C.view_focalLength())
+# nv.addConfig(C)
 </pre></div>
 </div>
 </div>
@@ -389,10 +429,10 @@ nv.addConfig(C)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nv.setCamera(C)
-rgb = nv.render(256)
-plt.imshow(rgb)
-plt.show()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># nv.setCamera(C)
+# rgb = nv.render(256)
+# plt.imshow(rgb)
+# plt.show()
 </pre></div>
 </div>
 </div>
@@ -400,7 +440,7 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del nv
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># del nv
 </pre></div>
 </div>
 </div>

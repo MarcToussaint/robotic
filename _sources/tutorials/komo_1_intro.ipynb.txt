@@ -668,7 +668,67 @@
   "widgets": {
    "application/vnd.jupyter.widget-state+json": {
     "state": {
-     "0a257a87e14746b280e66aeddee5578c": {
+     "7f53c25e76fd4a81a6d40108ba99c5f8": {
+      "model_module": "jupyter-matplotlib",
+      "model_module_version": "^0.11",
+      "model_name": "ToolbarModel",
+      "state": {
+       "_current_action": "",
+       "_dom_classes": [],
+       "_model_module": "jupyter-matplotlib",
+       "_model_module_version": "^0.11",
+       "_model_name": "ToolbarModel",
+       "_view_count": null,
+       "_view_module": "jupyter-matplotlib",
+       "_view_module_version": "^0.11",
+       "_view_name": "ToolbarView",
+       "button_style": "",
+       "collapsed": true,
+       "layout": "IPY_MODEL_ec3e34a3dbb6411d98e7c5dcfab138b8",
+       "orientation": "vertical",
+       "tabbable": null,
+       "toolitems": [
+        [
+         "Home",
+         "Reset original view",
+         "home",
+         "home"
+        ],
+        [
+         "Back",
+         "Back to previous view",
+         "arrow-left",
+         "back"
+        ],
+        [
+         "Forward",
+         "Forward to next view",
+         "arrow-right",
+         "forward"
+        ],
+        [
+         "Pan",
+         "Left button pans, Right button zooms\nx/y fixes axis, CTRL fixes aspect",
+         "arrows",
+         "pan"
+        ],
+        [
+         "Zoom",
+         "Zoom to rectangle\nx/y fixes axis",
+         "square-o",
+         "zoom"
+        ],
+        [
+         "Download",
+         "Download plot",
+         "floppy-o",
+         "save_figure"
+        ]
+       ],
+       "tooltip": null
+      }
+     },
+     "c135df2ba7b54e2a92eaa74dbdfef534": {
       "model_module": "@jupyter-widgets/base",
       "model_module_version": "2.0.0",
       "model_name": "LayoutModel",
@@ -721,67 +781,7 @@
        "width": null
       }
      },
-     "19b4a80a4bdd45bbacd4accccbc53b33": {
-      "model_module": "jupyter-matplotlib",
-      "model_module_version": "^0.11",
-      "model_name": "ToolbarModel",
-      "state": {
-       "_current_action": "",
-       "_dom_classes": [],
-       "_model_module": "jupyter-matplotlib",
-       "_model_module_version": "^0.11",
-       "_model_name": "ToolbarModel",
-       "_view_count": null,
-       "_view_module": "jupyter-matplotlib",
-       "_view_module_version": "^0.11",
-       "_view_name": "ToolbarView",
-       "button_style": "",
-       "collapsed": true,
-       "layout": "IPY_MODEL_0a257a87e14746b280e66aeddee5578c",
-       "orientation": "vertical",
-       "tabbable": null,
-       "toolitems": [
-        [
-         "Home",
-         "Reset original view",
-         "home",
-         "home"
-        ],
-        [
-         "Back",
-         "Back to previous view",
-         "arrow-left",
-         "back"
-        ],
-        [
-         "Forward",
-         "Forward to next view",
-         "arrow-right",
-         "forward"
-        ],
-        [
-         "Pan",
-         "Left button pans, Right button zooms\nx/y fixes axis, CTRL fixes aspect",
-         "arrows",
-         "pan"
-        ],
-        [
-         "Zoom",
-         "Zoom to rectangle\nx/y fixes axis",
-         "square-o",
-         "zoom"
-        ],
-        [
-         "Download",
-         "Download plot",
-         "floppy-o",
-         "save_figure"
-        ]
-       ],
-       "tooltip": null
-      }
-     },
-     "8655ea1c339c4b90ada07f858f113545": {
+     "e0e0f017b2154b7091f238bfd0245d27": {
       "model_module": "jupyter-matplotlib",
       "model_module_version": "^0.11",
       "model_name": "MPLCanvasModel",
@@ -810,17 +810,17 @@
        "capture_scroll": false,
        "footer_visible": false,
        "header_visible": false,
-       "layout": "IPY_MODEL_f960eebc74e340d8868581f78cbf7748",
+       "layout": "IPY_MODEL_c135df2ba7b54e2a92eaa74dbdfef534",
        "pan_zoom_throttle": 33.0,
        "resizable": true,
        "tabbable": null,
-       "toolbar": "IPY_MODEL_19b4a80a4bdd45bbacd4accccbc53b33",
+       "toolbar": "IPY_MODEL_7f53c25e76fd4a81a6d40108ba99c5f8",
        "toolbar_position": "left",
        "toolbar_visible": false,
        "tooltip": null
       }
      },
-     "f960eebc74e340d8868581f78cbf7748": {
+     "ec3e34a3dbb6411d98e7c5dcfab138b8": {
       "model_module": "@jupyter-widgets/base",
       "model_module_version": "2.0.0",
       "model_name": "LayoutModel",
