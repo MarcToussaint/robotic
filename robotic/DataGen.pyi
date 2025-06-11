@@ -48,6 +48,10 @@ class ShapenetGrasps:
         """
     def getConfig(self) -> _robotic.Config:
         ...
+    def getEvalGripperPoses(self) -> arr:
+        """
+        return the relative gripper after each motion phase: esp. poses[1] (after closing fingers) is interesting; the later ones allow you to estimate relative motion yourself)
+        """
     def getPointCloud(self) -> arr:
         """
         (direct interface) return pcl of loaded object
@@ -64,6 +68,8 @@ class ShapenetGrasps:
         """
         (direct interface) clear scene and load object and gripper
         """
+    def resetObjectPose(self, idx: int = 0, rndOrientation: bool = True) -> None:
+        ...
     def sampleGraspPose(self) -> arr:
         """
         (direct interface) return (relative) pose of random sampled grasp candidate

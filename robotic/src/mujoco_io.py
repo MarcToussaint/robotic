@@ -34,7 +34,7 @@ class MujocoLoader():
 
         self.C = ry.Config()
         self.base = self.C.addFrame('base')
-        self.base.addAttributes({'multibody':True})
+        self.base.setAttributes({'multibody':True})
         self.base.setPosition(basePos)
         self.base.setQuaternion(baseQuat)
         self.add_node(root, self.base, path, 0)

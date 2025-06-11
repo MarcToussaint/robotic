@@ -103,6 +103,14 @@ class BotOp:
         """
         constructor
         """
+    def attach(self, gripper: ..., obj: ...) -> None:
+        """
+        cheating: attach two objects kinematically
+        """
+    def detach(self, obj: ...) -> None:
+        """
+        cheating: detach two previously attached objects
+        """
     def getCameraFxycxy(self, sensorName: str) -> arr:
         """
         returns camera intrinsics
@@ -315,7 +323,7 @@ class Config:
         """
         returns the list of collisable pairs -- this should help debugging the 'contact' flag settings in a configuration
         """
-    def getCollisions(self, belowMargin: float = 1.0) -> list:
+    def getCollisions(self, belowMargin: float = 0.0) -> list:
         """
         return the results of collision computations: a list of 3 tuples with (frame1, frame2, distance). Optionally report only on distances below a margin To get really precise distances and penetrations use the FS.distance feature with the two frame names
         """
@@ -403,40 +411,10 @@ class Config:
         """
         close the view
         """
-    def view_focalLength(self) -> float:
-        """
-        return the focal length of the view camera (only intrinsic parameter)
-        """
-    def view_focus(self, frameName: str, absHeight: float = 2.0) -> None:
-        """
-        focus on a particular frame, given via name; second argument distances camara so that view window has roughly given absHeight around object
-        """
-    def view_fxycxy(self) -> arr:
-        """
-        return (fx, fy, cx, cy): the focal length and image center in PIXEL UNITS
-        """
-    def view_getDepth(self) -> numpy.ndarray[numpy.float32]:
-        ...
-    def view_getRgb(self) -> numpy.ndarray[numpy.uint8]:
-        ...
-    def view_pose(self) -> arr:
-        """
-        return the 7D pose of the view camera
-        """
-    def view_raise(self) -> None:
-        """
-        raise the view
-        """
     def view_recopyMeshes(self) -> None:
         ...
-    def view_savePng(self, pathPrefix: str = 'z.vid/') -> None:
-        """
-        saves a png image of the current view, numbered with a global counter, with the intention to make a video
-        """
-    def view_setCamera(self, arg0: Frame) -> None:
-        """
-        set the camera pose to a frame, and check frame attributes for intrinsic parameters (focalLength, width height)
-        """
+    def viewer(self, window_title: str = None, offscreen: bool = False) -> ...:
+        ...
     def watchFile(self, arg0: str) -> None:
         """
         launch a viewer that listents (inode) to changes of a file (made by you in an editor), and reloads, displays and animates the configuration whenever the file is changed
@@ -468,9 +446,61 @@ class ConfigurationViewer:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
+    def focus(self, position_7d: arr, heightAbs: float = 1.0) -> None:
+        """
+        focus at a 3D position; second argument distances camara so that view window has roughly given absHeight around object
+        """
+    def getCamera_focalLength(self) -> float:
+        """
+        return the focal length of the view camera (only intrinsic parameter)
+        """
+    def getCamera_fxycxy(self) -> arr:
+        """
+        return (fx, fy, cx, cy): the focal length and image center in PIXEL UNITS
+        """
+    def getCamera_pose(self) -> arr:
+        """
+        get the camera pose directly
+        """
+    def getDepth(self) -> ...:
+        """
+        return the view's depth array (scaled to meters)
+        """
+    def getEventCursor(self) -> arr:
+        """
+        return the position and normal of the 'curser': mouse position 3D projected into scene via depth, and 3D normal of depth map -- returned as 6D vector
+        """
+    def getEventCursorObject(self) -> int:
+        """
+        (aka mouse picking) return the frame ID (or -1) that the 'cursor' currently points at
+        """
+    def getEvents(self) -> StringA:
+        """
+        return accumulated events as list of strings
+        """
+    def getRgb(self) -> ...:
+        """
+        return the view's rgb image
+        """
+    def raiseWindow(self) -> None:
+        """
+        raise the window
+        """
     def savePng(self, saveVideoPath: ... = 'z.vid/', count: int = -1) -> None:
         """
-        save enumerated pngs in a path - for video making
+        saves a png image of the current view, numbered with a global counter, with the intention to make a video
+        """
+    def setCamera(self, camFrame: Frame) -> None:
+        """
+        set the camera pose to a frame, and check frame attributes for intrinsic parameters (focalLength, width height)
+        """
+    def setCameraPose(self, pose_7d: arr) -> None:
+        """
+        set the camera pose directly
+        """
+    def setupEventHandler(self, blockDefaultHandler: bool) -> None:
+        """
+        setup callbacks to grab window events and return them with methods below
         """
     def visualsOnly(self, _visualsOnly: bool = True) -> None:
         """
@@ -722,10 +752,6 @@ class Frame:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
-    def addAttributes(self, arg0: dict) -> None:
-        """
-        add/set attributes for the frame
-        """
     def asDict(self) -> dict:
         ...
     def computeCompoundInertia(self) -> Frame:
@@ -776,8 +802,10 @@ class Frame:
         ...
     def makeRoot(self, untilPartBreak: bool) -> None:
         ...
-    def setAttribute(self, arg0: str, arg1: float) -> Frame:
-        ...
+    def setAttributes(self, arg0: dict) -> Frame:
+        """
+        set attributes for the frame
+        """
     def setColor(self, arg0: arr) -> Frame:
         ...
     def setContact(self, arg0: int) -> Frame:
@@ -792,7 +820,7 @@ class Frame:
         ...
     def setJointState(self, arg0: arr) -> Frame:
         ...
-    def setLines(self, verts: arr, colors: ... = ...) -> Frame:
+    def setLines(self, verts: arr, colors: ... = ..., singleConnectedLine: bool = False) -> Frame:
         """
         attach lines as shape
         """
