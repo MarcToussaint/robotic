@@ -1,6 +1,7 @@
 import robotic as ry
 import numpy as np
 import time
+import pprint
 
 class KOMO_ManipulationHelper():
 
@@ -361,18 +362,15 @@ class KOMO_ManipulationHelper():
             if not self.ret.feasible:
                 print(f'  -- infeasible:{self.info}\n     {self.ret}')
                 if verbose>1:
-                    print(self.komo.report(False, True))
+                    objs = self.komo.report()
+                    #pprint.pp(objs)
+                    for k, v in objs.items():
+                        print(f'objective {k}: {v}')
                     self.komo.view(True, f'failed: {self.info}\n{self.ret}')
-                if verbose>2:
-                    while(self.komo.view_play(True, 1.)):
-                        pass
             else:
                 print(f'  -- feasible:{self.info}\n     {self.ret}')
                 if verbose>2:
                     self.komo.view(True, f'success: {self.info}\n{self.ret}')
-                if verbose>3:
-                    while(self.komo.view_play(True, 1.)):
-                        pass
 
         return self.ret
 

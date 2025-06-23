@@ -365,7 +365,7 @@ class Config:
         """
         get the joint state as a numpy vector, optionally only for a subset of joints specified as list of joint names
         """
-    def get_viewer(self, window_title: str = None, offscreen: bool = False) -> ...:
+    def get_viewer(self) -> ConfigurationViewer:
         ...
     def processInertias(self, recomputeInertias: bool = True, transformToDiagInertia: bool = False) -> None:
         """
@@ -401,7 +401,7 @@ class Config:
         """
     def setJointStateSlice(self, arg0: list[float], arg1: int) -> None:
         ...
-    def set_viewer(self, arg0: ...) -> None:
+    def set_viewer(self, arg0: ConfigurationViewer) -> None:
         ...
     def view(self, pause: bool = False, message: str = None) -> int:
         """
@@ -413,7 +413,7 @@ class Config:
         """
     def view_recopyMeshes(self) -> None:
         ...
-    def viewer(self, window_title: str = None, offscreen: bool = False) -> ...:
+    def viewer(self) -> ConfigurationViewer:
         ...
     def watchFile(self, arg0: str) -> None:
         """
@@ -497,6 +497,10 @@ class ConfigurationViewer:
     def setCameraPose(self, pose_7d: arr) -> None:
         """
         set the camera pose directly
+        """
+    def setWindow(self, title: str, width: int, height: int) -> None:
+        """
+        set title, width, and height
         """
     def setupEventHandler(self, blockDefaultHandler: bool) -> None:
         """
@@ -842,17 +846,17 @@ class Frame:
         """
         attach a point cloud shape
         """
-    def setPose(self, arg0: arr) -> None:
+    def setPose(self, arg0: arr) -> Frame:
         ...
-    def setPoseByText(self, arg0: str) -> None:
+    def setPoseByText(self, arg0: str) -> Frame:
         ...
     def setPosition(self, arg0: arr) -> Frame:
         ...
     def setQuaternion(self, arg0: arr) -> Frame:
         ...
-    def setRelativePose(self, arg0: arr) -> None:
+    def setRelativePose(self, arg0: arr) -> Frame:
         ...
-    def setRelativePoseByText(self, arg0: str) -> None:
+    def setRelativePoseByText(self, arg0: str) -> Frame:
         ...
     def setRelativePosition(self, arg0: arr) -> Frame:
         ...
