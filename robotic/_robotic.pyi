@@ -6,7 +6,7 @@ import numpy
 import typing
 from . import DataGen
 from . import test
-__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'setRaiPath', 'test']
+__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'get_NLP_Problem_names', 'make_NLP_Problem', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'rnd_seed', 'rnd_seed_random', 'setRaiPath', 'test']
 class Actions2KOMO_Translator:
     """
     Actions2KOMO_Translator
@@ -72,9 +72,17 @@ class BSpline:
         """
         non-initialized
         """
+    def append(self, points: arr, times_rel: arr, inside: bool = False) -> None:
+        """
+        appends points to the current spline; times_rel become relative to the current last knot; inside = remove the current end double knot (zero vel), smoothly blending but not transitioning anymore through the current end point
+        """
     def eval(self, sampleTimes: arr, derivative: int = 0) -> arr:
         """
         evaluate the spline (or its derivative) for given sampleTimes
+        """
+    def eval3(self, time: float) -> arr:
+        """
+        evaluate the spline pos, vel, acc (3xn matrix) at a single time
         """
     def getBmatrix(self, sampleTimes: arr, startDuplicates: bool = False, endDuplicates: bool = False) -> arr:
         """
@@ -84,6 +92,14 @@ class BSpline:
         ...
     def getKnots(self) -> arr:
         ...
+    def overwriteSmooth(self, points: arr, times_rel: arr, time_cut: float) -> None:
+        """
+        overwrites the spline by adopting the pos+vel at time_cut of the current spline and appending given points; NOTE: times_rel are added to time_cut)
+        """
+    def set(self, degree: int, points: arr, times: arr, setStartVel: arr = ..., setEndVel: arr = ...) -> BSpline:
+        """
+        convenience: same as setKnots(degree, times) and setCtrlPoints(points, true, true, startVel, endVel)
+        """
     def setCtrlPoints(self, points: arr, addStartDuplicates: bool = True, addEndDuplicates: bool = True, setStartVel: arr = ..., setEndVel: arr = ...) -> None:
         """
         set the ctrl points, automatically duplicating them as needed at start/end, optionally setting vels at start/end
@@ -103,11 +119,11 @@ class BotOp:
         """
         constructor
         """
-    def attach(self, gripper: ..., obj: ...) -> None:
+    def attach(self, from: ..., to: ...) -> None:
         """
         cheating: attach two objects kinematically
         """
-    def detach(self, obj: ...) -> None:
+    def detach(self, from: ..., to: ...) -> None:
         """
         cheating: detach two previously attached objects
         """
@@ -365,6 +381,8 @@ class Config:
         """
         get the joint state as a numpy vector, optionally only for a subset of joints specified as list of joint names
         """
+    def getRoots(self) -> list[Frame]:
+        ...
     def get_viewer(self) -> ConfigurationViewer:
         ...
     def processInertias(self, recomputeInertias: bool = True, transformToDiagInertia: bool = False) -> None:
@@ -1188,7 +1206,7 @@ class NLP:
         """
     def getBounds(self) -> arr:
         """
-        returns the tuple $(b_{lo},b_{up})$, where both vectors are of same dimensionality of $x$ (or size zero, if there are no bounds)
+        returns a 2xn array with lower and upper bounds as rows (or size zero, if there are no bounds)
         """
     def getDimension(self) -> int:
         """
@@ -1505,6 +1523,7 @@ class OptMethod:
         ...
 class Quaternion:
     """
+    See the Quaternion Lecture Note https://www.user.tu-berlin.de/mtoussai/notes/quaternions.html for details
     """
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
@@ -1847,11 +1866,11 @@ class Simulation:
         """
     def addSensor(self, sensorName: str, width: int = 640, height: int = 360, focalLength: float = -1.0, orthoAbsHeight: float = -1.0, zRange: arr = []) -> ...:
         ...
-    def attach(self, gripper: Frame, obj: Frame) -> None:
+    def attach(self, from: Frame, to: Frame) -> None:
         ...
     def depthData2pointCloud(self, arg0: numpy.ndarray[numpy.float32], arg1: list[float]) -> numpy.ndarray[numpy.float64]:
         ...
-    def detach(self, obj: Frame) -> None:
+    def detach(self, from: Frame, to: Frame) -> None:
         ...
     def getGripperWidth(self, gripperFrameName: str) -> float:
         ...
@@ -1861,7 +1880,7 @@ class Simulation:
         ...
     def getState(self) -> tuple:
         """
-        returns a 4-tuple or frame state, joint state, frame velocities (linear & angular), joint velocities
+        returns a 5-tuple of (time, q, qDot, freePos, freeVel)
         """
     def getTimeToSplineEnd(self) -> float:
         ...
@@ -1883,7 +1902,7 @@ class Simulation:
         """
         reset the spline reference, i.e., clear the current spline buffer and initialize it to constant spline at current position (to which setSplineRef can append)
         """
-    def resetTime(self) -> None:
+    def resetTime(self, arg0: float) -> None:
         ...
     def selectSensor(self, sensorName: str) -> ...:
         ...
@@ -1894,9 +1913,9 @@ class Simulation:
         * times: array with single total duration, or time for each control point (times.N==path.d0)
         * append: append (with zero-velocity at append), or smoothly overwrite
         """
-    def setState(self, frameState: arr, jointState: arr = ..., frameVelocities: arr = ..., jointVelocities: arr = ...) -> None:
+    def setState(self, time: float, q: arr, qDot: arr, freePos: arr, freeVel: arr) -> None:
         ...
-    def step(self, u_control: arr, tau: float = 0.01, u_mode: ControlMode = ...) -> None:
+    def step(self, u_control: arr = ..., tau: float = 0.01, u_mode: ControlMode = ...) -> None:
         ...
 class SimulationEngine:
     """
@@ -2008,6 +2027,14 @@ def depthImage2PointCloud(depth: numpy.ndarray[numpy.float32], fxycxy: arr) -> a
     """
     return the point cloud from the depth image
     """
+def get_NLP_Problem_names() -> StringA:
+    """
+    return all problem names
+    """
+def make_NLP_Problem(problem_name: ...) -> NLP:
+    """
+    create a benchmark NLP
+    """
 def params_add(*args, **kwargs) -> None:
     """
     add/set parameters
@@ -2027,6 +2054,14 @@ def params_print() -> None:
 def raiPath(arg0: str) -> ...:
     """
     get a path relative to rai base path
+    """
+def rnd_seed(s: int) -> None:
+    """
+    seed rnd with s
+    """
+def rnd_seed_random() -> None:
+    """
+    seed rnd randomly
     """
 def setRaiPath(arg0: str) -> None:
     """

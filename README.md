@@ -43,10 +43,10 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 * Test in a clean ubuntu:latest docker (starting with `xhost +local:root && docker run -it --env="DISPLAY" --network host ubuntu:latest`):
 
       apt update
-      env DEBIAN_FRONTEND=noninteractive apt install --yes liblapack3 freeglut3-dev libglu1-mesa libxrandr2 libfreetype6 fonts-ubuntu python3 python3-pip python3-venv
+      env DEBIAN_FRONTEND=noninteractive apt install --yes liblapack3 freeglut3-dev libglu1-mesa libxrandr2 libfreetype6 fonts-ubuntu python3 python3-venv
       cd /usr/lib/x86_64-linux-gnu/ && ln -s libglut.so.3.12 libglut.so.3
-      python3 -m venv ~/venv
-      source ~/venv/bin/activate
+      python3 -m venv ~/.local/venv
+      source ~/.local/venv/bin/activate
       pip install robotic numpy
       ry-info
       ry-test
@@ -64,7 +64,7 @@ This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
         libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
         python3-dev python3 python3-pip
       
-      python3 -m pip install --user numpy pybind11 pybind11-stubgen
+      python3 -m pip install numpy pybind11 pybind11-stubgen
 
 * Install some external libs by source. You can skip librealsense and
   libfranka if you disable below. (To speed up compilation, e.g., set
@@ -79,7 +79,7 @@ This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
       ./install.sh libann
       ./install.sh physx
       ./install.sh librealsense
-      ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.7.1 libfranka
+      ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.8.0 libfranka (and you need to patch it...)
 
 * Clone, compile and install this repo (note the USE_REALSENSE and USE_LIBFRANKA options!):
 
@@ -132,8 +132,8 @@ make wheels
 
 * Outside of docker, install locally with pip or push wheels to pypi
 ```
-python3.8 -m pip install --user dist/robotic-*cp38*.whl --force-reinstall
-python3.10 -m pip install --user dist/robotic-*cp310*.whl --force-reinstall
+python3.8 -m pip install dist/robotic-*cp38*.whl --force-reinstall
+python3.10 -m pip install dist/robotic-*cp310*.whl --force-reinstall
 # or
 twine upload dist/*.whl --repository robotic
 ```
@@ -144,7 +144,7 @@ twine upload dist/*.whl --repository robotic
 
 * Get the binary lib by installing the pip package:
 ```
-python3 -m pip install --user robotic
+python3 -m pip install robotic
 ```
 * Get the sources by cloning this repo recursively:
 ```
