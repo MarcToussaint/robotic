@@ -23,8 +23,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Intro: KOMO - Motion Optimization" href="komo_1_intro.html" />
-    <link rel="prev" title="Intro: Configurations" href="config_1_intro.html" /> 
+    <link rel="next" title="BotOp-2: Real robot operation checklist &amp; first steps" href="botop_2_real_robot.html" />
+    <link rel="prev" title="Intro: KOMO - Motion Optimization" href="komo_1_intro.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="config_1_intro.html">Intro: Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Intro: BotOp (Robot Operation) interface</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Sending-motion-based-on-IK">Sending motion based on IK</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Sending-paths-from-KOMO">Sending paths from KOMO</a></li>
@@ -58,14 +59,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#Aborting-motion">Aborting motion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Gripper-operation">Gripper operation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Camera-&amp;-Point-Could">Camera &amp; Point Could</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#Grasp-Test">Grasp Test</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Grasp-Test">Grasp Test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Shutdown">Shutdown</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Parameters">Parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Config-3: Importing, editing &amp; manipulating them</a></li>
@@ -79,7 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ext_gym_environment.html">Extension - Gym Environment Interface: minimal example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">robotic python API</a></li>
 </ul>
 
@@ -115,12 +113,6 @@
 <p>There might be confusion about whether <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> and <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> are the same or similar or what’s different. While they both are “robot simulation interfaces”, they actually play very different roles and that’s important to understand: <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> is a direct interface to physics engines (by default Nvidia Physx), similar to a gym environment, with a <em>non-threaded</em> step function that you call explicitly. You typically use <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> to train RL, evaluate controllers, or generate data
 offline, much faster than real time. In constrast, <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> interfaces or emulates a real robot, running in real time. The interface methods are not a step function, but the exact same as for controlling the real robot: setter methods for control (setting reference splines, impedances, gripper states) and getter methods to get state information (getImage, get_q, etc). Your code runs in parallel to the real world (or the <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> emulation) and needs to explicitly sync or get the state
 information. But yes, under the hood <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> uses a <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> as the underlying engine when in simulation mode.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">BotOp</span></code> is run in simulation mode, the simulation can be run in different modes:</p>
-<ul class="simple">
-<li><p>pure kinematic (no physics for objects)</p></li>
-<li><p>a physics simulator with physics for objects but still kinematic robot</p></li>
-<li><p>a physics simulator with PD motors for the robot</p></li>
-</ul>
 <section id="Sending-motion-based-on-IK">
 <h2>Sending motion based on IK<a class="headerlink" href="#Sending-motion-based-on-IK" title="Link to this heading"></a></h2>
 <p>We’ll show how to make the robot move to pre-computed joint space poses, e.g. computed via IK. Later we modify this to <em>overwriting</em> the motion reference with high frequency, which essentially realizes MPC-style control.</p>
@@ -132,25 +124,19 @@ information. But yes, under the hood <code class="docutils literal notranslate">
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import numpy as np
 import time
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+
+C = ry.Config()
 C.addFile(ry.raiPath(&#39;../rai-robotModels/scenarios/pandaSingle.g&#39;))
 C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
 </pre></div>
 </div>
 </div>
-<p>We open a robot interface in simulation (<code class="docutils literal notranslate"><span class="pre">False</span></code>). <code class="docutils literal notranslate"><span class="pre">True</span></code> would directly open communication to one or two pandas (depending no how many are defined in C). The <code class="docutils literal notranslate"><span class="pre">botsim/verbose</span></code> above leads to the explicit verbosity when creating the simulator interface.</p>
+<p>Next we will open a robot interface in simulation (<code class="docutils literal notranslate"><span class="pre">useRealRobot=False</span></code>). <code class="docutils literal notranslate"><span class="pre">True</span></code> would directly open communication to one or two pandas (depending no how many are defined in C). The <code class="docutils literal notranslate"><span class="pre">botsim/verbose</span></code> leads to the explicit verbosity when creating the simulator interface.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({&#39;botsim/verbose&#39;: 4})
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({&#39;botsim/verbose&#39;: 2})
 bot = ry.BotOp(C, useRealRobot=False)
 </pre></div>
 </div>
@@ -169,7 +155,7 @@ print(q0, q1)
 </pre></div>
 </div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> is the simplest way to move the robot from current to target. It internally creates a cubic B-spline to the target with optimal timing and follows it. The call is <em>non-blocking</em>. Also, your workspace config C is not kept in sync with the real/sim. If you want to wait till the motion is finished, you need to do manually checking the <code class="docutils literal notranslate"><span class="pre">getTimeToEnd</span></code> (=time til the end of the given spline reference), and meanwhile staying sync’ed.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> is the simplest way to move the robot from current to target. It internally creates a cubic B-spline to the target with optimal timing and follows it. The call is <em>non-blocking</em>. Also, your workspace config C is not kept in sync with the real/sim. If you want to wait till the motion is finished, you need to manually keep checking the <code class="docutils literal notranslate"><span class="pre">getTimeToEnd</span></code> (=time til the end of the given spline reference), and meanwhile staying sync’ed.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -201,7 +187,7 @@ while bot.getTimeToEnd()&gt;0:
 </section>
 <section id="Sending-paths-from-KOMO">
 <h2>Sending paths from KOMO<a class="headerlink" href="#Sending-paths-from-KOMO" title="Link to this heading"></a></h2>
-<p>The above shows moving towards a single target, where BopTo decides on the timing (see timeCost parameter of <code class="docutils literal notranslate"><span class="pre">moveTo</span></code>). But we can also send a spline computed, e.g., with path optimization. The example is taken from the KOMO tutorial: we transition smoothly through 4 waypoint:</p>
+<p>The above shows moving towards a single target, where BopTo decides on the timing (see timeCost parameter of <code class="docutils literal notranslate"><span class="pre">moveTo</span></code>). But we can also send a spline computed, e.g., with path optimization. The example is taken from the <a class="reference external" href="komo_1_intro.html">KOMO tutorial</a>: we transition smoothly through 4 waypoint:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -272,7 +258,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>The following defines a very basic Inverse Kinematics method – check the KOMO tutorials for more elaborate formulations. You can use a poseDiff instead of positionDiff, if you want full 6DOF endeffector control. Robust systems should also solve for collisions and limits.</p>
+<p>The following defines a very basic Inverse Kinematics method – check the <a class="reference external" href="komo_1_intro.html">KOMO tutorial</a> for more elaborate formulations. You can use a poseDiff instead of positionDiff, if you want full 6DOF endeffector control. Robust systems should also solve for collisions and limits.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -357,12 +343,12 @@ bot.home(C)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.gripperMove(ry._left, width=.01, speed=.2)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.gripperMove(ry._left, width=.01, speed=.05)
 
 while not bot.gripperDone(ry._left):
     bot.sync(C, .1)
 
-bot.gripperMove(ry._left, width=.075, speed=1)
+bot.gripperMove(ry._left, width=.075, speed=.1)
 
 while not bot.gripperDone(ry._left):
     bot.sync(C, .1)
@@ -421,9 +407,8 @@ C.view()
 </div>
 </div>
 </section>
-</section>
 <section id="Grasp-Test">
-<h1>Grasp Test<a class="headerlink" href="#Grasp-Test" title="Link to this heading"></a></h1>
+<h2>Grasp Test<a class="headerlink" href="#Grasp-Test" title="Link to this heading"></a></h2>
 <p>This is a minimalistic demo for box grasm It hard-codes the grasp using waypoints (-&gt; should be replaced by model-based grasp planning (see komo-3-manipulation), or pcl-based grasp prediction) It uses the PhysX engine behind botop to actually simulate the grasp, using PD gains in the fingers to excert foces The focus of this test is how PhysX responds to setting PD and friction parameters of the grasp To this end, the lift is pretty fast… we want to potentially force a slip</p>
 <p>[literally translated from c++ test/21-grasp]</p>
 <div class="nbinput nblast docutils container">
@@ -438,10 +423,6 @@ ry.params_add({
     &#39;physx/angularDamping&#39;: 0.1,
     &#39;physx/defaultFriction&#39;: 1.,  #reduce -&gt; slip
     &#39;physx/defaultRestitution&#39;: .7, #quit bouncy
-    &#39;physx/motorKp&#39;: 1000.,
-    &#39;physx/motorKd&#39;: 100.,
-    &#39;physx/gripperKp&#39;: 1000., #reduce -&gt; slip
-    &#39;physx/gripperKd&#39;: 100.,
     &#39;botsim/verbose&#39;: 0})
 
 C = ry.Config()
@@ -491,14 +472,16 @@ komo.view(False, &#39;these are the joint space waypoints,\n which are used as c
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ways = komo.getPath()
 
+C.getFrame(&#39;obj&#39;) .setPosition([-.25,.1,.7]) .setQuaternion([1,0,0,0])
+
 back_ways = np.concatenate([ways[0], C.getJointState()]) .reshape([2, C.getJointDimension()])
 print(back_ways)
 
 bot = ry.BotOp(C, useRealRobot=False)
-bot.home(C)
+# bot.home(C)
 
 # open gripper
-bot.gripperMove(ry.ArgWord._left, +1., .5)
+bot.gripperMove(ry.ArgWord._left, .075, .1)
 bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
 
 # send a spline for execution, and wait til it&#39;s done
@@ -506,7 +489,7 @@ bot.move(ways, [2., 3.])
 bot.wait(C, forKeyPressed=False, forTimeToEnd=True)
 
 # close gripper
-bot.gripperMove(ry.ArgWord._left, .015, .5)
+bot.gripperMove(ry.ArgWord._left, .03, .05)
 bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
 
 # send a spline for execution, and wait til it&#39;s done
@@ -514,11 +497,12 @@ bot.move(back_ways, [.1, .5]) #very fast upward motion!
 bot.wait(C, forKeyPressed=False, forTimeToEnd=True)
 
 # open gripper
-bot.gripperMove(ry.ArgWord._left, +1., .5)
+bot.gripperMove(ry.ArgWord._left, .075, .1)
 bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
 </pre></div>
 </div>
 </div>
+</section>
 <section id="Shutdown">
 <h2>Shutdown<a class="headerlink" href="#Shutdown" title="Link to this heading"></a></h2>
 <p>You always need to shut down processes (e.g. communication with the real robot) properly. That’s done here by explicitly destroying the objects:</p>
@@ -571,8 +555,8 @@ ry.params_add({&#39;physx/multibody&#39;: True}) #makes a big difference!
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="config_1_intro.html" class="btn btn-neutral float-left" title="Intro: Configurations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="komo_1_intro.html" class="btn btn-neutral float-right" title="Intro: KOMO - Motion Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="komo_1_intro.html" class="btn btn-neutral float-left" title="Intro: KOMO - Motion Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="botop_2_real_robot.html" class="btn btn-neutral float-right" title="BotOp-2: Real robot operation checklist &amp; first steps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

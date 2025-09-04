@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Intro: BotOp (Robot Operation) interface" href="botop_1_intro.html" />
+    <link rel="next" title="Intro: KOMO - Motion Optimization" href="komo_1_intro.html" />
     <link rel="prev" title="Tutorials" href="../tutorials.html" /> 
 </head>
 
@@ -61,9 +61,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#Cleanup">Cleanup</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html#Grasp-Test">Grasp Test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Config-3: Importing, editing &amp; manipulating them</a></li>
@@ -77,7 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ext_gym_environment.html">Extension - Gym Environment Interface: minimal example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../script/script.html">Lecture Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">robotic python API</a></li>
 </ul>
 
@@ -112,7 +111,9 @@
 <p>Please see the <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/robotKin.html">Robot Kinematics and Dynamics Essentials</a> lecture notes for some background.</p>
 <section id="Building-a-configuration-from-scratch">
 <h2>Building a configuration from scratch<a class="headerlink" href="#Building-a-configuration-from-scratch" title="Link to this heading"></a></h2>
-<p>Let’s first build a configuration from scratch by adding frames and setting properties such as pose, shape and parentship of frames.</p>
+<p>One typically loads robot configurations from a file. But to learn the concepts, let’s first build a configuration from scratch by adding frames and setting properties such as pose, shape and parentship of frames.</p>
+<p>The following creates an empty configuration, and opens a view window for it.</p>
+<p><strong>Tip:</strong> Make the view window appear “Always On Top” (right click on the window bar).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -121,22 +122,14 @@
 import numpy as np
 import time
 print(&#39;robotic package version:&#39;, ry.__version__, ry.compiled())
-</pre></div>
-</div>
-</div>
-<p>The following creates an empty configuration, and opens a view window for it.</p>
-<p><strong>Tip:</strong> Make the view window appear “Always On Top” (right click on the window bar).</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+
+C = ry.Config()
 C.view()
 </pre></div>
 </div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">C.view()</span></code> command will open a window that shows an empty configuration.</p>
-<p>A configuration is essentially a tree (or forest) of frames. You often add models from files, but let’s do it manually here. We declare it a <em>marker</em> frame, which means it has no real shape, but is displayed using its base vectors in the view.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">C.view()</span></code> command opened a window that shows an empty configuration. It is still responsive (as the underlying glfw event loop is running in a different thread).</p>
+<p>Next we declare it a <em>marker</em> frame, which means it has no real shape, but is displayed using its base vectors in the view:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -151,7 +144,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>Let’s add a second frame, but with first as parent and with a hinge joint!</p>
+<p>Let’s add a second frame, but a bit larget, with the first as parent, and with a hinge joint:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -159,13 +152,12 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.addFrame(name=&#39;second&#39;, parent=&#39;first&#39;)
 f.setJoint(ry.JT.hingeX)
 f.setShape(type=ry.ST.marker, size=[.4])
-f.setColor([1,0,0])
 print(&#39;frame name:&#39;, f.name, &#39;pos:&#39;, f.getPosition(), &#39;quat:&#39;, f.getQuaternion())
 C.view()
 </pre></div>
 </div>
 </div>
-<p>Since we now have a configuration with a joint, we can articulate it:</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">getPosition</span></code> and <code class="docutils literal notranslate"><span class="pre">getQuaternion</span></code> methods understood this is a child frame of the above (i.e., computed forward kinematics). Since we now have a configuration with a joint, we can articulate it:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -205,9 +197,8 @@ for t in range(50):
 </pre></div>
 </div>
 </div>
-<p>For most of these, the <code class="docutils literal notranslate"><span class="pre">size</span></code> fully specifies them (box: 3 widths, sphere: radius, capsule: [length radius], cylinder: [length radius], marker: [axes lengths]). The <code class="docutils literal notranslate"><span class="pre">ssBox</span></code> is a sphere-swept-Box with a 4D size: [3 widths, corner radius], which is used a lot. Also mesh shapes can be set manually from python (<code class="docutils literal notranslate"><span class="pre">setMesh</span></code>) by directly giving vertex and triangle arrays, or loaded from a file (<code class="docutils literal notranslate"><span class="pre">setMeshFile</span></code>). <code class="docutils literal notranslate"><span class="pre">setConvexMesh</span></code> means sphere-swept convex mesh, which is specified by a mesh and 1D
-size (radius), and also a very useful shape type.</p>
-<p>Other methods to set shapes include: <code class="docutils literal notranslate"><span class="pre">setImplicitSurface</span></code> (for a given 3D tensor, using Marching Cube to find the iso-surface mesh), <code class="docutils literal notranslate"><span class="pre">setTensorShape</span></code> (a 3D tensor with densities, displayed as transparent density), <code class="docutils literal notranslate"><span class="pre">setPointCloud</span></code> (optionally with normals), and <code class="docutils literal notranslate"><span class="pre">setLines</span></code>.</p>
+<p>For the primitive shapes, the <code class="docutils literal notranslate"><span class="pre">size</span></code> specifies them (box: 3 widths, sphere: radius, capsule: [length radius], cylinder: [length radius], marker: [axes lengths]). The <code class="docutils literal notranslate"><span class="pre">ssBox</span></code> is a sphere-swept-Box with a 4D size: [3 widths, corner radius], which is used a lot. Also mesh shapes can be set manually from python (<code class="docutils literal notranslate"><span class="pre">setMesh</span></code>) by directly giving vertex and triangle arrays, or loaded from a file (<code class="docutils literal notranslate"><span class="pre">setMeshFile</span></code>). <code class="docutils literal notranslate"><span class="pre">setConvexMesh</span></code> means sphere-swept convex mesh, which is specified by a mesh and 1D
+size (radius), and also a very useful shape type. Other methods to set shapes include: <code class="docutils literal notranslate"><span class="pre">setImplicitSurface</span></code> (for a given 3D tensor, using Marching Cube to find the iso-surface mesh), <code class="docutils literal notranslate"><span class="pre">setTensorShape</span></code> (a 3D tensor with densities, displayed as transparent density), <code class="docutils literal notranslate"><span class="pre">setPointCloud</span></code> (optionally with normals), and <code class="docutils literal notranslate"><span class="pre">setLines</span></code>.</p>
 <p>Let’s also briefly list the possible joint types:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -257,7 +248,7 @@ C.view()
 </pre></section>
 <section id="Loading-existing-configurations">
 <h2>Loading existing configurations<a class="headerlink" href="#Loading-existing-configurations" title="Link to this heading"></a></h2>
-<p>You will usually load predefined configurations from file, and then perhaps edit and combine them manually. The rai package has several robot models predefined and installed in the <code class="docutils literal notranslate"><span class="pre">raiPath</span></code>. These are yaml files listing the frames (for historical reasons have the <code class="docutils literal notranslate"><span class="pre">.g</span></code>-file extension (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#graph-yaml-files">Script:gFiles</a>). See the <em>Import/Export</em> tutorial, e.g. for loading URDF or Mujoco.</p>
+<p>You will usually load predefined configurations from file, and then perhaps edit and combine them manually. The rai package has several robot models predefined and installed in the <code class="docutils literal notranslate"><span class="pre">raiPath</span></code>. These are yaml files listing the frames (for historical reasons they have the <code class="docutils literal notranslate"><span class="pre">.g</span></code>-file extension (see <a class="reference external" href="https://marctoussaint.github.io/robotic/notes.html#yaml-graph-files">Notes:Yaml-Graph Files</a>). See the <a class="reference external" href="config_3_import_edit.html">Import/Edit tutorial</a>, e.g. for loading URDF or Mujoco.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -268,7 +259,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>Let’s add a second panda, but to avoid frame name conflicts we prefix all frame names. That’s often important when importing multiple models into a single configuration. We can then also move the second robot simply by redefining the position of its base frame.</p>
+<p>Let’s add a second panda, but to avoid frame name conflicts we prefix all frame names. That’s often important when importing multiple models into a single configuration. We can move the second robot simply by redefining the position of its base frame.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -291,7 +282,7 @@ print(&#39;frames:&#39;, C.getFrameNames())
 </pre></div>
 </div>
 </div>
-<p>Let’s animate - without respect for limits or collisions! (E.g., the fingers go out of limits.)</p>
+<p>Let’s animate - without respect for limits or collisions!</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -314,7 +305,6 @@ for t in range(20):
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.clear()
 C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
 q0 = C.getJointState()
 C.view(False)
@@ -349,9 +339,9 @@ print(&#39;gripper rot:&#39;, f.getRotationMatrix())
 </pre></div>
 </div>
 </div>
-<p>The above provides basic forward kinematics: After <code class="docutils literal notranslate"><span class="pre">setJointState</span></code> you can query the pose of any configuration frame.</p>
-<p>However, there is a more general way to query <em>features</em> (see <a class="reference external" href="https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features">Script:Features</a>), i.e. properties of the configuration in a differentiable manner. You might not use this often; but it is a core underlying functionality of the <code class="docutils literal notranslate"><span class="pre">robotic</span></code> library, and essential when formulating optimization problems (via KOMO) over configurations.</p>
-<p>Here are some example features to evaluate:</p>
+<p>The above provides basic forward kinematics: After <code class="docutils literal notranslate"><span class="pre">setJointState</span></code> you can query the pose of any frame.</p>
+<p>However, there is a more general way to query <em>features</em>, i.e. properties of the configuration in a differentiable manner. Features are defined and explained in more detail in the <a class="reference external" href="config_2_features.html">Features tutorial</a>.</p>
+<p>Features allow you not only to query the value, but also the Jacobian. In practise, one rarely queries features directly (as below). But they are essential to define constraints and objectives for inverse kinematics and path optimization problems (see <a class="reference external" href="komo_1_intro.html">KOMO tutorial</a>). Here an example of how to query them directly:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -379,7 +369,7 @@ C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
 </pre></div>
 </div>
 </div>
-<p>See the next tutorial <em>Features</em> on all the things you can compute over configurations, and that can be used to formulate optimization problems.</p>
+<p>See the next <a class="reference external" href="config_2_features.html">Features tutorial</a> on all the things you can compute over configurations, and that can be used to formulate optimization problems.</p>
 </section>
 <section id="Joint-and-Frame-State">
 <h2>Joint and Frame State<a class="headerlink" href="#Joint-and-Frame-State" title="Link to this heading"></a></h2>
@@ -417,8 +407,7 @@ C.view()
 </pre></div>
 </div>
 </div>
-<p>That totally broke the original design of the robot! Setting global frame states overwrites the relative transformations between frames.</p>
-<p>(Also, the rows of X have non-normalized quaternions. But these are normalized when setting the frame state.)</p>
+<p>That totally broke the original design of the robot! Setting global frame states overwrites the relative transformations between frames! (Also, the rows of X have non-normalized quaternions. But these are normalized when setting the frame state.)</p>
 <p>Let’s reset:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -448,6 +437,24 @@ print(&#39;joint names: &#39;, C.getJointNames() )
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([], notThose=True)
 print(&#39;joint state: &#39;, C.getJointState())
 print(&#39;joint names: &#39;, C.getJointNames() )
+</pre></div>
+</div>
+</div>
+<p>Look closely at the above: We suddenly have 8 joints! (When loading the configuration we only saw 7.) The reason is that the last joint <code class="docutils literal notranslate"><span class="pre">panda_finger_joint1</span></code> is (when loaded) non-selected (inactive).</p>
+<p>However, even if a joint is non-selected, one can still query or set them directly, by extra arguments of setJointState, as shown below. However, a really important implication of selecting (or de-selecting) joints is w.r.t. the Jacobian: The Jacobians are always returns only w.r.t. the currently selected joints. (And also optimization problems (in KOMO) are only w.r.t. the currently selected joints).</p>
+<p>Let’s demonstrate explicit access:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.clear()
+C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+q = C.getJointState()
+print(&#39;joint state shape: &#39;, q.shape)
+
+C.setJointState([.04], [&#39;panda_finger_joint1&#39;]) #closing the fingers to a 2cm gap (panda_finger_joint2 is a mimic joint)
+C.setJointState([.1,.1], [&#39;panda_joint2&#39;,&#39;panda_joint4&#39;]) #stretching these joints
+C.view()
 </pre></div>
 </div>
 </div>
@@ -531,7 +538,7 @@ plt.show()
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="botop_1_intro.html" class="btn btn-neutral float-right" title="Intro: BotOp (Robot Operation) interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="komo_1_intro.html" class="btn btn-neutral float-right" title="Intro: KOMO - Motion Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -424,7 +424,6 @@
     "    .setJoint(ry.JT.transX)\n",
     "\n",
     "q0 = C.getJointState()\n",
-    "X0 = C.getFrameState()\n",
     "\n",
     "C.view()"
    ]
@@ -459,6 +458,7 @@
    "outputs": [],
    "source": [
     "S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=1)\n",
+    "X0 = S.getState()\n",
     "move_a_bit()"
    ]
   },
@@ -478,29 +478,15 @@
    "outputs": [],
    "source": [
     "#swap two blocks\n",
-    "X = C.getFrameState()\n",
-    "A = X[0,:].copy()\n",
-    "X[0,:] = X[4,:]\n",
-    "X[4,:] = A\n",
-    "X[4,1] = .2\n",
-    "C.setFrameState(X)\n",
+    "state = S.getState()\n",
+    "X = state[3]\n",
+    "A = X[0].copy()\n",
+    "X[0] = X[4].copy()\n",
+    "X[4] = A.copy()\n",
+    "S.setState(*state)\n",
+    "# state.q[] = .2\n",
+    "# C.setFrameState(state.freePoses, S.getFreeFrames())\n",
     "C.view()"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "If you compare the simulation display with the configuration display, you see the difference. Now, the simulation interface allows you to **push** the configuration back into the physics simulation, overwriting the physical state:"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "S.setState(X)"
    ]
   },
   {
@@ -534,7 +520,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "S.setState(X0, q0)\n",
+    "S.setState(*X0)\n",
     "C.view()"
    ]
   },

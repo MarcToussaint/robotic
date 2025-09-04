@@ -7,9 +7,9 @@
    "source": [
     "# Intro: KOMO - Motion Optimization\n",
     "\n",
-    "KOMO is a framework for designing motion by formulating optimization problems. Inverse kinematics (IK) is the special case of optimizing only over a single configuration rather than a path. Formulating KOMO problems is key to realizing motion in `rai`.\n",
+    "KOMO is a framework for designing motion by formulating constrained non-linear optimization problems. Inverse kinematics (IK) is the special case of optimizing only over a single configuration rather than a path. Formulating KOMO problems is key to realizing motion in `rai`.\n",
     "\n",
-    "The [Script:Inverse Kinematics](https://marctoussaint.github.io/robotics-course/script/script.html#general-concept-of-differentiable-features) and the [Appendix:NLP Interface](https://marctoussaint.github.io/robotics-course/script/script.html#nlp-interface) provide the mathematical background on inverse kinematics and especially the convention of how NLPs can be defined by adding objectives.\n",
+    "The [Features tutorial](config_2_features.html) and the [Notes: NLP Interface](https://marctoussaint.github.io/robotic/notes#nlp-interface) provide the mathematical background on differentiable features and the convention of how NLPs can be defined via features.\n",
     "\n",
     "This tutorial shows how IK, rough waypoint optimization, and fine path optimization can be formulated as non-linear mathematical program (NLP) using KOMO. Essentially, the `addObjective` allows to add costs or constraints over any `Feature` to the NLP (same features that can be evaluated with `C.eval`)."
    ]
@@ -19,7 +19,9 @@
    "id": "a177972b",
    "metadata": {},
    "source": [
-    "## Minimal IK example"
+    "## Minimal IK example\n",
+    "\n",
+    "Let's first setup a single panda with box (located hanging in the air):"
    ]
   },
   {
@@ -31,28 +33,12 @@
    "source": [
     "import robotic as ry\n",
     "import numpy as np\n",
-    "import time"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "059a8ee7",
-   "metadata": {},
-   "outputs": [],
-   "source": [
+    "import time\n",
+    "\n",
     "C = ry.Config()\n",
     "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
-    "C.view()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "582b68ba",
-   "metadata": {},
-   "outputs": [],
-   "source": [
+    "C.view()\n",
+    "\n",
     "C.addFrame('box') \\\n",
     "    .setPosition([-.25,.1,1.]) \\\n",
     "    .setShape(ry.ST.ssBox, size=[.06,.06,.06,.005]) \\\n",
@@ -66,10 +52,7 @@
    "id": "ac059dc2",
    "metadata": {},
    "source": [
-    "The following defines an optimization problem over a single configuration. The KOMO object essentially contains:\n",
-    "1. Copies of the configuration(s) over which we optimize\n",
-    "2. The list of objectives (=costs & constraints) that define the optimization problem.\n",
-    "\n",
+    "The following defines an optimization problem over a single configuration.\n",
     "The constructor declares over how many configurations (single, waypoints, path..) we optimize. The addObjective methods add costs or constraints:"
    ]
   },
@@ -83,7 +66,7 @@
     "qHome = C.getJointState()\n",
     "\n",
     "komo = ry.KOMO(C, phases=1, slicesPerPhase=1, kOrder=0, enableCollisions=False)\n",
-    "komo.addObjective(\n",
+    "komo.addObjective( # a sum-of-squares cost for staying close (in joint space) to qHome\n",
     "    times=[], \n",
     "    feature=ry.FS.jointState, \n",
     "    frames=[],\n",
@@ -91,7 +74,7 @@
     "    scale=[1e-1], \n",
     "    target=qHome\n",
     ")\n",
-    "komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1])"
+    "komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1]) # an equality constraint on the 3D position difference between gripper and box"
    ]
   },
   {
@@ -104,13 +87,13 @@
     "The `addObjective` method has signature\n",
     "\n",
     "* `times`: the time intervals (subset of configurations in a path) over which this feature is active (irrelevant for IK)\n",
-    "* `feature`: the feature symbol (see advanced `Feature` tutorial)\n",
+    "* `feature`: the feature symbol (see the [Features tutorial](config_2_features.html))\n",
     "* `frames`: the frames for which the feature is computed, given as list of frame names\n",
     "* `type`: whether this is a sum-of-squares (sos) cost, or eq or ineq constraint\n",
     "* `scale`: the matrix(!) by which the feature is multiplied\n",
     "* `target`: the offset which is substracted from the feature (before scaling)\n",
     "\n",
-    "Please see more formal details [here](https://marctoussaint.github.io/robotics-course/script/script.html#nlp-interface)."
+    "Also concerning scale and target, see the [Features tutorial](config_2_features.html)) a mathematical description."
    ]
   },
   {
@@ -168,7 +151,7 @@
    "outputs": [],
    "source": [
     "q = komo.getPath()\n",
-    "print(type(q), len(q))"
+    "print(type(q), q.shape)"
    ]
   },
   {
@@ -358,12 +341,20 @@
   },
   {
    "cell_type": "markdown",
+   "id": "b5f24dbf",
+   "metadata": {},
+   "source": [
+    "The above example is already quite elaborate: Defining multiple constraint problems, trying to solve them each, then picking the best. But this is good practise."
+   ]
+  },
+  {
+   "cell_type": "markdown",
    "id": "f7d69b02",
    "metadata": {},
    "source": [
     "## Waypoints example\n",
     "\n",
-    "Motion design can often be done by computing waypoints, i.e. a coarse-resolution sequence of poses. The BotOp interface can then spline-interpolate between them when executing them.\n",
+    "Motion design can often be done by computing waypoints, i.e. a coarse-resolution sequence of poses. After this, you can either use the BotOp interface directly to interpolate them using splines, or invest more compute and compute optimal paths (fulfilling additional constraints) using path optimization between the waypoints, which we discuss later.\n",
     "\n",
     "Let's define a configuration where the desired gripper waypoints are pre-defined as marker frames. (That's a common pattern: Simplify defining constraints by adding helper reference frames in the configuration.)"
    ]
@@ -572,7 +563,7 @@
    "id": "6b6968ec",
    "metadata": {},
    "source": [
-    "And here is an interactive widget to slide through the solution. See the KOMO Viewer (raise to top). It follows the slider and displays the top error/cost objectives for the current time slice:"
+    "For fun, here is an interactive widget to slide through the solution. See the KOMO Viewer (raise to top). It follows the slider and displays the top error/cost objectives for the current time slice:"
    ]
   },
   {
@@ -649,7 +640,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "venv",
    "language": "python",
    "name": "python3"
   },
@@ -800,8 +791,8 @@
        "_rubberband_x": 0,
        "_rubberband_y": 0,
        "_size": [
-        640.0,
-        480.0
+        640,
+        480
        ],
        "_view_count": null,
        "_view_module": "jupyter-matplotlib",
@@ -811,7 +802,7 @@
        "footer_visible": false,
        "header_visible": false,
        "layout": "IPY_MODEL_c135df2ba7b54e2a92eaa74dbdfef534",
-       "pan_zoom_throttle": 33.0,
+       "pan_zoom_throttle": 33,
        "resizable": true,
        "tabbable": null,
        "toolbar": "IPY_MODEL_7f53c25e76fd4a81a6d40108ba99c5f8",

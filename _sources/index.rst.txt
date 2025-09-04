@@ -22,7 +22,7 @@ Systems Lab <https://argmin.lis.tu-berlin.de/>`_, operate our robots.
 
    getting_started
    tutorials
-   script/script
+   notes
    api
 
 ..   old/old

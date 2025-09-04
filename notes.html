@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes &mdash; Robotic Python Library 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="robotic python API" href="api.html" />
+    <link rel="prev" title="Extension - Gym Environment Interface: minimal example" href="tutorials/ext_gym_environment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Robotic Python Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#lecture-notes">Lecture Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-notes">Code Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nlp-interface">NLP interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-graph-files">Yaml-Graph Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">robotic python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Robotic Python Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Notes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/notes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="notes">
+<h1>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h1>
+<section id="lecture-notes">
+<h2>Lecture Notes<a class="headerlink" href="#lecture-notes" title="Link to this heading"></a></h2>
+<p>Please check my general <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/teaching/#lecture-notes">lecture notes</a>.
+Some of these are particularly relevant for understanding the code:</p>
+<ul class="simple">
+<li><p>The <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/robotKin.html">Robot Kinematics and Dynamics Essentials</a> explains robot systems as multibody configurations, kinematics, Jacobians, inverse kinematics, dynamics, the default <em>Waypoint + Reference Motion + Control</em> control stack.</p></li>
+<li><p>The <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/quaternions.html">Quaternion Lecture Note</a> explains quaternions properly (connecting to the Lie group notions, esp. the <em>log</em> and <em>exp</em> maps), which is an important representation of rotations</p></li>
+<li><p>The <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/splines.html">Splines Lecture Note</a>, which explains splines, in particular B-splines and the maths underlying the interpolation that is also happening within the BotOp control interface.</p></li>
+</ul>
+</section>
+<section id="code-notes">
+<h2>Code Notes<a class="headerlink" href="#code-notes" title="Link to this heading"></a></h2>
+<section id="nlp-interface">
+<h3>NLP interface<a class="headerlink" href="#nlp-interface" title="Link to this heading"></a></h3>
+<p>A general non-linear mathematical program (NLP) is of the form</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\min_{b_l\le x \le b_u}~ f(x) ~~~\text{s.t.}~~~ g(x)\le 0,~ h(x) = 0  ~,\end{aligned}\]</div>
+<p>with <span class="math notranslate nohighlight">\(x\in{\mathbb{R}}^n\)</span>,
+<span class="math notranslate nohighlight">\(f:~ {\mathbb{R}}^n \to {\mathbb{R}}\)</span>,
+<span class="math notranslate nohighlight">\(g:~ {\mathbb{R}}^n \to {\mathbb{R}}^{d_g}\)</span>,
+<span class="math notranslate nohighlight">\(h:~ {\mathbb{R}}^n \to {\mathbb{R}}^{d_h}\)</span>,
+<span class="math notranslate nohighlight">\(b_l,b_u\in{\mathbb{R}}^n\)</span>. However, we want to explicitly also allow
+for <strong>least squares</strong> costs (sum-of-squares), so that we extend the form
+to</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\min_{b_l\le x \le b_u}~ f(x) + r(x)^{\!\top\!}r(x) ~~~\text{s.t.}~~~ g(x)\le 0,~ h(x) = 0  ~,\end{aligned}\]</div>
+<p>with <span class="math notranslate nohighlight">\(r:~ {\mathbb{R}}^n \to {\mathbb{R}}^{d_r}\)</span>. In technical
+terms, the solver needs to be provided with:</p>
+<ul class="simple">
+<li><p>the problem <em>signature</em>: dimension <span class="math notranslate nohighlight">\(n\)</span>, dimensions
+<span class="math notranslate nohighlight">\(d_r, d_g, d_h\)</span>, bounds <span class="math notranslate nohighlight">\(b_l, b_u \in {\mathbb{R}}^n\)</span>,</p></li>
+<li><p>functions <span class="math notranslate nohighlight">\(f, r, g, h\)</span>,   Jacobians for all,   Hessian for
+<span class="math notranslate nohighlight">\(f\)</span>,</p></li>
+<li><p>typically also an initialization sampler <span class="math notranslate nohighlight">\(x_0 \sim p(x)\)</span>, that
+provides starting <span class="math notranslate nohighlight">\(x_0\)</span>.</p></li>
+</ul>
+<p>However, instead of providing a solver with separate functions
+<span class="math notranslate nohighlight">\(f, r, g, h\)</span>, we instead provide only a single differentiable
+<strong>feature</strong> function <span class="math notranslate nohighlight">\(\phi: X \to {\mathbb{R}}^K\)</span>, which stacks
+all <span class="math notranslate nohighlight">\(f,r,g,h\)</span> components to a single vector,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\phi(x) =  \left(\begin{array}{c}f_1(x) \\ r_1(x) \\ h_1(x) \\ g_1(x) \\ h_2(x) \\ \vdots\end{array}\right)
+~,\quad
+\rho =  \left(\begin{array}{c}\texttt{f}\\ \texttt{sos}\\ \texttt{eq}\\ \texttt{ineq}\\ \texttt{eq}\\ \vdots\end{array}\right)  ~,\end{aligned}\end{split}\]</div>
+<p>where the indicator vector <span class="math notranslate nohighlight">\(\rho\)</span> informs the solver which
+components of <span class="math notranslate nohighlight">\(\phi\)</span> have to be treated as linear cost (<code class="docutils literal notranslate"><span class="pre">f</span></code>),
+sum-of-squares cost (<code class="docutils literal notranslate"><span class="pre">sos</span></code>), equality constraint (<code class="docutils literal notranslate"><span class="pre">eq</span></code>), or
+inequality constraint (<code class="docutils literal notranslate"><span class="pre">ineq</span></code>). (The order of stacking does not
+matter.) In this convention, the NLP reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\min_{b_l\le x \le b_u}~ {{\bf 1}}^{\!\top\!}\phi_\texttt{f}(x) + \phi_\texttt{sos}(x)^{\!\top\!}\phi_\texttt{sos}(x)
+  ~~\text{s.t.}~~\phi_\texttt{ineq}(x) \le 0,~ \phi_\texttt{eq}(x) = 0 ~,\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi_\texttt{sos}\)</span> is the subsets of <code class="docutils literal notranslate"><span class="pre">sos</span></code>-features, etc.
+Based on these conventions, the solver needs to be provided with:</p>
+<ul class="simple">
+<li><p>the problem <em>signature</em>: dimension <span class="math notranslate nohighlight">\(n\)</span>, feature types
+<span class="math notranslate nohighlight">\(\rho\)</span>, bounds <span class="math notranslate nohighlight">\(b_l, b_u \in {\mathbb{R}}^n\)</span>,</p></li>
+<li><p>a single differentiable feature function
+<span class="math notranslate nohighlight">\(\phi: X \to {\mathbb{R}}^K\)</span>, with Jacobian function
+<span class="math notranslate nohighlight">\(J = \partial_x \phi(x)\)</span>,</p></li>
+<li><p>optionally a Hessian function for the sum of all <code class="docutils literal notranslate"><span class="pre">f</span></code>-terms,</p></li>
+<li><p>and typically also an initialization sampler <span class="math notranslate nohighlight">\(x_0 \sim p(x)\)</span>,
+that provides starting <span class="math notranslate nohighlight">\(x_0\)</span>.</p></li>
+</ul>
+<p>In the rai code, an abstract <code class="docutils literal notranslate"><span class="pre">NLP</span></code> is therefore declared as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span><span class="n">signature</span>
+<span class="n">uint</span> <span class="n">dimension</span><span class="p">;</span>  <span class="n">ObjectiveTypeA</span> <span class="n">featureTypes</span><span class="p">;</span>  <span class="n">arr</span> <span class="n">bounds</span><span class="p">;</span>
+
+<span class="o">//</span><span class="n">essential</span> <span class="n">method</span>
+<span class="n">virtual</span> <span class="n">void</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">arr</span><span class="o">&amp;</span> <span class="n">phi</span><span class="p">,</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">J</span><span class="p">,</span> <span class="n">const</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">);</span>
+
+<span class="o">//</span><span class="n">optional</span>
+<span class="n">virtual</span> <span class="n">arr</span>  <span class="n">getInitializationSample</span><span class="p">(</span><span class="n">const</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">previousOptima</span><span class="o">=</span><span class="p">{});</span>
+<span class="n">virtual</span> <span class="n">void</span> <span class="n">getFHessian</span><span class="p">(</span><span class="n">arr</span><span class="o">&amp;</span> <span class="n">H</span><span class="p">,</span> <span class="n">const</span> <span class="n">arr</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">bounds</span></code> is a <span class="math notranslate nohighlight">\(2\times n\)</span> array, with the two rows being the lower and upper bound vector.</p>
+</section>
+<section id="yaml-graph-files">
+<h3>Yaml-Graph Files<a class="headerlink" href="#yaml-graph-files" title="Link to this heading"></a></h3>
+<p>We use yaml-style files throughout. These are the file representation of
+internal data structures such as dictionaries (anytype key-value maps)
+used for parameter files or other structure data, but also for graphs.
+The (semantic) extensions relative to yaml are:</p>
+<ul class="simple">
+<li><p>An <code class="docutils literal notranslate"><span class="pre">Include</span></code> node allows to hierarchically include files. This means
+that while each local file can be parsed with a standard yaml parser,
+an outer loop has to check for <code class="docutils literal notranslate"><span class="pre">Include</span></code> nodes and coordinate loading
+sub-files.</p></li>
+<li><p>As an implication of the above, we allow for a special <em>path</em> type,
+as URLs embraced by <code class="docutils literal notranslate"><span class="pre">&lt;...&gt;</span></code>. This becomes necessary as file values
+need to be interpreted relative to the path of the loading file. So
+when such a file is parsed we not only store the filename string, but
+also the path of the loading file to ensure we know its absolute
+path.</p></li>
+<li><p>We also allow <code class="docutils literal notranslate"><span class="pre">Edit</span></code> and <code class="docutils literal notranslate"><span class="pre">Delete</span></code> nodes, which allow us to
+edit/overwrite the value of previously defined nodes, as well as
+delete previously defined nodes.</p></li>
+<li><p>Finally, the name of a node can include a list of parents: E.g. <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">(B</span>
+<span class="pre">C):</span> <span class="pre">{</span> <span class="pre">shape:</span> <span class="pre">box</span> <span class="pre">}</span></code> denotes a node with key <code class="docutils literal notranslate"><span class="pre">A</span></code> that is a child of <code class="docutils literal notranslate"><span class="pre">B</span></code>
+and <code class="docutils literal notranslate"><span class="pre">C</span></code>. The semantics of this is that <code class="docutils literal notranslate"><span class="pre">A</span></code> is a (directed) edge
+between B and C. This is analogous to a dot declaration <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">-&gt;</span> <span class="pre">C</span> <span class="pre">[</span>
+<span class="pre">shape=box</span> <span class="pre">]</span></code>.</p></li>
+<li><p>Note that all of the above is still yaml syntax, the outer parser
+only adds additional interpretation (post-processing) of <code class="docutils literal notranslate"><span class="pre">Include,</span>
+<span class="pre">Edit,</span> <span class="pre">Delete</span></code> tags, <code class="docutils literal notranslate"><span class="pre">&lt;..&gt;</span></code> values, and <code class="docutils literal notranslate"><span class="pre">(..)</span></code> in names.</p></li>
+</ul>
+<p>Within the code, .g-files are used to represent parameter files, robotic
+configurations (<span class="math notranslate nohighlight">\(\sim\)</span> URDF), 1st order logic, factor graphs,
+optimization problems. The underlying data structure is used, e.g., as
+any-type container, Graph, or auto-conversion to python dictionaries.</p>
+<p>Subgraphs may contain nodes that have parents from the containing graph,
+or from other subgraphs of the containing graph. Some methods of the
+<code class="docutils literal notranslate"><span class="pre">Graph</span></code> class (to find nodes by key or type) allow to specify whether
+also nodes in subgraphs or parentgraphs are to be searched. This
+connectivity across (sub)-graphs e.g. allows to represent logic
+knowledge bases.</p>
+<p>The <a class="reference external" href="https://marctoussaint.github.io/robotic/tutorials/config_3_import_edit.html">Editing Configurations tutorial</a>
+shows how this file syntax is used to specify robot and environment
+configurations.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials/ext_gym_environment.html" class="btn btn-neutral float-left" title="Extension - Gym Environment Interface: minimal example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="robotic python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Marc Toussaint.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
