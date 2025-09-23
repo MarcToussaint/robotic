@@ -6,14 +6,7 @@ import numpy
 import typing
 from . import DataGen
 from . import test
-__all__ = ['Actions2KOMO_Translator', 'ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'TAMP_Provider', 'compiled', 'default_Actions2KOMO_Translator', 'default_TAMP_Provider', 'depthImage2PointCloud', 'get_NLP_Problem_names', 'make_NLP_Problem', 'params_add', 'params_clear', 'params_file', 'params_print', 'raiPath', 'rnd_seed', 'rnd_seed_random', 'setRaiPath', 'test']
-class Actions2KOMO_Translator:
-    """
-    Actions2KOMO_Translator
-    """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):
-        ...
+__all__ = ['ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_TAMP_Abstraction', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'compiled', 'default_LGP_TAMP_Abstraction', 'depthImage2PointCloud', 'get_NLP_Problem_names', 'make_NLP_Problem', 'params_add', 'params_clear', 'params_file', 'params_get', 'params_print', 'raiPath', 'rnd_seed', 'rnd_seed_random', 'setRaiPath', 'test']
 class ArgWord:
     """
     [todo: replace by str]
@@ -496,6 +489,8 @@ class ConfigurationViewer:
         """
         return accumulated events as list of strings
         """
+    def getGLFWWindow(self) -> int:
+        ...
     def getRgb(self) -> ...:
         """
         return the view's rgb image
@@ -1144,6 +1139,13 @@ class KOMO_Objective:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
+class LGP_TAMP_Abstraction:
+    """
+    LGP_TAMP_Abstraction
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
 class LGP_Tool:
     """
     Tools to compute things (and solve) a Task-and-Motion Planning problem formulated as Logic-Geometric Program
@@ -1151,7 +1153,7 @@ class LGP_Tool:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
-    def __init__(self, arg0: Config, arg1: TAMP_Provider, arg2: Actions2KOMO_Translator) -> None:
+    def __init__(self, arg0: Config, arg1: LGP_TAMP_Abstraction) -> None:
         """
         initialization
         """
@@ -1478,20 +1480,20 @@ class OptMethod:
     
       Ceres
     """
-    Ceres: typing.ClassVar[OptMethod]  # value = <OptMethod.Ceres: 12>
-    Ipopt: typing.ClassVar[OptMethod]  # value = <OptMethod.Ipopt: 11>
+    Ceres: typing.ClassVar[OptMethod]  # value = <OptMethod.Ceres: 14>
+    Ipopt: typing.ClassVar[OptMethod]  # value = <OptMethod.Ipopt: 12>
     LBFGS: typing.ClassVar[OptMethod]  # value = <OptMethod.LBFGS: 3>
-    NLopt: typing.ClassVar[OptMethod]  # value = <OptMethod.NLopt: 10>
-    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'gradientDescent': <OptMethod.gradientDescent: 1>, 'rprop': <OptMethod.rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'newton': <OptMethod.newton: 4>, 'augmentedLag': <OptMethod.augmentedLag: 5>, 'squaredPenalty': <OptMethod.squaredPenalty: 6>, 'logBarrier': <OptMethod.logBarrier: 7>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 8>, 'slackGN': <OptMethod.slackGN: 9>, 'NLopt': <OptMethod.NLopt: 10>, 'Ipopt': <OptMethod.Ipopt: 11>, 'Ceres': <OptMethod.Ceres: 12>}
+    NLopt: typing.ClassVar[OptMethod]  # value = <OptMethod.NLopt: 11>
+    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'gradientDescent': <OptMethod.gradientDescent: 1>, 'rprop': <OptMethod.rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'newton': <OptMethod.newton: 4>, 'augmentedLag': <OptMethod.augmentedLag: 5>, 'squaredPenalty': <OptMethod.squaredPenalty: 8>, 'logBarrier': <OptMethod.logBarrier: 6>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 9>, 'slackGN': <OptMethod.slackGN: 10>, 'NLopt': <OptMethod.NLopt: 11>, 'Ipopt': <OptMethod.Ipopt: 12>, 'Ceres': <OptMethod.Ceres: 14>}
     augmentedLag: typing.ClassVar[OptMethod]  # value = <OptMethod.augmentedLag: 5>
     gradientDescent: typing.ClassVar[OptMethod]  # value = <OptMethod.gradientDescent: 1>
-    logBarrier: typing.ClassVar[OptMethod]  # value = <OptMethod.logBarrier: 7>
+    logBarrier: typing.ClassVar[OptMethod]  # value = <OptMethod.logBarrier: 6>
     newton: typing.ClassVar[OptMethod]  # value = <OptMethod.newton: 4>
     none: typing.ClassVar[OptMethod]  # value = <OptMethod.none: 0>
     rprop: typing.ClassVar[OptMethod]  # value = <OptMethod.rprop: 2>
-    singleSquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.singleSquaredPenalty: 8>
-    slackGN: typing.ClassVar[OptMethod]  # value = <OptMethod.slackGN: 9>
-    squaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.squaredPenalty: 6>
+    singleSquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.singleSquaredPenalty: 9>
+    slackGN: typing.ClassVar[OptMethod]  # value = <OptMethod.slackGN: 10>
+    squaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.squaredPenalty: 8>
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
@@ -1525,6 +1527,10 @@ class Quaternion:
     """
     See the Quaternion Lecture Note https://www.user.tu-berlin.de/mtoussai/notes/quaternions.html for details
     """
+    w: float
+    x: float
+    y: float
+    z: float
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
@@ -1536,13 +1542,19 @@ class Quaternion:
         """
         concatenation (quaternion multiplication) of two transforms
         """
-    def append(self, q: Quaternion) -> None:
+    def __neg__(self) -> Quaternion:
+        """
+        inverse quaternion
+        """
+    def __str__(self) -> str:
+        ...
+    def append(self, q: Quaternion) -> Quaternion:
         ...
     def applyOnPointArray(self, pts: arr) -> None:
         ...
     def asArr(self) -> arr:
         ...
-    def flipSign(self) -> None:
+    def flipSign(self) -> Quaternion:
         ...
     def getJacobian(self) -> arr:
         ...
@@ -1554,11 +1566,11 @@ class Quaternion:
         ...
     def getRollPitchYaw(self) -> arr:
         ...
-    def invert(self) -> None:
+    def invert(self) -> Quaternion:
         ...
     def multiply(self, f: float) -> None:
         ...
-    def normalize(self) -> None:
+    def normalize(self) -> Quaternion:
         ...
     def set(self, q: arr) -> Quaternion:
         ...
@@ -1872,6 +1884,8 @@ class Simulation:
         ...
     def detach(self, from: Frame, to: Frame) -> None:
         ...
+    def getFreeFrames(self) -> list[Frame]:
+        ...
     def getGripperWidth(self, gripperFrameName: str) -> float:
         ...
     def getImageAndDepth(self) -> tuple:
@@ -2008,20 +2022,11 @@ class SolverReturn:
         ...
     def dict(self) -> dict:
         ...
-class TAMP_Provider:
-    """
-    TAMP_Provider
-    """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):
-        ...
 def compiled() -> str:
     """
     return a compile date+time version string
     """
-def default_Actions2KOMO_Translator() -> Actions2KOMO_Translator:
-    ...
-def default_TAMP_Provider(C: Config, lgp_config_file: str) -> TAMP_Provider:
+def default_LGP_TAMP_Abstraction(C: Config, lgp_config_file: str) -> LGP_TAMP_Abstraction:
     ...
 def depthImage2PointCloud(depth: numpy.ndarray[numpy.float32], fxycxy: arr) -> arr:
     """
@@ -2046,6 +2051,10 @@ def params_clear() -> None:
 def params_file(filename: str) -> None:
     """
     add parameters from a file
+    """
+def params_get() -> dict:
+    """
+    return parameters as dict
     """
 def params_print() -> None:
     """

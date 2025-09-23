@@ -13,5 +13,8 @@ from .manipulation import KOMO_ManipulationHelper
 #from .src.config_urdf import URDFLoader
 #from .src.mesh_helper import MeshHelper
 
+
 import os
-setRaiPath( os.path.abspath(os.path.dirname(__file__)) + '/rai-robotModels' )
+rai_path = os.path.abspath(os.path.dirname(__file__)) + '/rai-robotModels'
+os.environ["RAI_PATH"] = rai_path
+setRaiPath( rai_path )

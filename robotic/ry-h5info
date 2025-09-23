@@ -2,29 +2,20 @@
 
 import argparse
 import h5py
+from robotic.src.h5_helper import *
 
 parser = argparse.ArgumentParser(description='h5-file info')
 
 parser.add_argument('FILE', type=str,
                     help='h5-file name')
 
-def print_attrs(name, obj):
-    if isinstance(obj, h5py.Dataset):
-        print('   ', name, obj.name, obj.shape, obj.dtype, f'{obj.size*obj.dtype.itemsize/1024:.2f}kB')
-        if obj.dtype=='int8':
-            print('       ', ''.join([chr(x) for x in obj[()]]))
-        elif obj.size<20:
-            print('       ', obj[()])
-    else:
-        print('---', name)
-
 def main():
     args = parser.parse_args()
 
     print('=== file', args.FILE)
     try:
-        with h5py.File(args.FILE, 'r') as fil:
-            fil.visititems(print_attrs)
+        h5 = H5Reader(args.FILE)
+        h5.print_info()
     except KeyboardInterrupt:
         sys.exit(1)
 
