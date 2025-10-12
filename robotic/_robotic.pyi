@@ -5,8 +5,9 @@ from __future__ import annotations
 import numpy
 import typing
 from . import DataGen
+from . import algo
 from . import test
-__all__ = ['ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_TAMP_Abstraction', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'compiled', 'default_LGP_TAMP_Abstraction', 'depthImage2PointCloud', 'get_NLP_Problem_names', 'make_NLP_Problem', 'params_add', 'params_clear', 'params_file', 'params_get', 'params_print', 'raiPath', 'rnd_seed', 'rnd_seed_random', 'setRaiPath', 'test']
+__all__ = ['ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_TAMP_Abstraction', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'algo', 'compiled', 'default_LGP_TAMP_Abstraction', 'depthImage2PointCloud', 'get_NLP_Problem_names', 'make_NLP_Problem', 'params_add', 'params_clear', 'params_file', 'params_get', 'params_print', 'raiPath', 'rnd_seed', 'rnd_seed_random', 'setRaiPath', 'test']
 class ArgWord:
     """
     [todo: replace by str]
@@ -457,7 +458,7 @@ class ConfigurationViewer:
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
-    def focus(self, position_7d: arr, heightAbs: float = 1.0) -> None:
+    def focus(self, position_3d: arr, heightAbs: float = 1.0) -> None:
         """
         focus at a 3D position; second argument distances camara so that view window has roughly given absHeight around object
         """
@@ -1615,7 +1616,7 @@ class RRT_PathFinder:
         ...
     def setStartGoal(self, starts: arr, goals: arr) -> None:
         ...
-    def solve(self) -> SolverReturn:
+    def solve(self, verbose: int = 1) -> SolverReturn:
         ...
 class ST:
     """
@@ -1916,7 +1917,7 @@ class Simulation:
         """
         reset the spline reference, i.e., clear the current spline buffer and initialize it to constant spline at current position (to which setSplineRef can append)
         """
-    def resetTime(self, arg0: float) -> None:
+    def resetTime(self, time: float = 1.0) -> None:
         ...
     def selectSensor(self, sensorName: str) -> ...:
         ...

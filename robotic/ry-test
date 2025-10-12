@@ -19,7 +19,7 @@ qT[0] += 1.
 
 sim = ry.Simulation(C, ry.SimulationEngine.physx, verbose=2) #try verbose=3 or 1
 
-[X, q, V, qDot] = sim.getState()
+state = sim.getState()
 
 tau=.01
 
@@ -34,7 +34,7 @@ for t in range(int(4./tau)):
     #    C.view(False, f'Note: the sim operates *directly* on the given config\nt:{t:4d} = {tau*t:5.2f}sec')
 
     if (t%100)==0:
-        sim.setState(X, q, V, qDot)
-        q0 = q
+        sim.setState(*state)
+        #q0 = q
         sim.resetSplineRef()
         sim.setSplineRef(qT, [1.])

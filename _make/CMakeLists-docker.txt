@@ -68,10 +68,10 @@ if(USE_PHYSX)
   link_directories(/usr/local/bin/linux.clang/release)
 endif()
 
+file(GLOB SRC_AlgoLewiner rai/src/Algo/Lewiner/*.cpp)
 file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
 file(GLOB SRC_GeoPly rai/src/Geo/ply/*.c)
 file(GLOB SRC_GeoCcd rai/src/Geo/ccd_rai/*.c)
-file(GLOB SRC_GeoLewiner rai/src/Geo/Lewiner/*.cpp)
 
 file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
@@ -85,10 +85,10 @@ add_library(rai SHARED
   rai/src/Core/unity.cxx
   rai/src/Optim/unity.cxx
   rai/src/Geo/unity.cxx
+  ${SRC_AlgoLewiner}
   ${SRC_GeoGJK}
   ${SRC_GeoPly}
   ${SRC_GeoCcd}
-  ${SRC_GeoLewiner}
   rai/src/Algo/unity.cxx
   rai/src/Search/unity.cxx
   rai/src/PathAlgos/unity.cxx
