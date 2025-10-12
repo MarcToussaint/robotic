@@ -327,7 +327,7 @@ C.view()
 limits = C.getJointLimits()
 verbose = 0
 
-for i in range(20):
+for i in range(10):
     qStart = C.getJointState()
 
     # choose a random grasp orientation
@@ -440,7 +440,7 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#reload(manip)
 
 C.setJointState(qHome)
-C.view_raise()
+C.viewer().raiseWindow()
 
 C.getFrame(box).setRelativePosition([-.0,.3-.055,.095])
 C.getFrame(box).setRelativeQuaternion([1.,0,0,0])
@@ -503,7 +503,7 @@ del M
 C.delFrame(&#39;obstacle&#39;)
 
 C.setJointState(qHome)
-C.view_raise()
+C.viewer().raiseWindow()
 
 for l in range(20):
         qStart = C.getJointState()

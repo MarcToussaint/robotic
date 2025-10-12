@@ -290,7 +290,7 @@
     "limits = C.getJointLimits()\n",
     "verbose = 0\n",
     "\n",
-    "for i in range(20):\n",
+    "for i in range(10):\n",
     "    qStart = C.getJointState()\n",
     "    \n",
     "    # choose a random grasp orientation\n",
@@ -427,7 +427,7 @@
     "#reload(manip)\n",
     "\n",
     "C.setJointState(qHome)\n",
-    "C.view_raise()\n",
+    "C.viewer().raiseWindow()\n",
     "\n",
     "C.getFrame(box).setRelativePosition([-.0,.3-.055,.095])\n",
     "C.getFrame(box).setRelativeQuaternion([1.,0,0,0])\n",
@@ -497,7 +497,7 @@
     "C.delFrame('obstacle')\n",
     "\n",
     "C.setJointState(qHome)\n",
-    "C.view_raise()\n",
+    "C.viewer().raiseWindow()\n",
     "\n",
     "for l in range(20):\n",
     "        qStart = C.getJointState()\n",
@@ -646,7 +646,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "venv",
+   "display_name": "Python 3 (ipykernel)",
    "language": "python",
    "name": "python3"
   },

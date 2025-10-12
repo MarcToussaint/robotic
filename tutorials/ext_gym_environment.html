@@ -168,7 +168,7 @@ C.view()
         n = self.q0.size
 
         # define the observation space (see also observation_fct())
-        self.observation_space = gym.spaces.Box(-2., +2., shape=(2*n + 6,), dtype=np.float32)
+        self.observation_space = gym.spaces.Box(-2., +2., shape=(2*n + 7 + 6,), dtype=np.float32)
 
         # define the action space
         action_scale = 5
@@ -177,6 +177,7 @@ C.view()
 
         # create the underlying physics simulation (using PhysX from Nvidia)
         self.sim = ry.Simulation(self.C, ry.SimulationEngine.physx, verbose=sim_verbose)
+        self.state0 = self.sim.getState()
 
     def __del__(self):
         del self.sim
@@ -197,10 +198,12 @@ C.view()
 
     def observation_fct(self):
         &#39;&#39;&#39;observations are joint pos/vel, and box pos/vel&#39;&#39;&#39;
-        X, q, Xdot, qdot = self.sim.getState()
-        box_pos = X[self.box.ID, :3]
-        box_vel = Xdot[self.box.ID, 0]
-        observation = np.concatenate((q, qdot, box_pos, box_vel), axis=0)
+        state = self.sim.getState()
+        q = state[1]
+        qDot = state[2]
+        box_pos = state[3][0,:]
+        box_vel = state[4][0,:,:].reshape(-1)
+        observation = np.concatenate((q, qDot, box_pos, box_vel), axis=0)
         return observation
 
     def reward_fct(self):
@@ -231,15 +234,15 @@ C.view()
         &#39;&#39;&#39;essential to implement gym.Env&#39;&#39;&#39;
         super().reset(seed=seed)
 
-        X = self.X0.copy()
-        if self.random_reset:
-            # resetting the box position to a random initial position -- makes it MUCH harder
-            X[self.box.ID, :2] += .3 * np.random.randn(2)
+        # X = self.state0.copy()
+        # if self.random_reset:
+        #     # resetting the box position to a random initial position -- makes it MUCH harder
+        #     X[self.box.ID, :2] += .3 * np.random.randn(2)
 
         # resetting the sim
         self.time = 0.
         self.sim.resetTime()
-        self.sim.setState(X, self.q0)
+        self.sim.setState(*self.state0)
         self.sim.resetSplineRef()
 
         observation = self.observation_fct()

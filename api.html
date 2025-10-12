@@ -48,7 +48,6 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes.html">Notes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">robotic python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.Actions2KOMO_Translator"><code class="docutils literal notranslate"><span class="pre">Actions2KOMO_Translator</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.ArgWord"><code class="docutils literal notranslate"><span class="pre">ArgWord</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ArgWord.name"><code class="docutils literal notranslate"><span class="pre">ArgWord.name</span></code></a></li>
 </ul>
@@ -151,6 +150,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.getEventCursor"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.getEventCursor()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.getEventCursorObject"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.getEventCursorObject()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.getEvents"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.getEvents()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.getGLFWWindow"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.getGLFWWindow()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.getRgb"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.getRgb()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.raiseWindow"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.raiseWindow()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.savePng"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.savePng()</span></code></a></li>
@@ -274,6 +274,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.KOMO.view_slice"><code class="docutils literal notranslate"><span class="pre">KOMO.view_slice()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.LGP_TAMP_Abstraction"><code class="docutils literal notranslate"><span class="pre">LGP_TAMP_Abstraction</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.LGP_Tool"><code class="docutils literal notranslate"><span class="pre">LGP_Tool</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.LGP_Tool.getSolvedKOMO"><code class="docutils literal notranslate"><span class="pre">LGP_Tool.getSolvedKOMO()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.LGP_Tool.getSolvedPlan"><code class="docutils literal notranslate"><span class="pre">LGP_Tool.getSolvedPlan()</span></code></a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Simulation.attach"><code class="docutils literal notranslate"><span class="pre">Simulation.attach()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Simulation.depthData2pointCloud"><code class="docutils literal notranslate"><span class="pre">Simulation.depthData2pointCloud()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Simulation.detach"><code class="docutils literal notranslate"><span class="pre">Simulation.detach()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Simulation.getFreeFrames"><code class="docutils literal notranslate"><span class="pre">Simulation.getFreeFrames()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Simulation.getGripperWidth"><code class="docutils literal notranslate"><span class="pre">Simulation.getGripperWidth()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Simulation.getImageAndDepth"><code class="docutils literal notranslate"><span class="pre">Simulation.getImageAndDepth()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Simulation.getScreenshot"><code class="docutils literal notranslate"><span class="pre">Simulation.getScreenshot()</span></code></a></li>
@@ -433,16 +435,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.SolverReturn.dict"><code class="docutils literal notranslate"><span class="pre">SolverReturn.dict()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.TAMP_Provider"><code class="docutils literal notranslate"><span class="pre">TAMP_Provider</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.compiled"><code class="docutils literal notranslate"><span class="pre">compiled()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.default_Actions2KOMO_Translator"><code class="docutils literal notranslate"><span class="pre">default_Actions2KOMO_Translator()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.default_TAMP_Provider"><code class="docutils literal notranslate"><span class="pre">default_TAMP_Provider()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.default_LGP_TAMP_Abstraction"><code class="docutils literal notranslate"><span class="pre">default_LGP_TAMP_Abstraction()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.depthImage2PointCloud"><code class="docutils literal notranslate"><span class="pre">depthImage2PointCloud()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.get_NLP_Problem_names"><code class="docutils literal notranslate"><span class="pre">get_NLP_Problem_names()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.make_NLP_Problem"><code class="docutils literal notranslate"><span class="pre">make_NLP_Problem()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.params_add"><code class="docutils literal notranslate"><span class="pre">params_add()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.params_clear"><code class="docutils literal notranslate"><span class="pre">params_clear()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.params_file"><code class="docutils literal notranslate"><span class="pre">params_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.params_get"><code class="docutils literal notranslate"><span class="pre">params_get()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.params_print"><code class="docutils literal notranslate"><span class="pre">params_print()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.raiPath"><code class="docutils literal notranslate"><span class="pre">raiPath()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.rnd_seed"><code class="docutils literal notranslate"><span class="pre">rnd_seed()</span></code></a></li>
@@ -479,11 +480,6 @@
   <section id="module-robotic._robotic">
 <span id="robotic-python-api"></span><h1>robotic python API<a class="headerlink" href="#module-robotic._robotic" title="Link to this heading"></a></h1>
 <p>rai bindings</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="robotic._robotic.Actions2KOMO_Translator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">Actions2KOMO_Translator</span></span><a class="headerlink" href="#robotic._robotic.Actions2KOMO_Translator" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="robotic._robotic.ArgWord">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">ArgWord</span></span><a class="headerlink" href="#robotic._robotic.ArgWord" title="Link to this definition"></a></dt>
@@ -1007,7 +1003,7 @@
 <dd><p>internal viewer handle (gl window)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.ConfigurationViewer.focus">
-<span class="sig-name descname"><span class="pre">focus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer" title="robotic._robotic.ConfigurationViewer"><span class="pre">robotic._robotic.ConfigurationViewer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_7d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heightAbs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.ConfigurationViewer.focus" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">focus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer" title="robotic._robotic.ConfigurationViewer"><span class="pre">robotic._robotic.ConfigurationViewer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_3d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heightAbs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.ConfigurationViewer.focus" title="Link to this definition"></a></dt>
 <dd><p>focus at a 3D position; second argument distances camara so that view window has roughly given absHeight around object</p>
 </dd></dl>
 
@@ -1052,6 +1048,11 @@
 <span class="sig-name descname"><span class="pre">getEvents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer" title="robotic._robotic.ConfigurationViewer"><span class="pre">robotic._robotic.ConfigurationViewer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StringA</span></span></span><a class="headerlink" href="#robotic._robotic.ConfigurationViewer.getEvents" title="Link to this definition"></a></dt>
 <dd><p>return accumulated events as list of strings</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.ConfigurationViewer.getGLFWWindow">
+<span class="sig-name descname"><span class="pre">getGLFWWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer" title="robotic._robotic.ConfigurationViewer"><span class="pre">robotic._robotic.ConfigurationViewer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#robotic._robotic.ConfigurationViewer.getGLFWWindow" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.ConfigurationViewer.getRgb">
@@ -1735,6 +1736,11 @@
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="robotic._robotic.LGP_TAMP_Abstraction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">LGP_TAMP_Abstraction</span></span><a class="headerlink" href="#robotic._robotic.LGP_TAMP_Abstraction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="robotic._robotic.LGP_Tool">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">LGP_Tool</span></span><a class="headerlink" href="#robotic._robotic.LGP_Tool" title="Link to this definition"></a></dt>
 <dd><p>Tools to compute things (and solve) a Task-and-Motion Planning problem formulated as Logic-Geometric Program</p>
@@ -2129,7 +2135,7 @@
 <dd><p>See the Quaternion Lecture Note <a class="reference external" href="https://www.user.tu-berlin.de/mtoussai/notes/quaternions.html">https://www.user.tu-berlin.de/mtoussai/notes/quaternions.html</a> for details</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Quaternion.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.append" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.append" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2144,7 +2150,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Quaternion.flipSign">
-<span class="sig-name descname"><span class="pre">flipSign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.flipSign" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flipSign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.flipSign" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2174,7 +2180,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Quaternion.invert">
-<span class="sig-name descname"><span class="pre">invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.invert" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.invert" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2184,7 +2190,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Quaternion.normalize">
-<span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.normalize" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Quaternion" title="robotic._robotic.Quaternion"><span class="pre">robotic._robotic.Quaternion</span></a></span></span><a class="headerlink" href="#robotic._robotic.Quaternion.normalize" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2276,7 +2282,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.RRT_PathFinder.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.RRT_PathFinder" title="robotic._robotic.RRT_PathFinder"><span class="pre">robotic._robotic.RRT_PathFinder</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.SolverReturn" title="robotic._robotic.SolverReturn"><span class="pre">SolverReturn</span></a></span></span><a class="headerlink" href="#robotic._robotic.RRT_PathFinder.solve" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.RRT_PathFinder" title="robotic._robotic.RRT_PathFinder"><span class="pre">robotic._robotic.RRT_PathFinder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.SolverReturn" title="robotic._robotic.SolverReturn"><span class="pre">SolverReturn</span></a></span></span><a class="headerlink" href="#robotic._robotic.RRT_PathFinder.solve" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2388,6 +2394,11 @@
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.Simulation.getFreeFrames">
+<span class="sig-name descname"><span class="pre">getFreeFrames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Simulation" title="robotic._robotic.Simulation"><span class="pre">robotic._robotic.Simulation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#robotic._robotic.Frame" title="robotic._robotic.Frame"><span class="pre">robotic._robotic.Frame</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#robotic._robotic.Simulation.getFreeFrames" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Simulation.getGripperWidth">
 <span class="sig-name descname"><span class="pre">getGripperWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Simulation" title="robotic._robotic.Simulation"><span class="pre">robotic._robotic.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gripperFrameName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#robotic._robotic.Simulation.getGripperWidth" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -2405,7 +2416,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Simulation.getState">
 <span class="sig-name descname"><span class="pre">getState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Simulation" title="robotic._robotic.Simulation"><span class="pre">robotic._robotic.Simulation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#robotic._robotic.Simulation.getState" title="Link to this definition"></a></dt>
-<dd><p>returns a 4-tuple or frame state, joint state, frame velocities (linear &amp; angular), joint velocities</p>
+<dd><p>returns a 5-tuple of (time, q, qDot, freePos, freeVel)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2452,7 +2463,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Simulation.resetTime">
-<span class="sig-name descname"><span class="pre">resetTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Simulation" title="robotic._robotic.Simulation"><span class="pre">robotic._robotic.Simulation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Simulation.resetTime" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">resetTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Simulation" title="robotic._robotic.Simulation"><span class="pre">robotic._robotic.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Simulation.resetTime" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2471,7 +2482,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Simulation.setState">
-<span class="sig-name descname"><span class="pre">setState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Simulation" title="robotic._robotic.Simulation"><span class="pre">robotic._robotic.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">frameState</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jointState</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([],</span> <span class="pre">dtype=float64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frameVelocities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([],</span> <span class="pre">dtype=float64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jointVelocities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([],</span> <span class="pre">dtype=float64)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Simulation.setState" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Simulation" title="robotic._robotic.Simulation"><span class="pre">robotic._robotic.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qDot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freePos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeVel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Simulation.setState" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2506,11 +2517,6 @@
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="robotic._robotic.TAMP_Provider">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">TAMP_Provider</span></span><a class="headerlink" href="#robotic._robotic.TAMP_Provider" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="robotic._robotic.compiled">
 <span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">compiled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#robotic._robotic.compiled" title="Link to this definition"></a></dt>
@@ -2518,13 +2524,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="robotic._robotic.default_Actions2KOMO_Translator">
-<span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">default_Actions2KOMO_Translator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.Actions2KOMO_Translator" title="robotic._robotic.Actions2KOMO_Translator"><span class="pre">robotic._robotic.Actions2KOMO_Translator</span></a></span></span><a class="headerlink" href="#robotic._robotic.default_Actions2KOMO_Translator" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="robotic._robotic.default_TAMP_Provider">
-<span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">default_TAMP_Provider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Config" title="robotic._robotic.Config"><span class="pre">robotic._robotic.Config</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lgp_config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.TAMP_Provider" title="robotic._robotic.TAMP_Provider"><span class="pre">robotic._robotic.TAMP_Provider</span></a></span></span><a class="headerlink" href="#robotic._robotic.default_TAMP_Provider" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="robotic._robotic.default_LGP_TAMP_Abstraction">
+<span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">default_LGP_TAMP_Abstraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Config" title="robotic._robotic.Config"><span class="pre">robotic._robotic.Config</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lgp_config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.LGP_TAMP_Abstraction" title="robotic._robotic.LGP_TAMP_Abstraction"><span class="pre">robotic._robotic.LGP_TAMP_Abstraction</span></a></span></span><a class="headerlink" href="#robotic._robotic.default_LGP_TAMP_Abstraction" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -2561,6 +2562,12 @@
 <dt class="sig sig-object py" id="robotic._robotic.params_file">
 <span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">params_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.params_file" title="Link to this definition"></a></dt>
 <dd><p>add parameters from a file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="robotic._robotic.params_get">
+<span class="sig-prename descclassname"><span class="pre">robotic._robotic.</span></span><span class="sig-name descname"><span class="pre">params_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#robotic._robotic.params_get" title="Link to this definition"></a></dt>
+<dd><p>return parameters as dict</p>
 </dd></dl>
 
 <dl class="py function">
