@@ -1301,7 +1301,7 @@ class NLP_Solver:
         """
     def setInitialization(self, arg0: arr) -> NLP_Solver:
         ...
-    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, stepMax: float = 0.2, damping: float = 1.0, stepInc: float = 1.5, stepDec: float = 0.5, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, lambdaMax: float = -1.0) -> NLP_Solver:
+    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, stopLineSteps: int = 10, stopTinySteps: int = 4, stepInit: float = 1.0, stepMin: float = -1.0, stepMax: float = 0.2, stepInc: float = 1.5, stepDec: float = 0.5, damping: float = 1.0, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, lambdaMax: float = -1.0, interiorPadding: float = 0.01, boundedNewton: bool = True, finiteDifference: bool = False) -> NLP_Solver:
         """
         set solver options
         """
@@ -1457,19 +1457,21 @@ class OptMethod:
     
       none
     
-      gradientDescent
+      GradientDescent
     
-      rprop
+      Rprop
     
       LBFGS
     
-      newton
+      Newton
     
-      augmentedLag
+      AugmentedLag
     
-      squaredPenalty
+      LogBarrier
     
-      logBarrier
+      slackGN_logBarrier
+    
+      SquaredPenalty
     
       singleSquaredPenalty
     
@@ -1479,22 +1481,38 @@ class OptMethod:
     
       Ipopt
     
+      slackGN_Ipopt
+    
       Ceres
+    
+      LSZO
+    
+      greedy
+    
+      NelderMead
+    
+      CMA
     """
+    AugmentedLag: typing.ClassVar[OptMethod]  # value = <OptMethod.AugmentedLag: 5>
+    CMA: typing.ClassVar[OptMethod]  # value = <OptMethod.CMA: 18>
     Ceres: typing.ClassVar[OptMethod]  # value = <OptMethod.Ceres: 14>
+    GradientDescent: typing.ClassVar[OptMethod]  # value = <OptMethod.GradientDescent: 1>
     Ipopt: typing.ClassVar[OptMethod]  # value = <OptMethod.Ipopt: 12>
     LBFGS: typing.ClassVar[OptMethod]  # value = <OptMethod.LBFGS: 3>
+    LSZO: typing.ClassVar[OptMethod]  # value = <OptMethod.LSZO: 15>
+    LogBarrier: typing.ClassVar[OptMethod]  # value = <OptMethod.LogBarrier: 6>
     NLopt: typing.ClassVar[OptMethod]  # value = <OptMethod.NLopt: 11>
-    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'gradientDescent': <OptMethod.gradientDescent: 1>, 'rprop': <OptMethod.rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'newton': <OptMethod.newton: 4>, 'augmentedLag': <OptMethod.augmentedLag: 5>, 'squaredPenalty': <OptMethod.squaredPenalty: 8>, 'logBarrier': <OptMethod.logBarrier: 6>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 9>, 'slackGN': <OptMethod.slackGN: 10>, 'NLopt': <OptMethod.NLopt: 11>, 'Ipopt': <OptMethod.Ipopt: 12>, 'Ceres': <OptMethod.Ceres: 14>}
-    augmentedLag: typing.ClassVar[OptMethod]  # value = <OptMethod.augmentedLag: 5>
-    gradientDescent: typing.ClassVar[OptMethod]  # value = <OptMethod.gradientDescent: 1>
-    logBarrier: typing.ClassVar[OptMethod]  # value = <OptMethod.logBarrier: 6>
-    newton: typing.ClassVar[OptMethod]  # value = <OptMethod.newton: 4>
+    NelderMead: typing.ClassVar[OptMethod]  # value = <OptMethod.NelderMead: 17>
+    Newton: typing.ClassVar[OptMethod]  # value = <OptMethod.Newton: 4>
+    Rprop: typing.ClassVar[OptMethod]  # value = <OptMethod.Rprop: 2>
+    SquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.SquaredPenalty: 8>
+    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'GradientDescent': <OptMethod.GradientDescent: 1>, 'Rprop': <OptMethod.Rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'Newton': <OptMethod.Newton: 4>, 'AugmentedLag': <OptMethod.AugmentedLag: 5>, 'LogBarrier': <OptMethod.LogBarrier: 6>, 'slackGN_logBarrier': <OptMethod.slackGN_logBarrier: 7>, 'SquaredPenalty': <OptMethod.SquaredPenalty: 8>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 9>, 'slackGN': <OptMethod.slackGN: 10>, 'NLopt': <OptMethod.NLopt: 11>, 'Ipopt': <OptMethod.Ipopt: 12>, 'slackGN_Ipopt': <OptMethod.slackGN_Ipopt: 13>, 'Ceres': <OptMethod.Ceres: 14>, 'LSZO': <OptMethod.LSZO: 15>, 'greedy': <OptMethod.greedy: 16>, 'NelderMead': <OptMethod.NelderMead: 17>, 'CMA': <OptMethod.CMA: 18>}
+    greedy: typing.ClassVar[OptMethod]  # value = <OptMethod.greedy: 16>
     none: typing.ClassVar[OptMethod]  # value = <OptMethod.none: 0>
-    rprop: typing.ClassVar[OptMethod]  # value = <OptMethod.rprop: 2>
     singleSquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.singleSquaredPenalty: 9>
     slackGN: typing.ClassVar[OptMethod]  # value = <OptMethod.slackGN: 10>
-    squaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.squaredPenalty: 8>
+    slackGN_Ipopt: typing.ClassVar[OptMethod]  # value = <OptMethod.slackGN_Ipopt: 13>
+    slackGN_logBarrier: typing.ClassVar[OptMethod]  # value = <OptMethod.slackGN_logBarrier: 7>
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):
         ...
