@@ -142,7 +142,7 @@ nlp.setEvalCallback(sqrPot)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver = ry.NLP_Solver()
 solver.setProblem(nlp)
-solver.setSolver(ry.OptMethod.newton)
+solver.setSolver(ry.OptMethod.Newton)
 </pre></div>
 </div>
 </div>
@@ -177,8 +177,13 @@ import matplotlib.pylab as plt
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class MyNLP(nlp.NLP):
-    b = 3
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class MyNLP:
+    def __init__(self):
+        self.dimension = 2
+        self.featureTypes = [ry.nlp.OT.sos] * 2
+        self.bounds = np.array([[-2,-1], [2,3]])
+
+        self.b = 3
     def evaluate(self, x):
         phi = np.array([ x[0]-1,
                          self.b*(x[1]-x[0]**2) ])
@@ -189,14 +194,7 @@ import matplotlib.pylab as plt
     def f(self, x):
         phi, _ = self.evaluate(x)
         return np.sum(phi**2)
-
-    def getDimension(self):
-        return 2
-    def getFeatureTypes(self):
-        return [ry.nlp.OT.sos] * 2
-    def getBounds(self):
-        return np.array([[-2,-1], [2,3]])
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">

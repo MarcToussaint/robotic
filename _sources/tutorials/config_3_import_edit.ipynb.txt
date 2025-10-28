@@ -187,7 +187,7 @@
    "source": [
     "## Configuration file (.g-file) syntax\n",
     "\n",
-    "The [Appendix:Yaml-Graph Files](../notes.html#yaml-graph-files) provides a more detailed description of the underlying syntax of the .g-files. While the syntax should be yaml compatible, the fact that node names use `(<parents>)` to define the parent(s) of a node, filenames should be strings `<filename>`, and the additional `Include`, `Edit`, and `Delete` tags extend the semantics of what can be define in such a file.\n",
+    "The [Notes:Yaml-Graph Files](../notes.html#yaml-graph-files) provides a more detailed description of the underlying syntax of the .g-files. While the syntax should be yaml compatible, the fact that node names use `(<parents>)` to define the parent(s) of a node, filenames should be strings `<filename>`, and the additional `Include`, `Edit`, and `Delete` tags extend the semantics of what can be define in such a file.\n",
     "\n",
     "In essence, to describe a robot/world configuration, every node describes a\n",
     "frame, and is described by three things: `<frame-name> ( <parent> ) { <attributes> }`, where ``<parent>`` needs to be a previously defined frame, or omitted, if\n",

@@ -165,7 +165,7 @@ print(ry.__version__, ry.compiled())
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.addFile(&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;)
 C.view()
 time.sleep(.5)
 </pre></div>
@@ -270,7 +270,7 @@ for t in range(30):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth = cam.computeImageAndDepth(C)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth = cam.computeImageAndDepth(C, simulateDepthNoise=False)
 </pre></div>
 </div>
 </div>
@@ -299,7 +299,8 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth = cam.computeImageAndDepth(C)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth = cam.computeImageAndDepth(C, simulateDepthNoise=True)
+ry.params_print()
 </pre></div>
 </div>
 </div>
@@ -344,7 +345,7 @@ C.view()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam = ry.CameraView(C)
 cam.setCamera(C.getFrame(&#39;cameraTop&#39;))
-rgb, depth = cam.computeImageAndDepth(C)
+rgb, depth = cam.computeImageAndDepth(C, simulateDepthNoise=True)
 pcl = ry.depthImage2PointCloud(depth, cam.getFxycxy())
 </pre></div>
 </div>
@@ -440,6 +441,14 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># del nv
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
 </pre></div>
 </div>
 </div>

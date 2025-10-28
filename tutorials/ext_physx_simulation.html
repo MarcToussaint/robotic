@@ -112,6 +112,7 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import matplotlib.pyplot as plt
 import time
 </pre></div>
 </div>
@@ -296,6 +297,24 @@ move_a_bit()
 </div>
 <p>What happened here is more surprising and involved: The box is now a child frame of the table. Direct child frames (where there is no joint between child and parent) are really considered to be part of the parent. Also recursively. So the box is now just a sub-frame of the table, which is a sub-frame of the ‘world’ frame. (In general, this is how composed objects are represented, with one parent frame that may have multiple child frames carrying shapes and/or inertia.) In addition, the box as a
 child is giving mass to it’s root frame (here the ‘world’ frame) – therefore, while ‘world’ (with table shape) was previously a static object in physx, it now becomes dynamic, with two attached shapes. Again, setting verbose=2 reports this.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># rendering
+S.selectSensor(&#39;cameraWrist&#39;)
+S.setSimulateDepthNoise(True)
+image, depth = S.getImageAndDepth()
+
+fig = plt.figure()
+fig.add_subplot(1,2,1)
+plt.imshow(image)
+fig.add_subplot(1,2,2)
+plt.imshow(depth)
+plt.show()
+</pre></div>
+</div>
+</div>
 <p>Finally, the 2nd argument allows a choice of underlying physics engine, namely PhysX (by Nvidia), bullet (as in pybullet), and ‘kinematic’. The latter is actually no physics engine at all, but just kinematically executes articulated motion. Therefore, objects do not move at all – and also collision is not avoided:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:

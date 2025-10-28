@@ -76,7 +76,7 @@
    "source": [
     "solver = ry.NLP_Solver()\n",
     "solver.setProblem(nlp)\n",
-    "solver.setSolver(ry.OptMethod.newton)"
+    "solver.setSolver(ry.OptMethod.Newton)"
    ]
   },
   {
@@ -115,8 +115,13 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "class MyNLP(nlp.NLP):\n",
-    "    b = 3\n",
+    "class MyNLP:\n",
+    "    def __init__(self):\n",
+    "        self.dimension = 2\n",
+    "        self.featureTypes = [ry.nlp.OT.sos] * 2\n",
+    "        self.bounds = np.array([[-2,-1], [2,3]])\n",
+    "        \n",
+    "        self.b = 3\n",
     "    def evaluate(self, x):\n",
     "        phi = np.array([ x[0]-1,\n",
     "                         self.b*(x[1]-x[0]**2) ])\n",
@@ -127,13 +132,7 @@
     "    def f(self, x):\n",
     "        phi, _ = self.evaluate(x)\n",
     "        return np.sum(phi**2)\n",
-    "    \n",
-    "    def getDimension(self):\n",
-    "        return 2\n",
-    "    def getFeatureTypes(self):\n",
-    "        return [ry.nlp.OT.sos] * 2\n",
-    "    def getBounds(self):\n",
-    "        return np.array([[-2,-1], [2,3]])"
+    "    \n"
    ]
   },
   {
@@ -216,7 +215,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "venv",
    "language": "python",
    "name": "python3"
   },

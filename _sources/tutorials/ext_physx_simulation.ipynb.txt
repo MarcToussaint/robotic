@@ -24,6 +24,7 @@
    "outputs": [],
    "source": [
     "import robotic as ry\n",
+    "import matplotlib.pyplot as plt\n",
     "import time"
    ]
   },
@@ -284,6 +285,25 @@
    "metadata": {},
    "source": [
     "What happened here is more surprising and involved: The box is now a child frame of the table. Direct child frames (where there is no joint between child and parent) are really considered to be part of the parent. Also recursively. So the box is now just a sub-frame of the table, which is a sub-frame of the 'world' frame. (In general, this is how composed objects are represented, with one parent frame that may have multiple child frames carrying shapes and/or inertia.) In addition, the box as a child is giving mass to it's root frame (here the 'world' frame) -- therefore, while 'world' (with table shape) was previously a static object in physx, it now becomes dynamic, with two attached shapes. Again, setting verbose=2 reports this."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# rendering\n",
+    "S.selectSensor('cameraWrist')\n",
+    "S.setSimulateDepthNoise(True)\n",
+    "image, depth = S.getImageAndDepth()\n",
+    "\n",
+    "fig = plt.figure()\n",
+    "fig.add_subplot(1,2,1)\n",
+    "plt.imshow(image)\n",
+    "fig.add_subplot(1,2,2)\n",
+    "plt.imshow(depth)\n",
+    "plt.show()"
    ]
   },
   {
