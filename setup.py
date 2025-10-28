@@ -23,7 +23,7 @@ setup(
     packages=['robotic'],
     #packages=setuptools.find_namespace_packages(),
     package_data={
-        'robotic': ['_robotic.so', 'librai.so', 'meshTool', '_robotic.pyi', 'DataGen.pyi', 'version.py', 'manipulation.py', 'render.py', 'nlp.py',
+        'robotic': ['_robotic.so', 'librai.so', 'meshTool', '_robotic.pyi', 'DataGen.pyi', 'version.py', 'manipulation.py', 'render.py',
                     'src/*',
                     'rai-robotModels/*/*', 'rai-robotModels/*/*/*',
                     'include/rai/*/*', 'include/rai/*/*/*']

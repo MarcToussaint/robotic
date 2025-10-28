@@ -247,7 +247,7 @@ install(
   DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/nlp.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi
+  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi
   DESTINATION ${PY_LIB_SITE}/robotic)
 
 install(

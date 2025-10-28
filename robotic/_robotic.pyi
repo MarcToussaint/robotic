@@ -236,7 +236,7 @@ class CameraView:
         """
         constructor
         """
-    def computeImageAndDepth(self, config: Config, visualsOnly: bool = True) -> tuple:
+    def computeImageAndDepth(self, config: Config, simulateDepthNoise: bool = False, visualsOnly: bool = True) -> tuple:
         """
         returns image and depth from a camera sensor; the 'config' argument needs to be the same configuration as in the constructor, but in new state
         """
@@ -1301,7 +1301,7 @@ class NLP_Solver:
         """
     def setInitialization(self, arg0: arr) -> NLP_Solver:
         ...
-    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, stopLineSteps: int = 10, stopTinySteps: int = 4, stepInit: float = 1.0, stepMin: float = -1.0, stepMax: float = 0.2, stepInc: float = 1.5, stepDec: float = 0.5, damping: float = 1.0, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, lambdaMax: float = -1.0, interiorPadding: float = 0.01, boundedNewton: bool = True, finiteDifference: bool = False) -> NLP_Solver:
+    def setOptions(self, verbose: int = 1, stopTolerance: float = 0.01, stopFTolerance: float = -1.0, stopGTolerance: float = -1.0, stopEvals: int = 1000, stopInners: int = 1000, stopOuters: int = 1000, stopLineSteps: int = 10, stopTinySteps: int = 4, stepInit: float = 1.0, stepMin: float = -1.0, stepMax: float = 0.2, stepInc: float = 1.5, stepDec: float = 0.5, damping: float = 1.0, wolfe: float = 0.01, muInit: float = 1.0, muInc: float = 5.0, muMax: float = 10000.0, muLBInit: float = 0.1, muLBDec: float = 0.2, lambdaMax: float = -1.0, interiorPadding: float = 0.01, boundedNewton: bool = True, finiteDifference: float = -1.0) -> NLP_Solver:
         """
         set solver options
         """
@@ -1492,10 +1492,13 @@ class OptMethod:
       NelderMead
     
       CMA
+    
+      ES
     """
     AugmentedLag: typing.ClassVar[OptMethod]  # value = <OptMethod.AugmentedLag: 5>
     CMA: typing.ClassVar[OptMethod]  # value = <OptMethod.CMA: 18>
     Ceres: typing.ClassVar[OptMethod]  # value = <OptMethod.Ceres: 14>
+    ES: typing.ClassVar[OptMethod]  # value = <OptMethod.ES: 19>
     GradientDescent: typing.ClassVar[OptMethod]  # value = <OptMethod.GradientDescent: 1>
     Ipopt: typing.ClassVar[OptMethod]  # value = <OptMethod.Ipopt: 12>
     LBFGS: typing.ClassVar[OptMethod]  # value = <OptMethod.LBFGS: 3>
@@ -1506,7 +1509,7 @@ class OptMethod:
     Newton: typing.ClassVar[OptMethod]  # value = <OptMethod.Newton: 4>
     Rprop: typing.ClassVar[OptMethod]  # value = <OptMethod.Rprop: 2>
     SquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.SquaredPenalty: 8>
-    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'GradientDescent': <OptMethod.GradientDescent: 1>, 'Rprop': <OptMethod.Rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'Newton': <OptMethod.Newton: 4>, 'AugmentedLag': <OptMethod.AugmentedLag: 5>, 'LogBarrier': <OptMethod.LogBarrier: 6>, 'slackGN_logBarrier': <OptMethod.slackGN_logBarrier: 7>, 'SquaredPenalty': <OptMethod.SquaredPenalty: 8>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 9>, 'slackGN': <OptMethod.slackGN: 10>, 'NLopt': <OptMethod.NLopt: 11>, 'Ipopt': <OptMethod.Ipopt: 12>, 'slackGN_Ipopt': <OptMethod.slackGN_Ipopt: 13>, 'Ceres': <OptMethod.Ceres: 14>, 'LSZO': <OptMethod.LSZO: 15>, 'greedy': <OptMethod.greedy: 16>, 'NelderMead': <OptMethod.NelderMead: 17>, 'CMA': <OptMethod.CMA: 18>}
+    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'GradientDescent': <OptMethod.GradientDescent: 1>, 'Rprop': <OptMethod.Rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'Newton': <OptMethod.Newton: 4>, 'AugmentedLag': <OptMethod.AugmentedLag: 5>, 'LogBarrier': <OptMethod.LogBarrier: 6>, 'slackGN_logBarrier': <OptMethod.slackGN_logBarrier: 7>, 'SquaredPenalty': <OptMethod.SquaredPenalty: 8>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 9>, 'slackGN': <OptMethod.slackGN: 10>, 'NLopt': <OptMethod.NLopt: 11>, 'Ipopt': <OptMethod.Ipopt: 12>, 'slackGN_Ipopt': <OptMethod.slackGN_Ipopt: 13>, 'Ceres': <OptMethod.Ceres: 14>, 'LSZO': <OptMethod.LSZO: 15>, 'greedy': <OptMethod.greedy: 16>, 'NelderMead': <OptMethod.NelderMead: 17>, 'CMA': <OptMethod.CMA: 18>, 'ES': <OptMethod.ES: 19>}
     greedy: typing.ClassVar[OptMethod]  # value = <OptMethod.greedy: 16>
     none: typing.ClassVar[OptMethod]  # value = <OptMethod.none: 0>
     singleSquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.singleSquaredPenalty: 9>
@@ -1630,11 +1633,17 @@ class RRT_PathFinder:
         """
         only after setProblem
         """
+    def setOptions(self, verbose: int = 0, stepsize: float = 0.1, subsamples: int = 4, maxIters: int = 5000, p_connect: float = 0.5, collisionTolerance: float = 0.0001, useBroadCollisions: bool = True) -> RRT_PathFinder:
+        """
+        set solver options
+        """
     def setProblem(self, Configuration: Config) -> None:
         ...
     def setStartGoal(self, starts: arr, goals: arr) -> None:
         ...
     def solve(self, verbose: int = 1) -> SolverReturn:
+        ...
+    def view(self, pause: bool, message: str = None, play: bool = False) -> None:
         ...
 class ST:
     """
@@ -1939,6 +1948,10 @@ class Simulation:
         ...
     def selectSensor(self, sensorName: str) -> ...:
         ...
+    def setSimulateDepthNoise(self, _setSimulateDepthNoise: bool) -> None:
+        """
+        specify (boolean) on whether to simulate noise
+        """
     def setSplineRef(self, path: arr, times: arr, append: bool = True) -> None:
         """
         set the spline reference to generate motion
