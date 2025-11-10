@@ -34,7 +34,7 @@ for t in range(int(4./tau)):
     #    C.view(False, f'Note: the sim operates *directly* on the given config\nt:{t:4d} = {tau*t:5.2f}sec')
 
     if (t%100)==0:
-        sim.setState(*state)
+        sim.setState(state)
         #q0 = q
         sim.resetSplineRef()
         sim.setSplineRef(qT, [1.])

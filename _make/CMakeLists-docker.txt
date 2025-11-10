@@ -44,7 +44,7 @@ add_definitions(
   -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
-  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
+  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY -DRAI_YAML
   -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DRAI_VHACD
   -DRAI_NO_STB_IMPL
   -DRAI_BotOp
@@ -176,7 +176,7 @@ target_link_libraries(rai PRIVATE
   # ORDER MATTERS! test with -no-undefined linker flag (above)
   lapack libatlas.a
   libglfw3.a libGLEW.a libglut.a Xrandr Xxf86vm Xi GLU GL
-  libjsoncpp.a libpng16.a libassimp.a libzlibstatic.a
+  libjsoncpp.a libyaml.a libpng16.a libassimp.a libzlibstatic.a
   libfcl.a libccd.a libANN.a libqhull.a
   pthread rt X11 dl
   )

@@ -48,7 +48,7 @@ add_definitions(
   -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
   -DRAI_X11 -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
   -DRAI_GL
-  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY
+  -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY -DRAI_YAML
   -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DRAI_VHACD
   -BOOST_ERROR_CODE_HEADER_ONLY
   -DRAI_BotOp
@@ -186,7 +186,7 @@ target_link_libraries(rai PRIVATE
   # ORDER MATTERS! test with -no-undefined linker flag (above)
   lapack blas
   glfw GLEW glut Xrandr Xxf86vm Xi GLU GL
-  jsoncpp png assimp z
+  jsoncpp yaml png assimp z
   fcl ccd ANN qhull
   boost_system pthread rt X11 dl
   )

@@ -15,10 +15,15 @@ RUN yum -y install gcc wget \
     
 RUN cd /usr/lib64; ln -s libstdc++.so.6.0.19 libstdc++.so
 
+# install old cmake
+RUN cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.31.9/cmake-3.31.9-linux-x86_64.sh
+RUN sh /tmp/cmake-3.31.9-linux-x86_64.sh --prefix=/usr/local --exclude-subdir --skip-license
+
 RUN wget https://github.com/MarcToussaint/rai/raw/master/_make/install.sh; chmod a+x install.sh
 
 # (some of these we compile manually just to ensure the -fPIC, which is missing in yum packages)
 RUN ./install.sh -gc jsoncpp
+RUN ./install.sh -gc libyaml
 RUN ./install.sh -gc libpng
 RUN ./install.sh -gc hdf5
 RUN ./install.sh -gc freeglut
@@ -39,13 +44,15 @@ RUN ./install.sh -gc physx
 #RUN ./install.sh -g librealsense
 #RUN ./install.sh -g libfranka
 
-#RUN python3.6 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
-#RUN python3.7 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.8 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.9 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.10 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.11 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
 RUN python3.12 -m pip install pybind11 pybind11-stubgen==0.16.2 numpy
+
+##########################################################
+
+RUN rm -Rf ${HOME}/git
 
 ##########################################################
 
