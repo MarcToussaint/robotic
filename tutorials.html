@@ -8,17 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tutorials &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=01f34227"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -124,6 +122,93 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/ext_nlp_solvers.html">Extension - NLP interface: Low-level NLP formulation and solving</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/ext_gym_environment.html">Extension - Gym Environment Interface: minimal example</a></li>
 </ul>
+</div>
+<p>More stuff:</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">robotic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BSpline</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1">## B splines themselves, based on uniform knots</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">BSpline</span><span class="p">()</span>
+<span class="n">S</span><span class="o">.</span><span class="n">setKnots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">getBmatrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1">## setting random control points, and fine-evaluating the resulting spline</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">S</span><span class="o">.</span><span class="n">setCtrlPoints</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">Teval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">.1</span><span class="p">,</span><span class="mf">1.1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">Teval</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">Teval</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">Teval</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">T_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Teval</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">v</span><span class="o">/</span><span class="mf">10.</span><span class="p">,</span><span class="n">a</span><span class="o">/</span><span class="mf">100.</span><span class="p">)))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">T_X</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1">## computing optimal control points that fit the random data X from above</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">getBmatrix</span><span class="p">(</span><span class="n">T_X</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="c1">#start not constrained to zero vel, end is</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="o">@</span> <span class="n">X</span>
+<span class="n">S</span><span class="o">.</span><span class="n">setCtrlPoints</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">Teval</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Teval</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">T_X</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># READ THIS: https://www.user.tu-berlin.de/mtoussai/notes/quaternions.pdf</span>
+ 
+<span class="kn">from</span><span class="w"> </span><span class="nn">robotic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=== using set(...).normalize()):&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    direct access:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    as numpy array:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">asArr</span><span class="p">())</span>
+
+<span class="c1">## converting a quaternion to another representations</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=== converting a quaternion&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    original: 90 degree rotation about x:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    total rotation angle/pi:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">getRad</span><span class="p">()</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    roll-pitch-yaw/pi:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">getRollPitchYaw</span><span class="p">()</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    log (which is also the &quot;rotation vector&quot;):&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">getLog</span><span class="p">(),</span> <span class="s1">&#39;  length/pi:&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">getLog</span><span class="p">())</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    matrix:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">getMatrix</span><span class="p">())</span>
+
+<span class="c1">## setting a quaternion in various ways:</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=== setting a quaternion&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   non-initialized!:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   initialize &quot;zero&quot; (which here means identity!)&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">setZero</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   the minimal rotation to rotate vector a=(1,0,0) into vector b=(0,1,0)&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">setDiff</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   90 degrees about the [0,1,0] axis:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">setRad</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   random:&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">setRandom</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   exp(log(q)):&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">setExp</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">getLog</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   quat(matrix(q)):&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">setMatrix</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">getMatrix</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   quat(rollPitchWay(q)):&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">setRollPitchYaw</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">getRollPitchYaw</span><span class="p">()))</span>
+
+<span class="c1">## geodesic interpolation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=== interpolation&#39;</span><span class="p">)</span>
+<span class="n">q0</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">()</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">q1</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">()</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">):</span>
+    <span class="n">q_t</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">()</span><span class="o">.</span><span class="n">setInterpolateProper</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">)</span>
+    <span class="n">q_t2</span> <span class="o">=</span> <span class="n">q0</span> <span class="o">*</span> <span class="n">Quaternion</span><span class="p">()</span><span class="o">.</span><span class="n">setExp</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="n">q0</span><span class="p">)</span><span class="o">*</span><span class="n">q1</span><span class="p">)</span><span class="o">.</span><span class="n">getLog</span><span class="p">())</span> <span class="c1">#same, but harder to remember</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   t:</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s1">.2</span><span class="si">}</span><span class="s1">,  q(t): </span><span class="si">{</span><span class="n">q_t</span><span class="si">}</span><span class="s1">,  via exp(log): </span><span class="si">{</span><span class="n">q_t2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">## inverse</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=== multiplication &amp; inverse&#39;</span><span class="p">)</span>
+<span class="n">q</span><span class="o">.</span><span class="n">setRandom</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;q:     &#39;</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;q*(-q):&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">q</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(-q)*q:&#39;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
+</pre></div>
 </div>
 </section>
 

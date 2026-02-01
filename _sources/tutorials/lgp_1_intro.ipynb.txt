@@ -52,9 +52,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "trans = ry.default_Actions2KOMO_Translator()\n",
-    "tamp = ry.default_TAMP_Provider(C, problem+'.lgp') # change the logic goal ('terminal') to check is solver still works\n",
-    "lgp = ry.LGP_Tool(C, tamp, trans)"
+    "tamp = ry.default_LGP_TAMP_Abstraction(C, problem+'.lgp') # change the logic goal ('terminal') to check is solver still works\n",
+    "lgp = ry.LGP_Tool(C, tamp)"
    ]
   },
   {

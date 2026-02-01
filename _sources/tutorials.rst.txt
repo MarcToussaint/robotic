@@ -35,4 +35,16 @@ The remaining tutorials cover various topics in more depth:
    tutorials/ext_rrt
    tutorials/ext_nlp_solvers
    tutorials/ext_gym_environment
-   
+
+More stuff:
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+
+	    
+.. literalinclude:: tutorials/demos/spline.py
+   :language: python
+
+.. literalinclude:: tutorials/demos/quaternion.py
+   :language: python

@@ -8,18 +8,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Extension - Gym Environment Interface: minimal example &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=01f34227"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -199,10 +199,10 @@ C.view()
     def observation_fct(self):
         &#39;&#39;&#39;observations are joint pos/vel, and box pos/vel&#39;&#39;&#39;
         state = self.sim.getState()
-        q = state[1]
-        qDot = state[2]
-        box_pos = state[3][0,:]
-        box_vel = state[4][0,:,:].reshape(-1)
+        q = state.q
+        qDot = state.qDot
+        box_pos = state.freePos[0,:]
+        box_vel = state.freeVel[0,:,:].reshape(-1)
         observation = np.concatenate((q, qDot, box_pos, box_vel), axis=0)
         return observation
 
@@ -242,7 +242,7 @@ C.view()
         # resetting the sim
         self.time = 0.
         self.sim.resetTime()
-        self.sim.setState(*self.state0)
+        self.sim.setState(self.state0)
         self.sim.resetSplineRef()
 
         observation = self.observation_fct()
