@@ -60,8 +60,8 @@ This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
       sudo apt install --yes \
         g++ clang make gnupg cmake git wget libstdc++-14-dev \
         liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev \
-        libjsoncpp-dev libyaml-cpp-dev libhdf5-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
-        libx11-dev libglu1-mesa-dev libglfw3-dev libglew-dev freeglut3-dev libpng-dev libassimp-dev \
+        libjsoncpp-dev libyaml-dev libhdf5-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
+        libx11-dev libxi-dev libxxf86vm-dev libglu1-mesa-dev libglfw3-dev libglew-dev libglm-dev freeglut3-dev libpng-dev libassimp-dev libfreetype6-dev \
         python3-dev python3 python3-pip
       
       python3 -m pip install numpy pybind11 pybind11-stubgen

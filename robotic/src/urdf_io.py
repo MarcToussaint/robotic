@@ -234,4 +234,4 @@ class URDFLoader():
         if rpy is not None:
             q = ry.Quaternion()
             q.setRollPitchYaw(self.as_floats(rpy))
-            f.setRelativeQuaternion(q.getArr())
+            f.setRelativeQuaternion(q.asArr())

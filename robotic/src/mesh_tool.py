@@ -2,6 +2,7 @@ import os
 import numpy as np
 #import matplotlib.pyplot as plt
 import trimesh
+import pymeshlab as meshlab
 import base64
 import yaml
 import h5py
@@ -19,7 +20,7 @@ def conv_tuple_arr(data_tuple):
     X = X.reshape(data_tuple[1])
     return X
 
-class MeshHelper():
+class MeshTool():
     def __init__(self, file):
         self.failed = False
         self.inertiaIsDiagonal = False
@@ -30,9 +31,9 @@ class MeshHelper():
             self.file = file
 
     def load(self, file):
-        print('=== file: ', file)
+        print('=== loading mesh: ', file)
         self.filebase = os.path.splitext(file)[0]
-        self.mesh = trimesh.load(file, force='mesh')
+        self.tmesh = trimesh.load(file, force='mesh')
         try:
             scene_or_mesh = trimesh.load(file, force='mesh')
         except Exception as e:
@@ -42,26 +43,28 @@ class MeshHelper():
 
         if isinstance(scene_or_mesh, trimesh.Scene):
             if len(scene_or_mesh.geometry) == 0:
-                self.mesh = None
+                self.tmesh = None
                 self.failed = True
             else:
                 # we lose texture information here
-                self.mesh = trimesh.util.concatenate(
+                self.tmesh = trimesh.util.concatenate(
                     tuple(trimesh.Trimesh(vertices=g.vertices, faces=g.faces)
                         for g in scene_or_mesh.geometry.values()))
         else:
             assert(isinstance(scene_or_mesh, trimesh.Trimesh))
-            self.mesh = scene_or_mesh
+            self.tmesh = scene_or_mesh
 
     def view(self):
-        self.mesh.show(resolution=(300,300))
+        self.tmesh.show(resolution=(300,300))
 
     def report(self):
-        print('  filebase:', self.filebase)
-        print('  #vertices:', self.mesh.vertices.shape)
-        print('  #faces:', self.mesh.faces.shape)
-        if hasattr(self.mesh.visual, 'uv'):
-            print('#uv:', self.mesh.visual.uv.shape)
+        print('  #V:', self.tmesh.vertices.shape,
+              '  #T:', self.tmesh.faces.shape, end='')
+        if hasattr(self.tmesh.visual, 'vertex_colors'):
+            print('  #C:', self.tmesh.visual.vertex_colors.shape, end='')
+        if hasattr(self.tmesh.visual, 'uv') and  hasattr(self.tmesh.visual.uv, 'shape'):
+            print('  #uv:', self.tmesh.visual.uv.shape, end='')
+        print(f'  [{self.filebase}]')
 
     def autoScale(self):
         scale = 1
@@ -69,48 +72,49 @@ class MeshHelper():
         #    scale = 1e-5
         #elif self.mesh.scale > 1000:
         #    scale = 1e-4
-        if self.mesh.scale > 200:
+        if self.tmesh.scale > 200:
             scale = 1e-3
-        elif self.mesh.scale > 20:
+        elif self.tmesh.scale > 20:
             scale = 1e-2
-        elif self.mesh.scale > 2:
+        elif self.tmesh.scale > 2:
             scale = 1e-1
         #translate = -mesh.centroid
-        translate = -.5*(self.mesh.bounds[0]+self.mesh.bounds[1])
+        translate = -.5*(self.tmesh.bounds[0]+self.tmesh.bounds[1])
         matrix = np.eye(4)
         matrix[0:3, 3] = translate
         matrix[0:3, 0:4] *= scale
-        self.mesh.apply_transform(matrix)
+        self.tmesh.apply_transform(matrix)
 
     def transformInertia(self, verbose=False):
-        print("prior COM" , self.mesh.center_mass)
-        print("prior inertia\n" , self.mesh.moment_inertia)
+        print("prior COM" , self.tmesh.center_mass)
+        print("prior inertia\n" , self.tmesh.moment_inertia)
 
-        U, D, V = np.linalg.svd(self.mesh.moment_inertia)
+        U, D, V = np.linalg.svd(self.tmesh.moment_inertia)
 
         # Ensure proper rotation  
         if np.linalg.det(V) < 0:
             V[:, -1] *= -1
 
         matrix = np.eye(4)
-        matrix[0:3, 3] = V @ (-self.mesh.center_mass)  # Move center of mass to origin
+        matrix[0:3, 3] = V @ (-self.tmesh.center_mass)  # Move center of mass to origin
         matrix[0:3, 0:3] = V  # Rotate the mesh to align with principal axes
 
-        self.mesh.apply_transform(matrix)
+        self.tmesh.apply_transform(matrix)
 
         if verbose:
-            print("COM after transformation:" , self.mesh.center_mass)
-            print("Inertia after transfromation:\n" , self.mesh.moment_inertia)
+            print("COM after transformation:" , self.tmesh.center_mass)
+            print("Inertia after transfromation:\n" , self.tmesh.moment_inertia)
         self.inertiaIsDiagonal = True
 
         return np.linalg.inv(matrix)
 
-    def repair(self, mergeTolerance=1e-6):
+    def repair_trimesh(self, mergeTolerance=1e-6):
+        print('   - trimesh repair')
         try:
             trimesh.constants.tol.merge = mergeTolerance
-            self.mesh.process(validate=True)
-            trimesh.repair.fill_holes(self.mesh)
-            trimesh.repair.fix_inversion(self.mesh, multibody=True)
+            self.tmesh.process(validate=True)
+            trimesh.repair.fill_holes(self.tmesh)
+            trimesh.repair.fix_inversion(self.tmesh, multibody=True)
         except Exception as e:
             print('  --- repair failed ---', e)
             print('  --- this might be a trimesh bug: change order within mesh.process method')
@@ -120,11 +124,38 @@ class MeshHelper():
         # if self.mesh.visual != None:
             # self.mesh.visual.uv = np.array([[0,0]])
 
+    def repair_meshlab(self, merge_threshold=1e-4):
+        print('   - meshlab repair')
+        mlmesh = meshlab.Mesh(vertex_matrix=self.tmesh.vertices, face_matrix=self.tmesh.faces)
+        ms = meshlab.MeshSet()
+        ms.add_mesh(mlmesh)
+        ms.apply_filter('meshing_merge_close_vertices', threshold=meshlab.PureValue(merge_threshold))
+        # ms.apply_filter('meshing_remove_t_vertices')
+        # ms.apply_filter('meshing_repair_non_manifold_edges')
+        # ms.apply_filter('meshing_close_holes', maxholesize=1000)
+        # ms.apply_filter('meshing_decimation_quadric_edge_collapse', targetfacenum=0, targetperc=0.5)
+        ms.apply_filter('meshing_repair_non_manifold_edges')
+        ms.apply_filter('meshing_close_holes', maxholesize=1000)
+        # ms.print_filter_list()
+        # print(ms.filter_parameter_values('meshing_merge_close_vertices'))
+        # print(ms.filter_parameter_values('meshing_remove_t_vertices'))
+        # print(ms.filter_parameter_values('meshing_close_holes'))
+        # print(ms.filter_parameter_values('meshing_decimation_quadric_edge_collapse'))
+        # mlmesh.compact()
+
+        mlmesh = ms.current_mesh()
+        V = mlmesh.vertex_matrix()
+        T = mlmesh.face_matrix()
+        self.tmesh = trimesh.Trimesh(vertices=V, faces=T)
+
+    def clear_visual(self):
+        self.tmesh = trimesh.Trimesh(vertices=self.tmesh.vertices, faces=self.tmesh.faces)
+
     def texture2vertexColors(self):
-        if hasattr(self.mesh.visual, 'uv'):
-            colors = self.mesh.visual.material.to_color(self.mesh.visual.uv)
-            vis = trimesh.visual.ColorVisuals(mesh=self.mesh, vertex_colors=colors)
-            self.mesh.visual = vis
+        if hasattr(self.tmesh.visual, 'uv'):
+            colors = self.tmesh.visual.material.to_color(self.tmesh.visual.uv)
+            vis = trimesh.visual.ColorVisuals(mesh=self.tmesh, vertex_colors=colors)
+            self.tmesh.visual = vis
         # else:
             # raise ValueError("Mesh does not have UV coordinates!")
 
@@ -132,22 +163,22 @@ class MeshHelper():
         if filename is None:
             filename = self.filebase+'-.ply'
         print('  exporting', filename)
-        self.mesh.export(filename)
+        self.tmesh.export(filename)
 
     def export_scene(self, convex=False):
         with open(self.filebase+'.g', 'w', encoding='utf-8') as fil:
             if self.inertiaIsDiagonal:
                 if convex:
-                    fil.write(f'obj: {{ X:[0., 0., 1.], mesh_decomp: <{self.filebase}.h5>, mass: {self.mesh.center_mass.tolist()}, inertia: {np.diagonal(self.mesh.moment_inertia).tolist()} }}\n')
+                    fil.write(f'obj: {{ X:[0., 0., 1.], mesh_decomp: <{self.filebase}.h5>, mass: {self.tmesh.center_mass.tolist()}, inertia: {np.diagonal(self.tmesh.moment_inertia).tolist()} }}\n')
             else:
-                fil.write(f'obj: {{ X:[0., 0., 12.], mass: {self.mesh.center_mass.tolist()}, inertia: {self.mesh.moment_inertia.reshape([9]).tolist()} }}\n')
+                fil.write(f'obj: {{ X:[0., 0., 12.], mass: {self.tmesh.center_mass.tolist()}, inertia: {self.tmesh.moment_inertia.reshape([9]).tolist()} }}\n')
             fil.write(f'obj_mesh (obj): {{ mesh: <{self.filebase}.h5> }}\n')
             #fil.write(f'obj_points (obj): {{ mesh_points: <{self.filebase}.h5>, color: [1 1 0], size: [2.] }}\n')
             return self.filebase+'.g'
 
     def createPoints(self):
-        self.pts, faces = trimesh.sample.sample_surface(self.mesh, 20000)
-        self.normals = self.mesh.face_normals[faces]
+        self.pts, faces = trimesh.sample.sample_surface(self.tmesh, 20000)
+        self.normals = self.tmesh.face_normals[faces]
         #bary = trimesh.triangles.points_to_barycentric(self.mesh.triangles[faces], pts)
         #normals = trimesh.unitize((self.mesh.vertex_normals[self.mesh.faces[faces]] *
         #                          trimesh.unitize(bary).reshape((-1, 3, 1))).sum(axis=1))
@@ -155,7 +186,7 @@ class MeshHelper():
 
     def createDecomposition(self):
 
-        convex_hulls = self.mesh.convex_decomposition()
+        convex_hulls = self.tmesh.convex_decomposition()
         
         self.decomp_parts = [0]
         self.decomp_vertices = np.asarray(convex_hulls[0].vertices)
@@ -189,36 +220,36 @@ class MeshHelper():
         self.decomp_colors = conv_tuple_arr(decomp['C'])
         self.decomp_parts = conv_tuple_arr(decomp['cvxParts'])
 
-    def export_h5(self, filename=None, inertia=False):
+    def export_h5(self, filename=None, without_colors=False, inertia=False):
         if filename is None:
             filename = self.filebase+'.h5'
         print('  exporting', filename)
         with h5py.File(filename, 'w') as fil:
-            fil.create_dataset('mesh/vertices', data=self.mesh.vertices, dtype='float32')
-            assert self.mesh.faces.shape[1]==3, 'can only export triangle meshes'
-            if(self.mesh.vertices.shape[0]<65535):
-                fil.create_dataset('mesh/faces', data=self.mesh.faces, dtype='uint16')
+            fil.create_dataset('mesh/vertices', data=self.tmesh.vertices, dtype='float32')
+            assert self.tmesh.faces.shape[1]==3, 'can only export triangle meshes'
+            if(self.tmesh.vertices.shape[0]<65535):
+                fil.create_dataset('mesh/faces', data=self.tmesh.faces, dtype='uint16')
             else:
-                fil.create_dataset('mesh/faces', data=self.mesh.faces, dtype='uint32')
+                fil.create_dataset('mesh/faces', data=self.tmesh.faces, dtype='uint32')
             
-            if hasattr(self.mesh.visual, 'vertex_colors'):
-                colors = np.asarray(self.mesh.visual.vertex_colors)[:,0:3]
+            if hasattr(self.tmesh.visual, 'vertex_colors') and not without_colors:
+                colors = np.asarray(self.tmesh.visual.vertex_colors)[:,0:3]
                 fil.create_dataset('mesh/colors', data=colors, dtype='uint8')
 
-            if hasattr(self.mesh.visual, 'uv'):
-                texCoords = self.mesh.visual.uv.copy()
+            if hasattr(self.tmesh.visual, 'uv') and not without_colors:
+                texCoords = self.tmesh.visual.uv.copy()
                 texCoords[:, 1] = 1 - texCoords[:, 1]
                 fil.create_dataset('mesh/textureCoords', data=texCoords, dtype='float32')
 
-                if self.textureFile is not None:
+                if hasattr(self, 'textureFile'):
                     file = np.frombuffer(self.textureFile.encode(), dtype=np.int8)
                     file = np.append(file, [0])
                     fil.create_dataset('mesh/textureFile', data=file, dtype='int8')
                 else:
-                    if hasattr(self.mesh.visual.material, 'baseColorTexture'):
-                        img = self.mesh.visual.material.baseColorTexture
+                    if hasattr(self.tmesh.visual.material, 'baseColorTexture'):
+                        img = self.tmesh.visual.material.baseColorTexture
                     else:
-                        img = self.mesh.visual.material.image
+                        img = self.tmesh.visual.material.image
                     if img is not None:
                         texImg = 255.*np.asanyarray(img.convert("RGB"))
                         fil.create_dataset('mesh/textureImg', data=texImg, dtype='uint8')
@@ -231,17 +262,20 @@ class MeshHelper():
                 fil.create_dataset('decomp/vertices', data=self.decomp_vertices, dtype='float32')
                 assert self.decomp_faces.shape[0]<65535
                 fil.create_dataset('decomp/faces', data=self.decomp_faces, dtype='uint16')
+                if not without_colors:
                 fil.create_dataset('decomp/colors', data=self.decomp_colors, dtype='uint8')
                 assert self.decomp_parts.shape[ 0]<65535
                 fil.create_dataset('decomp/parts', data=self.decomp_parts, dtype='uint16')
 
             if inertia:
-                fil.create_dataset('inertia/mass', data=[self.mesh.mass], dtype='float32')
-                fil.create_dataset('inertia/com', data=self.mesh.center_mass, dtype='float32')
+                fil.create_dataset('inertia/mass', data=[self.tmesh.mass], dtype='float32')
+                fil.create_dataset('inertia/com', data=self.tmesh.center_mass, dtype='float32')
                 if self.inertiaIsDiagonal:
-                    fil.create_dataset('inertia/tensor', data=np.diagonal(self.mesh.moment_inertia), dtype='float32')
+                    fil.create_dataset('inertia/tensor', data=np.diagonal(self.tmesh.moment_inertia), dtype='float32')
                 else:
-                    fil.create_dataset('inertia/tensor', data=self.mesh.moment_inertia, dtype='float32')
+                    fil.create_dataset('inertia/tensor', data=self.tmesh.moment_inertia, dtype='float32')
+            fil.create_dataset('geo/centroid', data=self.tmesh.centroid, dtype='float32')
+            fil.create_dataset('geo/bounds', data=self.tmesh.bounds, dtype='float32')
         
     def load_h5(self, file):
         print('=== file: ', file)
@@ -272,9 +306,9 @@ class MeshHelper():
                 texture = trimesh.visual.TextureVisuals(uv=uv, image=texImage)
 
             if texture is None:
-                self.mesh = trimesh.Trimesh(vertices=V, faces=T, vertex_colors=C, process=True)
+                self.tmesh = trimesh.Trimesh(vertices=V, faces=T, vertex_colors=C, process=True)
             else:
-                self.mesh = trimesh.Trimesh(vertices=V, faces=T, visual=texture, material=material, process=True)
+                self.tmesh = trimesh.Trimesh(vertices=V, faces=T, visual=texture, material=material, process=True)
 
                 # colors = self.mesh.visual.material.to_color(self.mesh.visual.uv)
                 # colors = mat.to_color(uv)
@@ -285,8 +319,8 @@ class MeshHelper():
     def apply_texture(self, texture_path):
         try:
             texture_image = Image.open(texture_path)
-            texture = trimesh.visual.TextureVisuals(image=texture_image, uv=self.mesh.visual.uv)
-            self.mesh.visual = texture
+            texture = trimesh.visual.TextureVisuals(image=texture_image, uv=self.tmesh.visual.uv)
+            self.tmesh.visual = texture
             
             # texture = np.array(texture_image).astype(float) / 255.0
             # if texture.shape[-1] == 3:

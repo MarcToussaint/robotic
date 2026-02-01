@@ -7,7 +7,7 @@ import typing
 from . import DataGen
 from . import algo
 from . import test
-__all__ = ['ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_TAMP_Abstraction', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'Skeleton', 'SolverReturn', 'algo', 'compiled', 'default_LGP_TAMP_Abstraction', 'depthImage2PointCloud', 'get_NLP_Problem_names', 'make_NLP_Problem', 'params_add', 'params_clear', 'params_file', 'params_get', 'params_print', 'raiPath', 'rnd_seed', 'rnd_seed_random', 'setRaiPath', 'test']
+__all__ = ['ArgWord', 'BSpline', 'BotOp', 'CameraView', 'CameraViewSensor', 'Config', 'ConfigurationViewer', 'ControlMode', 'DataGen', 'FS', 'Frame', 'JT', 'KOMO', 'KOMO_Objective', 'LGP_TAMP_Abstraction', 'LGP_Tool', 'NLP', 'NLP_Factory', 'NLP_Sampler', 'NLP_Solver', 'NLP_SolverOptions', 'OT', 'OptBench_Skeleton_Handover', 'OptBench_Skeleton_Pick', 'OptBench_Skeleton_StackAndBalance', 'OptBenchmark_InvKin_Endeff', 'OptMethod', 'Quaternion', 'RRT_PathFinder', 'ST', 'SY', 'Simulation', 'SimulationEngine', 'SimulationState', 'Skeleton', 'SolverReturn', 'algo', 'clear_params', 'compiled', 'default_LGP_TAMP_Abstraction', 'depthImage2PointCloud', 'get_NLP_Problem_names', 'get_params', 'make_NLP_Problem', 'params_add', 'params_clear', 'params_file', 'params_get', 'params_print', 'raiPath', 'rnd_seed', 'rnd_seed_random', 'setRaiPath', 'set_params', 'test']
 class ArgWord:
     """
     [todo: replace by str]
@@ -273,6 +273,10 @@ class Config:
         """
     def addConfigurationCopy(self, config: Config, prefix: ... = '', tau: float = 1.0) -> Frame:
         ...
+    def addDict(self, dict: ...) -> None:
+        """
+        add frames as described by a dict (e.g. loaded from a yaml)
+        """
     def addFile(self, filename: str, namePrefix: str = None) -> Frame:
         """
         add the contents of the file to C
@@ -293,9 +297,13 @@ class Config:
         """
         animate with random spline in limits bounding box [T=#spline points]
         """
-    def asDict(self, parentsInKeys: bool = True) -> dict:
+    def asDict(self) -> ...:
         """
         return the configuration description as a dict, e.g. for file export
+        """
+    def asYaml(self, serial: bool = False) -> ...:
+        """
+        return as Yaml (converting the dict into yaml using libyaml in C); serial makes is json-like (e.g. as stored in .h5)
         """
     def attach(self, arg0: str, arg1: str) -> None:
         """
@@ -337,6 +345,8 @@ class Config:
         """
         return the results of collision computations: a list of 3 tuples with (frame1, frame2, distance). Optionally report only on distances below a margin To get really precise distances and penetrations use the FS.distance feature with the two frame names
         """
+    def getForceArrays(self) -> tuple[..., arr]:
+        ...
     def getFrame(self, frameName: str, warnIfNotExist: bool = True) -> Frame:
         """
         get access to a frame by name; use the Frame methods to set/get frame properties
@@ -379,6 +389,8 @@ class Config:
         ...
     def get_viewer(self) -> ConfigurationViewer:
         ...
+    def makeMeshesSSCvx(self, radius: float = 0.005) -> None:
+        ...
     def processInertias(self, recomputeInertias: bool = True, transformToDiagInertia: bool = False) -> None:
         """
         collect all inertia at root frame of links, optionally reestimate all inertias based on standard surface density, optionally relocate the link frame to the COM with diagonalized I)
@@ -413,11 +425,13 @@ class Config:
         """
     def setJointStateSlice(self, arg0: list[float], arg1: int) -> None:
         ...
+    def setRandom(self, timeSlices_d1: int = 0, verbose: int = 0) -> None:
+        ...
     def set_viewer(self, arg0: ConfigurationViewer) -> None:
         ...
-    def view(self, pause: bool = False, message: str = None) -> int:
+    def view(self, pause: bool = False, message: str = None, offscreen: bool = False) -> int:
         """
-        open a view window for the configuration
+        open a view window for the configuration; when offscreen you can grab/save rgb/depth from viewer
         """
     def view_close(self) -> None:
         """
@@ -474,7 +488,7 @@ class ConfigurationViewer:
         """
         get the camera pose directly
         """
-    def getDepth(self) -> ...:
+    def getDepth(self, nonThreaded: bool = True) -> ...:
         """
         return the view's depth array (scaled to meters)
         """
@@ -492,7 +506,7 @@ class ConfigurationViewer:
         """
     def getGLFWWindow(self) -> int:
         ...
-    def getRgb(self) -> ...:
+    def getRgb(self, nonThreaded: bool = True) -> ...:
         """
         return the view's rgb image
         """
@@ -661,6 +675,8 @@ class FS:
     
       standingAbove
     
+      totalForce
+    
       physics
     
       contactConstraints
@@ -681,29 +697,29 @@ class FS:
     
       AlignYWithDiff
     """
-    AlignXWithDiff: typing.ClassVar[FS]  # value = <FS.AlignXWithDiff: 49>
-    AlignYWithDiff: typing.ClassVar[FS]  # value = <FS.AlignYWithDiff: 50>
-    __members__: typing.ClassVar[dict[str, FS]]  # value = {'position': <FS.position: 0>, 'positionDiff': <FS.positionDiff: 1>, 'positionRel': <FS.positionRel: 2>, 'quaternion': <FS.quaternion: 3>, 'quaternionDiff': <FS.quaternionDiff: 4>, 'quaternionRel': <FS.quaternionRel: 5>, 'pose': <FS.pose: 6>, 'poseDiff': <FS.poseDiff: 7>, 'poseRel': <FS.poseRel: 8>, 'vectorX': <FS.vectorX: 9>, 'vectorXDiff': <FS.vectorXDiff: 10>, 'vectorXRel': <FS.vectorXRel: 11>, 'vectorY': <FS.vectorY: 12>, 'vectorYDiff': <FS.vectorYDiff: 13>, 'vectorYRel': <FS.vectorYRel: 14>, 'vectorZ': <FS.vectorZ: 15>, 'vectorZDiff': <FS.vectorZDiff: 16>, 'vectorZRel': <FS.vectorZRel: 17>, 'scalarProductXX': <FS.scalarProductXX: 18>, 'scalarProductXY': <FS.scalarProductXY: 19>, 'scalarProductXZ': <FS.scalarProductXZ: 20>, 'scalarProductYX': <FS.scalarProductYX: 21>, 'scalarProductYY': <FS.scalarProductYY: 22>, 'scalarProductYZ': <FS.scalarProductYZ: 23>, 'scalarProductZZ': <FS.scalarProductZZ: 24>, 'gazeAt': <FS.gazeAt: 25>, 'angularVel': <FS.angularVel: 26>, 'accumulatedCollisions': <FS.accumulatedCollisions: 27>, 'jointLimits': <FS.jointLimits: 28>, 'distance': <FS.distance: 29>, 'negDistance': <FS.distance: 29>, 'oppose': <FS.oppose: 30>, 'qItself': <FS.qItself: 31>, 'jointState': <FS.qItself: 31>, 'aboveBox': <FS.aboveBox: 33>, 'insideBox': <FS.insideBox: 34>, 'pairCollision_negScalar': <FS.pairCollision_negScalar: 35>, 'pairCollision_vector': <FS.pairCollision_vector: 36>, 'pairCollision_normal': <FS.pairCollision_normal: 37>, 'pairCollision_p1': <FS.pairCollision_p1: 38>, 'pairCollision_p2': <FS.pairCollision_p2: 39>, 'standingAbove': <FS.standingAbove: 40>, 'physics': <FS.physics: 41>, 'contactConstraints': <FS.contactConstraints: 42>, 'energy': <FS.energy: 43>, 'transAccelerations': <FS.transAccelerations: 44>, 'transVelocities': <FS.transVelocities: 45>, 'qQuaternionNorms': <FS.qQuaternionNorms: 46>, 'opposeCentral': <FS.opposeCentral: 47>, 'linangVel': <FS.linangVel: 48>, 'AlignXWithDiff': <FS.AlignXWithDiff: 49>, 'AlignYWithDiff': <FS.AlignYWithDiff: 50>}
+    AlignXWithDiff: typing.ClassVar[FS]  # value = <FS.AlignXWithDiff: 50>
+    AlignYWithDiff: typing.ClassVar[FS]  # value = <FS.AlignYWithDiff: 51>
+    __members__: typing.ClassVar[dict[str, FS]]  # value = {'position': <FS.position: 0>, 'positionDiff': <FS.positionDiff: 1>, 'positionRel': <FS.positionRel: 2>, 'quaternion': <FS.quaternion: 3>, 'quaternionDiff': <FS.quaternionDiff: 4>, 'quaternionRel': <FS.quaternionRel: 5>, 'pose': <FS.pose: 6>, 'poseDiff': <FS.poseDiff: 7>, 'poseRel': <FS.poseRel: 8>, 'vectorX': <FS.vectorX: 9>, 'vectorXDiff': <FS.vectorXDiff: 10>, 'vectorXRel': <FS.vectorXRel: 11>, 'vectorY': <FS.vectorY: 12>, 'vectorYDiff': <FS.vectorYDiff: 13>, 'vectorYRel': <FS.vectorYRel: 14>, 'vectorZ': <FS.vectorZ: 15>, 'vectorZDiff': <FS.vectorZDiff: 16>, 'vectorZRel': <FS.vectorZRel: 17>, 'scalarProductXX': <FS.scalarProductXX: 18>, 'scalarProductXY': <FS.scalarProductXY: 19>, 'scalarProductXZ': <FS.scalarProductXZ: 20>, 'scalarProductYX': <FS.scalarProductYX: 21>, 'scalarProductYY': <FS.scalarProductYY: 22>, 'scalarProductYZ': <FS.scalarProductYZ: 23>, 'scalarProductZZ': <FS.scalarProductZZ: 24>, 'gazeAt': <FS.gazeAt: 25>, 'angularVel': <FS.angularVel: 26>, 'accumulatedCollisions': <FS.accumulatedCollisions: 27>, 'jointLimits': <FS.jointLimits: 28>, 'distance': <FS.distance: 29>, 'negDistance': <FS.distance: 29>, 'oppose': <FS.oppose: 30>, 'qItself': <FS.qItself: 31>, 'jointState': <FS.qItself: 31>, 'aboveBox': <FS.aboveBox: 33>, 'insideBox': <FS.insideBox: 34>, 'pairCollision_negScalar': <FS.pairCollision_negScalar: 35>, 'pairCollision_vector': <FS.pairCollision_vector: 36>, 'pairCollision_normal': <FS.pairCollision_normal: 37>, 'pairCollision_p1': <FS.pairCollision_p1: 38>, 'pairCollision_p2': <FS.pairCollision_p2: 39>, 'standingAbove': <FS.standingAbove: 40>, 'totalForce': <FS.totalForce: 41>, 'physics': <FS.physics: 42>, 'contactConstraints': <FS.contactConstraints: 43>, 'energy': <FS.energy: 44>, 'transAccelerations': <FS.transAccelerations: 45>, 'transVelocities': <FS.transVelocities: 46>, 'qQuaternionNorms': <FS.qQuaternionNorms: 47>, 'opposeCentral': <FS.opposeCentral: 48>, 'linangVel': <FS.linangVel: 49>, 'AlignXWithDiff': <FS.AlignXWithDiff: 50>, 'AlignYWithDiff': <FS.AlignYWithDiff: 51>}
     aboveBox: typing.ClassVar[FS]  # value = <FS.aboveBox: 33>
     accumulatedCollisions: typing.ClassVar[FS]  # value = <FS.accumulatedCollisions: 27>
     angularVel: typing.ClassVar[FS]  # value = <FS.angularVel: 26>
-    contactConstraints: typing.ClassVar[FS]  # value = <FS.contactConstraints: 42>
+    contactConstraints: typing.ClassVar[FS]  # value = <FS.contactConstraints: 43>
     distance: typing.ClassVar[FS]  # value = <FS.distance: 29>
-    energy: typing.ClassVar[FS]  # value = <FS.energy: 43>
+    energy: typing.ClassVar[FS]  # value = <FS.energy: 44>
     gazeAt: typing.ClassVar[FS]  # value = <FS.gazeAt: 25>
     insideBox: typing.ClassVar[FS]  # value = <FS.insideBox: 34>
     jointLimits: typing.ClassVar[FS]  # value = <FS.jointLimits: 28>
     jointState: typing.ClassVar[FS]  # value = <FS.qItself: 31>
-    linangVel: typing.ClassVar[FS]  # value = <FS.linangVel: 48>
+    linangVel: typing.ClassVar[FS]  # value = <FS.linangVel: 49>
     negDistance: typing.ClassVar[FS]  # value = <FS.distance: 29>
     oppose: typing.ClassVar[FS]  # value = <FS.oppose: 30>
-    opposeCentral: typing.ClassVar[FS]  # value = <FS.opposeCentral: 47>
+    opposeCentral: typing.ClassVar[FS]  # value = <FS.opposeCentral: 48>
     pairCollision_negScalar: typing.ClassVar[FS]  # value = <FS.pairCollision_negScalar: 35>
     pairCollision_normal: typing.ClassVar[FS]  # value = <FS.pairCollision_normal: 37>
     pairCollision_p1: typing.ClassVar[FS]  # value = <FS.pairCollision_p1: 38>
     pairCollision_p2: typing.ClassVar[FS]  # value = <FS.pairCollision_p2: 39>
     pairCollision_vector: typing.ClassVar[FS]  # value = <FS.pairCollision_vector: 36>
-    physics: typing.ClassVar[FS]  # value = <FS.physics: 41>
+    physics: typing.ClassVar[FS]  # value = <FS.physics: 42>
     pose: typing.ClassVar[FS]  # value = <FS.pose: 6>
     poseDiff: typing.ClassVar[FS]  # value = <FS.poseDiff: 7>
     poseRel: typing.ClassVar[FS]  # value = <FS.poseRel: 8>
@@ -711,7 +727,7 @@ class FS:
     positionDiff: typing.ClassVar[FS]  # value = <FS.positionDiff: 1>
     positionRel: typing.ClassVar[FS]  # value = <FS.positionRel: 2>
     qItself: typing.ClassVar[FS]  # value = <FS.qItself: 31>
-    qQuaternionNorms: typing.ClassVar[FS]  # value = <FS.qQuaternionNorms: 46>
+    qQuaternionNorms: typing.ClassVar[FS]  # value = <FS.qQuaternionNorms: 47>
     quaternion: typing.ClassVar[FS]  # value = <FS.quaternion: 3>
     quaternionDiff: typing.ClassVar[FS]  # value = <FS.quaternionDiff: 4>
     quaternionRel: typing.ClassVar[FS]  # value = <FS.quaternionRel: 5>
@@ -723,8 +739,9 @@ class FS:
     scalarProductYZ: typing.ClassVar[FS]  # value = <FS.scalarProductYZ: 23>
     scalarProductZZ: typing.ClassVar[FS]  # value = <FS.scalarProductZZ: 24>
     standingAbove: typing.ClassVar[FS]  # value = <FS.standingAbove: 40>
-    transAccelerations: typing.ClassVar[FS]  # value = <FS.transAccelerations: 44>
-    transVelocities: typing.ClassVar[FS]  # value = <FS.transVelocities: 45>
+    totalForce: typing.ClassVar[FS]  # value = <FS.totalForce: 41>
+    transAccelerations: typing.ClassVar[FS]  # value = <FS.transAccelerations: 45>
+    transVelocities: typing.ClassVar[FS]  # value = <FS.transVelocities: 46>
     vectorX: typing.ClassVar[FS]  # value = <FS.vectorX: 9>
     vectorXDiff: typing.ClassVar[FS]  # value = <FS.vectorXDiff: 10>
     vectorXRel: typing.ClassVar[FS]  # value = <FS.vectorXRel: 11>
@@ -1018,6 +1035,8 @@ class KOMO:
         * kOrder: the 'Markov-order', i.e., maximal tuple of configurations over which we formulate features (e.g. take finite differences)
         * enableCollisions: if True, KOMO runs a broadphase collision check (using libFCL) in each optimization step -- only then accumulative collision/penetration features will correctly evaluate to non-zero. But this is costly.
         """
+    def addContact_WithPoaFrame(self, time: float, obj: ..., from: ..., frictionCone_mu: float, init_objMass: float, init_POAdist: float) -> Frame:
+        ...
     def addControlObjective(self, times: arr, order: int, scale: float = 1.0, target: arr = ..., deltaFromSlice: int = 0, deltaToSlice: int = 0) -> Objective:
         """
         * times: (as for `addObjective`) the phase-interval in which this objective holds; [] means all times
@@ -1203,6 +1222,10 @@ class NLP:
         ...
     def checkJacobian(self, x: arr, tolerance: float, featureNames: StringA = []) -> bool:
         ...
+    def eval_scalar(self, arg0: arr) -> tuple[float, arr, arr]:
+        """
+        query the NLP assuming that it only has f- and sos-objectives (otherwise raises error); returns the cost, gradient, and Hessian (which is the Gauss-Newton Hessian plus what the user NLP provides with getHessian)
+        """
     def evaluate(self, arg0: arr) -> tuple[arr, arr]:
         """
         query the NLP at a point $x$; returns the tuple $(phi,J)$, which is the feature vector and its Jacobian; features define cost terms, sum-of-square (sos) terms, inequalities, and equalities depending on 'getFeatureTypes'
@@ -1226,6 +1249,14 @@ class NLP:
     def getInitializationSample(self) -> arr:
         """
         returns a sample (e.g. uniform within bounds) to initialize an optimization -- not necessarily feasible
+        """
+    def getKOMO(self) -> KOMO:
+        """
+        in case this is an NLP defined via KOMO, returns the KOMO object; otherwise returns None
+        """
+    def get_AugmentedLagrangian(self, muSquaredPenalty: float = -1.0, muLogBarrier: float = -1.0) -> NLP:
+        """
+        returns the Augmented Lagrangian (another NLP wrapping this NLP), with given penalty/barrier parameters (default: taken from OptOptions)
         """
     def report(self, arg0: int) -> str:
         """
@@ -1285,9 +1316,13 @@ class NLP_Solver:
         """
     def getTrace_J(self) -> arr:
         ...
-    def getTrace_costs(self) -> arr:
+    def getTrace_best(self) -> arr:
         """
-        returns steps-times-3 array with rows (f+sos-costs, ineq, eq)
+        returns steps-times-1 array with the running best of sum(f+sos+ineq+eq)
+        """
+    def getTrace_errs(self) -> arr:
+        """
+        returns steps-times-4 array with rows (f, sos, ineq, eq)
         """
     def getTrace_phi(self) -> arr:
         ...
@@ -1485,7 +1520,7 @@ class OptMethod:
     
       Ceres
     
-      LSZO
+      LSBO
     
       greedy
     
@@ -1493,23 +1528,26 @@ class OptMethod:
     
       CMA
     
+      LS_CMA
+    
       ES
     """
     AugmentedLag: typing.ClassVar[OptMethod]  # value = <OptMethod.AugmentedLag: 5>
     CMA: typing.ClassVar[OptMethod]  # value = <OptMethod.CMA: 18>
     Ceres: typing.ClassVar[OptMethod]  # value = <OptMethod.Ceres: 14>
-    ES: typing.ClassVar[OptMethod]  # value = <OptMethod.ES: 19>
+    ES: typing.ClassVar[OptMethod]  # value = <OptMethod.ES: 20>
     GradientDescent: typing.ClassVar[OptMethod]  # value = <OptMethod.GradientDescent: 1>
     Ipopt: typing.ClassVar[OptMethod]  # value = <OptMethod.Ipopt: 12>
     LBFGS: typing.ClassVar[OptMethod]  # value = <OptMethod.LBFGS: 3>
-    LSZO: typing.ClassVar[OptMethod]  # value = <OptMethod.LSZO: 15>
+    LSBO: typing.ClassVar[OptMethod]  # value = <OptMethod.LSBO: 15>
+    LS_CMA: typing.ClassVar[OptMethod]  # value = <OptMethod.LS_CMA: 19>
     LogBarrier: typing.ClassVar[OptMethod]  # value = <OptMethod.LogBarrier: 6>
     NLopt: typing.ClassVar[OptMethod]  # value = <OptMethod.NLopt: 11>
     NelderMead: typing.ClassVar[OptMethod]  # value = <OptMethod.NelderMead: 17>
     Newton: typing.ClassVar[OptMethod]  # value = <OptMethod.Newton: 4>
     Rprop: typing.ClassVar[OptMethod]  # value = <OptMethod.Rprop: 2>
     SquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.SquaredPenalty: 8>
-    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'GradientDescent': <OptMethod.GradientDescent: 1>, 'Rprop': <OptMethod.Rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'Newton': <OptMethod.Newton: 4>, 'AugmentedLag': <OptMethod.AugmentedLag: 5>, 'LogBarrier': <OptMethod.LogBarrier: 6>, 'slackGN_logBarrier': <OptMethod.slackGN_logBarrier: 7>, 'SquaredPenalty': <OptMethod.SquaredPenalty: 8>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 9>, 'slackGN': <OptMethod.slackGN: 10>, 'NLopt': <OptMethod.NLopt: 11>, 'Ipopt': <OptMethod.Ipopt: 12>, 'slackGN_Ipopt': <OptMethod.slackGN_Ipopt: 13>, 'Ceres': <OptMethod.Ceres: 14>, 'LSZO': <OptMethod.LSZO: 15>, 'greedy': <OptMethod.greedy: 16>, 'NelderMead': <OptMethod.NelderMead: 17>, 'CMA': <OptMethod.CMA: 18>, 'ES': <OptMethod.ES: 19>}
+    __members__: typing.ClassVar[dict[str, OptMethod]]  # value = {'none': <OptMethod.none: 0>, 'GradientDescent': <OptMethod.GradientDescent: 1>, 'Rprop': <OptMethod.Rprop: 2>, 'LBFGS': <OptMethod.LBFGS: 3>, 'Newton': <OptMethod.Newton: 4>, 'AugmentedLag': <OptMethod.AugmentedLag: 5>, 'LogBarrier': <OptMethod.LogBarrier: 6>, 'slackGN_logBarrier': <OptMethod.slackGN_logBarrier: 7>, 'SquaredPenalty': <OptMethod.SquaredPenalty: 8>, 'singleSquaredPenalty': <OptMethod.singleSquaredPenalty: 9>, 'slackGN': <OptMethod.slackGN: 10>, 'NLopt': <OptMethod.NLopt: 11>, 'Ipopt': <OptMethod.Ipopt: 12>, 'slackGN_Ipopt': <OptMethod.slackGN_Ipopt: 13>, 'Ceres': <OptMethod.Ceres: 14>, 'LSBO': <OptMethod.LSBO: 15>, 'greedy': <OptMethod.greedy: 16>, 'NelderMead': <OptMethod.NelderMead: 17>, 'CMA': <OptMethod.CMA: 18>, 'LS_CMA': <OptMethod.LS_CMA: 19>, 'ES': <OptMethod.ES: 20>}
     greedy: typing.ClassVar[OptMethod]  # value = <OptMethod.greedy: 16>
     none: typing.ClassVar[OptMethod]  # value = <OptMethod.none: 0>
     singleSquaredPenalty: typing.ClassVar[OptMethod]  # value = <OptMethod.singleSquaredPenalty: 9>
@@ -1920,9 +1958,9 @@ class Simulation:
         ...
     def getScreenshot(self) -> ...:
         ...
-    def getState(self) -> tuple:
+    def getState(self) -> SimulationState:
         """
-        returns a 5-tuple of (time, q, qDot, freePos, freeVel)
+        returns struct with 5 fields (time, q, qDot, freePos, freeVel)
         """
     def getTimeToSplineEnd(self) -> float:
         ...
@@ -1932,17 +1970,23 @@ class Simulation:
         ...
     def get_qDot(self) -> arr:
         ...
+    def get_t(self) -> float:
+        ...
     def gripperIsDone(self, gripperFrameName: str) -> bool:
         ...
     def moveGripper(self, gripperFrameName: str, width: float, speed: float = 0.3) -> None:
         ...
+    def multi_step(self, tau_step: float, tau_sim: float) -> None:
+        """
+        run multiple steps of tau_sim using spline control; tau_step should be multiple of tau_sim
+        """
     def pushConfigToSim(self, frameVelocities: arr = ..., jointVelocities: arr = ...) -> None:
         """
         set the simulator to the full (frame) state of the configuration
         """
-    def resetSplineRef(self) -> None:
+    def resetSplineRef(self, ctrl_time: float = -1.0) -> None:
         """
-        reset the spline reference, i.e., clear the current spline buffer and initialize it to constant spline at current position (to which setSplineRef can append)
+        reset the spline reference, i.e., clear the current spline buffer and initialize it to constant spline at current position (to which setSplineRef can append); ctrl_time=-1 means current control time
         """
     def resetTime(self, time: float = 1.0) -> None:
         ...
@@ -1959,7 +2003,9 @@ class Simulation:
         * times: array with single total duration, or time for each control point (times.N==path.d0)
         * append: append (with zero-velocity at append), or smoothly overwrite
         """
-    def setState(self, time: float, q: arr, qDot: arr, freePos: arr, freeVel: arr) -> None:
+    def setState(self, state: SimulationState) -> None:
+        ...
+    def setVerbose(self, verbose: int) -> None:
         ...
     def step(self, u_control: arr = ..., tau: float = 0.01, u_mode: ControlMode = ...) -> None:
         ...
@@ -2005,6 +2051,22 @@ class SimulationEngine:
         ...
     @property
     def value(self) -> int:
+        ...
+class SimulationState:
+    """
+    used only for set|getState
+    """
+    freePos: arr
+    freeVel: arr
+    q: arr
+    qDot: arr
+    time: float
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):
+        ...
+    def __init__(self) -> None:
+        ...
+    def __str__(self) -> str:
         ...
 class Skeleton:
     @staticmethod
@@ -2054,6 +2116,10 @@ class SolverReturn:
         ...
     def dict(self) -> dict:
         ...
+def clear_params() -> None:
+    """
+    clear all parameters
+    """
 def compiled() -> str:
     """
     return a compile date+time version string
@@ -2068,13 +2134,17 @@ def get_NLP_Problem_names() -> StringA:
     """
     return all problem names
     """
+def get_params() -> dict:
+    """
+    return parameters as dict
+    """
 def make_NLP_Problem(problem_name: ...) -> NLP:
     """
     create a benchmark NLP
     """
 def params_add(*args, **kwargs) -> None:
     """
-    add/set parameters
+    set parameters
     """
 def params_clear() -> None:
     """
@@ -2107,6 +2177,10 @@ def rnd_seed_random() -> None:
 def setRaiPath(arg0: str) -> None:
     """
     redefine the rai (or rai-robotModels) path
+    """
+def set_params(*args, **kwargs) -> None:
+    """
+    set parameters
     """
 _left: ArgWord  # value = <ArgWord._left: 0>
 _path: ArgWord  # value = <ArgWord._path: 3>

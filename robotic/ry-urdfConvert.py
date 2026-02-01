@@ -4,6 +4,7 @@
 # from config_urdf import *
 # from mesh_helper import *
 from robotic.src.yaml_helper import *
+from robotic.src.urdf_io import *
 import robotic as ry
 import argparse
 import glob
@@ -38,7 +39,7 @@ def main():
     if args.flipDaeYZ:
         ry.params_add({'assimp/daeFlipYZ': False})
 
-    C = ry.URDFLoader(args.file, visualsOnly=True, meshPathRemove='package://').C
+    C = URDFLoader(args.file, visualsOnly=True, meshPathRemove='package://').C
 
     C.processStructure(args.pruneRigidJoints, True, False, False)
     C.processInertias(args.recomputeInertias)
@@ -48,11 +49,10 @@ def main():
     C.writeMeshes('meshes/', copyTextures=True)
 
     print('#frames: ', C.getFrameDimension())
-    with open(f'{filebase}_conv.g', 'w') as fil:
-        #yaml.dump(C.asDict(), file, default_flow_style=False)
-        fil.write(C.write())
+    with open(f'{filebase}_conv.yml', 'w') as fil:
+        fil.write(C.asYaml())
 
-    yaml_write_dict(C.asDict(), f'{filebase}_conv.yml')
+    yaml_write_dict(C.asDict(), f'{filebase}_conv.yaml')
 
     C.view(True)
     # C.animate()

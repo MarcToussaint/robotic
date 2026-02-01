@@ -17,9 +17,8 @@ def quoted_string_rep(dumper, data):
     return dumper.represent_scalar("tag:yaml.org,2002:str", data, style='"')
 yaml.add_representer(quoted_string, quoted_string_rep)
 
-def yaml_write_dict(data, filename):
-    with open(filename, 'w') as fil:
-        yaml.dump(noflow_dict(data), fil, default_flow_style=True, sort_keys=False, width=500)
+def dict_as_yaml(data):
+    return yaml.dump(noflow_dict(data), default_flow_style=True, sort_keys=False, width=500)
 
 if __name__ == "__main__":
     filename = sys.argv[1]
