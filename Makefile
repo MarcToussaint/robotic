@@ -31,6 +31,7 @@ local-clean:
 	-rm -Rf $(PY_SITE)/robotic-*
 	-rm -f ${HOME}/.local/lib/*rai*
 	-rm -f ${HOME}/.local/bin/*ry*
+	-rm -Rf dist src/robotic.egg-info build/lib build/bdist.*
 
 wheels:
 	$(eval id = $(shell _make/run-docker.sh rai-manylinux -d))

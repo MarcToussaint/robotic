@@ -244,23 +244,23 @@ message(STATUS "[rai] installing python packages in " ${PY_LIB_SITE}/robotic )
 
 install(
   TARGETS _robotic rai
-  DESTINATION ${PY_LIB_SITE}/robotic)
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+
+#install(
+#  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
 
 install(
-  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/manipulation.py robotic/_robotic.pyi robotic/DataGen.pyi
-  DESTINATION ${PY_LIB_SITE}/robotic)
-
-install(
-  DIRECTORY rai-robotModels robotic/src
-  DESTINATION ${PY_LIB_SITE}/robotic
+  DIRECTORY rai-robotModels
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic
   FILES_MATCHING
-  PATTERN "*.yml" PATTERN "*.g" PATTERN "*.h5" PATTERN "*.ply" PATTERN "*.png" PATTERN "*.py"
-  PATTERN "retired" EXCLUDE
+  PATTERN "*.yml" PATTERN "*.g" PATTERN "*.h5" PATTERN "*.ply" PATTERN "*.png"
+  PATTERN "retired" PATTERN "__pychache__" EXCLUDE
   )
 
 install(
   DIRECTORY rai/src/
-  DESTINATION ${PY_LIB_SITE}/robotic/include/rai
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic/include/rai
   FILES_MATCHING
   PATTERN "*.h" PATTERN "*.ipp"
   PATTERN "*retired*" EXCLUDE
@@ -268,8 +268,8 @@ install(
 
 install(
   TARGETS meshTool #kinEdit meshTool bot
-  DESTINATION ${PY_LIB_SITE}/robotic)
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
 
-install(
-  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-meshTool robotic/ry-h5info robotic/ry-urdfConvert.py
-  DESTINATION $ENV{VIRTUAL_ENV}/bin)
+#install(
+#  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-meshTool robotic/ry-h5info robotic/ry-urdfConvert.py
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)

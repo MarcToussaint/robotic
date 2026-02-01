@@ -1,0 +1,34 @@
+[project]
+name = "robotic"
+version = "0.3.6a2"
+description = "Minimal example for creating a python package (and wheel) from cpp/pybind"
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+robotic = ["*.so",
+	"include/rai/*/*.h", "include/rai/*/*.ipp",
+	"rai-robotModels/panda/*.g", "rai-robotModels/panda/*.yml", "rai-robotModels/panda/meshes/*",
+	"rai-robotModels/ur10/*.g", "rai-robotModels/ur10/meshes/*",
+	"rai-robotModels/pr2/*.g", "rai-robotModels/pr2/*.yml", "rai-robotModels/pr2/meshes/*",
+	"rai-robotModels/robotiq/*.g", "rai-robotModels/robotiq/*.yml", "rai-robotModels/robotiq/meshes/*",
+	"rai-robotModels/g1/*.g", "rai-robotModels/g1/*.yml", "rai-robotModels/g1/meshes/*",
+	"rai-robotModels/ranger/*.g", "rai-robotModels/ranger/meshes/*",
+	"rai-robotModels/objects/*.g",
+	"rai-robotModels/scenarios/*.g", 
+	"rai-robotModels/tests/*.g",
+]
+
+[project.scripts]
+ry-info = "robotic.scripts.ry_info:main"
+ry-test = "robotic.scripts.ry_test:main"
+ry-view = "robotic.scripts.ry_view:main"
+ry-bot = "robotic.scripts.ry_bot:main"
