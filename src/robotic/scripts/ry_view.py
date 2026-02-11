@@ -3,6 +3,7 @@
 import robotic as ry
 import argparse
 import os
+import importlib.metadata
 
 parser = argparse.ArgumentParser(
     description='View a file (.g .yml .h5 or some mesh file). If config file, you can edit while viewing')
@@ -10,7 +11,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('FILE', type=str,
                     help='g-file name')
 parser.add_argument('-v', '--version', action='version',
-                    version=f'%(prog)s -- robotic package version: {ry.__version__}, {ry.compiled()}')
+                    version=f'%(prog)s -- robotic package version: {importlib.metadata.version('robotic')}, {ry.compiled()}')
 
 def main():
     args = parser.parse_args()

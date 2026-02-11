@@ -24,17 +24,17 @@ local-install:
 	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build -DPY_VERSION=$(PY_VER)
 	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
-	cp build/_robotic.pyi $(PY_SITE)/robotic
+	python3 -m pip install -e .
 
 local-clean:
 	-rm -Rf $(PY_SITE)/robotic
 	-rm -Rf $(PY_SITE)/robotic-*
 	-rm -f ${HOME}/.local/lib/*rai*
 	-rm -f ${HOME}/.local/bin/*ry*
-	-rm -Rf dist src/robotic.egg-info build/lib build/bdist.*
+	-rm -Rf robotic/__pycache__ build/bdist* build/lib robotic.egg-info
 
 wheels:
-	$(eval id = $(shell _make/run-docker.sh rai-manylinux -d))
+	$(eval id = $(shell _make/run-docker.sh -d))
 	@echo "started docker " ${id}
 	docker exec -it ${id} /bin/bash -C local/_make/build-wheels.sh
 	docker stop ${id}
@@ -46,11 +46,11 @@ wheels-upload:
 wheels-install:
 	python$(PY_VER) -m pip install dist/robotic-*cp312*.whl --force-reinstall
 
-test-buildFromScratch:
-	$(eval id = $(shell _make/run-docker.sh ubuntu -d))
-	@echo "started docker " ${id}
-	docker exec -it ${id} /bin/bash -C /root/local/_make/test-build.sh
-	docker stop ${id}
+#test-buildFromScratch:
+#	$(eval id = $(shell _make/run-docker.sh ubuntu -d))
+#	@echo "started docker " ${id}
+#	docker exec -it ${id} /bin/bash -C /root/local/_make/test-build.sh
+#	docker stop ${id}
 
 test:
 	cd ${HOME} && python3 -c 'import robotic as ry; print("ry version:", ry.__version__, ry.compiled());'

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 
 project(RoboticWheel)
 
@@ -8,6 +8,7 @@ if(NOT DEFINED CMAKE_CACHE_MAJOR_VERSION)
 endif()
 
 ## variable default values
+set(CMAKE_INSTALL_MESSAGE LAZY)
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ version selection")
 set(PY_VERSION 3.12 CACHE STRING "python version")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -185,6 +186,8 @@ target_link_libraries(rai PRIVATE
 
 if(USE_PYBIND)
   set(PYTHON_EXECUTABLE "python${PY_VERSION}")
+  find_package(Python3 ${PY_VERSION} EXACT COMPONENTS Interpreter Development)
+  message(STATUS "[rai] requested python version " ${PY_VERSION} )
   message(STATUS "[rai] using python executable " ${PYTHON_EXECUTABLE} )
   execute_process(
     COMMAND bash "-c" "${PYTHON_EXECUTABLE} -m pybind11 --cmakedir" 
@@ -212,6 +215,46 @@ message(STATUS "[rai] source dir: " "${CMAKE_SOURCE_DIR}")
 
 ################################################################################
 
+add_custom_target(docstrings #ALL
+  DEPENDS _robotic
+  COMMAND env PYTHONPATH="." ${PYTHON_EXECUTABLE} -m pybind11_stubgen --ignore-all-errors _robotic
+  COMMAND cp -f stubs/_robotic*/*.pyi ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic/)
+
 add_executable(meshTool rai/bin/src_meshTool/main.cpp)
 target_link_libraries(meshTool rai)
 
+################################################################################
+
+message(STATUS "[rai] installing python packages in " ${CMAKE_CURRENT_SOURCE_DIR}/src )
+
+install(
+  TARGETS _robotic rai
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+
+#install(
+#  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/manipulation.py robotic/__init__.pyi
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+
+install(
+  DIRECTORY rai-robotModels
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic
+  FILES_MATCHING
+  PATTERN "*.yml" PATTERN "*.g" PATTERN "*.h5" PATTERN "*.ply" PATTERN "*.png"
+  PATTERN "retired" PATTERN "__pychache__" EXCLUDE
+  )
+
+install(
+  DIRECTORY rai/src/
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic/include/rai
+  FILES_MATCHING
+  PATTERN "*.h" PATTERN "*.ipp"
+  PATTERN "*retired*" EXCLUDE
+  )
+
+install(
+  TARGETS meshTool #kinEdit meshTool bot
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+
+#install(
+#  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-meshTool robotic/ry-h5info robotic/ry-urdfConvert.py
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)

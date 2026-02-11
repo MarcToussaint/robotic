@@ -2,12 +2,13 @@
 
 import argparse
 import robotic as ry
+import importlib.metadata
 
 parser = argparse.ArgumentParser(
     description='Utility to test real robot basic operations')
 
 parser.add_argument('-v', '--version', action='version',
-                    version=f'%(prog)s -- robotic package version: {ry.__version__}, {ry.compiled()}')
+                    version=f'%(prog)s -- robotic package version: {importlib.metadata.version('robotic')}, {ry.compiled()}')
 
 parser.add_argument('-two', help='use two arms', action="store_true")
 parser.add_argument('-real', help='use the real robot', action="store_true")
