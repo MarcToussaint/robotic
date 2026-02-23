@@ -17,7 +17,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 
 ## Installation via pip (simulation only, no real Franka & realsense support)
 
-* The pip package was compiled for python3.8 .. 3.12, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
+* The pip package was compiled for python3.10 .. 3.14, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
 
       sudo apt install liblapack3 freeglut3-dev libglu1-mesa libxrandr2 libfreetype6 fonts-ubuntu python3 python3-pip
       #in latest Ubuntu also:
@@ -40,11 +40,11 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       make run -j1
 	  make run_demos -j1
 
-* Test in a clean ubuntu:latest docker (starting with `xhost +local:root && docker run -it --env="DISPLAY" --network host ubuntu:latest`):
+* For reference and testing, this should work in a clean ubuntu:latest docker (starting with `xhost +local:root && docker run -it --env="DISPLAY" --network host ubuntu:latest`):
 
       apt update
       env DEBIAN_FRONTEND=noninteractive apt install --yes liblapack3 freeglut3-dev libglu1-mesa libxrandr2 libfreetype6 fonts-ubuntu python3 python3-venv
-      cd /usr/lib/x86_64-linux-gnu/ && ln -s libglut.so.3.12 libglut.so.3
+      #cd /usr/lib/x86_64-linux-gnu/ && ln -s libglut.so.3.12 libglut.so.3 #was necessary in older ubuntus
       python3 -m venv ~/.local/venv
       source ~/.local/venv/bin/activate
       pip install robotic numpy
@@ -96,13 +96,12 @@ This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
 
       make -C build _robotic docstrings install
 
-* This should install everything in .local/lib/python*/site-packages/robotic. Test:
+* This should install the compiled libraries (which are the python module) in the local src/robotic folder, next to other parts of the python module. To install:
 
-      cd $HOME
-      ry-info
-      python3 -c 'import robotic as ry; ry.test.RndScene()'
+      pip install -e .
+      ry-info  #to test the installation
 
-* Recall that the user needs to be part of the `realtime` and `dialout` unix group:
+* For using Franka, recall that the user needs to be part of the `realtime` and `dialout` unix group:
 
       sudo usermod -a -G realtime <username>
       sudo usermod -a -G dialout <username>
@@ -121,21 +120,19 @@ This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
 
 * Build the docker
 ```
-_build_utils/build-docker.sh
+_make/build-docker.sh
 ```
 
-* Compile wheels (this runs `local/_build_utils/build-wheels.sh`
-inside the docker -- see `Makefile`)
+* Compile wheels (this runs `local/_make/build-wheels.sh`
+inside the docker -- see inside the `Makefile`)
 ```
 make wheels
 ```
 
-* Outside of docker, install locally with pip or push wheels to pypi
+* Install these wheels locally with pip or push wheels to pypi -- see inside the `Makefile`
 ```
-python3.8 -m pip install dist/robotic-*cp38*.whl --force-reinstall
-python3.10 -m pip install dist/robotic-*cp310*.whl --force-reinstall
-# or
-twine upload dist/*.whl --repository robotic
+make wheels-install
+make wheels-upload
 ```
 
 
