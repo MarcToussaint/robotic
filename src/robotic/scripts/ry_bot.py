@@ -2,13 +2,13 @@
 
 import argparse
 import robotic as ry
-import importlib.metadata
+import numpy as np
 
 parser = argparse.ArgumentParser(
     description='Utility to test real robot basic operations')
 
 parser.add_argument('-v', '--version', action='version',
-                    version=f'%(prog)s -- robotic package version: {importlib.metadata.version('robotic')}, {ry.compiled()}')
+                    version=f'%(prog)s -- robotic package version: {ry.version()}, {ry.compiled()}')
 
 parser.add_argument('-two', help='use two arms', action="store_true")
 parser.add_argument('-real', help='use the real robot', action="store_true")
@@ -19,10 +19,12 @@ parser.add_argument('-float', help='floating control (zero gains)', action="stor
 parser.add_argument('-damp', help='damped control (zero position gains)', action="store_true")
 parser.add_argument('-hold', help='hold positin', action="store_true")
 parser.add_argument('-up', help='move up', action="store_true")
-parser.add_argument('-home', help='home home', action="store_true")
+parser.add_argument('-home', help='move home', action="store_true")
+parser.add_argument('-stretch', help='move stretch', action="store_true")
 
 def main():
     args = parser.parse_args()
+    np.set_printoptions(precision=4)
     
     C = ry.Config()
 
@@ -33,6 +35,13 @@ def main():
 
     bot = ry.BotOp(C, args.real)
 
+    print('== status:')
+    q = bot.get_q()
+    l = C.getJointLimits()
+    print('   q :', q)
+    print('   lo:', q-l[0])
+    print('   up:', l[1]-q)
+    
     if args.close:
         bot.gripperMove(ry._left, 0, .05)
         while (not bot.gripperDone(ry._left)):
@@ -67,6 +76,18 @@ def main():
         bot.moveTo(q, 1.)
         bot.wait(C, True, True)
 
+    if args.stretch:
+        q = np.array([0, -0.3, 0, -0.6,  0, 2., 0])
+        bot.moveTo(q, 1.)
+        bot.wait(C, True, True)
+
+    print('== status:')
+    q = bot.get_q()
+    l = C.getJointLimits()
+    print('   q :', q)
+    print('   lo:', q-l[0])
+    print('   up:', l[1]-q)
+        
     del bot
     print('== used parameters:')
     ry.params_print()

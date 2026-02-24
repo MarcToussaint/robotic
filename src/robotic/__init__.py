@@ -11,3 +11,8 @@ import os
 rai_path = os.path.abspath(os.path.dirname(__file__)) + '/rai-robotModels'
 os.environ["RAI_PATH"] = rai_path
 setRaiPath( rai_path )
+
+def version():
+    import importlib.metadata
+
+    return importlib.metadata.version('robotic')

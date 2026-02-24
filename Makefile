@@ -7,7 +7,7 @@ PY_SITE = $(VIRTUAL_ENV)/lib/python$(PY_VER)/site-packages
 default: compile
 
 compile:
-	$(MAKE) -C build
+	$(MAKE) -C build _robotic docstrings install
 
 docs:
 	cd rai-docs && sphinx-build doc ../html
