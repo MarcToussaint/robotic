@@ -1,6 +1,6 @@
 [project]
 name = "robotic"
-version = "0.3.6a3"
+version = "0.3.6"
 description = "Minimal example for creating a python package (and wheel) from cpp/pybind"
 license = "MIT"
 readme = "README.md"

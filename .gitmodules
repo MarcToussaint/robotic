@@ -10,3 +10,6 @@
 [submodule "rai-docs"]
 	path = rai-docs
 	url = ../rai-docs.git
+[submodule "rai-tutorials"]
+	path = rai-tutorials
+	url = ../rai-tutorials.git

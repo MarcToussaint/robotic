@@ -10,14 +10,14 @@ rm -Rf robotic/__pycache__ dist/ build/bdist* build/lib robotic.egg-info
 for ver in 12 13 14 10 11; do
     echo -e "\n\n======== compiling (python version " $ver ") ========"
     cmake -B build_wheel -DPY_VERSION=3.$ver --log-level=WARNING .
-    make -j8 --silent -C build_wheel _robotic docstrings install
+    make -j$(command nproc --ignore 1) --silent -C build_wheel _robotic docstrings install
     if [ "$?" != 0 ]; then
 	echo "--- compile failed ---"
 	exit
     fi
 
     echo -e "\n\n======== cleanup libs (python version " $ver ") ========"
-    strip --strip-unneeded src/robotic/_robotic.so
+    strip --strip-unneeded src/robotic/_robotic*.so
     strip --strip-unneeded src/robotic/librai.so
     strip --strip-unneeded src/robotic/meshTool
 

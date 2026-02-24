@@ -22,9 +22,9 @@ docker run -it $1 \
        --env="DISPLAY" \
        --network host \
        --device /dev/input \
-       --device /dev/dri \
        rai-manylinux /bin/bash
 
+#       --device /dev/dri \
 #       -v $XSOCK:$XSOCK \
 #       -v $XAUTH:$XAUTH \
 #       -e XAUTHORITY=$XAUTH \

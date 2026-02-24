@@ -31,6 +31,7 @@ local-clean:
 	-rm -Rf $(PY_SITE)/robotic-*
 	-rm -f ${HOME}/.local/lib/*rai*
 	-rm -f ${HOME}/.local/bin/*ry*
+	-rm -Rf ${HOME}/.local/include/rai
 	-rm -Rf robotic/__pycache__ build/bdist* build/lib robotic.egg-info
 
 wheels:

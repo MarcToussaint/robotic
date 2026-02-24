@@ -3,7 +3,7 @@ FROM quay.io/pypa/manylinux2014_x86_64
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME="/root"
 ENV TERM="xterm"
-ENV MAKEFLAGS="-j3"
+ENV MAKEFLAGS="-j$(command nproc --ignore 1)"
 
 ##########################################################
 
