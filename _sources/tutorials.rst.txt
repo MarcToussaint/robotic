@@ -25,6 +25,7 @@ The remaining tutorials cover various topics in more depth:
    :maxdepth: 1
 
    tutorials/botop_2_real_robot
+   tutorials/botop_3_stepInterface
    tutorials/config_2_features
    tutorials/config_3_import_edit
    tutorials/komo_2_reporting

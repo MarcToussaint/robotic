@@ -199,6 +199,42 @@ bot.wait(C)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># These are camera config parameters
+# They can only be set/change once! before first time startup of the camera!
+cfg = {&#39;RealSense/startupSkipImages&#39;: 1, #how many frames are skipped in the beginning IFF autoexposure is true (default: 60)
+        &#39;RealSense/resolution&#39;: 1280, #resolution (options: 1280, 640, 480) default 640
+        &#39;RealSense/alignToDepth&#39;: False, #align rgb to depth (also currupts image) default True
+        &#39;RealSense/autoExposure&#39;: False, #turn off auto exposure/whilte (default True)
+        &#39;RealSense/exposure&#39;: 100, #exposure time (brightness)
+        &#39;RealSense/white&#39;: 3000} #white colore (Calvin)
+
+ry.set_params(cfg)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>v = ry.ImageViewer()
+v2 = ry.ImageViewer()
+
+for _ in range(50):
+    key = bot.sync(C, .1)
+    image, depth = bot.getImageAndDepth(&quot;cameraWrist&quot;)
+    key |= v.view(image)
+    key |= v2.viewFloat(depth*128.)
+    if key==ord(&#39;q&#39;):
+        break
+
+del v, v2
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcl = C.getFrame(&quot;pcl&quot;)
 pcl.setShape(ry.ST.pointCloud, [2]) # the size here is pixel size for display
 bot.sync(C)
