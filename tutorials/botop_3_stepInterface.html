@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LGP-1: First Mini Interface &mdash; Robotic Python Library 0.1.0 documentation</title>
+  <title>BotOp-3: Step Inferace (env-like) example &mdash; Robotic Python Library 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -23,8 +23,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Extension - Simulation: Low-level stepping interface &amp; gym environments" href="ext_physx_simulation.html" />
-    <link rel="prev" title="KOMO-3: Manipulation Modelling &amp; Execution" href="komo_3_manipulation.html" /> 
+    <link rel="next" title="Config-2: Computing differentiable features &amp; collision evaluation" href="config_2_features.html" />
+    <link rel="prev" title="BotOp-2: Real robot operation checklist &amp; first steps" href="botop_2_real_robot.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,12 +54,12 @@
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="botop_3_stepInterface.html">BotOp-3: Step Inferace (env-like) example</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">BotOp-3: Step Inferace (env-like) example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Config-3: Importing, editing &amp; manipulating them</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_2_reporting.html">KOMO-2: Reporting &amp; explaining convergence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_3_manipulation.html">KOMO-3: Manipulation Modelling &amp; Execution</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">LGP-1: First Mini Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lgp_1_intro.html">LGP-1: First Mini Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_physx_simulation.html">Extension - Simulation: Low-level stepping interface &amp; gym environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_rendering.html">Extension - Rendering: Basic opengl, offscreen (headless), and interface to physics-based rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext_rrt.html">Extension - RRT: basic finding example</a></li>
@@ -86,9 +86,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">LGP-1: First Mini Interface</li>
+      <li class="breadcrumb-item active">BotOp-3: Step Inferace (env-like) example</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/lgp_1_intro.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/botop_3_stepInterface.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -96,89 +96,91 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="LGP-1:-First-Mini-Interface">
-<h1>LGP-1: First Mini Interface<a class="headerlink" href="#LGP-1:-First-Mini-Interface" title="Link to this heading"></a></h1>
-<p><strong>Disclaimer:</strong> The algorithm interfaced here is absolutely not made or tuned for performance. The purpose of this first interface less to provide the algorithm, but rather to think about:</p>
-<ol class="arabic simple">
-<li><p>what are interfaces to <em>specify</em> a TAMP problem (see TAMP_Provider, and Logic2KOMO_Translator below), and</p></li>
-<li><p>what are basic computational components that an underlying kinematics/optimization engine should provide, so that a good algorithm could be build on top.</p></li>
-</ol>
-<p>In the current version, the LGP tool needs three things as input:</p>
-<ul class="simple">
-<li><p>a configuration,</p></li>
-<li><p>a TAMP_Provider, which provides a method ‘getNewPlan’, which returns a next possible sequence of logical actions (action=string tuple),</p></li>
-<li><p>a Logic2KOMO_Translator, which provides a method ‘add_action_constraints’, which adds KOMO constraints for any action.</p></li>
-</ul>
-<p>Eventually, both should be specified by the user in python. For the TAMP_Provider, the user should use plain PDDL and a planner to provide more and more plans. For the Logic2KOMO_Translater, the user can define any translation of logic predicates to geometric constraints - beyond just pick’n’place or push. But for now, for development, I’m using intransparent C++ implementations of these classes to provide defaults.</p>
+  <section id="BotOp-3:-Step-Inferace-(env-like)-example">
+<h1>BotOp-3: Step Inferace (env-like) example<a class="headerlink" href="#BotOp-3:-Step-Inferace-(env-like)-example" title="Link to this heading"></a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
-ry.compiled()
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>import robotic as ry
+import numpy as np
+import time
 </pre></div>
 </div>
 </div>
+<p>A minimal IK method (could be replace by just using the Jacobian to translate the delta)</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>problem = &#39;data/lgp_single_pnp&#39;
-#problem = &#39;data/lgp_bimanual_pnp&#39;
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>def mini_IK(C: ry.Config, pos, qHome):
+    q = C.getJointState()
+    komo = ry.KOMO(C, 1, 1, 0, False) #one phase one time slice problem, with &#39;delta_t=1&#39;, order=0
+    komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], q) #cost: close to &#39;current state&#39;
+    komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], qHome) #cost: close to qHome
+    komo.addObjective([], ry.FS.position, [&#39;l_gripper&#39;], ry.OT.eq, [1e2], pos) #constraint: gripper position
 
-C = ry.Config()
-C.addFile(problem+&#39;.g&#39;) # change the config geometry (including size of trays) to check if solver still works
-#C.view() #or C.watchFile(&#39;data/lgp_single_pnp.g&#39;) #to edit
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tamp = ry.default_LGP_TAMP_Abstraction(C, problem+&#39;.lgp&#39;) # change the logic goal (&#39;terminal&#39;) to check is solver still works
-lgp = ry.LGP_Tool(C, tamp)
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for k in range(5):
-    lgp.solve(0)
-    plan = lgp.getSolvedPlan()
-    print(f&#39;** solution {k}: {plan}&#39;, flush=True)
-    lgp.view_solved(pause=False) #change to inspect each plan
+    ret = ry.NLP_Solver(komo.nlp()) .setOptions(verbose=0, stopEvals=20, stopTolerance=1e-3) .solve()
 
-    for k in range(len(plan)):
-        piece = lgp.get_piecewiseMotionProblem(k, True)
-        ret = ry.NLP_Solver(piece.nlp(), verbose=0 ) .solve()
-        piece.set_viewer(C.get_viewer()) # to prevent too many windows popping up
-        piece.view_play(False, f&#39;PIECE solution {k} {plan[k]}&#39;)
+    if ret.feasible:
+        return ret.x - q
+    else:
+        return np.zeros((q.size))
 
-    path = lgp.get_fullMotionProblem(True)
-    ret = ry.NLP_Solver(path.nlp(), verbose=0 ) .solve()
-    path.set_viewer(C.get_viewer()) # to prevent too many windows popping up
-    path.view_play(False, f&#39;FULL PATH solution {plan}&#39;)
-
-lgp.view_close()
+def mini_JacIK(C: ry.Config, pos, qHome):
+    q = C.getJointState()
+    y, J = C.eval(ry.FS.position, [&#39;l_gripper&#39;])
+    Jinv = J.T @ np.linalg.pinv(J@J.T+1e-3*np.eye(y.size))
+    dq = Jinv @ (pos-y) + 0.1*(np.eye(q.size) - Jinv@J) @ (qHome-q)
+    return dq
 </pre></div>
 </div>
 </div>
+<p>basic setup</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del C
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
+
+C.addFile(ry.raiPath(&quot;../rai-robotModels/scenarios/pandaSingle.g&quot;))
+qHome = C.getJointState()
+
+target = C.addFrame(&#39;target&#39;, &#39;table&#39;)
+target.setShape(ry.ST.marker, [.1])
+target.setRelativePosition([0., .3, .3])
+pos = target.getPosition()
+cen = pos.copy()
+C.view()
+
+bot = ry.BotOp(C, useRealRobot=False)
 </pre></div>
 </div>
 </div>
+<p>A basic observe-decide-step loop</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>tau_step = .05
+lmbda = .2
+for t in range(100):
+    bot.sync(C, tau_step) #keep the workspace C sync&#39;ed to real/sim, and idle .1 sec
+    pos = cen + .98 * (pos-cen) + 0.02 * np.random.randn(3)
+    target.setPosition(pos)
+
+    # observe
+    obs = bot.stepObservation()
+
+    # decide
+    # dq = mini_IK(C, pos, qHome)
+    dq = mini_JacIK(C, pos, qHome)
+
+    # step
+    # bot.moveTo(ret.x, timeCost=2., overwrite=True)
+    bot.stepAction(dq, obs, lmbda, maxAccel=2.)
+
+bot.home(C)
 </pre></div>
 </div>
 </div>
@@ -188,8 +190,8 @@ lgp.view_close()
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="komo_3_manipulation.html" class="btn btn-neutral float-left" title="KOMO-3: Manipulation Modelling &amp; Execution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ext_physx_simulation.html" class="btn btn-neutral float-right" title="Extension - Simulation: Low-level stepping interface &amp; gym environments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="botop_2_real_robot.html" class="btn btn-neutral float-left" title="BotOp-2: Real robot operation checklist &amp; first steps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="config_2_features.html" class="btn btn-neutral float-right" title="Config-2: Computing differentiable features &amp; collision evaluation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
