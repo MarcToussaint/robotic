@@ -263,7 +263,7 @@ class MeshTool():
                 assert self.decomp_faces.shape[0]<65535
                 fil.create_dataset('decomp/faces', data=self.decomp_faces, dtype='uint16')
                 if not without_colors:
-                fil.create_dataset('decomp/colors', data=self.decomp_colors, dtype='uint8')
+                    fil.create_dataset('decomp/colors', data=self.decomp_colors, dtype='uint8')
                 assert self.decomp_parts.shape[ 0]<65535
                 fil.create_dataset('decomp/parts', data=self.decomp_parts, dtype='uint16')
 

@@ -39,6 +39,13 @@ class URDFLoader():
             link_name = link.attrib['name']
             f_link = self.C.addFrame(link_name)
 
+            elem = link.find('inertial/origin')
+            if elem is not None:
+                f_inertia = self.C.addFrame(link_name+'_inertia')
+                f_inertia.setParent(f_link)
+                self.setRelativePose(f_inertia, elem)
+            else:
+                f_inertia = f_link
 
             elem = link.find('inertial/inertia')
             matrix=[]
@@ -49,7 +56,7 @@ class URDFLoader():
             elem = link.find('inertial/mass')
             if elem is not None:
                 mass = float(elem.attrib['value'])
-                f_link.setMass(mass, matrix)
+                f_inertia.setMass(mass, matrix)
 
             for visual in link.findall('visual'):
                 self.add_shape(visual, f'{link_name}_0', f_link, isVisual=True)
@@ -74,6 +81,15 @@ class URDFLoader():
                 print('SHIT', joint_name)
                 break
 
+            child_name = joint.find('child').attrib['link']
+            f_child = self.C.getFrame(child_name)
+            if f_child is None:
+                print('SHIT', joint_name)
+                break
+            if joint_name==child_name:
+                joint_name += '_joint'
+                # f_child.name = f_child.name + '_link'
+
             # add an origin frame as pre frame?
             elem = joint.find('origin')
             if elem is not None:
@@ -84,13 +100,6 @@ class URDFLoader():
 
             f_joint = self.C.addFrame(joint_name)
             f_joint.setParent(f_parent)
-
-            child_name = joint.find('child').attrib['link']
-            f_child = self.C.getFrame(child_name)
-            if f_child is None:
-                print('SHIT', joint_name)
-                break
-            f_child.setParent(f_joint, False)
 
             elem = joint.find('limit')
             limits = []
@@ -138,7 +147,21 @@ class URDFLoader():
                     elif axis=='0 0 -1':
                         f_joint.setJoint(ry.JT.hingeZ, limits, -1., f_mimic)
                     else:
-                        raise Exception('CAN ONLY PROCESS X Y Z hinge joints, not', axis)
+                        f_axis = self.C.addFrame(f'{joint_name}_axis')
+                        f_axis.setParent(f_parent)
+                        f_joint.setParent(f_axis) #overwriting parent
+
+                        axis = self.as_floats(axis)
+                        quat = ry.Quaternion()
+                        quat.setDiff([1.,0.,0.], axis)
+                        quat = quat.asArr()
+                        f_axis.setRelativeQuaternion(quat)
+                        f_joint.setJoint(ry.JT.hingeX, limits, 1., f_mimic)
+
+                        f_out = self.C.addFrame(f'{joint_name}_out')
+                        f_out.setParent(f_joint)
+                        f_out.setRelativeQuaternion([quat[0],-quat[1],-quat[2],-quat[3]])
+                        f_joint = f_out
                 else:
                     f_joint.setJoint(ry.JT.hingeX, limits, 1., f_mimic)
                     
@@ -163,6 +186,9 @@ class URDFLoader():
 
             if att == 'fixed':
                 f_joint.setJoint(ry.JT.rigid)
+                
+            f_child.setParent(f_joint, False)
+
 
             #elem = joint.find('axis')
             #if elem is not None:

@@ -265,8 +265,11 @@ class MujocoWriter:
         "sphere": ("sphere"),
     }
 
-    def __init__(self, C: ry.Config):
+    def __init__(self, C: ry.Config, verbose=0, friction="0.8 0.1 0.1"):
+        self.verbose = verbose
         self.root = ET.Element("mujoco", {"model": "ry_convert"})
+
+        ET.SubElement(self.root, "compiler", {"autolimits": "false"})
 
         self.asset = ET.SubElement(self.root, "asset")
 
@@ -277,9 +280,9 @@ class MujocoWriter:
 
         self.default = ET.SubElement(self.root, "default")
         a = ET.SubElement(self.default, "default", {"class": "ryjoint"})
-        b = ET.SubElement(a, "position", {"forcerange": "-150 150", "kp": "1000", "kv": "10", "ctrlrange": "-10 10"})
+        b = ET.SubElement(a, "position", {}) #{"forcerange": "-150 150", "kp": "1000", "kv": "10", "ctrlrange": "-10 10"})
         a = ET.SubElement(self.default, "default", {"class": "geom_fric"})
-        b = ET.SubElement(a, "geom", {"friction": ".8 0.1 0.1"})
+        b = ET.SubElement(a, "geom", {"friction": friction})
 
         self.actuator = ET.SubElement(self.root, "actuator")
         self.worldbody = ET.SubElement(self.root, "worldbody")
@@ -288,9 +291,13 @@ class MujocoWriter:
         # C.setJointState(np.zeros(len(q0)))
         # add all frames without parent, or with a free joint:
         for f in C.getFrames():
-            spec = f.asDict()
-            isFree = "joint" in spec and spec["joint"] == "free"
-            if f.getParent() == None or isFree:
+            # spec = f.asDict()
+            # isFree = "joint" in spec and spec["joint"] == "free"
+            isFree = (f.getJointType() == ry.JT.free)
+            parent = f.getParent()
+            if parent == None or isFree:
+                if parent is not None:
+                    assert np.linalg.norm(parent.getPose() - np.array([0,0,0,1,0,0,0])) < 1e-10, 'parent of free objects need to be an origin frame!'
                 self.addFrame(f, self.worldbody)
 
         f = C.getFrame('camera_init')
@@ -309,7 +316,8 @@ class MujocoWriter:
 
     def addFrame(self, f: ry.Frame, parent: ET.Element):
         spec = f.asDict()
-        print(f.name, spec)
+        if self.verbose>0:
+            print(f.name, spec)
 
         d = {"name": f.name}
         if "pose" in spec and "joint" not in spec:
@@ -342,14 +350,14 @@ class MujocoWriter:
                     mj_args["axis"] = type[1]
                 for k, v in spec.items():
                     if "mj_joint_" in k:
-                        mj_args[k.replace("mj_joint_", "")] = v
+                        mj_args[k.replace("mj_joint_", "")] = str(v)
                 j = ET.SubElement(a, "joint", mj_args)
 
                 # create a motor
                 mj_args = {"name": f.name, "joint": f.name, "class": "ryjoint"}
                 for k, v in spec.items():
                     if "mj_actuator_" in k:
-                        mj_args[k.replace("mj_actuator_", "")] = v
+                        mj_args[k.replace("mj_actuator_", "")] = str(v)
                 m = ET.SubElement(self.actuator, "position", mj_args)
 
         # has a geometry
@@ -420,4 +428,6 @@ class MujocoWriter:
         tree.write("z.xml")
 
     def str(self):
+        tree = ET.ElementTree(self.root)
+        ET.indent(tree, space="  ", level=0)
         return ET.tostring(self.root)
