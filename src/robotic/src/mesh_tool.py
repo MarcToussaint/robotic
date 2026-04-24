@@ -165,6 +165,12 @@ class MeshTool():
         print('  exporting', filename)
         self.tmesh.export(filename)
 
+    def export_stl(self, filename=None):
+        if filename is None:
+            filename = self.filebase+'.stl'
+        print('  exporting', filename)
+        self.tmesh.export(filename)
+
     def export_scene(self, convex=False):
         with open(self.filebase+'.g', 'w', encoding='utf-8') as fil:
             if self.inertiaIsDiagonal:

@@ -6,9 +6,10 @@ from lxml import etree
 
 class URDFLoader():
 
-    def __init__(self, file, visualsOnly=True, meshPathRemove='', meshExt=None):
+    def __init__(self, file, visualsOnly=True, meshPathRemove='', meshExt=None, reverseRPY=False):
         self.meshPathRemove = meshPathRemove
         self.meshExt = meshExt
+        self.reverseRPY = reverseRPY
 
         xmlData = etree.parse(file)
         self.path, _ = os.path.split(file)
@@ -139,29 +140,28 @@ class URDFLoader():
                 if elem is not None:
                     axis = elem.attrib['xyz']
                     if axis=='1 0 0':
-                        f_joint.setJoint(ry.JT.hingeX, limits, 1., f_mimic)
+                        f_joint.setJoint(ry.JT.hingeX, limits, mimic=f_mimic)
                     elif axis=='0 1 0':
-                        f_joint.setJoint(ry.JT.hingeY, limits, 1., f_mimic)
+                        f_joint.setJoint(ry.JT.hingeY, limits, mimic=f_mimic)
                     elif axis=='0 0 1':
-                        f_joint.setJoint(ry.JT.hingeZ, limits, 1., f_mimic)
-                    elif axis=='0 0 -1':
-                        f_joint.setJoint(ry.JT.hingeZ, limits, -1., f_mimic)
+                        f_joint.setJoint(ry.JT.hingeZ, limits, mimic=f_mimic)
                     else:
-                        f_axis = self.C.addFrame(f'{joint_name}_axis')
-                        f_axis.setParent(f_parent)
-                        f_joint.setParent(f_axis) #overwriting parent
+                        f_joint.setJoint(ry.JT.hinge, limits, axis = self.as_floats(axis), mimic=f_mimic)
+                        # f_axis = self.C.addFrame(f'{joint_name}_axis')
+                        # f_axis.setParent(f_parent)
+                        # f_joint.setParent(f_axis) #overwriting parent
 
-                        axis = self.as_floats(axis)
-                        quat = ry.Quaternion()
-                        quat.setDiff([1.,0.,0.], axis)
-                        quat = quat.asArr()
-                        f_axis.setRelativeQuaternion(quat)
-                        f_joint.setJoint(ry.JT.hingeX, limits, 1., f_mimic)
+                        # axis = self.as_floats(axis)
+                        # quat = ry.Quaternion()
+                        # quat.setDiff([1.,0.,0.], axis)
+                        # quat = quat.asArr()
+                        # f_axis.setRelativeQuaternion(quat)
+                        # f_joint.setJoint(ry.JT.hingeX, limits, 1., f_mimic)
 
-                        f_out = self.C.addFrame(f'{joint_name}_out')
-                        f_out.setParent(f_joint)
-                        f_out.setRelativeQuaternion([quat[0],-quat[1],-quat[2],-quat[3]])
-                        f_joint = f_out
+                        # f_out = self.C.addFrame(f'{joint_name}_out')
+                        # f_out.setParent(f_joint)
+                        # f_out.setRelativeQuaternion([quat[0],-quat[1],-quat[2],-quat[3]])
+                        # f_joint = f_out
                 else:
                     f_joint.setJoint(ry.JT.hingeX, limits, 1., f_mimic)
                     
@@ -170,15 +170,17 @@ class URDFLoader():
                 if elem is not None:
                     axis = elem.attrib['xyz']
                     if axis=='1 0 0':
-                        f_joint.setJoint(ry.JT.transX, limits, 1., f_mimic)
+                        f_joint.setJoint(ry.JT.transX, limits, scale=1., mimic=f_mimic)
+                    elif axis=='-1 0 0':
+                        f_joint.setJoint(ry.JT.transX, limits, scale=-1., mimic=f_mimic)
                     elif axis=='0 1 0':
-                        f_joint.setJoint(ry.JT.transY, limits, 1., f_mimic)
+                        f_joint.setJoint(ry.JT.transY, limits, scale=1., mimic=f_mimic)
                     elif axis=='0 -1 0':
-                        f_joint.setJoint(ry.JT.transY, limits, -1., f_mimic)
+                        f_joint.setJoint(ry.JT.transY, limits, scale=-1., mimic=f_mimic)
                     elif axis=='0 0 1':
-                        f_joint.setJoint(ry.JT.transZ, limits, 1., f_mimic)
+                        f_joint.setJoint(ry.JT.transZ, limits, scale=1., mimic=f_mimic)
                     elif axis=='0 0 -1':
-                        f_joint.setJoint(ry.JT.transZ, limits, -1., f_mimic)
+                        f_joint.setJoint(ry.JT.transZ, limits, scale=-1., mimic=f_mimic)
                     else:
                         raise Exception('CAN ONLY PROCESS X Y Z prismatic joints, not', axis)
                 else:
@@ -259,5 +261,5 @@ class URDFLoader():
             rpy=None
         if rpy is not None:
             q = ry.Quaternion()
-            q.setRollPitchYaw(self.as_floats(rpy))
+            q.setRollPitchYaw(self.as_floats(rpy), reverse=self.reverseRPY)
             f.setRelativeQuaternion(q.asArr())
