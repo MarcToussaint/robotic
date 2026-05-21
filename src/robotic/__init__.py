@@ -16,3 +16,5 @@ def version():
     import importlib.metadata
 
     return importlib.metadata.version('robotic')
+
+__version__ = version()
