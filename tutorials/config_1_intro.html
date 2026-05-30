@@ -64,7 +64,6 @@
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="botop_3_stepInterface.html">BotOp-3: Step Inferace (env-like) example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Config-3: Importing, editing &amp; manipulating them</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_2_reporting.html">KOMO-2: Reporting &amp; explaining convergence</a></li>
@@ -255,7 +254,7 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.clear()
-C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;))
 C.view()
 </pre></div>
 </div>
@@ -265,7 +264,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFile(ry.raiPath(&#39;panda/panda.g&#39;), &#39;r_&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;), &#39;r_&#39;)
 base_r = C.getFrame(&#39;r_panda_base&#39;)
 base_r.setPosition([.0, .5, .0])
 C.view()
@@ -306,7 +305,7 @@ for t in range(20):
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;))
 q0 = C.getJointState()
 C.view(False)
 
@@ -449,7 +448,7 @@ print(&#39;joint names: &#39;, C.getJointNames() )
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.clear()
-C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;))
 q = C.getJointState()
 print(&#39;joint state shape: &#39;, q.shape)
 

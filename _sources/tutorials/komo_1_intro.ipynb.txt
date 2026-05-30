@@ -36,7 +36,7 @@
     "import time\n",
     "\n",
     "C = ry.Config()\n",
-    "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
+    "C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))\n",
     "C.view()\n",
     "\n",
     "C.addFrame('box') \\\n",
@@ -371,7 +371,7 @@
     "import time\n",
     "\n",
     "C = ry.Config()\n",
-    "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
+    "C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))\n",
     "C.addFrame('way1'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])\n",
     "C.addFrame('way2'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])\n",
     "C.addFrame('way3'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])\n",
@@ -577,7 +577,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "%matplotlib widget\n",
+    "#%matplotlib widget\n",
     "from matplotlib.widgets import Slider\n",
     "\n",
     "T = komo.getT()\n",
@@ -644,7 +644,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "venv (3.12.3)",
    "language": "python",
    "name": "python3"
   },
@@ -742,8 +742,8 @@
        "_rubberband_x": 0,
        "_rubberband_y": 0,
        "_size": [
-        640.0,
-        480.0
+        640,
+        480
        ],
        "_view_count": null,
        "_view_module": "jupyter-matplotlib",
@@ -753,7 +753,7 @@
        "footer_visible": false,
        "header_visible": false,
        "layout": "IPY_MODEL_cf0954e7fabf4dbc84eba3d43f7089d9",
-       "pan_zoom_throttle": 33.0,
+       "pan_zoom_throttle": 33,
        "resizable": true,
        "tabbable": null,
        "toolbar": "IPY_MODEL_7ab3b94614dc410288f41c8ab4ea7f26",

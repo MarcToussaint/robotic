@@ -74,7 +74,7 @@
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
-    "C.addFile(ry.raiPath('../rai-robotModels/scenarios/pandaSingle.g'))\n",
+    "C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))\n",
     "pcl = C.addFrame('pcl', 'cameraWrist')\n",
     "C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')"
    ]
@@ -294,7 +294,7 @@
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
-    "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
+    "C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))\n",
     "C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')"
    ]
   },
@@ -450,7 +450,7 @@
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
-    "C.addFile(ry.raiPath('scenarios/pandaSingle.g'))\n",
+    "C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))\n",
     "C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')"
    ]
   },
@@ -532,7 +532,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.12.12"
+   "version": "3.12.3"
   }
  },
  "nbformat": 4,

@@ -54,7 +54,6 @@
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="botop_3_stepInterface.html">BotOp-3: Step Inferace (env-like) example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Config-3: Importing, editing &amp; manipulating them</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Importing-robot-models">Importing robot models</a></li>
@@ -139,12 +138,12 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile(ry.raiPath(&#39;panda/panda.g&#39;)) .setPosition([1.,.0,.0]) .setQuaternion([1,0,0,1])
-C.addFile(ry.raiPath(&#39;panda/panda.g&#39;), &#39;r_&#39;) .setPosition([1.5,.0,.0]) .setQuaternion([1,0,0,1])
-C.addFile(ry.raiPath(&#39;robotiq/robotiq.g&#39;)) .setParent(C.getFrame(&#39;panda_joint7&#39;)) .setRelativePosition([0., 0., .15])
-C.addFile(ry.raiPath(&#39;g1/g1.g&#39;)) .setPosition([.5, 0., .8]) .setQuaternion([1,0,0,1])
-C.addFile(ry.raiPath(&#39;pr2/pr2.g&#39;)) .setPosition([-.5,.0,.0])
-C.addFile(ry.raiPath(&#39;ur10/ur10.g&#39;)) .setPosition([-1.5,.0,.5])
+C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;)) .setPosition([1.,.0,.0]) .setQuaternion([1,0,0,1])
+C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;), &#39;r_&#39;) .setPosition([1.5,.0,.0]) .setQuaternion([1,0,0,1])
+C.addFile((&#39;$RAI_PATH/robotiq/robotiq.g&#39;)) .setParent(C.getFrame(&#39;panda_joint7&#39;)) .setRelativePosition([0., 0., .15])
+C.addFile((&#39;$RAI_PATH/g1/g1.g&#39;)) .setPosition([.5, 0., .8]) .setQuaternion([1,0,0,1])
+C.addFile((&#39;$RAI_PATH/pr2/pr2.g&#39;)) .setPosition([-.5,.0,.0])
+C.addFile((&#39;$RAI_PATH/ur10/ur10.g&#39;)) .setPosition([-1.5,.0,.5])
 C.view()
 </pre></div>
 </div>
@@ -188,7 +187,7 @@ C.animateSpline(5)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
 table = C.addFrame(&#39;table&#39;) .setShape(ry.ST.ssBox,[.5, .5, .1, .01]) .setPosition([0,0,1]) .setColor([.2])
-panda = C.addFile(ry.raiPath(&#39;panda/panda.g&#39;))
+panda = C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;))
 panda.setParent(table) .setRelativePosition([0,0,.05])
 C.view()
 </pre></div>
@@ -294,7 +293,7 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile(ry.raiPath(&#39;scenarios/pandasTable.g&#39;))
+C.addFile((&#39;$RAI_PATH/scenarios/pandasTable.g&#39;))
 C.view()
 </pre></div>
 </div>
@@ -342,7 +341,7 @@ for t in range(30):
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
 
-with open(ry.raiPath(&#39;panda/panda_arm_hand_conv.yml&#39;), &#39;r&#39;, encoding=&#39;utf-8&#39;) as fil:
+with open((&#39;$RAI_PATH/panda/panda_arm_hand_conv.yml&#39;), &#39;r&#39;, encoding=&#39;utf-8&#39;) as fil:
     model = yaml.safe_load(fil)
 
 print(model)

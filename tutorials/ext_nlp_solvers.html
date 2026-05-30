@@ -54,7 +54,6 @@
 <li class="toctree-l2"><a class="reference internal" href="komo_1_intro.html">Intro: KOMO - Motion Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_1_intro.html">Intro: BotOp (Robot Operation) interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="botop_2_real_robot.html">BotOp-2: Real robot operation checklist &amp; first steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="botop_3_stepInterface.html">BotOp-3: Step Inferace (env-like) example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_2_features.html">Config-2: Computing differentiable features &amp; collision evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config_3_import_edit.html">Config-3: Importing, editing &amp; manipulating them</a></li>
 <li class="toctree-l2"><a class="reference internal" href="komo_2_reporting.html">KOMO-2: Reporting &amp; explaining convergence</a></li>
@@ -131,7 +130,7 @@ def sqrPot(x):
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nlp = ry.NLP_Factory()
 nlp.setDimension(3)
 nlp.setBounds([-2,-2,-2],[2,2,2])
-nlp.setFeatureTypes([ry.OT.sos, ry.OT.sos, ry.OT.sos])
+nlp.setTypes([ry.OT.sos, ry.OT.sos, ry.OT.sos])
 nlp.setEvalCallback(sqrPot)
 </pre></div>
 </div>
@@ -159,7 +158,7 @@ solver.setSolver(ry.OptMethod.Newton)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.getTrace_costs()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver.getTrace_errs()
 </pre></div>
 </div>
 </div>
@@ -168,7 +167,6 @@ solver.setSolver(ry.OptMethod.Newton)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
-from robotic import nlp
 import numpy as np
 import matplotlib.pylab as plt
 </pre></div>
@@ -181,7 +179,7 @@ import matplotlib.pylab as plt
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class MyNLP:
     def __init__(self):
         self.dimension = 2
-        self.featureTypes = [ry.nlp.OT.sos] * 2
+        self.types = [ry.OT.sos] * 2
         self.bounds = np.array([[-2,-1], [2,3]])
 
         self.b = 3
@@ -213,6 +211,7 @@ import matplotlib.pylab as plt
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>solver = ry.NLP_Solver()
 solver.setPyProblem(p)
 solver.setOptions(stepMax=.5, damping=1e-4)
+solver.setTracing(trace_x=True, trace_errs=True)
 </pre></div>
 </div>
 </div>
@@ -224,7 +223,7 @@ solver.setOptions(stepMax=.5, damping=1e-4)
     ret = solver.solve(1)
     print(ret)
 x = solver.getTrace_x()
-z = solver.getTrace_costs()
+z = solver.getTrace_errs()
 plt.plot(x[:,0], x[:,1], &#39;o-&#39;)
 </pre></div>
 </div>

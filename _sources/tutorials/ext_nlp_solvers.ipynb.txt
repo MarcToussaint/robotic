@@ -57,7 +57,7 @@
     "nlp = ry.NLP_Factory()\n",
     "nlp.setDimension(3)\n",
     "nlp.setBounds([-2,-2,-2],[2,2,2])\n",
-    "nlp.setFeatureTypes([ry.OT.sos, ry.OT.sos, ry.OT.sos])\n",
+    "nlp.setTypes([ry.OT.sos, ry.OT.sos, ry.OT.sos])\n",
     "nlp.setEvalCallback(sqrPot)"
    ]
   },
@@ -94,7 +94,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "solver.getTrace_costs()"
+    "solver.getTrace_errs()"
    ]
   },
   {
@@ -104,7 +104,6 @@
    "outputs": [],
    "source": [
     "import robotic as ry\n",
-    "from robotic import nlp\n",
     "import numpy as np\n",
     "import matplotlib.pylab as plt"
    ]
@@ -118,7 +117,7 @@
     "class MyNLP:\n",
     "    def __init__(self):\n",
     "        self.dimension = 2\n",
-    "        self.featureTypes = [ry.nlp.OT.sos] * 2\n",
+    "        self.types = [ry.OT.sos] * 2\n",
     "        self.bounds = np.array([[-2,-1], [2,3]])\n",
     "        \n",
     "        self.b = 3\n",
@@ -152,7 +151,8 @@
    "source": [
     "solver = ry.NLP_Solver()\n",
     "solver.setPyProblem(p)\n",
-    "solver.setOptions(stepMax=.5, damping=1e-4)"
+    "solver.setOptions(stepMax=.5, damping=1e-4)\n",
+    "solver.setTracing(trace_x=True, trace_errs=True)"
    ]
   },
   {
@@ -165,7 +165,7 @@
     "    ret = solver.solve(1)\n",
     "    print(ret)\n",
     "x = solver.getTrace_x()\n",
-    "z = solver.getTrace_costs()\n",
+    "z = solver.getTrace_errs()\n",
     "plt.plot(x[:,0], x[:,1], 'o-')"
    ]
   },
@@ -215,7 +215,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "venv (3.12.3)",
    "language": "python",
    "name": "python3"
   },
