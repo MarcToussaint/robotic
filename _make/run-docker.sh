@@ -1,5 +1,6 @@
 #/bin/sh
 
+image=${1:-rai-manylinux}
 thispath="$(dirname "$(realpath "$0")")"
 
 # #see http://wiki.ros.org/docker/Tutorials/GUI
@@ -13,16 +14,17 @@ thispath="$(dirname "$(realpath "$0")")"
 
 xhost +local:root > /dev/null
 
-docker run -it $1 \
+docker run -it $2 \
        --volume="$thispath/..:/root/local" \
        --volume="$HOME:/root/home" \
        --volume="$thispath/docker.bashrc:/root/.bash_aliases" \
        --volume="$HOME/.gitconfig:/root/.gitconfig:ro" \
        --volume="$HOME/.ssh:/root/.ssh:ro" \
        --env="DISPLAY" \
+       --env DEBIAN_FRONTEND="noninteractive" \
        --network host \
        --device /dev/input \
-       rai-manylinux /bin/bash
+       $image /bin/bash
 
 #       --device /dev/dri \
 #       -v $XSOCK:$XSOCK \

@@ -19,7 +19,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
 
 * The pip package was compiled for python3.10 .. 3.14, and most of the dependencies statically linked. A few are still loaded dynamically, which requires installing on Ubuntu:
 
-      sudo apt install liblapack3 freeglut3-dev libglu1-mesa libxrandr2 libfreetype6 fonts-ubuntu python3 python3-pip
+      sudo apt install liblapack3 freeglut3 libglu1-mesa libxrandr2 libfreetype6 fonts-ubuntu python3 python3-pip
       #in latest Ubuntu also:
 	  cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libglut.so.3.12 libglut.so.3
 
