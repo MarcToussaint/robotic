@@ -20,7 +20,7 @@ jobs:
       run: |
         curl -O https://raw.githubusercontent.com/MarcToussaint/rai/refs/heads/master/_make/install.sh && chmod a+x install.sh
         source install.sh vars_only #defines the following dependency packages
-        apt install --yes ${ubuntu_rai} ${ubuntu_botop} ${ubuntu_python}
+        sudo apt install --yes ${ubuntu_rai} ${ubuntu_botop} ${ubuntu_python}
         ./install.sh libccd
         ./install.sh fcl
         ./install.sh libann

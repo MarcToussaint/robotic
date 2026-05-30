@@ -35,7 +35,7 @@ local-clean:
 	-rm -Rf robotic/__pycache__ build/bdist* build/lib robotic.egg-info
 
 wheels:
-	$(eval id = $(shell _make/run-docker.sh -d))
+	$(eval id = $(shell _make/run-docker.sh rai-manylinux -d))
 	@echo "started docker " ${id}
 	docker exec -it ${id} /bin/bash -C local/_make/build-wheels.sh
 	docker stop ${id}
@@ -48,7 +48,7 @@ wheels-install:
 	python$(PY_VER) -m pip install dist/robotic-*cp312*.whl --force-reinstall
 
 test-build:
-	$(eval id = $(shell _make/run-docker.sh -d ubuntu:24.04))
+	$(eval id = $(shell _make/run-docker.sh ubuntu:24.04 -d))
 	@echo "started docker " ${id}
 	docker exec -it ${id} /bin/bash -C /root/local/_make/test-build.sh
 	docker stop ${id}
