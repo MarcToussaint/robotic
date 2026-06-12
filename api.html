@@ -125,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Config.makeMeshesSSCvx"><code class="docutils literal notranslate"><span class="pre">Config.makeMeshesSSCvx()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Config.processInertias"><code class="docutils literal notranslate"><span class="pre">Config.processInertias()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Config.processStructure"><code class="docutils literal notranslate"><span class="pre">Config.processStructure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Config.recalibrateJointsToZero"><code class="docutils literal notranslate"><span class="pre">Config.recalibrateJointsToZero()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Config.report"><code class="docutils literal notranslate"><span class="pre">Config.report()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Config.selectJoints"><code class="docutils literal notranslate"><span class="pre">Config.selectJoints()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.Config.selectJointsBySubtree"><code class="docutils literal notranslate"><span class="pre">Config.selectJointsBySubtree()</span></code></a></li>
@@ -160,6 +161,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.savePng"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.savePng()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.setCamera"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.setCamera()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.setCameraPose"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.setCameraPose()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.setQuad"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.setQuad()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.setWindow"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.setWindow()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.setupEventHandler"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.setupEventHandler()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer.visualsOnly"><code class="docutils literal notranslate"><span class="pre">ConfigurationViewer.visualsOnly()</span></code></a></li>
@@ -304,6 +306,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.NLP.getTypes"><code class="docutils literal notranslate"><span class="pre">NLP.getTypes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.NLP.getUniformSample"><code class="docutils literal notranslate"><span class="pre">NLP.getUniformSample()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.NLP.report"><code class="docutils literal notranslate"><span class="pre">NLP.report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robotic._robotic.NLP.summarizeErrors"><code class="docutils literal notranslate"><span class="pre">NLP.summarizeErrors()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#robotic._robotic.NLP_Factory"><code class="docutils literal notranslate"><span class="pre">NLP_Factory</span></code></a><ul>
@@ -696,7 +699,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.CameraView.computeSegmentationID">
-<span class="sig-name descname"><span class="pre">computeSegmentationID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.CameraView" title="robotic._robotic.CameraView"><span class="pre">robotic._robotic.CameraView</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array&lt;T&gt;</span></span></span><a class="headerlink" href="#robotic._robotic.CameraView.computeSegmentationID" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">computeSegmentationID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.CameraView" title="robotic._robotic.CameraView"><span class="pre">robotic._robotic.CameraView</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">uintA</span></span></span><a class="headerlink" href="#robotic._robotic.CameraView.computeSegmentationID" title="Link to this definition"></a></dt>
 <dd><p>return a uint16 array with object ID segmentation</p>
 </dd></dl>
 
@@ -929,6 +932,12 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.Config.recalibrateJointsToZero">
+<span class="sig-name descname"><span class="pre">recalibrateJointsToZero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Config" title="robotic._robotic.Config"><span class="pre">robotic._robotic.Config</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.Config.recalibrateJointsToZero" title="Link to this definition"></a></dt>
+<dd><p>re-define all joint frames so that the current pose is joint angle zero (requires all parents of joints to be free of shapes)</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.Config.report">
 <span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.Config" title="robotic._robotic.Config"><span class="pre">robotic._robotic.Config</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#robotic._robotic.Config.report" title="Link to this definition"></a></dt>
 <dd><p>return a string with basic info (#frames, etc)</p>
@@ -1125,6 +1134,12 @@
 <dt class="sig sig-object py" id="robotic._robotic.ConfigurationViewer.setCameraPose">
 <span class="sig-name descname"><span class="pre">setCameraPose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer" title="robotic._robotic.ConfigurationViewer"><span class="pre">robotic._robotic.ConfigurationViewer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose_7d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#robotic._robotic.ConfigurationViewer.setCameraPose" title="Link to this definition"></a></dt>
 <dd><p>set the camera pose directly</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.ConfigurationViewer.setQuad">
+<span class="sig-name descname"><span class="pre">setQuad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.ConfigurationViewer" title="robotic._robotic.ConfigurationViewer"><span class="pre">robotic._robotic.ConfigurationViewer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsInt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array&lt;T&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsFloat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsFloat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsFloat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#robotic._robotic.ConfigurationViewer.setQuad" title="Link to this definition"></a></dt>
+<dd><p>set an image in a quad object onto the viewer</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1957,6 +1972,12 @@
 <dd><p>displays semantic information on the last query</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="robotic._robotic.NLP.summarizeErrors">
+<span class="sig-name descname"><span class="pre">summarizeErrors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.NLP" title="robotic._robotic.NLP"><span class="pre">robotic._robotic.NLP</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">arr</span></span></span><a class="headerlink" href="#robotic._robotic.NLP.summarizeErrors" title="Link to this definition"></a></dt>
+<dd><p>convert an evaluation phi to errors, i.e. (f,sos,ineq,eq) costs and constraint violations</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1996,7 +2017,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.NLP_Sampler.sample">
 <span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotic._robotic.NLP_Sampler" title="robotic._robotic.NLP_Sampler"><span class="pre">robotic._robotic.NLP_Sampler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#robotic._robotic.SolverReturn" title="robotic._robotic.SolverReturn"><span class="pre">SolverReturn</span></a></span></span><a class="headerlink" href="#robotic._robotic.NLP_Sampler.sample" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>a single sampling run, the returned sample may be infeasible – check the retmight return a feasible sample</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="robotic._robotic.NLP_Sampler.setOptions">
