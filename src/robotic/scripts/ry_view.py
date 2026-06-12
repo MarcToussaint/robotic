@@ -19,7 +19,7 @@ def main():
 
     print('=== viewing file:', args.FILE)
 
-    if ext in ['.g', '.yml']:
+    if ext in ['.g', '.yml', '.yaml']:
         print('    assuming this is a configuration')
         try:
             C = ry.Config()

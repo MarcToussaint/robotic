@@ -28,7 +28,7 @@ set(CMAKE_INSTALL_RPATH "\$ORIGIN;${CMAKE_INSTALL_PREFIX}/lib")
 option(USE_PYBIND "build python bindings" ON)
 option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
-option(USE_OPENCV "link to opencv" OFF)
+option(USE_OPENCV "link to opencv" ON)
 option(USE_REALSENSE "link to realsense2 driver library" ON)
 option(USE_LIBFRANKA "link to libfranka" ON)
 option(USE_PCL "link to pcl library" OFF)
@@ -66,6 +66,7 @@ include_directories(
 
 link_directories(
   $ENV{HOME}/.local/lib
+  $ENV{HOME}/.local/lib/opencv5/3rdparty
   )
 
 if(USE_H5)
@@ -87,6 +88,7 @@ file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
 file(GLOB SRC_Omnibase botop/src/Omnibase/*.cpp)
 file(GLOB SRC_OptiTrack botop/src/OptiTrack/*.cpp)
+file(GLOB SRC_MarkerVision botop/src/MarkerVision/*.cpp)
 file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
 file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
@@ -111,10 +113,12 @@ add_library(rai SHARED
   rai/src/Logic/unity.cxx
   rai/src/Control/unity.cxx
   rai/src/DataGen/unity.cxx
+  rai/src/Perception/unity.cxx
   ${SRC_BotOp}
   ${SRC_Franka}
   ${SRC_Omnibase}
   ${SRC_OptiTrack}
+  ${SRC_MarkerVision}
   ${SRC_RealSense}
   ${SRC_Robotiq}
   ${SRC_Audio}
@@ -156,23 +160,24 @@ if(USE_PHYSX)
   message(STATUS "[rai] using physx libs from ~/.local")
 endif()
 
-if(USE_OPENCV)
-  find_package(OpenCV REQUIRED)
+if(USE_OPENCV_sys)
+  find_package(OpenCV 5 REQUIRED)
   add_definitions(-DRAI_OPENCV)
   target_link_libraries(rai PRIVATE ${OpenCV_LIBS})
   message(STATUS "[rai] using OpenCV libs:" ${OpenCV_LIBS})
 endif()
 
-if(USE_OPENCV_LOCAL)
+if(USE_OPENCV)
   add_definitions(-DRAI_OPENCV)
-  include_directories($ENV{HOME}/.local/include/opencv4)
-  target_link_libraries(rai opencv_core opencv_highgui opencv_imgproc opencv_videoio)
+  include_directories($ENV{HOME}/.local/include/opencv5)
+  target_link_libraries(rai PRIVATE opencv_highgui opencv_imgproc opencv_videoio opencv_objdetect opencv_core ittnotify ippiw ipphal ippicv)
+  # target_link_libraries(rai PRIVATE libopencv_core.a libopencv_features.a libopencv_geometry.a libopencv_stereo.a libopencv_highgui.a libopencv_imgproc.a libopencv_video.a libopencv_videoio.a libopencv_objdetect.a libopencv_calib.a  libopencv_dnn.a       libopencv_flann.a     libopencv_highgui.a    libopencv_imgproc.a    libopencv_photo.a         libopencv_core.a   libopencv_imgcodecs.a  libopencv_objdetect.a  libopencv_ptcloud.a  libopencv_stitching.a  libopencv_videoio.a libittnotify.a  liblibclapack.a  liblibprotobuf.a libippiw.a  libipphal.a libippicv.a)
   message(STATUS "[rai] using OpenCV libs from ~/.local")
 endif()
 
 if(USE_REALSENSE)
   add_definitions(-DRAI_REALSENSE)
-  target_link_libraries(rai PRIVATE realsense2 realsense-file fw usb-1.0) #rsutils
+  target_link_libraries(rai PRIVATE realsense2 realsense-file usb-1.0) #rsutils
   message(STATUS "[rai] using realsense libs")
 endif()
 

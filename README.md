@@ -51,55 +51,52 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       ry-info
       ry-test
 
-## Installation from source with real Franka & realsense support
 
-This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
+## Installation from source (basic local build)
 
-* Install Ubuntu and python packages:
-
-      sudo apt install --yes \
-        g++ clang make gnupg cmake git wget libstdc++-14-dev \
-        liblapack-dev libf2c2-dev libqhull-dev libeigen3-dev \
-        libjsoncpp-dev libyaml-dev libhdf5-dev libpoco-dev libboost-system-dev portaudio19-dev libusb-1.0-0-dev \
-        libx11-dev libxi-dev libxxf86vm-dev libglu1-mesa-dev libglfw3-dev libglew-dev libglm-dev freeglut3-dev libpng-dev libassimp-dev libfreetype6-dev \
-        python3-dev python3 python3-pip
-      
-      python3 -m pip install numpy pybind11 pybind11-stubgen
-
-* Install some external libs by source. You can skip librealsense and
-  libfranka if you disable below. (To speed up compilation, e.g., set
-
-      export MAKEFLAGS="-j $(command nproc --ignore 2)"
-  
-  To standardize installations, I use a basic script:
-
-      wget https://github.com/MarcToussaint/rai/raw/refs/heads/marc/_make/install.sh; chmod a+x install.sh
-      ./install.sh libccd
-      ./install.sh fcl
-      ./install.sh libann
-      ./install.sh physx
-      ./install.sh librealsense
-      ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.8.0 libfranka (and you need to patch it...)
-
-* Clone, compile and install this repo (note the USE_REALSENSE and USE_LIBFRANKA options!):
+* Clone:
 
       cd $HOME/git
       git clone --recursive https://github.com/MarcToussaint/robotic.git
       cd robotic
+
+* Install dependencies:
+
+      cp rai/_make/install.sh .
+	  source ./install.sh vars_only #defines the following dependency packages
+      sudo apt install --yes ${ubuntu_rai} ${ubuntu_botop} ${ubuntu_python}
+      python3 -m pip install numpy pybind11 pybind11-stubgen
+      ./install.sh libccd
+      ./install.sh fcl
+      ./install.sh libann
+      ./install.sh opencv
+      ./install.sh physx
+
+* Compile robotic (also installs locally with `pip install -e .`):
+
+      make local-install
+
+* Test:
+
+      ry-info  #to test the installation
+
+
+## Installation from source (with real Franka & realsense support)
+
+Essentially the same as above, but 2 more dependencies and according flags in cmake:
+
+* Additional dependencies:
+
+      ./install.sh librealsense
+      ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.8.0 libfranka (and you need to patch it...)
+
+* Instead of `make local-install`, we do it explicitly, setting the USE_REALSENSE and USE_LIBRFRANKA flags:
+
       cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
       export PY_VERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-      cmake -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON . -B build
-      make -C build _robotic install
-
-* The following should also compile docstrings, but might fail as this
-  is not yet robust across Ubuntu distributions:
-
+      cmake . -B build -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON
       make -C build _robotic docstrings install
-
-* This should install the compiled libraries (which are the python module) in the local src/robotic folder, next to other parts of the python module. To install:
-
-      pip install -e .
-      ry-info  #to test the installation
+      python3 -m pip install -e .
 
 * For using Franka, recall that the user needs to be part of the `realtime` and `dialout` unix group:
 
@@ -115,6 +112,7 @@ This assumes a standard Ubuntu 24.04 (or 22.04, 20.04) machine.
   [tutorials page](https://marctoussaint.github.io/robotic/tutorials.html)
   to test and debug first steps with the real franka. In particular
   test `ry-bot -real -up -home` and debug as explained there.
+
 
 ## Building the wheels within a manylinux docker
 
