@@ -31,7 +31,7 @@ jobs:
       run: |
         cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
         export PY_VER=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-        cmake . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPY_VERSION=$PY_VER -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DUSE_OPENCV_LOCAL=OFF -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF
+        cmake . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPY_VERSION=$PY_VER -DUSE_PHYSX=OFF -DUSE_BULLET=OFF -DUSE_OPENCV=OFF -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF
     - name: build
       run: make -C build _robotic install
     - name: install
