@@ -67,11 +67,11 @@ test-demos:
 	$(MAKE) -j1 -C rai-tutorials run
 
 pull:
-	cd rai && git pull
-	cd rai-robotModels && git pull
-	cd rai-docs && git pull
-	cd rai-tutorials && git pull
-	cd botop && git pull
+	cd rai && git checkout master && git pull
+	cd rai-robotModels && git checkout master && git pull
+	cd rai-docs && git checkout main && git pull
+	cd rai-tutorials && git checkout main && git pull
+	cd botop && git checkout srcOnly && git pull
 
 docker-clean:
 	$(shell docker container kill "$(docker container ls -q)")

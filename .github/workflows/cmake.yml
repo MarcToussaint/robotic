@@ -20,6 +20,7 @@ jobs:
       run: |
         cp rai/_make/install.sh .
         source ./install.sh vars_only #defines the following dependency packages
+        sudo apt update
         sudo apt install --yes ${ubuntu_rai} ${ubuntu_botop} ${ubuntu_python}
         ./install.sh libccd
         ./install.sh fcl
