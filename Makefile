@@ -70,7 +70,7 @@ pull:
 	cd rai && git checkout master && git pull
 	cd rai-robotModels && git checkout master && git pull
 	cd rai-docs && git checkout main && git pull
-	cd rai-tutorials && git checkout main && git pull
+	cd rai-tutorials && git checkout master && git pull
 	cd botop && git checkout srcOnly && git pull
 
 docker-clean:
