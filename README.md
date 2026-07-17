@@ -89,12 +89,13 @@ Essentially the same as above, but 2 more dependencies and according flags in cm
 
       ./install.sh librealsense
       ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.8.0 libfranka (and you need to patch it...)
+      ./install.sh basler #when installing Basler camera drivers
 
 * Instead of `make local-install`, we do it explicitly, setting the USE_REALSENSE and USE_LIBRFRANKA flags:
 
       cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
       export PY_VERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-      cmake . -B build -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON
+      cmake . -B build -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON -DUSE_BASLER=ON
       make -C build _robotic docstrings install
       python3 -m pip install -e .
 

@@ -26,6 +26,7 @@ option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
 option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
+option(USE_BASLER "link to Basler's pylon library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
 option(USE_PCL "link to pcl library" OFF)
 option(USE_H5 "link to h5 library" ON)
@@ -80,7 +81,9 @@ file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
 file(GLOB SRC_Omnibase botop/src/Omnibase/*.cpp)
 file(GLOB SRC_OptiTrack botop/src/OptiTrack/*.cpp)
+file(GLOB SRC_MarkerVision botop/src/MarkerVision/*.cpp)
 file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
+file(GLOB SRC_Basler botop/src/Basler/*.cpp)
 file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
 
@@ -104,11 +107,14 @@ add_library(rai SHARED
   rai/src/Logic/unity.cxx
   rai/src/Control/unity.cxx
   rai/src/DataGen/unity.cxx
+  rai/src/Perception/unity.cxx
   ${SRC_BotOp}
   ${SRC_Franka}
   ${SRC_Omnibase}
   ${SRC_OptiTrack}
+  ${SRC_MarkerVision}
   ${SRC_RealSense}
+  ${SRC_Basler}
   ${SRC_Robotiq}
   ${SRC_Audio}
   )
