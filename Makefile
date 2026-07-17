@@ -24,7 +24,7 @@ local-install:
 	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build -DPY_VERSION=$(PY_VER)
 	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
-	python3 -m pip install -e .
+	uv pip install -e .
 
 local-clean:
 	-rm -Rf $(PY_SITE)/robotic
