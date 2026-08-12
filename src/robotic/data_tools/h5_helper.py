@@ -8,6 +8,12 @@ class H5Writer:
     def __init__(self, filename):
         self.fil = h5py.File(filename, 'w')
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.fil.close()
+
     def write(self, name, data, dtype = 'float64'):
         self.fil.create_dataset(name, data=data, dtype=dtype)
 

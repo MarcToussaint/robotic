@@ -124,18 +124,24 @@ class MeshTool():
         # if self.mesh.visual != None:
             # self.mesh.visual.uv = np.array([[0,0]])
 
-    def repair_meshlab(self, merge_threshold=1e-4):
+    def repair_meshlab(self, merge_threshold=1e-4, make_convex=False, decimate=False):
         print('   - meshlab repair')
         mlmesh = meshlab.Mesh(vertex_matrix=self.tmesh.vertices, face_matrix=self.tmesh.faces)
         ms = meshlab.MeshSet()
         ms.add_mesh(mlmesh)
-        ms.apply_filter('meshing_merge_close_vertices', threshold=meshlab.PureValue(merge_threshold))
+        if decimate:
+            ms.apply_filter('meshing_decimation_clustering', threshold=meshlab.PureValue(merge_threshold))
+        else:
+            ms.apply_filter('meshing_merge_close_vertices', threshold=meshlab.PureValue(merge_threshold))
+        if make_convex:
+            ms.apply_filter('generate_convex_hull')
+        else:
+            ms.apply_filter('meshing_repair_non_manifold_edges')
+            ms.apply_filter('meshing_close_holes', maxholesize=1000)
         # ms.apply_filter('meshing_remove_t_vertices')
         # ms.apply_filter('meshing_repair_non_manifold_edges')
         # ms.apply_filter('meshing_close_holes', maxholesize=1000)
         # ms.apply_filter('meshing_decimation_quadric_edge_collapse', targetfacenum=0, targetperc=0.5)
-        ms.apply_filter('meshing_repair_non_manifold_edges')
-        ms.apply_filter('meshing_close_holes', maxholesize=1000)
         # ms.print_filter_list()
         # print(ms.filter_parameter_values('meshing_merge_close_vertices'))
         # print(ms.filter_parameter_values('meshing_remove_t_vertices'))
@@ -159,15 +165,9 @@ class MeshTool():
         # else:
             # raise ValueError("Mesh does not have UV coordinates!")
 
-    def export_ply(self, filename=None):
+    def export_trimesh(self, ext='.ply', filename=None):
         if filename is None:
-            filename = self.filebase+'-.ply'
-        print('  exporting', filename)
-        self.tmesh.export(filename)
-
-    def export_stl(self, filename=None):
-        if filename is None:
-            filename = self.filebase+'.stl'
+            filename = self.filebase+ext
         print('  exporting', filename)
         self.tmesh.export(filename)
 
