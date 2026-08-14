@@ -24,7 +24,7 @@ local-install:
 	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build -DPY_VERSION=$(PY_VER)
 	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
-	python3 -m pip install -e .
+	uv pip install -e .
 
 local-clean:
 	-rm -Rf $(PY_SITE)/robotic
@@ -70,7 +70,7 @@ pull:
 	cd rai && git checkout master && git pull
 	cd rai-robotModels && git checkout master && git pull
 	cd rai-docs && git checkout main && git pull
-	cd rai-tutorials && git checkout master && git pull
+	cd rai-tutorials && git checkout main && git pull
 	cd botop && git checkout srcOnly && git pull
 
 docker-clean:

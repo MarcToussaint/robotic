@@ -1,4 +1,4 @@
-name: CMake
+name: build
 
 on: [push, pull_request]
 
@@ -27,7 +27,7 @@ jobs:
         ./install.sh libann
     - name: python dependencies
       run: |
-        python3 -m pip install  numpy pybind11 pybind11-stubgen
+        python3 -m pip install numpy pybind11 pybind11-stubgen
     - name: configure
       run: |
         cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
