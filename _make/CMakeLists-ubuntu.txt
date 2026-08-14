@@ -52,6 +52,7 @@ add_definitions(
   -DRAI_GL
   -DRAI_GLFW -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY -DRAI_YAML
   -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DRAI_VHACD
+  -DRAI_PORTAUDIO
   -BOOST_ERROR_CODE_HEADER_ONLY
   -DRAI_BotOp
   )
@@ -204,6 +205,7 @@ target_link_libraries(rai PRIVATE
   glfw GLEW glut Xrandr Xxf86vm Xi GLU GL
   jsoncpp yaml png assimp z
   fcl ccd ANN qhull
+  portaudio
   boost_system pthread rt X11 dl
   )
 

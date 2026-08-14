@@ -34,6 +34,7 @@ def main():
         C.addFile(ry.raiPath("../rai-robotModels/scenarios/pandaSingle.g"))
 
     bot = ry.BotOp(C, args.real)
+    bot.launch_robots(C, args.real)
 
     print('== status:')
     q = bot.get_q()
