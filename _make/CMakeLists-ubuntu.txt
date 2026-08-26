@@ -32,6 +32,7 @@ option(USE_OPENCV "link to opencv" ON)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_BASLER "link to Basler's pylon library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
+option(USE_ALLEGRO "link to BHand lib for Allegro hand" OFF)
 option(USE_PCL "link to pcl library" OFF)
 option(USE_H5 "link to h5 library" ON)
 option(USE_FREETYPE "link to freetype2 library" ON)
@@ -94,6 +95,7 @@ file(GLOB SRC_MarkerVision botop/src/MarkerVision/*.cpp)
 file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
 file(GLOB SRC_Basler botop/src/Basler/*.cpp)
 file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
+file(GLOB SRC_Allegro botop/src/Allegro/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
 
 add_library(rai SHARED
@@ -125,6 +127,7 @@ add_library(rai SHARED
   ${SRC_RealSense}
   ${SRC_Basler}
   ${SRC_Robotiq}
+  ${SRC_Allegro}
   ${SRC_Audio}
   )
 
@@ -174,7 +177,7 @@ endif()
 if(USE_OPENCV)
   add_definitions(-DRAI_OPENCV)
   include_directories($ENV{HOME}/.local/include/opencv5)
-  target_link_libraries(rai PRIVATE opencv_highgui opencv_imgproc opencv_videoio opencv_objdetect opencv_core) # ittnotify ippiw ipphal ippicv)
+  target_link_libraries(rai PRIVATE opencv_highgui opencv_imgproc opencv_videoio opencv_objdetect opencv_calib opencv_geometry opencv_core) # ittnotify ippiw ipphal ippicv)
   # target_link_libraries(rai PRIVATE libopencv_core.a libopencv_features.a libopencv_geometry.a libopencv_stereo.a libopencv_highgui.a libopencv_imgproc.a libopencv_video.a libopencv_videoio.a libopencv_objdetect.a libopencv_calib.a  libopencv_dnn.a       libopencv_flann.a     libopencv_highgui.a    libopencv_imgproc.a    libopencv_photo.a         libopencv_core.a   libopencv_imgcodecs.a  libopencv_objdetect.a  libopencv_ptcloud.a  libopencv_stitching.a  libopencv_videoio.a libittnotify.a  liblibclapack.a  liblibprotobuf.a libippiw.a  libipphal.a libippicv.a)
   message(STATUS "[rai] using OpenCV libs from ~/.local")
 endif()
@@ -196,6 +199,10 @@ if(USE_LIBFRANKA)
   add_definitions(-DRAI_FRANKA)
   target_link_libraries(rai PRIVATE franka PocoNet PocoFoundation)
   message(STATUS "[rai] using libfranka")
+endif()
+
+if(USE_ALLEGRO)
+  target_link_libraries(rai PRIVATE BHand)
 endif()
 
 # default/required dependencies
