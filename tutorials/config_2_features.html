@@ -124,7 +124,7 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;))
+C.addFile(('$RAI_PATH/panda/panda.g'))
 q = C.getJointState()
 </pre></div>
 </div>
@@ -133,8 +133,8 @@ q = C.getJointState()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>[y,J] = C.eval(ry.FS.position, [&#39;gripper&#39;])
-print(&#39;feature value:&#39;, y, &#39;\nJacobian:&#39;, J)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>[y,J] = C.eval(ry.FS.position, ['gripper'])
+print('feature value:', y, '\nJacobian:', J)
 </pre></div>
 </div>
 </div>
@@ -143,7 +143,7 @@ print(&#39;feature value:&#39;, y, &#39;\nJacobian:&#39;, J)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># the x-axis of the given frame in world coordinates
-C.eval(ry.FS.vectorX, [&#39;gripper&#39;])
+C.eval(ry.FS.vectorX, ['gripper'])
 </pre></div>
 </div>
 </div>
@@ -303,7 +303,7 @@ sign properly.]</p></td>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, [&#39;gripper&#39;, &#39;panda_joint1&#39;], scale=[1], target=[0, 0, .3])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, ['gripper', 'panda_joint1'], scale=[1], target=[0, 0, .3])
 </pre></div>
 </div>
 </div>
@@ -312,8 +312,8 @@ sign properly.]</p></td>
 <section id="Scalar-product-features">
 <h2>Scalar product features<a class="headerlink" href="#Scalar-product-features" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">scalarProduct</span></code> features are also very useful to define relative between frames (e.g. for grasping). For instance, <code class="docutils literal notranslate"><span class="pre">(FS.scalarProductXX,</span> <span class="pre">['handL',</span> <span class="pre">'handR'],</span> <span class="pre">target=[1])</span></code> says that the scalar product of the x-axes (e.g. directions of the index finger) of both hands should equal 1, which means they are aligned. And</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(FS.scalarProductXY, [&#39;handL&#39;, &#39;handR&#39;])
-(FS.scalarProductXZ, [&#39;handL&#39;, &#39;handR&#39;])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(FS.scalarProductXY, ['handL', 'handR'])
+(FS.scalarProductXZ, ['handL', 'handR'])
 </pre></div>
 </div>
 <p>says that the the x-axis of handL should be orthogonal (zero scalar product) to the y- and z-axis of handR. So this also describes aligning both x-axes. However, this formulation is much more robust, as it has good error gradients around the optimum.</p>
@@ -335,7 +335,7 @@ sign properly.]</p></td>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.position, [&#39;gripper&#39;], [[1,0,0],[0,1,0]])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.position, ['gripper'], [[1,0,0],[0,1,0]])
 </pre></div>
 </div>
 </div>
@@ -344,7 +344,7 @@ sign properly.]</p></td>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, [&#39;gripper&#39;, &#39;panda_joint1&#39;], [[1,0,0],[0,1,0]])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.positionRel, ['gripper', 'panda_joint1'], [[1,0,0],[0,1,0]])
 </pre></div>
 </div>
 </div>
@@ -369,9 +369,9 @@ C.eval(ry.FS.accumulatedCollisions, [])
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 C = ry.Config()
 C.clear()
-C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;))
-C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;), &#39;r_&#39;)
-base_r = C.getFrame(&#39;r_panda_base&#39;)
+C.addFile(('$RAI_PATH/panda/panda.g'))
+C.addFile(('$RAI_PATH/panda/panda.g'), 'r_')
+base_r = C.getFrame('r_panda_base')
 base_r.setPosition([.0, .5, .0])
 </pre></div>
 </div>
@@ -380,7 +380,7 @@ base_r.setPosition([.0, .5, .0])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints([&#39;panda_joint1&#39;, &#39;panda_joint2&#39;, &#39;r_panda_joint1&#39;, &#39;r_panda_joint2&#39;])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.selectJoints(['panda_joint1', 'panda_joint2', 'r_panda_joint1', 'r_panda_joint2'])
 C.setJointState([1.,-.8,-1.,-.8])
 C.view()
 </pre></div>
@@ -391,7 +391,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;palm&#39;, &#39;r_palm&#39;])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, ['palm', 'r_palm'])
 </pre></div>
 </div>
 </div>
@@ -399,7 +399,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;panda_coll7&#39;, &#39;r_panda_coll7&#39;])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, ['panda_coll7', 'r_panda_coll7'])
 </pre></div>
 </div>
 </div>
@@ -407,7 +407,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, [&#39;panda_coll6&#39;, &#39;r_panda_coll6&#39;])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.eval(ry.FS.negDistance, ['panda_coll6', 'r_panda_coll6'])
 </pre></div>
 </div>
 </div>

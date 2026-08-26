@@ -124,8 +124,8 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-C.addFrame(&#39;box&#39;) \
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+C.addFrame('box') \
     .setPosition([-.25,.1,1.]) \
     .setShape(ry.ST.ssBox, size=[.06,.06,.06,.005]) \
     .setColor([1,.5,0]) \
@@ -140,7 +140,7 @@ C.view()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo = ry.KOMO(C, 1, 1, 0, False) # minimalisitc IK problem: just 1 slice
 komo.addControlObjective([], 0, 1e-1) # basic homing (0th order) objective on joint angles q
-komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1]);
+komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1]);
 </pre></div>
 </div>
 </div>
@@ -182,7 +182,7 @@ print(ret)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getFrame(&#39;box&#39;) .setPosition([.8, .8, 1.])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.getFrame('box') .setPosition([.8, .8, 1.])
 C.view()
 </pre></div>
 </div>
@@ -232,11 +232,11 @@ print(ret)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-C.addFrame(&#39;way1&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
-C.addFrame(&#39;way2&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
-C.addFrame(&#39;way3&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
-C.addFrame(&#39;way4&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+C.addFrame('way1'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
+C.addFrame('way2'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
+C.addFrame('way3'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
+C.addFrame('way4'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
 q0 = C.getJointState()
 C.view()
 </pre></div>
@@ -250,10 +250,10 @@ C.view()
 komo = ry.KOMO(C, 4, 10, 2, False)
 komo.addControlObjective([], 0, 1e-1)
 komo.addControlObjective([], 2, 1e0)
-komo.addObjective([1], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way1&#39;], ry.OT.eq, [1e1])
-komo.addObjective([2], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way2&#39;], ry.OT.eq, [1e1])
-komo.addObjective([3], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way3&#39;], ry.OT.eq, [1e1])
-komo.addObjective([4], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way4&#39;], ry.OT.eq, [1e1])
+komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])
+komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])
+komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])
 komo.addObjective([4], ry.FS.jointState, [], ry.OT.eq, [1e1], [], order=1)
 
 solver = ry.NLP_Solver(komo.nlp(), verbose=0 )
@@ -263,7 +263,7 @@ q = komo.getPath()
 
 for t in range(q.shape[0]):
     C.setJointState(q[t])
-    C.view(False, f&#39;waypoint {t}&#39;)
+    C.view(False, f'waypoint {t}')
     time.sleep(.1)
 </pre></div>
 </div>

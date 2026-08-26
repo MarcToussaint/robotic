@@ -105,7 +105,7 @@
 import gymnasium as gym
 import numpy as np
 import time
-print(&#39;ry version:&#39;, ry.compiled())
+print('ry version:', ry.compiled())
 </pre></div>
 </div>
 </div>
@@ -115,26 +115,26 @@ print(&#39;ry version:&#39;, ry.compiled())
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-C.setJointState([.007], [&#39;l_panda_finger_joint1&#39;]) #only cosmetics
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+C.setJointState([.007], ['l_panda_finger_joint1']) #only cosmetics
 #the following makes it a LOT simpler
-C.setJointState([.0], [&#39;l_panda_joint2&#39;])
-C.setJointState([.7], [&#39;l_panda_joint7&#39;])
-gripper = &#39;l_gripper&#39;
+C.setJointState([.0], ['l_panda_joint2'])
+C.setJointState([.7], ['l_panda_joint7'])
+gripper = 'l_gripper'
 
-box = C.addFrame(&#39;box&#39;) \
+box = C.addFrame('box') \
     .setShape(ry.ST.ssBox, size=[.1,.1,.1,.005]) .setColor([1,.5,0]) \
     .setPosition([.06,.35,.7]) \
     .setMass(.1) \
-    .setAttributes({&#39;friction&#39;: .5})
+    .setAttributes({'friction': .5})
 box.setPosition([.1,.35,.7]) # this is the initial position of the box - change manually to make harder
 
-C.addFrame(&#39;plate&#39;, gripper) \
+C.addFrame('plate', gripper) \
     .setShape(ry.ST.ssBox, size=[.02,.2,.36,.005]) .setColor([.5,1,0]) \
     .setRelativePosition([0,0,-.16]) \
-    .setAttributes({&#39;friction&#39;: .1})
+    .setAttributes({'friction': .1})
 
-C.addFrame(&#39;target&#39;) \
+C.addFrame('target') \
     .setShape(ry.ST.marker, size=[.1]) .setColor([0,1,0]) \
     .setPosition([.3,.3,.7])
 
@@ -148,11 +148,11 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class RoboticGym(gym.Env):
-    metadata = {&quot;render_modes&quot;: [&quot;human&quot;, &quot;rgb_array&quot;], &quot;render_fps&quot;: 4}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
     tau_env = .05 #a gym environment step corresponds to 0.05 sec
     tau_sim = .01 #the underlying physics simulation is stepped with 0.01 sec (5 sim steps in each env step)
     time = 0.
-    render_mode = &#39;human&#39;
+    render_mode = 'human'
 
     viewSteps = False
     random_reset = False
@@ -164,7 +164,7 @@ C.view()
         self.C = C
         self.q0 = self.C.getJointState()
         self.X0 = self.C.getFrameState()
-        self.box = self.C.getFrame(&#39;box&#39;)
+        self.box = self.C.getFrame('box')
         n = self.q0.size
 
         # define the observation space (see also observation_fct())
@@ -184,7 +184,7 @@ C.view()
         del self.C
 
     def step(self, action):
-        &#39;&#39;&#39;essential to implement gym.Env&#39;&#39;&#39;
+        '''essential to implement gym.Env'''
         self.step_qDelta(action)
 
         self.time += self.tau_env
@@ -193,11 +193,11 @@ C.view()
         reward = self.reward_fct()
         terminated = False
         truncated = (self.time &gt;= self.time_limit) # terminated and truncated difference is super important
-        info = {&quot;no&quot;: &quot;additional info&quot;}
+        info = {"no": "additional info"}
         return observation, reward, terminated, truncated, info
 
     def observation_fct(self):
-        &#39;&#39;&#39;observations are joint pos/vel, and box pos/vel&#39;&#39;&#39;
+        '''observations are joint pos/vel, and box pos/vel'''
         state = self.sim.getState()
         q = state.q
         qDot = state.qDot
@@ -207,19 +207,19 @@ C.view()
         return observation
 
     def reward_fct(self):
-        &#39;&#39;&#39;two reward terms: box-at-goal reward (peaked) and touch object reward (negDistance)&#39;&#39;&#39;
-        goalDist, _ = self.C.eval(ry.FS.positionDiff, [&quot;box&quot;, &quot;target&quot;])
+        '''two reward terms: box-at-goal reward (peaked) and touch object reward (negDistance)'''
+        goalDist, _ = self.C.eval(ry.FS.positionDiff, ["box", "target"])
         sigma = .2
         r = 1. - np.tanh(np.linalg.norm(goalDist)/sigma)
 
-        negObjDistance, _ = self.C.eval(ry.FS.negDistance, [&quot;plate&quot;, &quot;box&quot;])
+        negObjDistance, _ = self.C.eval(ry.FS.negDistance, ["plate", "box"])
         r += negObjDistance[0]
         return r
 
     def step_qDelta(self, delta):
-        &#39;&#39;&#39;sending deltas in joint space; where deltas have semantic of velocity&#39;&#39;&#39;
+        '''sending deltas in joint space; where deltas have semantic of velocity'''
         # the sim needs to run at least with 100Hz (to properly simulate collisions)
-        # that&#39;s why we have multiple sim steps for each env step
+        # that's why we have multiple sim steps for each env step
         sim_steps = int(self.tau_env/self.tau_sim)
         delta[-1] *= 5.
         for s in range(sim_steps):
@@ -231,7 +231,7 @@ C.view()
                 time.sleep(self.tau_sim)
 
     def reset(self, seed=None):
-        &#39;&#39;&#39;essential to implement gym.Env&#39;&#39;&#39;
+        '''essential to implement gym.Env'''
         super().reset(seed=seed)
 
         # X = self.state0.copy()
@@ -246,11 +246,11 @@ C.view()
         self.sim.resetSplineRef()
 
         observation = self.observation_fct()
-        info = {&quot;no&quot;: &quot;additional info&quot;}
+        info = {"no": "additional info"}
         return observation, info
 
     def rollout(self, pi):
-        &#39;&#39;&#39;helper to play and view a policy&#39;&#39;&#39;
+        '''helper to play and view a policy'''
         self.viewSteps=True #triggers display within the low level step functions
         obs, info = self.reset()
         t = 0
@@ -260,16 +260,16 @@ C.view()
             obs, reward, terminated, truncated, info = self.step(action)
             R += reward
             t += 1
-            print(&quot;reward: &quot;, reward)
+            print("reward: ", reward)
             if terminated or truncated:
                 break
-        print(&#39;total return:&#39;, R)
+        print('total return:', R)
         self.viewSteps=False #disables display within the low level step functions
 
     def render(self):
-        &#39;&#39;&#39;also part of the env.Gym&#39;&#39;&#39;
-        self.C.view(False, f&#39;RoboticGym time {self.time} / {self.time_limit}&#39;)
-        if self.render_mode == &quot;rgb_array&quot;:
+        '''also part of the env.Gym'''
+        self.C.view(False, f'RoboticGym time {self.time} / {self.time_limit}')
+        if self.render_mode == "rgb_array":
             return self.C.view_getRgb()
 </pre></div>
 </div>
@@ -304,10 +304,10 @@ print(torch.__version__)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>checkpoint_callback = CheckpointCallback(save_freq=10000, save_path=&#39;./checkpoints_endeffectorActions/&#39;, name_prefix=&#39;rl_model&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>checkpoint_callback = CheckpointCallback(save_freq=10000, save_path='./checkpoints_endeffectorActions/', name_prefix='rl_model')
 
-model = SAC(&quot;MlpPolicy&quot;, env, gamma=0.99, learning_rate=3e-3, verbose=1, tensorboard_log=&quot;./tensorboard/&quot;)
-# model = PPO(&quot;MlpPolicy&quot;, env, gamma=0.99, learning_rate=3e-3, n_steps=1024, verbose=1, tensorboard_log=&quot;./tensorboard/&quot;)
+model = SAC("MlpPolicy", env, gamma=0.99, learning_rate=3e-3, verbose=1, tensorboard_log="./tensorboard/")
+# model = PPO("MlpPolicy", env, gamma=0.99, learning_rate=3e-3, n_steps=1024, verbose=1, tensorboard_log="./tensorboard/")
 
 model.learn(total_timesteps=1_000, callback=checkpoint_callback)
 </pre></div>
@@ -318,12 +318,12 @@ model.learn(total_timesteps=1_000, callback=checkpoint_callback)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># model = SAC.load(&#39;./checkpoints_endeffectorActions/rl_model_199498_steps.zip&#39;, env=env)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># model = SAC.load('./checkpoints_endeffectorActions/rl_model_199498_steps.zip', env=env)
 
 while True:
     pi = lambda obs, t : model.predict(obs, deterministic=True)[0] #change deterministic to False to see with noise
     env.rollout(pi)
-    if env.C.view(True, &#39;press q to stop looping&#39;) == ord(&#39;q&#39;):
+    if env.C.view(True, 'press q to stop looping') == ord('q'):
         break
 </pre></div>
 </div>

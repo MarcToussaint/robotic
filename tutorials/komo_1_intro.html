@@ -118,10 +118,10 @@ import numpy as np
 import time
 
 C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
 C.view()
 
-C.addFrame(&#39;box&#39;) \
+C.addFrame('box') \
     .setPosition([-.25,.1,1.]) \
     .setShape(ry.ST.ssBox, size=[.06,.06,.06,.005]) \
     .setColor([1,.5,0]) \
@@ -146,7 +146,7 @@ komo.addObjective( # a sum-of-squares cost for staying close (in joint space) to
     scale=[1e-1],
     target=qHome
 )
-komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1]) # an equality constraint on the 3D position difference between gripper and box
+komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1]) # an equality constraint on the 3D position difference between gripper and box
 </pre></div>
 </div>
 </div>
@@ -177,7 +177,7 @@ print(ret)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.view(False, &quot;IK solution&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo.view(False, "IK solution")
 </pre></div>
 </div>
 </div>
@@ -214,10 +214,10 @@ C.view()
 komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], qHome)
 komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)
 komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq)
-komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1])
-komo.addObjective([], ry.FS.scalarProductXX, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
-komo.addObjective([], ry.FS.scalarProductXZ, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
-komo.addObjective([], ry.FS.distance, [&#39;l_palm&#39;, &#39;box&#39;], ry.OT.ineq, [1e1])
+komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1])
+komo.addObjective([], ry.FS.scalarProductXX, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
+komo.addObjective([], ry.FS.scalarProductXZ, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
+komo.addObjective([], ry.FS.distance, ['l_palm', 'box'], ry.OT.ineq, [1e1])
 </pre></div>
 </div>
 </div>
@@ -230,9 +230,9 @@ komo.addObjective([], ry.FS.distance, [&#39;l_palm&#39;, &#39;box&#39;], ry.OT.i
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
 print(ret)
 if ret.feasible:
-    print(&#39;-- Always check feasibility flag of NLP solver return&#39;)
+    print('-- Always check feasibility flag of NLP solver return')
 else:
-    print(&#39;-- THIS IS INFEASIBLE!&#39;)
+    print('-- THIS IS INFEASIBLE!')
 </pre></div>
 </div>
 </div>
@@ -242,7 +242,7 @@ else:
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>q = komo.getPath()
 C.setJointState(q[0])
-C.view(False, &quot;IK solution&quot;)
+C.view(False, "IK solution")
 </pre></div>
 </div>
 </div>
@@ -251,18 +251,18 @@ C.view(False, &quot;IK solution&quot;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>box = C.getFrame(&#39;box&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>box = C.getFrame('box')
 box.setPosition([-.25,.1,1.])
 p0 = box.getPosition() # memory the start box position
 
 for t in range(10):
     box.setPosition(p0 + .2 * np.random.randn(3)) # randomize box position
-    komo.updateRootObjects(C) # only works for root objects (the &#39;box&#39; is one)
+    komo.updateRootObjects(C) # only works for root objects (the 'box' is one)
     ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
     print(ret)
     q = komo.getPath()
     C.setJointState(q[0])
-    C.view(False, &#39;IK solution - &#39; + (&#39;*** INFEASIBLE ***&#39; if not ret.feasible else &#39;feasible&#39;))
+    C.view(False, 'IK solution - ' + ('*** INFEASIBLE ***' if not ret.feasible else 'feasible'))
     time.sleep(1.)
 </pre></div>
 </div>
@@ -280,17 +280,17 @@ for k in range(3):
     komo[k].addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], qHome)
     komo[k].addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)
     komo[k].addObjective([], ry.FS.jointLimits, [], ry.OT.ineq)
-    komo[k].addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1])
-    komo[k].addObjective([], ry.FS.distance, [&#39;l_palm&#39;, &#39;box&#39;], ry.OT.ineq, [1e1])
+    komo[k].addObjective([], ry.FS.positionDiff, ['l_gripper', 'box'], ry.OT.eq, [1e1])
+    komo[k].addObjective([], ry.FS.distance, ['l_palm', 'box'], ry.OT.ineq, [1e1])
 
-komo[0].addObjective([], ry.FS.scalarProductXY, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
-komo[0].addObjective([], ry.FS.scalarProductXZ, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
+komo[0].addObjective([], ry.FS.scalarProductXY, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
+komo[0].addObjective([], ry.FS.scalarProductXZ, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
 
-komo[1].addObjective([], ry.FS.scalarProductXX, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
-komo[1].addObjective([], ry.FS.scalarProductXZ, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
+komo[1].addObjective([], ry.FS.scalarProductXX, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
+komo[1].addObjective([], ry.FS.scalarProductXZ, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
 
-komo[2].addObjective([], ry.FS.scalarProductXX, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
-komo[2].addObjective([], ry.FS.scalarProductXY, [&#39;l_gripper&#39;, &#39;box&#39;], ry.OT.eq, [1e1], [0])
+komo[2].addObjective([], ry.FS.scalarProductXX, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
+komo[2].addObjective([], ry.FS.scalarProductXY, ['l_gripper', 'box'], ry.OT.eq, [1e1], [0])
 </pre></div>
 </div>
 </div>
@@ -310,7 +310,7 @@ komo[2].addObjective([], ry.FS.scalarProductXY, [&#39;l_gripper&#39;, &#39;box&#
 
     k = np.argmin(score)
     C.setJointState(komo[k].getPath()[0])
-    C.view(False, f&#39;IK solution {k} - &#39; + (&#39;*** INFEASIBLE ***&#39; if not ret.feasible else &#39;feasible&#39;))
+    C.view(False, f'IK solution {k} - ' + ('*** INFEASIBLE ***' if not ret.feasible else 'feasible'))
     time.sleep(1.)
 </pre></div>
 </div>
@@ -339,11 +339,11 @@ import numpy as np
 import time
 
 C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-C.addFrame(&#39;way1&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
-C.addFrame(&#39;way2&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
-C.addFrame(&#39;way3&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
-C.addFrame(&#39;way4&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+C.addFrame('way1'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
+C.addFrame('way2'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
+C.addFrame('way3'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
+C.addFrame('way4'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
 qHome = C.getJointState()
 C.view()
 </pre></div>
@@ -357,10 +357,10 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo = ry.KOMO(C, phases=4, slicesPerPhase=1, kOrder=1, enableCollisions=False)
 komo.addControlObjective([], 0, 1e-1)
 komo.addControlObjective([], 1, 1e0)
-komo.addObjective([1], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way1&#39;], ry.OT.eq, [1e1])
-komo.addObjective([2], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way2&#39;], ry.OT.eq, [1e1])
-komo.addObjective([3], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way3&#39;], ry.OT.eq, [1e1])
-komo.addObjective([4], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way4&#39;], ry.OT.eq, [1e1])
+komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])
+komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])
+komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])
 
 ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
 print(ret)
@@ -369,7 +369,7 @@ print(q)
 
 for t in range(len(q)):
     C.setJointState(q[t])
-    C.view(False, f&#39;waypoint {t}&#39;)
+    C.view(False, f'waypoint {t}')
     time.sleep(1)
 </pre></div>
 </div>
@@ -404,19 +404,19 @@ C.setJointState(qHome)
 komo = ry.KOMO(C, 4, 10, 1, False)
 komo.addControlObjective([], 0, 1e-1) # what happens if you change weighting to 1e0? why?
 komo.addControlObjective([], 1, 1e0)
-komo.addObjective([1], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way1&#39;], ry.OT.eq, [1e1])
-komo.addObjective([2], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way2&#39;], ry.OT.eq, [1e1])
-komo.addObjective([3], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way3&#39;], ry.OT.eq, [1e1])
-komo.addObjective([4], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way4&#39;], ry.OT.eq, [1e1])
+komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])
+komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])
+komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])
 
 ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
 print(ret)
 q = komo.getPath()
-print(&#39;size of path:&#39;, q.shape)
+print('size of path:', q.shape)
 
 for t in range(q.shape[0]):
     C.setJointState(q[t])
-    C.view(False, f&#39;waypoint {t}&#39;)
+    C.view(False, f'waypoint {t}')
     time.sleep(.1)
 </pre></div>
 </div>
@@ -430,20 +430,20 @@ C.setJointState(qHome)
 komo = ry.KOMO(C, 4, 10, 2, False)
 komo.addControlObjective([], 0, 1e-1) # what happens if you change weighting to 1e0? why?
 komo.addControlObjective([], 2, 1e0)
-komo.addObjective([1], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way1&#39;], ry.OT.eq, [1e1])
-komo.addObjective([2], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way2&#39;], ry.OT.eq, [1e1])
-komo.addObjective([3], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way3&#39;], ry.OT.eq, [1e1])
-komo.addObjective([4], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way4&#39;], ry.OT.eq, [1e1])
+komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])
+komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])
+komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])
 komo.addObjective([4], ry.FS.jointState, [], ry.OT.eq, [1e1], [], order=1)
 
 ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
 print(ret)
 q = komo.getPath()
-print(&#39;size of path:&#39;, q.shape)
+print('size of path:', q.shape)
 
 for t in range(q.shape[0]):
     C.setJointState(q[t])
-    C.view(False, f&#39;waypoint {t}&#39;)
+    C.view(False, f'waypoint {t}')
     time.sleep(.1)
 </pre></div>
 </div>
@@ -459,8 +459,8 @@ for t in range(q.shape[0]):
 print(q.shape)
 fig, ax = plt.subplots()
 ax.plot(q)
-ax.set_xlabel(&quot;time slice (0=first-to-be-optimized)&quot;)
-ax.set_ylabel(&quot;joint angles&quot;)
+ax.set_xlabel("time slice (0=first-to-be-optimized)")
+ax.set_ylabel("joint angles")
 fig.tight_layout()
 plt.show()
 </pre></div>
@@ -476,9 +476,9 @@ labels = komo.info_objectiveNames()
 
 fig, ax = plt.subplots()
 ax.plot(err, label=labels)
-ax.legend(loc=&quot;upper left&quot;, prop={&#39;size&#39;: 6})
-ax.set_xlabel(&quot;time slice (0=first-to-be-optimized)&quot;)
-ax.set_ylabel(&quot;objectiv error&quot;)
+ax.legend(loc="upper left", prop={'size': 6})
+ax.set_xlabel("time slice (0=first-to-be-optimized)")
+ax.set_ylabel("objectiv error")
 fig.tight_layout()
 plt.show()
 </pre></div>
@@ -501,12 +501,12 @@ fig.canvas.header_visible = False
 fig.canvas.footer_visible = False
 fig.subplots_adjust(left=.1, bottom=.2, right=.95, top=.9)
 
-ax.set_title(&#39;Use the slider to control view; raise KOMO Viewer &quot;Always on Top&quot;&#39;)
+ax.set_title('Use the slider to control view; raise KOMO Viewer "Always on Top"')
 ax.plot(err, label=labels)
-line, = ax.plot([0,0], ax.get_ylim(), linewidth=1.5, color=&#39;#b3b3b3&#39;)
-ax.legend(loc=&quot;upper left&quot;, prop={&#39;size&#39;: 6})
-ax.set_xlabel(&quot;time slice (0=first-to-be-optimized)&quot;)
-ax.set_ylabel(&quot;objective error&quot;)
+line, = ax.plot([0,0], ax.get_ylim(), linewidth=1.5, color='#b3b3b3')
+ax.legend(loc="upper left", prop={'size': 6})
+ax.set_xlabel("time slice (0=first-to-be-optimized)")
+ax.set_ylabel("objective error")
 
 def slider_callback(val):
     slice = max(-1, min(T-1, int(val)))
@@ -518,7 +518,7 @@ def slider_callback(val):
     fig.canvas.draw_idle()
 
 axslider = fig.add_axes([0.05, 0.05, 0.9, 0.03])
-slider = Slider(ax=axslider, label=&#39;t&#39;, valmin=-1, valmax=T-1, valinit=0)
+slider = Slider(ax=axslider, label='t', valmin=-1, valmax=T-1, valinit=0)
 slider.on_changed(slider_callback)
 
 plt.show()
@@ -529,7 +529,7 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.close(&#39;all&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.close('all')
 </pre></div>
 </div>
 </div>

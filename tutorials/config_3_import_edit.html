@@ -127,9 +127,9 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;The path where model files are pre-installed:\n&#39;, ry.raiPath(&#39;&#39;))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print('The path where model files are pre-installed:\n', ry.raiPath(''))
 # you could overwrite this with:
-# ry.setRaiPath(&#39;your_path/rai-robotModels/&#39;)
+# ry.setRaiPath('your_path/rai-robotModels/')
 </pre></div>
 </div>
 </div>
@@ -138,12 +138,12 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;)) .setPosition([1.,.0,.0]) .setQuaternion([1,0,0,1])
-C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;), &#39;r_&#39;) .setPosition([1.5,.0,.0]) .setQuaternion([1,0,0,1])
-C.addFile((&#39;$RAI_PATH/robotiq/robotiq.g&#39;)) .setParent(C.getFrame(&#39;panda_joint7&#39;)) .setRelativePosition([0., 0., .15])
-C.addFile((&#39;$RAI_PATH/g1/g1.g&#39;)) .setPosition([.5, 0., .8]) .setQuaternion([1,0,0,1])
-C.addFile((&#39;$RAI_PATH/pr2/pr2.g&#39;)) .setPosition([-.5,.0,.0])
-C.addFile((&#39;$RAI_PATH/ur10/ur10.g&#39;)) .setPosition([-1.5,.0,.5])
+C.addFile(('$RAI_PATH/panda/panda.g')) .setPosition([1.,.0,.0]) .setQuaternion([1,0,0,1])
+C.addFile(('$RAI_PATH/panda/panda.g'), 'r_') .setPosition([1.5,.0,.0]) .setQuaternion([1,0,0,1])
+C.addFile(('$RAI_PATH/robotiq/robotiq.g')) .setParent(C.getFrame('panda_joint7')) .setRelativePosition([0., 0., .15])
+C.addFile(('$RAI_PATH/g1/g1.g')) .setPosition([.5, 0., .8]) .setQuaternion([1,0,0,1])
+C.addFile(('$RAI_PATH/pr2/pr2.g')) .setPosition([-.5,.0,.0])
+C.addFile(('$RAI_PATH/ur10/ur10.g')) .setPosition([-1.5,.0,.5])
 C.view()
 </pre></div>
 </div>
@@ -186,8 +186,8 @@ C.animateSpline(5)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-table = C.addFrame(&#39;table&#39;) .setShape(ry.ST.ssBox,[.5, .5, .1, .01]) .setPosition([0,0,1]) .setColor([.2])
-panda = C.addFile((&#39;$RAI_PATH/panda/panda.g&#39;))
+table = C.addFrame('table') .setShape(ry.ST.ssBox,[.5, .5, .1, .01]) .setPosition([0,0,1]) .setColor([.2])
+panda = C.addFile(('$RAI_PATH/panda/panda.g'))
 panda.setParent(table) .setRelativePosition([0,0,.05])
 C.view()
 </pre></div>
@@ -201,10 +201,10 @@ C.view()
 d = 6
 for x in range(d):
     for y in range(d):
-        base = Cgrid.addConfigurationCopy(C, f&#39;x{x}_y{y}_&#39;) #the string adds a prefix to all frame names
+        base = Cgrid.addConfigurationCopy(C, f'x{x}_y{y}_') #the string adds a prefix to all frame names
         base.setPosition([x-(d-1)/2,y-(d-1)/2,1])
-print(&#39;#frame in grid:&#39;, Cgrid.getFrameDimension())
-print(&#39;1st frame\&#39;s name:&#39;, Cgrid.getFrames()[0].name)
+print('#frame in grid:', Cgrid.getFrameDimension())
+print('1st frame\'s name:', Cgrid.getFrames()[0].name)
 Cgrid.view()
 </pre></div>
 </div>
@@ -262,7 +262,7 @@ interpreted in experimental code (also your python code can retrieve attributes 
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.watchFile(&#39;mini.g&#39;)
+C.watchFile('mini.g')
 </pre></div>
 </div>
 </div>
@@ -293,7 +293,7 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandasTable.g&#39;))
+C.addFile(('$RAI_PATH/scenarios/pandasTable.g'))
 C.view()
 </pre></div>
 </div>
@@ -302,7 +302,7 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.attach(&quot;l_gripper&quot;, &quot;r_gripper&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.attach("l_gripper", "r_gripper")
 </pre></div>
 </div>
 </div>
@@ -341,7 +341,7 @@ for t in range(30):
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
 
-with open((&#39;$RAI_PATH/panda/panda_arm_hand_conv.yml&#39;), &#39;r&#39;, encoding=&#39;utf-8&#39;) as fil:
+with open(('$RAI_PATH/panda/panda_arm_hand_conv.yml'), 'r', encoding='utf-8') as fil:
     model = yaml.safe_load(fil)
 
 print(model)

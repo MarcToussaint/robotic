@@ -126,11 +126,11 @@ Z = np.random.rand(100,3)
 col = 255.*np.random.rand(100,3)
 
 C = ry.Config()
-C.addFrame(&#39;mesh&#39;) .setMeshFile((&#39;$RAI_PATH/g1/meshes/head_link.h5&#39;)) .setPosition([0,0,.7])
-C.addFrame(&#39;tensor&#39;) .setTensorShape(0.01*X, [1.,1.,1.]) .setPosition([0,0,.5])
-C.addFrame(&#39;implicit&#39;) .setImplicitSurface(Y-0.5, [1.,1.,1.], 8) .setPosition([1,0,.5])
-C.addFrame(&#39;lines&#39;) .setLines(Z-.5, col) .setPosition([-1,0,.5])
-C.addFrame(&#39;points&#39;) .setPointCloud(Z-.5, col) .setPosition([-1,0,.5])
+C.addFrame('mesh') .setMeshFile(('$RAI_PATH/g1/meshes/head_link.h5')) .setPosition([0,0,.7])
+C.addFrame('tensor') .setTensorShape(0.01*X, [1.,1.,1.]) .setPosition([0,0,.5])
+C.addFrame('implicit') .setImplicitSurface(Y-0.5, [1.,1.,1.], 8) .setPosition([1,0,.5])
+C.addFrame('lines') .setLines(Z-.5, col) .setPosition([-1,0,.5])
+C.addFrame('points') .setPointCloud(Z-.5, col) .setPosition([-1,0,.5])
 C.view()
 </pre></div>
 </div>
@@ -165,7 +165,7 @@ print(ry.compiled())
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile(&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;)
+C.addFile('$RAI_PATH/scenarios/pandaSingle.g')
 C.view()
 time.sleep(.5)
 </pre></div>
@@ -202,8 +202,8 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.getFrame(&#39;cameraTop&#39;)
-f.setAttributes({&#39;focalLength&#39;: .5, &#39;width&#39;: 500, &#39;height&#39;: 500, &#39;zRange&#39;: [.01, 10.]})
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.getFrame('cameraTop')
+f.setAttributes({'focalLength': .5, 'width': 500, 'height': 500, 'zRange': [.01, 10.]})
 C.viewer().setCamera(f)
 </pre></div>
 </div>
@@ -227,7 +227,7 @@ C.viewer().setCamera(f)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># first ensure a folder
 import os
-os.system(&#39;mkdir -p z.vid&#39;)
+os.system('mkdir -p z.vid')
 </pre></div>
 </div>
 </div>
@@ -241,7 +241,7 @@ for t in range(30):
     q = q + .02
     C.setJointState(q)
     C.view()
-    C.viewer().savePng(&#39;z.vid/&#39;)
+    C.viewer().savePng('z.vid/')
 </pre></div>
 </div>
 </div>
@@ -249,7 +249,7 @@ for t in range(30):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>os.system(&#39;ffmpeg -v 16 -f image2 -framerate 12 -i z.vid/%04d.png -c:v libx264 -r 25 -pix_fmt yuv420p -y vid.mp4&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>os.system('ffmpeg -v 16 -f image2 -framerate 12 -i z.vid/%04d.png -c:v libx264 -r 25 -pix_fmt yuv420p -y vid.mp4')
 </pre></div>
 </div>
 </div>
@@ -291,7 +291,7 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam.setCamera(C.getFrame(&#39;cameraTop&#39;)) # cameraWrist is another pre-defined frame
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam.setCamera(C.getFrame('cameraTop')) # cameraWrist is another pre-defined frame
 </pre></div>
 </div>
 </div>
@@ -334,7 +334,7 @@ import matplotlib.pyplot as plt
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
 C.view()
 </pre></div>
 </div>
@@ -344,7 +344,7 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cam = ry.CameraView(C)
-cam.setCamera(C.getFrame(&#39;cameraTop&#39;))
+cam.setCamera(C.getFrame('cameraTop'))
 rgb, depth = cam.computeImageAndDepth(C, simulateDepthNoise=True)
 pcl = ry.depthImage2PointCloud(depth, cam.getFxycxy())
 </pre></div>
@@ -376,7 +376,7 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.addFrame(&#39;pcl&#39;, &#39;cameraTop&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f = C.addFrame('pcl', 'cameraTop')
 f.setPointCloud(pcl, [255,0,0])
 C.view()
 </pre></div>
@@ -392,7 +392,7 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import robotic as ry
 # from matplotlib import pyplot as plt
 # from robotic import render
-# print(&#39;version&#39;, ry.compiled())
+# print('version', ry.compiled())
 </pre></div>
 </div>
 </div>
@@ -401,7 +401,7 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># C = ry.Config()
-# C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
+# C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
 # C.view()
 </pre></div>
 </div>
@@ -410,8 +410,8 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># C.addFrame(&#39;light1&#39;) .setPosition([1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.5]) .setAttribute(&#39;temperature&#39;, 6000)
-# C.addFrame(&#39;light2&#39;) .setPosition([-1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.8]) .setAttribute(&#39;temperature&#39;, 6000)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># C.addFrame('light1') .setPosition([1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.5]) .setAttribute('temperature', 6000)
+# C.addFrame('light2') .setPosition([-1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.8]) .setAttribute('temperature', 6000)
 # C.view()
 </pre></div>
 </div>

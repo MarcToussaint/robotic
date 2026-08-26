@@ -140,7 +140,7 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import robotic as ry
 import numpy as np
 import time
-print(&#39;robotic version:&#39;, ry.compiled())
+print('robotic version:', ry.compiled())
 </pre></div>
 </div>
 </div>
@@ -150,9 +150,9 @@ print(&#39;robotic version:&#39;, ry.compiled())
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-pcl = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
-C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+pcl = C.addFrame('pcl', 'cameraWrist')
+C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')
 </pre></div>
 </div>
 </div>
@@ -187,7 +187,7 @@ q[1] = q[1] + .2
 
 bot.moveTo(q)
 bot.wait(C)
-print(&#39;first motion done&#39;)
+print('first motion done')
 
 bot.moveTo(bot.get_qHome())
 bot.wait(C)
@@ -201,12 +201,12 @@ bot.wait(C)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># These are camera config parameters
 # They can only be set/change once! before first time startup of the camera!
-cfg = {&#39;RealSense/startupSkipImages&#39;: 1, #how many frames are skipped in the beginning IFF autoexposure is true (default: 60)
-        &#39;RealSense/resolution&#39;: 1280, #resolution (options: 1280, 640, 480) default 640
-        &#39;RealSense/alignToDepth&#39;: False, #align rgb to depth (also currupts image) default True
-        &#39;RealSense/autoExposure&#39;: False, #turn off auto exposure/whilte (default True)
-        &#39;RealSense/exposure&#39;: 100, #exposure time (brightness)
-        &#39;RealSense/white&#39;: 3000} #white colore (Calvin)
+cfg = {'RealSense/startupSkipImages': 1, #how many frames are skipped in the beginning IFF autoexposure is true (default: 60)
+        'RealSense/resolution': 1280, #resolution (options: 1280, 640, 480) default 640
+        'RealSense/alignToDepth': False, #align rgb to depth (also currupts image) default True
+        'RealSense/autoExposure': False, #turn off auto exposure/whilte (default True)
+        'RealSense/exposure': 100, #exposure time (brightness)
+        'RealSense/white': 3000} #white colore (Calvin)
 
 ry.set_params(cfg)
 </pre></div>
@@ -221,10 +221,10 @@ v2 = ry.ImageViewer()
 
 for _ in range(50):
     key = bot.sync(C, .1)
-    image, depth = bot.getImageAndDepth(&quot;cameraWrist&quot;)
+    image, depth = bot.getImageAndDepth("cameraWrist")
     key |= v.view(image)
     key |= v2.viewFloat(depth*128.)
-    if key==ord(&#39;q&#39;):
+    if key==ord('q'):
         break
 
 del v, v2
@@ -235,14 +235,14 @@ del v, v2
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcl = C.getFrame(&quot;pcl&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcl = C.getFrame("pcl")
 pcl.setShape(ry.ST.pointCloud, [2]) # the size here is pixel size for display
 bot.sync(C)
 
 count = 0
 
-while bot.getKeyPressed()!=ord(&#39;q&#39;):
-    image, depth, points = bot.getImageDepthPcl(&quot;cameraWrist&quot;)
+while bot.getKeyPressed()!=ord('q'):
+    image, depth, points = bot.getImageDepthPcl("cameraWrist")
     pcl.setPointCloud(points, image)
     pcl.setColor([1,0,0])
     bot.sync(C, .1)
@@ -303,8 +303,8 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')
 </pre></div>
 </div>
 </div>
@@ -322,7 +322,7 @@ bot = ry.BotOp(C, True)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.view(True, &#39;floating=False, damping=True -- Try moving the robot by hand!\n-- press any key to continue --&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.view(True, 'floating=False, damping=True -- Try moving the robot by hand!\n-- press any key to continue --')
 </pre></div>
 </div>
 </div>
@@ -332,7 +332,7 @@ bot = ry.BotOp(C, True)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.hold(floating=True, damping=False)
-C.view(True, &#39;floating=True, damping=False -- Try moving the robot by hand!\n-- press any key to continue --&#39;)
+C.view(True, 'floating=True, damping=False -- Try moving the robot by hand!\n-- press any key to continue --')
 </pre></div>
 </div>
 </div>
@@ -342,7 +342,7 @@ C.view(True, &#39;floating=True, damping=False -- Try moving the robot by hand!\
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.hold(floating=True, damping=True)
-C.view(True, &#39;floating=True, damping=True -- Try moving the robot by hand!\n-- press any key to continue --&#39;)
+C.view(True, 'floating=True, damping=True -- Try moving the robot by hand!\n-- press any key to continue --')
 </pre></div>
 </div>
 </div>
@@ -357,14 +357,14 @@ bot.wait(C)
 
 timeout = bot.get_t() + 5.
 
-while bot.getKeyPressed()!=ord(&#39;q&#39;):
+while bot.getKeyPressed()!=ord('q'):
     if bot.get_t()&gt;timeout:
         break
-    bot.sync(C, .1, &#39;testing compliance&#39;)
-    y, J = C.eval(ry.FS.position, [&quot;l_gripper&quot;], [[1,0,0]])
+    bot.sync(C, .1, 'testing compliance')
+    y, J = C.eval(ry.FS.position, ["l_gripper"], [[1,0,0]])
     bot.setCompliance(J, 1.)
-    print(&#39; direct:&#39;, J @ bot.get_tauExternal(),
-          &#39; pseudoInv:&#39;, np.linalg.pinv(J.T, rcond=1e-3) @ bot.get_tauExternal())
+    print(' direct:', J @ bot.get_tauExternal(),
+          ' pseudoInv:', np.linalg.pinv(J.T, rcond=1e-3) @ bot.get_tauExternal())
 
 bot.setCompliance([], 0.)
 </pre></div>
@@ -406,8 +406,8 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')
 </pre></div>
 </div>
 </div>
@@ -432,18 +432,18 @@ bot = ry.BotOp(C, True)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame('pcl', 'cameraWrist')
 
 timeout = bot.get_t() + 5.
 
-while bot.getKeyPressed()!=ord(&#39;q&#39;):
+while bot.getKeyPressed()!=ord('q'):
     if bot.get_t()&gt;timeout:
         break
 
-    rgb, depth, points = bot.getImageDepthPcl(&#39;cameraWrist&#39;)
+    rgb, depth, points = bot.getImageDepthPcl('cameraWrist')
     pclFrame.setPointCloud(points, rgb)
 
-    bot.sync(C, .1, &#39;testing the depth camera&#39;)
+    bot.sync(C, .1, 'testing the depth camera')
 </pre></div>
 </div>
 </div>

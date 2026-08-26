@@ -118,16 +118,16 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span>C = ry.Config()
-C.addFrame(&quot;base&quot;) .setPosition([0,0,.5])
+C.addFrame("base") .setPosition([0,0,.5])
 
-C.addFrame(&quot;ego&quot;, &quot;base&quot;) \
+C.addFrame("ego", "base") \
     .setJoint(ry.JT.transXYPhi, [-1.,-1.,-3.,1.,1.,3.]) \
     .setRelativePosition([.2, .0, .0]) \
     .setShape(ry.ST.ssBox, size=[.05, .3, .05, .01]) \
     .setColor([0, 1., 1.]) \
     .setContact(1)
 
-C.addFrame(&quot;obstacle&quot;) \
+C.addFrame("obstacle") \
     .setPosition([.0, .0, .5]) \
     .setShape(ry.ST.ssBox, size=[.05, .3, .05, .01]) \
     .setColor([1, .5, 0]) \
@@ -145,7 +145,7 @@ C.view(False)
 qT = [+.2, 0, 0]
 
 ry.params_clear()
-ry.params_add({&#39;rrt/stepsize&#39;:.1, &#39;rrt/verbose&#39;: 3}) #verbose=3 makes it very slow, and displays result, and verbose=4 waits keypress..
+ry.params_add({'rrt/stepsize':.1, 'rrt/verbose': 3}) #verbose=3 makes it very slow, and displays result, and verbose=4 waits keypress..
 
 rrt = ry.RRT_PathFinder()
 rrt.setProblem(C)
@@ -164,7 +164,7 @@ ry.params_print()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del rrt
 
-print(&#39;path length:&#39;, path.shape)
+print('path length:', path.shape)
 # display the path
 for t in path:
     C.setJointState(t)
@@ -187,7 +187,7 @@ ry.params_print()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandasTable.g&#39;))
+C.addFile(('$RAI_PATH/scenarios/pandasTable.g'))
 C.view()
 </pre></div>
 </div>
@@ -196,11 +196,11 @@ C.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame(&#39;boxR&#39;,&#39;table&#39;) \
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame('boxR','table') \
     .setRelativePosition([.15,0,.1]) \
     .setShape(ry.ST.sphere, size=[.03]) \
     .setColor([1,1,0])
-C.addFrame(&#39;boxL&#39;,&#39;table&#39;) \
+C.addFrame('boxL','table') \
     .setRelativePosition([-.15,0,.1]) \
     .setShape(ry.ST.sphere, size=[.03]) \
     .setColor([1,.5,0])
@@ -228,8 +228,8 @@ komo.setTiming(1., 1, 5., 0)
 komo.addControlObjective([], 0, 1e-0)
 komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq);
 komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq);
-komo.addObjective([], ry.FS.positionDiff, [&#39;r_gripper&#39;, &#39;boxL&#39;], ry.OT.eq, [1e1]);
-komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;boxR&#39;], ry.OT.eq, [1e1]);
+komo.addObjective([], ry.FS.positionDiff, ['r_gripper', 'boxL'], ry.OT.eq, [1e1]);
+komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'boxR'], ry.OT.eq, [1e1]);
 </pre></div>
 </div>
 </div>
@@ -249,10 +249,10 @@ print(ret)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># that&#39;s the goal configuration
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># that's the goal configuration
 qT = komo.getPath()[0]
 C.setJointState(qT)
-C.view(False, &quot;IK solution&quot;)
+C.view(False, "IK solution")
 </pre></div>
 </div>
 </div>
@@ -295,7 +295,7 @@ for t in range(0, path.shape[0]-1):
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># run the path with botop
 C.setJointState(q0)
-ry.params_add({&#39;botsim/verbose&#39;: 1., &#39;physx/motorKp&#39;: 10000., &#39;physx/motorKd&#39;: 1000.})
+ry.params_add({'botsim/verbose': 1., 'physx/motorKp': 10000., 'physx/motorKd': 1000.})
 bot = ry.BotOp(C, False)
 bot.home(C)
 </pre></div>

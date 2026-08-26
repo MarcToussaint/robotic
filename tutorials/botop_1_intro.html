@@ -126,8 +126,8 @@ import numpy as np
 import time
 
 C = ry.Config()
-C.addFile((&#39;$RAI_PATH/scenarios/pandaSingle.g&#39;))
-C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATION&#39;)
+C.addFile(('$RAI_PATH/scenarios/pandaSingle.g'))
+C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')
 </pre></div>
 </div>
 </div>
@@ -136,7 +136,7 @@ C.view(False, &#39;this is your workspace data structure C -- NOT THE SIMULTATIO
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({&#39;botsim/verbose&#39;: 2})
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({'botsim/verbose': 2})
 bot = ry.BotOp(C, useRealRobot=False)
 </pre></div>
 </div>
@@ -172,11 +172,11 @@ while bot.getTimeToEnd()&gt;0:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;timeToEnd:&#39;, bot.getTimeToEnd())
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print('timeToEnd:', bot.getTimeToEnd())
 bot.moveTo(q0)
-print(&#39;timeToEnd:&#39;, bot.getTimeToEnd())
+print('timeToEnd:', bot.getTimeToEnd())
 bot.moveTo(q1)
-print(&#39;timeToEnd:&#39;, bot.getTimeToEnd())
+print('timeToEnd:', bot.getTimeToEnd())
 bot.moveTo(q0)
 
 while bot.getTimeToEnd()&gt;0:
@@ -192,10 +192,10 @@ while bot.getTimeToEnd()&gt;0:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame(&#39;way1&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
-C.addFrame(&#39;way2&#39;). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
-C.addFrame(&#39;way3&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
-C.addFrame(&#39;way4&#39;). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C.addFrame('way1'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.])
+C.addFrame('way2'). setShape(ry.ST.marker, [.1]) .setPosition([.4, .2, 1.4])
+C.addFrame('way3'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.])
+C.addFrame('way4'). setShape(ry.ST.marker, [.1]) .setPosition([-.4, .2, 1.4])
 C.view()
 </pre></div>
 </div>
@@ -207,16 +207,16 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>komo = ry.KOMO(C, 4, 10, 2, False)
 komo.addControlObjective([], 0, 1e-1)
 komo.addControlObjective([], 2, 1e0)
-komo.addObjective([1], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way1&#39;], ry.OT.eq, [1e1])
-komo.addObjective([2], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way2&#39;], ry.OT.eq, [1e1])
-komo.addObjective([3], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way3&#39;], ry.OT.eq, [1e1])
-komo.addObjective([4], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;way4&#39;], ry.OT.eq, [1e1])
+komo.addObjective([1], ry.FS.positionDiff, ['l_gripper', 'way1'], ry.OT.eq, [1e1])
+komo.addObjective([2], ry.FS.positionDiff, ['l_gripper', 'way2'], ry.OT.eq, [1e1])
+komo.addObjective([3], ry.FS.positionDiff, ['l_gripper', 'way3'], ry.OT.eq, [1e1])
+komo.addObjective([4], ry.FS.positionDiff, ['l_gripper', 'way4'], ry.OT.eq, [1e1])
 komo.addObjective([4], ry.FS.jointState, [], ry.OT.eq, [1e1], [], order=1)
 
 ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()
-print(&#39;solver return:&#39;, ret)
+print('solver return:', ret)
 path = komo.getPath()
-print(&#39;size of path:&#39;, path.shape)
+print('size of path:', path.shape)
 komo.view()
 </pre></div>
 </div>
@@ -249,7 +249,7 @@ komo.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#this reference frame only appears in your workspace C - not the simulation!
-target = C.addFrame(&#39;target&#39;, &#39;table&#39;)
+target = C.addFrame('target', 'table')
 target.setShape(ry.ST.marker, [.1])
 target.setRelativePosition([0., .3, .3])
 pos = target.getPosition()
@@ -265,10 +265,10 @@ C.view()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def IK(C, pos):
     q0 = C.getJointState()
-    komo = ry.KOMO(C, 1, 1, 0, False) #one phase one time slice problem, with &#39;delta_t=1&#39;, order=0
-    komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], q0) #cost: close to &#39;current state&#39;
+    komo = ry.KOMO(C, 1, 1, 0, False) #one phase one time slice problem, with 'delta_t=1', order=0
+    komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], q0) #cost: close to 'current state'
     komo.addObjective([], ry.FS.jointState, [], ry.OT.sos, [1e-1], qHome) #cost: close to qHome
-    komo.addObjective([], ry.FS.positionDiff, [&#39;l_gripper&#39;, &#39;target&#39;], ry.OT.eq, [1e1]) #constraint: gripper position
+    komo.addObjective([], ry.FS.positionDiff, ['l_gripper', 'target'], ry.OT.eq, [1e1]) #constraint: gripper position
 
     ret = ry.NLP_Solver(komo.nlp(), verbose=0) .solve()
 
@@ -299,7 +299,7 @@ C.view()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for t in range(100):
-    bot.sync(C, .1) #keep the workspace C sync&#39;ed to real/sim, and idle .1 sec
+    bot.sync(C, .1) #keep the workspace C sync'ed to real/sim, and idle .1 sec
     pos = cen + .98 * (pos-cen) + 0.02 * np.random.randn(3)
     target.setPosition(pos)
 
@@ -320,15 +320,15 @@ C.view()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for t in range(5):
     print(t)
     bot.moveTo(q1)
-    bot.wait(C) #same as &#39;loop sync til keypressed or endOfTime&#39;, but also raises user window
-    if bot.getKeyPressed()==ord(&#39;q&#39;):
-        print(&quot;cancelled&quot;)
+    bot.wait(C) #same as 'loop sync til keypressed or endOfTime', but also raises user window
+    if bot.getKeyPressed()==ord('q'):
+        print("cancelled")
         break;
 
     bot.moveTo(q0)
     bot.wait(C)
-    if bot.getKeyPressed()==ord(&#39;q&#39;):
-        print(&quot;cancelled&quot;)
+    if bot.getKeyPressed()==ord('q'):
+        print("cancelled")
         break;
 
 bot.home(C)
@@ -365,7 +365,7 @@ bot.sync(C)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth, points = bot.getImageDepthPcl(&#39;cameraWrist&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rgb, depth, points = bot.getImageDepthPcl('cameraWrist')
 </pre></div>
 </div>
 </div>
@@ -388,7 +388,7 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fxycxy = bot.getCameraFxycxy(&quot;cameraWrist&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fxycxy = bot.getCameraFxycxy("cameraWrist")
 points2 = ry.depthImage2PointCloud(depth, fxycxy)
 np.linalg.norm(points - points2)
 </pre></div>
@@ -399,7 +399,7 @@ np.linalg.norm(points - points2)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame(&#39;pcl&#39;, &#39;cameraWrist&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pclFrame = C.addFrame('pcl', 'cameraWrist')
 pclFrame.setPointCloud(points, rgb)
 pclFrame.setColor([1.,0.,0.]) #only to see it when overlaying with truth
 C.view()
@@ -420,23 +420,23 @@ import numpy as np
 
 # these are global parameters by which you can influence the friction, grasp force, etc...
 ry.params_add({
-    &#39;physx/angularDamping&#39;: 0.1,
-    &#39;physx/defaultFriction&#39;: 1.,  #reduce -&gt; slip
-    &#39;physx/defaultRestitution&#39;: .7, #quit bouncy
-    &#39;botsim/verbose&#39;: 0})
+    'physx/angularDamping': 0.1,
+    'physx/defaultFriction': 1.,  #reduce -&gt; slip
+    'physx/defaultRestitution': .7, #quit bouncy
+    'botsim/verbose': 0})
 
 C = ry.Config()
-C.addFile((&quot;$RAI_PATH/scenarios/pandaSingle.g&quot;))
+C.addFile(("$RAI_PATH/scenarios/pandaSingle.g"))
 
-C.addFrame(&quot;obj&quot;) \
+C.addFrame("obj") \
       .setPosition([-.25,.1,.7]) \
       .setShape(ry.ST.ssBox, [.04,.2,.1,.005]) \
       .setColor([1,.5,0]) \
       .setMass(.1) \
       .setContact(True)
 
-way0 = C.addFrame(&quot;way0&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, 0, .2])
-way1 = C.addFrame(&quot;way1&quot;, &quot;obj&quot;) .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, .0, .03])
+way0 = C.addFrame("way0", "obj") .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, 0, .2])
+way1 = C.addFrame("way1", "obj") .setShape(ry.ST.marker, [.1]) .setRelativePosition([0, .0, .03])
 
 C.view()
 </pre></div>
@@ -453,8 +453,8 @@ komo.setTiming(2., 1, 5., 0)
 komo.addControlObjective([], 0, 1e-0)
 komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)
 komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq)
-komo.addObjective([1.], ry.FS.poseDiff, [&quot;l_gripper&quot;, &quot;way0&quot;], ry.OT.eq, [1e1])
-komo.addObjective([2.], ry.FS.poseDiff, [&quot;l_gripper&quot;, &quot;way1&quot;], ry.OT.eq, [1e1])
+komo.addObjective([1.], ry.FS.poseDiff, ["l_gripper", "way0"], ry.OT.eq, [1e1])
+komo.addObjective([2.], ry.FS.poseDiff, ["l_gripper", "way1"], ry.OT.eq, [1e1])
 
 ret = ry.NLP_Solver() \
     .setProblem(komo.nlp()) \
@@ -462,7 +462,7 @@ ret = ry.NLP_Solver() \
     .solve()
 print(ret)
 komo.set_viewer(C.get_viewer())
-komo.view(False, &#39;these are the joint space waypoints,\n which are used as control points of the BotOp spline execution&#39;)
+komo.view(False, 'these are the joint space waypoints,\n which are used as control points of the BotOp spline execution')
 </pre></div>
 </div>
 </div>
@@ -472,7 +472,7 @@ komo.view(False, &#39;these are the joint space waypoints,\n which are used as c
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ways = komo.getPath()
 
-C.getFrame(&#39;obj&#39;) .setPosition([-.25,.1,.7]) .setQuaternion([1,0,0,0])
+C.getFrame('obj') .setPosition([-.25,.1,.7]) .setQuaternion([1,0,0,0])
 
 back_ways = np.concatenate([ways[0], C.getJointState()]) .reshape([2, C.getJointDimension()])
 print(back_ways)
@@ -484,7 +484,7 @@ bot = ry.BotOp(C, useRealRobot=False)
 bot.gripperMove(ry.ArgWord._left, .075, .1)
 bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
 
-# send a spline for execution, and wait til it&#39;s done
+# send a spline for execution, and wait til it's done
 bot.move(ways, [2., 3.])
 bot.wait(C, forKeyPressed=False, forTimeToEnd=True)
 
@@ -492,7 +492,7 @@ bot.wait(C, forKeyPressed=False, forTimeToEnd=True)
 bot.gripperMove(ry.ArgWord._left, .03, .05)
 bot.wait(C, forKeyPressed=False, forTimeToEnd=False, forGripper=True)
 
-# send a spline for execution, and wait til it&#39;s done
+# send a spline for execution, and wait til it's done
 bot.move(back_ways, [.1, .5]) #very fast upward motion!
 bot.wait(C, forKeyPressed=False, forTimeToEnd=True)
 
@@ -534,9 +534,9 @@ del C
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({&#39;botsim/verbose&#39;: 2., &#39;physx/motorKp&#39;: 10000., &#39;physx/motorKd&#39;: 1000.})
-ry.params_add({&#39;botsim/engine&#39;: &#39;physx&#39;}) #makes a big difference!
-ry.params_add({&#39;physx/multibody&#39;: True}) #makes a big difference!
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_add({'botsim/verbose': 2., 'physx/motorKp': 10000., 'physx/motorKd': 1000.})
+ry.params_add({'botsim/engine': 'physx'}) #makes a big difference!
+ry.params_add({'physx/multibody': True}) #makes a big difference!
 </pre></div>
 </div>
 </div>

@@ -224,7 +224,7 @@ solver.setTracing(trace_x=True, trace_errs=True)
     print(ret)
 x = solver.getTrace_x()
 z = solver.getTrace_errs()
-plt.plot(x[:,0], x[:,1], &#39;o-&#39;)
+plt.plot(x[:,0], x[:,1], 'o-')
 </pre></div>
 </div>
 </div>
@@ -246,7 +246,7 @@ Z = np.apply_along_axis(p.f, 1, xy).reshape(X.shape)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots()
 ax.contour(X,Y,Z, 200)
-ax.plot(x[:,0], x[:,1], &#39;o-r&#39;, ms=3)
+ax.plot(x[:,0], x[:,1], 'o-r', ms=3)
 </pre></div>
 </div>
 </div>

@@ -122,12 +122,12 @@ ry.compiled()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>problem = &#39;data/lgp_single_pnp&#39;
-#problem = &#39;data/lgp_bimanual_pnp&#39;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>problem = 'data/lgp_single_pnp'
+#problem = 'data/lgp_bimanual_pnp'
 
 C = ry.Config()
-C.addFile(problem+&#39;.g&#39;) # change the config geometry (including size of trays) to check if solver still works
-#C.view() #or C.watchFile(&#39;data/lgp_single_pnp.g&#39;) #to edit
+C.addFile(problem+'.g') # change the config geometry (including size of trays) to check if solver still works
+#C.view() #or C.watchFile('data/lgp_single_pnp.g') #to edit
 </pre></div>
 </div>
 </div>
@@ -135,7 +135,7 @@ C.addFile(problem+&#39;.g&#39;) # change the config geometry (including size of 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tamp = ry.default_LGP_TAMP_Abstraction(C, problem+&#39;.lgp&#39;) # change the logic goal (&#39;terminal&#39;) to check is solver still works
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tamp = ry.default_LGP_TAMP_Abstraction(C, problem+'.lgp') # change the logic goal ('terminal') to check is solver still works
 lgp = ry.LGP_Tool(C, tamp)
 </pre></div>
 </div>
@@ -147,19 +147,19 @@ lgp = ry.LGP_Tool(C, tamp)
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for k in range(5):
     lgp.solve(0)
     plan = lgp.getSolvedPlan()
-    print(f&#39;** solution {k}: {plan}&#39;, flush=True)
+    print(f'** solution {k}: {plan}', flush=True)
     lgp.view_solved(pause=False) #change to inspect each plan
 
     for k in range(len(plan)):
         piece = lgp.get_piecewiseMotionProblem(k, True)
         ret = ry.NLP_Solver(piece.nlp(), verbose=0 ) .solve()
         piece.set_viewer(C.get_viewer()) # to prevent too many windows popping up
-        piece.view_play(False, f&#39;PIECE solution {k} {plan[k]}&#39;)
+        piece.view_play(False, f'PIECE solution {k} {plan[k]}')
 
     path = lgp.get_fullMotionProblem(True)
     ret = ry.NLP_Solver(path.nlp(), verbose=0 ) .solve()
     path.set_viewer(C.get_viewer()) # to prevent too many windows popping up
-    path.view_play(False, f&#39;FULL PATH solution {plan}&#39;)
+    path.view_play(False, f'FULL PATH solution {plan}')
 
 lgp.view_close()
 </pre></div>

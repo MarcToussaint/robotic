@@ -123,7 +123,7 @@ import time
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># minimalistic configuration
 C = ry.Config()
-C.addFrame(&#39;ball&#39;) .setShape(ry.ST.sphere, [.2]) .setMass(.1) .setPosition([0,0,1])
+C.addFrame('ball') .setShape(ry.ST.sphere, [.2]) .setMass(.1) .setPosition([0,0,1])
 C.view()
 
 S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
@@ -154,7 +154,7 @@ directly on it.)</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ry.params_clear()
-ry.params_add({&#39;physx/defaultRestitution&#39;: .9})
+ry.params_add({'physx/defaultRestitution': .9})
 ry.params_print()
 </pre></div>
 </div>
@@ -165,7 +165,7 @@ ry.params_print()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
-C.getFrame(&#39;ball&#39;) .setPosition([0,0,1])
+C.getFrame('ball') .setPosition([0,0,1])
 S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
 
 tau=.01
@@ -207,19 +207,19 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFile(ry.raiPath(&#39;scenarios/pandaSingle.g&#39;))
+C.addFile(ry.raiPath('scenarios/pandaSingle.g'))
 C.view(False)
 
-C.addFrame(&#39;box&#39;) \
+C.addFrame('box') \
     .setShape(ry.ST.ssBox, size=[.1,.1,.1,.005]) .setColor([1,.5,0]) \
     .setPosition([.1,.35,.9])
 
-C.addFrame(&#39;stick&#39;, &#39;l_gripper&#39;) \
+C.addFrame('stick', 'l_gripper') \
     .setShape(ry.ST.capsule, size=[.3,.02]) .setColor([.5,1,0]) \
     .setRelativePosition([0,0,-.13])
 
-C.setJointState([.0], [&#39;l_panda_joint2&#39;]) #only cosmetics
-C.setJointState([.02], [&#39;l_panda_finger_joint1&#39;]) #only cosmetics
+C.setJointState([.0], ['l_panda_joint2']) #only cosmetics
+C.setJointState([.02], ['l_panda_finger_joint1']) #only cosmetics
 
 q0 = C.getJointState()
 X0 = C.getFrameState()
@@ -262,7 +262,7 @@ move_a_bit()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
 C.setFrameState(X0)
-C.getFrame(&#39;box&#39;) .setMass(.1)
+C.getFrame('box') .setMass(.1)
 S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
 move_a_bit()
 </pre></div>
@@ -275,7 +275,7 @@ move_a_bit()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
 C.setFrameState(X0)
-C.getFrame(&#39;box&#39;) .setColor([1,1,0,.5])
+C.getFrame('box') .setColor([1,1,0,.5])
 S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
 move_a_bit()
 </pre></div>
@@ -289,7 +289,7 @@ move_a_bit()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
 C.setFrameState(X0)
-C.getFrame(&#39;box&#39;) .setColor([1,1,0]) .setParent(C.getFrame(&#39;table&#39;)) .setRelativePosition([.1,.35,.3])
+C.getFrame('box') .setColor([1,1,0]) .setParent(C.getFrame('table')) .setRelativePosition([.1,.35,.3])
 S = ry.Simulation(C, ry.SimulationEngine.physx, verbose=0)
 move_a_bit()
 </pre></div>
@@ -302,7 +302,7 @@ child is giving mass to it’s root frame (here the ‘world’ frame) – there
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># rendering
-S.selectSensor(&#39;cameraWrist&#39;)
+S.selectSensor('cameraWrist')
 S.setSimulateDepthNoise(True)
 image, depth = S.getImageAndDepth()
 
@@ -322,7 +322,7 @@ plt.show()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del S
 C.setFrameState(X0)
-C.getFrame(&#39;box&#39;) .unLink()
+C.getFrame('box') .unLink()
 S = ry.Simulation(C, ry.SimulationEngine.kinematic, verbose=0)
 move_a_bit()
 </pre></div>
@@ -355,22 +355,22 @@ import time
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
-C.addFrame(&#39;table&#39;) .setShape(ry.ST.ssBox, [2., 1., .1, .02]) .setColor([.3]) \
+C.addFrame('table') .setShape(ry.ST.ssBox, [2., 1., .1, .02]) .setColor([.3]) \
     .setPosition([0,0,.3]) .setQuaternion([1,-.25,0,0])
 
 for i in range(10):
-    f = C.addFrame(f&#39;block_{i}&#39;)
+    f = C.addFrame(f'block_{i}')
     f.setShape(ry.ST.ssBox, [.1,.2,.1,.02]) .setColor([1,.1*i,1-.1*i])
     f.setPosition([.7 - .15*i,-.2,1.])
     f.setMass(1.)
-    f.setAttributes({&#39;friction&#39;: .05*i})
+    f.setAttributes({'friction': .05*i})
 
 for i in range(10):
-    f = C.addFrame(f&#39;ball_{i}&#39;)
+    f = C.addFrame(f'ball_{i}')
     f.setShape(ry.ST.sphere, [.05]) .setColor([1,.1*i,1-.1*i])
     f.setPosition([.7 - .15*i,.2,1.])
     f.setMass(.2)
-    f.setAttributes({&#39;restitution&#39;: .5+.1*i})
+    f.setAttributes({'restitution': .5+.1*i})
 C.view()
 </pre></div>
 </div>
@@ -418,14 +418,14 @@ import time
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>C = ry.Config()
 
 for i in range(5):
-    f = C.addFrame(f&#39;block_{i}&#39;)
+    f = C.addFrame(f'block_{i}')
     f.setShape(ry.ST.ssBox, [.2,.3,.2,.02]) .setColor([1,.2*i,1-.2*i])
     f.setPosition([0,0, .25*(i+1)])
     f.setMass(.1)
 
-C.addFrame(&#39;base&#39;) .setPosition([1., 0, .5]) .setAttributes({&#39;multibody&#39;: True})
+C.addFrame('base') .setPosition([1., 0, .5]) .setAttributes({'multibody': True})
 
-C.addFrame(&#39;finger&#39;, &#39;base&#39;) .setShape(ry.ST.ssBox, [.3, .1, .1, .02]) .setColor([.9]) \
+C.addFrame('finger', 'base') .setShape(ry.ST.ssBox, [.3, .1, .1, .02]) .setColor([.9]) \
     .setMass(.1) \
     .setJoint(ry.JT.transX)
 
