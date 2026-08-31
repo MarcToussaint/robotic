@@ -28,7 +28,7 @@ set(CMAKE_INSTALL_RPATH "\$ORIGIN;${CMAKE_INSTALL_PREFIX}/lib")
 option(USE_PYBIND "build python bindings" ON)
 option(USE_BULLET "link to bullet" OFF)
 option(USE_PHYSX "link to physx" ON)
-option(USE_OPENCV "link to opencv" ON)
+option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_BASLER "link to Basler's pylon library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
@@ -209,7 +209,7 @@ endif()
 target_link_libraries(rai PRIVATE
   # ORDER MATTERS! test with -no-undefined linker flag (above)
   lapack blas
-  glfw GLEW glut Xrandr Xxf86vm Xi GLU GL
+  glfw GLEW glut Xrandr Xi GLU GL
   jsoncpp yaml png assimp z
   fcl ccd ANN qhull
   portaudio
@@ -219,15 +219,16 @@ target_link_libraries(rai PRIVATE
 ################################################################################
 
 if(USE_PYBIND)
-  set(PYTHON_EXECUTABLE "python${PY_VERSION}")
+  set(PYTHON_EXECUTABLE "python") #${PY_VERSION}")
   find_package(Python3 ${PY_VERSION} EXACT COMPONENTS Interpreter Development)
   message(STATUS "[rai] requested python version " ${PY_VERSION} )
   message(STATUS "[rai] using python executable " ${PYTHON_EXECUTABLE} )
   execute_process(
-    COMMAND bash "-c" "${PYTHON_EXECUTABLE} -m pybind11 --cmakedir" 
-    OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE pybind11_DIR
+    COMMAND "${PYTHON_EXECUTABLE}" -m pybind11 --cmakedir
+    OUTPUT_VARIABLE pybind11_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-  message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR} )
+  message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR} ${pybind11_ERROR} ${pybind11_RESULT} )
   
   find_package(pybind11)
   
