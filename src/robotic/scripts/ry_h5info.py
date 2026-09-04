@@ -2,7 +2,7 @@
 
 import argparse
 import h5py
-from robotic.src.h5_helper import *
+from robotic.data_tools.h5_helper import *
 
 parser = argparse.ArgumentParser(description='h5-file info')
 

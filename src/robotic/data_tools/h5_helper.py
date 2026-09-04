@@ -40,14 +40,17 @@ class H5Reader:
                 str = ''.join([chr(x) for x in obj[()]])
                 print('       ', str)
             elif obj.dtype=='object':
-                total_size=0
-                print('       ', end='')
-                for i in range(obj.size):
-                    o = obj[i]
-                    if obj.size<20:
-                        print(o.shape, end='')
-                    total_size += o.size*o.dtype.itemsize
-                print(f'list of {obj[0].dtype} arrays {total_size/1024:.2f}kB')
+                if obj.size==0:
+                    print('       EMPTY list of arrays')
+                else:
+                    total_size=0
+                    print('       ', end='')
+                    for i in range(obj.size):
+                        o = obj[i]
+                        if obj.size<20:
+                            print(o.shape, end='')
+                        total_size += o.size*o.dtype.itemsize
+                    print(f' list of {obj[0].dtype} arrays {total_size/1024:.2f}kB')
             elif obj.size<20:
                 print('       ', obj[()])
         else:

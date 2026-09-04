@@ -85,7 +85,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       ry-info
 
 
-## Installation from source (with real Franka & realsense support)
+## Installation from source (with real Franka & realsense & trossen_arm & basler support)
 
 Essentially the same as above, but some more dependencies and according flags in cmake:
 
@@ -93,13 +93,14 @@ Essentially the same as above, but some more dependencies and according flags in
 
       ./install.sh librealsense
       ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.8.0 libfranka (and you need to patch it...)
+      ./install.sh trossen_arm #when installing Trossen drivers (uses v1.10.0 by default)
       ./install.sh basler #when installing Basler camera drivers
 
 * Instead of `make local-install`, we do it explicitly, setting the USE_REALSENSE and USE_LIBRFRANKA flags:
 
       cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
       export PY_VERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-      cmake . -B build -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON -DUSE_BASLER=ON
+      cmake . -B build -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON -DUSE_TROSSEN=ON -DUSE_BASLER=ON
       make -C build _robotic docstrings install
       uv pip install -e .
 

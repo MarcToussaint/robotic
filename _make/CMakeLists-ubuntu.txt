@@ -33,6 +33,7 @@ option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_BASLER "link to Basler's pylon library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
 option(USE_ALLEGRO "link to BHand lib for Allegro hand" OFF)
+option(USE_TROSSEN "link trossen_arm library" ON)
 option(USE_PCL "link to pcl library" OFF)
 option(USE_H5 "link to h5 library" ON)
 option(USE_FREETYPE "link to freetype2 library" ON)
@@ -91,11 +92,11 @@ file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
 file(GLOB SRC_Omnibase botop/src/Omnibase/*.cpp)
 file(GLOB SRC_OptiTrack botop/src/OptiTrack/*.cpp)
-file(GLOB SRC_MarkerVision botop/src/MarkerVision/*.cpp)
 file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
 file(GLOB SRC_Basler botop/src/Basler/*.cpp)
 file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
 file(GLOB SRC_Allegro botop/src/Allegro/*.cpp)
+file(GLOB SRC_Trossen botop/src/Trossen/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
 
 add_library(rai SHARED
@@ -123,11 +124,11 @@ add_library(rai SHARED
   ${SRC_Franka}
   ${SRC_Omnibase}
   ${SRC_OptiTrack}
-  ${SRC_MarkerVision}
   ${SRC_RealSense}
   ${SRC_Basler}
   ${SRC_Robotiq}
   ${SRC_Allegro}
+  ${SRC_Trossen}
   ${SRC_Audio}
   )
 
@@ -202,7 +203,13 @@ if(USE_LIBFRANKA)
 endif()
 
 if(USE_ALLEGRO)
+  add_definitions(-DRAI_ALLEGRO)
   target_link_libraries(rai PRIVATE BHand)
+endif()
+
+if(USE_TROSSEN)
+  add_definitions(-DRAI_TROSSEN)
+  target_link_libraries(rai PRIVATE trossen_arm)
 endif()
 
 # default/required dependencies

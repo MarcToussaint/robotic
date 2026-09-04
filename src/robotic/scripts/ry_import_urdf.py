@@ -18,29 +18,34 @@ parser.add_argument('-flipDaeYZ', help='view mesh', action="store_true", default
 parser.add_argument('-reverseRPY', help='reverse RPY convention', action="store_true", default=True)
 parser.add_argument('-pruneRigidJoints', help='view mesh', action="store_true", default=True)
 parser.add_argument('-recomputeInertias', help='view mesh', action="store_true")
+parser.add_argument('-defaultMassDensity', help='view mesh', type=float, default=5.)
+parser.add_argument('-minInertiaDiagonal', help='view mesh', type=float, default=1e-6)
 parser.add_argument('-processMeshes', help='view mesh', action="store_true", default=True)
 parser.add_argument('-meshlab', help='apply meshlab filters', action="store_true", default=False)
 
-def convert(file, pruneRigidJoints=False, recomputeInertias=False, processMeshes=False, flipDaeYZ=False, reverseRPY=True):
+def convert(file, cfg):
 
     print('=== URDF CONVERT ===', file)
 
     # path, file = os.path.split(file)
     filebase, _ = os.path.splitext(file)
 
-    if flipDaeYZ:
+    if cfg.flipDaeYZ:
         ry.set_params({'assimp/daeFlipYZ': False})
 
-    C = URDFLoader(file, visualsOnly=True, meshPathRemove='package://', reverseRPY=reverseRPY).C
+    C = URDFLoader(file, visualsOnly=True, meshPathRemove='package://', reverseRPY=cfg.reverseRPY).C
 
     print('#frames raw: ', C.getFrameDimension())
 
     with open(f'{filebase}_raw_conv.yml', 'w') as fil:
         fil.write(C.asYaml())
 
-    C.processStructure(pruneRigidJoints, True, False, False)
-    C.processInertias(recomputeInertias)
-    C.processStructure(pruneRigidJoints, True, False, False)
+    C.processStructure(cfg.pruneRigidJoints, True, False, False)
+    if cfg.recomputeInertias:
+        ry.set_params({"defaultMassDensity": cfg.defaultMassDensity})
+        ry.set_params({"minInertiaDiagonal": cfg.minInertiaDiagonal})
+    C.processInertias(cfg.recomputeInertias)
+    C.processStructure(cfg.pruneRigidJoints, True, False, False)
 
     print('#frames processes: ', C.getFrameDimension())
 
@@ -55,7 +60,7 @@ def convert(file, pruneRigidJoints=False, recomputeInertias=False, processMeshes
     C.view(True)
     # C.animate()
 
-    if processMeshes:
+    if cfg.processMeshes:
         for file in sorted(glob.glob('meshes/*.h5')):
 
             M = MeshTool(file)
@@ -68,19 +73,20 @@ def convert(file, pruneRigidJoints=False, recomputeInertias=False, processMeshes
             print('  oriented:', M.tmesh.is_winding_consistent)
 
             M.report()
-            M.export_stl()
+            # M.export_stl()
             M.export_h5(without_colors=True)
 
 def main():
     args = parser.parse_args()
 
     if args.file=='none':
-        args.file = '/home/mtoussai/git/rai-robotModels/z1/z1.urdf'
+        args.file = '/home/mtoussai/git/rai-robotModels/allegro/allegro.urdf'
+        # args.file = '/home/mtoussai/git/rai-robotModels/z1/z1.urdf'
         # args.file = '/home/mtoussai/git/rai-robotModels/panda/panda_arm_hand.urdf'
         # args.file = '/home/mtoussai/git/rai-robotModels/g1/g1_description/g1_29dof.urdf'
         # args.file = '/home/mtoussai/git/rai-robotModels/ranger/ranger_mini.urdf'
 
-    convert(args.file, args.pruneRigidJoints, args.recomputeInertias, args.processMeshes, args.flipDaeYZ, args.reverseRPY)
+    convert(args.file, args)
 
 if __name__ == "__main__":
     main()
