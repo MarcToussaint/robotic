@@ -341,7 +341,7 @@ for t in range(30):
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
 
-with open(('$RAI_PATH/panda/panda_arm_hand_conv.yml'), 'r', encoding='utf-8') as fil:
+with open(ry.raiPath('panda/panda_arm_hand_conv.yml'), 'r', encoding='utf-8') as fil:
     model = yaml.safe_load(fil)
 
 print(model)

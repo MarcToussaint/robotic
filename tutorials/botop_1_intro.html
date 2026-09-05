@@ -131,7 +131,7 @@ C.view(False, 'this is your workspace data structure C -- NOT THE SIMULTATION')
 </pre></div>
 </div>
 </div>
-<p>Next we will open a robot interface in simulation (<code class="docutils literal notranslate"><span class="pre">useRealRobot=False</span></code>). <code class="docutils literal notranslate"><span class="pre">True</span></code> would directly open communication to one or two pandas (depending no how many are defined in C). The <code class="docutils literal notranslate"><span class="pre">botsim/verbose</span></code> leads to the explicit verbosity when creating the simulator interface.</p>
+<p>Next we will open a robot interface in simulation (<code class="docutils literal notranslate"><span class="pre">useRealRobot=False</span></code>). <code class="docutils literal notranslate"><span class="pre">True</span></code> would directly launch threads to open communication to one or two pandas (depending no how many are defined in C). The <code class="docutils literal notranslate"><span class="pre">botsim/verbose</span></code> leads to the explicit verbosity when creating the simulator interface.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -234,7 +234,8 @@ komo.view()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del komo
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bot.wait(C)
+del komo
 </pre></div>
 </div>
 </div>
@@ -448,8 +449,8 @@ C.view()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># compute 2 joint space waypoints from these endeff pose waypoints using komo
 komo = ry.KOMO()
-komo.setConfig(C, True)
 komo.setTiming(2., 1, 5., 0)
+komo.setConfig(C, True)
 komo.addControlObjective([], 0, 1e-0)
 komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)
 komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq)

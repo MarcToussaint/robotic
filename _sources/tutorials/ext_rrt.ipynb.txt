@@ -159,8 +159,8 @@
    "source": [
     "# compute a goal configuration\n",
     "komo = ry.KOMO()\n",
-    "komo.setConfig(C, True)\n",
     "komo.setTiming(1., 1, 5., 0)\n",
+    "komo.setConfig(C, True)\n",
     "komo.addControlObjective([], 0, 1e-0)\n",
     "komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq);\n",
     "komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq);\n",
@@ -292,7 +292,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "venv",
+   "display_name": "venv (3.12.3)",
    "language": "python",
    "name": "python3"
   },

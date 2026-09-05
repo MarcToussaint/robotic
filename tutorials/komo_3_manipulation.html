@@ -417,7 +417,7 @@ C.addFrame('obstacle', 'table') \
     .setRelativePosition([-.15,.3-.055,.095]) \
     .setContact(1)
 
-C.delFrame('panda_collCameraWrist')
+C.delFrame(C.getFrame('panda_collCameraWrist'))
 
 # for convenience, a few definitions:
 qHome = C.getJointState()
@@ -500,7 +500,7 @@ del M
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#reload(manip)
 
-C.delFrame('obstacle')
+C.delFrame(C.getFrame('obstacle'))
 
 C.setJointState(qHome)
 C.viewer().raiseWindow()

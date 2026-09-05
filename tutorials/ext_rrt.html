@@ -223,8 +223,8 @@ q0 = C.getJointState()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># compute a goal configuration
 komo = ry.KOMO()
-komo.setConfig(C, True)
 komo.setTiming(1., 1, 5., 0)
+komo.setConfig(C, True)
 komo.addControlObjective([], 0, 1e-0)
 komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq);
 komo.addObjective([], ry.FS.jointLimits, [], ry.OT.ineq);

@@ -302,7 +302,7 @@ child is giving mass to it’s root frame (here the ‘world’ frame) – there
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># rendering
-S.selectSensor('cameraWrist')
+S.setCamera(C.getFrame('cameraWrist'))
 S.setSimulateDepthNoise(True)
 image, depth = S.getImageAndDepth()
 
