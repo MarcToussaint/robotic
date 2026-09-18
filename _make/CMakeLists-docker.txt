@@ -28,6 +28,8 @@ option(USE_OPENCV "link to opencv" OFF)
 option(USE_REALSENSE "link to realsense2 driver library" OFF)
 option(USE_BASLER "link to Basler's pylon library" OFF)
 option(USE_LIBFRANKA "link to libfranka" OFF)
+option(USE_ALLEGRO "link to BHand lib for Allegro hand" OFF)
+option(USE_TROSSEN "link trossen_arm library" OFF)
 option(USE_PCL "link to pcl library" OFF)
 option(USE_H5 "link to h5 library" ON)
 option(USE_FREETYPE "link to freetype2 library" ON)
@@ -81,10 +83,11 @@ file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
 file(GLOB SRC_Franka botop/src/Franka/*.cpp)
 file(GLOB SRC_Omnibase botop/src/Omnibase/*.cpp)
 file(GLOB SRC_OptiTrack botop/src/OptiTrack/*.cpp)
-file(GLOB SRC_MarkerVision botop/src/MarkerVision/*.cpp)
 file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
 file(GLOB SRC_Basler botop/src/Basler/*.cpp)
 file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
+file(GLOB SRC_Allegro botop/src/Allegro/*.cpp)
+file(GLOB SRC_Trossen botop/src/Trossen/*.cpp)
 file(GLOB SRC_Audio botop/src/Audio/*.cpp)
 
 add_library(rai SHARED
@@ -112,10 +115,11 @@ add_library(rai SHARED
   ${SRC_Franka}
   ${SRC_Omnibase}
   ${SRC_OptiTrack}
-  ${SRC_MarkerVision}
   ${SRC_RealSense}
   ${SRC_Basler}
   ${SRC_Robotiq}
+  ${SRC_Allegro}
+  ${SRC_Trossen}
   ${SRC_Audio}
   )
 
@@ -168,14 +172,31 @@ endif()
 
 if(USE_REALSENSE)
   add_definitions(-DRAI_REALSENSE)
-  target_link_libraries(rai PRIVATE realsense2 realsense-file fw usb-1.0) #rsutils
+  target_link_libraries(rai PRIVATE realsense2 realsense-file usb-1.0) #rsutils
   message(STATUS "[rai] using realsense libs")
+endif()
+
+if(USE_BASLER)
+  add_definitions(-DRAI_BASLER)
+  include_directories($ENV{HOME}/.local/include/pylon)
+  target_link_libraries(rai PRIVATE pylonbase pylonutility GenApi_gcc_v3_5_Basler_pylon_v1 GCBase_gcc_v3_5_Basler_pylon_v1)
+  message(STATUS "[rai] using Basler's pylon libs")
 endif()
 
 if(USE_LIBFRANKA)
   add_definitions(-DRAI_FRANKA)
   target_link_libraries(rai PRIVATE franka PocoNet PocoFoundation)
   message(STATUS "[rai] using libfranka")
+endif()
+
+if(USE_ALLEGRO)
+  add_definitions(-DRAI_ALLEGRO)
+  target_link_libraries(rai PRIVATE BHand)
+endif()
+
+if(USE_TROSSEN)
+  add_definitions(-DRAI_TROSSEN)
+  target_link_libraries(rai PRIVATE trossen_arm)
 endif()
 
 # default/required dependencies
@@ -196,10 +217,11 @@ if(USE_PYBIND)
   message(STATUS "[rai] requested python version " ${PY_VERSION} )
   message(STATUS "[rai] using python executable " ${PYTHON_EXECUTABLE} )
   execute_process(
-    COMMAND bash "-c" "${PYTHON_EXECUTABLE} -m pybind11 --cmakedir" 
-    OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE pybind11_DIR
+    COMMAND "${PYTHON_EXECUTABLE}" -m pybind11 --cmakedir
+    OUTPUT_VARIABLE pybind11_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-  message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR})
+  message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR} ${pybind11_ERROR} ${pybind11_RESULT} )
   
   find_package(pybind11)
 

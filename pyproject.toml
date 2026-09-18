@@ -1,6 +1,6 @@
 [project]
 name = "robotic"
-version = "0.4.1"
+version = "0.4.2a2" #pre-release: 0.4.2a1 before 0.4.2
 description = "Robotic Control Interface & Manipulation Planning Library"
 license = "MIT"
 readme = "README.md"
@@ -24,7 +24,10 @@ robotic = ["*.so",
 	"rai-robotModels/pr2/*.g", "rai-robotModels/pr2/*.yml", "rai-robotModels/pr2/meshes/*",
 	"rai-robotModels/robotiq/*.g", "rai-robotModels/robotiq/*.yml", "rai-robotModels/robotiq/meshes/*",
 	"rai-robotModels/g1/*.g", "rai-robotModels/g1/*.yml", "rai-robotModels/g1/meshes/*",
+	"rai-robotModels/allegro/*.yml", "rai-robotModels/allegro/meshes/*",
+	"rai-robotModels/trossen/*.yml", "rai-robotModels/trossen/meshes/*",
 	"rai-robotModels/ranger/*.g", "rai-robotModels/ranger/meshes/*",
+	"rai-robotModels/basler/*.yml", 
 	"rai-robotModels/objects/*.g",
 	"rai-robotModels/scenarios/*.g", 
 	"rai-robotModels/tests/*.g",
