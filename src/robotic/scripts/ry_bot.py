@@ -7,6 +7,8 @@ import numpy as np
 parser = argparse.ArgumentParser(
     description='Utility to test real robot basic operations')
 
+parser.add_argument('robot', type=str, help='name of robot (e.g. franka.16 or trossen.3)', nargs='?', default='franka.16')
+
 parser.add_argument('-v', '--version', action='version',
                     version=f'%(prog)s -- robotic package version: {ry.version()}, {ry.compiled()}')
 
@@ -28,13 +30,28 @@ def main():
     
     C = ry.Config()
 
-    if args.two:
-        C.addFile(ry.raiPath("../rai-robotModels/scenarios/pandasTable-calibrated.g"))
-    else:
-        C.addFile(ry.raiPath("../rai-robotModels/scenarios/pandaSingle.g"))
+    if args.robot=="franka.16":
+        C.addFile("$RAI_PATH/scenarios/pandaSingle.g")
+    elif args.robot=="franka.17":
+        C.addFile("$RAI_PATH/scenarios/pandaSingle.g")
+    elif args.robot=="franka.16.17":
+        C.addFile("$RAI_PATH/scenarios/pandasTable.g")
+    elif args.robot=="trossen.5":
+        C.addFile("$RAI_PATH/trossen/trossen.yml")
 
-    bot = ry.BotOp(C, args.real)
-    bot.launch_robots(C, args.real)
+    bot = ry.BotOp(C, useRealRobot=args.real, auto_launch=False)
+
+    if args.robot=="franka.16":
+        bot.launch_franka("172.16.0.2", C.getFrame("l_panda_base"), also_gripper=True)
+    elif args.robot=="franka.17":
+        bot.launch_franka("172.17.0.2", C.getFrame("l_panda_base"), also_gripper=True)
+    elif args.robot=="franka.16.17":
+        bot.launch_franka("172.16.0.2", C.getFrame("l_panda_base"), also_gripper=True)
+        bot.launch_franka("172.17.0.2", C.getFrame("r_panda_base"), also_gripper=True)
+    elif args.robot=="trossen.5":
+        bot.launch_trossen("192.168.1.5")
+    else:
+        raise Exception("robot '{args.robot}' not captured")
 
     print('== status:')
     q = bot.get_q()
@@ -44,13 +61,13 @@ def main():
     print('   up:', l[1]-q)
     
     if args.close:
-        bot.gripperMove(ry._left, 0, .05)
-        while (not bot.gripperDone(ry._left)):
+        bot.gripperMove(0, 0, .05)
+        while (not bot.gripperDone(0)):
             bot.sync(C)
 
     if args.open:
-        bot.gripperMove(ry._left)
-        while (not bot.gripperDone(ry._left)):
+        bot.gripperMove(0)
+        while (not bot.gripperDone(0)):
             bot.sync(C)
 
     if args.float:
@@ -92,6 +109,7 @@ def main():
     del bot
     print('== used parameters:')
     ry.params_print()
+    print('')
 
 if __name__ == "__main__":
     main()
