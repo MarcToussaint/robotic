@@ -262,14 +262,14 @@ add_custom_target(docstrings #ALL
   COMMAND env PYTHONPATH="." ${PYTHON_EXECUTABLE} -m pybind11_stubgen --ignore-all-errors _robotic
   COMMAND cp -f stubs/_robotic*/*.pyi ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic/)
 
-add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
-target_link_libraries(kinEdit rai)
+#add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
+#target_link_libraries(kinEdit rai)
 
-add_executable(meshTool rai/bin/src_meshTool/main.cpp)
-target_link_libraries(meshTool rai)
+#add_executable(meshTool rai/bin/src_meshTool/main.cpp)
+#target_link_libraries(meshTool rai)
 
-add_executable(bot botop/bin/bot/main.cpp)
-target_link_libraries(bot rai)
+#add_executable(bot botop/bin/bot/main.cpp)
+#target_link_libraries(bot rai)
 
 ################################################################################
 
@@ -299,9 +299,9 @@ install(
   PATTERN "*retired*" EXCLUDE
   )
 
-install(
-  TARGETS meshTool #kinEdit meshTool bot
-  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+#install(
+#  TARGETS meshTool #kinEdit meshTool bot
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
 
 #install(
 #  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-meshTool robotic/ry-h5info robotic/ry-urdfConvert.py

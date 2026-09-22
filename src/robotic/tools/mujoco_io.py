@@ -1,4 +1,3 @@
-
 import os
 import numpy as np
 import robotic as ry
@@ -29,12 +28,12 @@ class MujocoLoader():
 
         tree = ET.parse(file)
         path, _ = os.path.split(file)
-        root = tree.getroot()
+        self.root = tree.getroot()
 
         self.materials = {}    
         self.textures = {}
         self.meshes = {}
-        self.load_assets(root, path)
+        self.load_assets(path)
         self.bodyCount = -1
 
         self.C = ry.Config()
@@ -42,19 +41,19 @@ class MujocoLoader():
         self.base.setAttributes({'multibody':True})
         self.base.setPosition(basePos)
         self.base.setQuaternion(baseQuat)
-        self.add_node(root, self.base, path, 0)
+        self.add_node(self.root, self.base, path, 0)
 
     def as_floats(self, input_string):
         return [float(num) for num in input_string.replace(',', ' ').split()]
     
-    def load_assets(self, root, path):
-        texs = root.findall('.//texture')
+    def load_assets(self, path):
+        texs = self.root.findall('.//texture')
         for tex in texs:
             name = tex.attrib.get('name', '')
             file = tex.attrib.get('file', '')
             self.textures[name] = os.path.join(path, file)
 
-        maters = root.findall('.//material')
+        maters = self.root.findall('.//material')
         for mater in maters:
             name = mater.attrib.get('name', '')
             color = mater.attrib.get('rgba', '')
@@ -66,12 +65,14 @@ class MujocoLoader():
             else:
                 self.materials[name] = ''
 
-        for mesh in root.findall('.//mesh'):
+        for mesh in self.root.findall('.//mesh'):
             name = mesh.attrib.get('name', '')
             file = mesh.attrib.get('file', '')
             if file.startswith('visual') or file.startswith('collision'): #HACK: the true path is hidden in some compiler attribute
                 file = 'meshes/'+file
             mesh.attrib['file'] = file
+            if name=='':
+                name = file[:-4]
             self.meshes[name] = mesh.attrib
     
     def add_node(self, node, f_parent, path, level):
@@ -112,6 +113,8 @@ class MujocoLoader():
         self.setRelativePose(f_body, body.attrib)
 
         for i, joint in enumerate(body.findall('./joint')):
+            self.add_default_attribs(joint, 'joint')
+
             axis = joint.attrib.get('axis', None)
             limits = joint.attrib.get('range', None)
             joint_name = joint.attrib.get('name', f'{body_name}_joint{i*"_"}')
@@ -121,17 +124,21 @@ class MujocoLoader():
             f_origin.unLink()
             f_origin.setParent(f_parent, True)
 
-            if axis:
-                if axis in self.muj2rai_joint_map:
-                    axis = self.muj2rai_joint_map[axis]
-                else:
-                    vec1 = np.array([0., 0., 1.])
-                    vec2 = np.array(self.as_floats(axis))
-                    quat = ry.Quaternion().setDiff(vec1, vec2).asArr()
-                    f_origin.setRelativeQuaternion(quat)
-                    axis = ry.JT.hingeZ
-            else:
-                axis = ry.JT.hingeZ
+            # if axis:
+            #     if axis in self.muj2rai_joint_map:
+            #         axis = self.muj2rai_joint_map[axis]
+            #     else:
+            #         vec1 = np.array([0., 0., 1.])
+            #         vec2 = np.array(self.as_floats(axis))
+            #         quat = ry.Quaternion().setDiff(vec1, vec2).asArr()
+            #         f_origin.setRelativeQuaternion(quat)
+            #         axis = ry.JT.hingeZ
+            # else:
+            #     axis = ry.JT.hingeZ
+            if not axis:
+                axis = '0 1 0'
+                # raise Exception(f'need axis for joint {joint_name}')
+
 
             if joint.attrib.get('type', 'hinge')=='slide':
                 trans_map = {
@@ -147,7 +154,7 @@ class MujocoLoader():
             #     joint_name = f'{joint_name}_{self.bodyCount}'
             f_joint = self.C.addFrame(joint_name)
             f_joint.setParent(f_origin)
-            f_joint.setJoint(axis, self.as_floats(limits))
+            f_joint.setJoint(ry.JT.hinge, self.as_floats(limits), self.as_floats(axis))
             
             # relink body:
             f_parent = f_joint
@@ -155,6 +162,8 @@ class MujocoLoader():
             f_body.setParent(f_parent, True)
 
         for i, geom in enumerate(body.findall('./geom')):
+            self.add_default_attribs(geom, 'geom')
+
             isColl = geom.attrib.get('contype', self.defaultConType)!='0' or 'coll' in geom.attrib.get('class','') or '_col' in geom.attrib.get('class','')
             if self.visualsOnly and isColl:
                 continue
@@ -232,6 +241,16 @@ class MujocoLoader():
                 
         return f_body
 
+    def add_default_attribs(self, node, default_key):
+        cl = node.attrib.get('class', None)
+        if cl is not None:
+            defs = self.root.findall('.//default')
+            for d in defs:
+                if d.attrib.get('class', '')==cl:
+                    spec = d.find(default_key)
+                    for k,v in spec.items():
+                        node.attrib[k]=v
+
     def setRelativePose(self, f, attrib):
         pos = attrib.get('pos', None)
         if pos:
@@ -259,30 +278,48 @@ class MujocoWriter:
         "quatBall": ("ball", None),
         "free": ("free", None),
     }
-    shape_map = {
-        "ssBox": ("box"),
-        "capsule": ("capsule"),
-        "sphere": ("sphere"),
-    }
 
-    def __init__(self, C: ry.Config, verbose=0, friction="0.8 0.1 0.1"):
+    def __init__(self, C: ry.Config, verbose=0, friction="0.8 0.1 0.1", solref="0.002 1.", collide_exclude=[]):
         self.verbose = verbose
         self.root = ET.Element("mujoco", {"model": "ry_convert"})
 
-        ET.SubElement(self.root, "compiler", {"autolimits": "false"})
+        ET.SubElement(self.root, "compiler", {"autolimits": "false", "angle": "radian"})
+        
+        option = ET.SubElement(self.root, "option", {"ccd_iterations": "100",
+                                                    "integrator": "implicitfast",
+                                                    "viscosity": "0.0005",
+                                                    }) #, "solver": "CG", "cone": "elliptic" "PGS" "diagexact": "enable", "ls_iterations": "100" })
+        ET.SubElement(option, "flag", {"multiccd": "disable","nativeccd": "disable"}) # nativeccd doesn't work with ssBox margin
+        ET.SubElement(self.root, "size", {"memory": "200M"}) #, "njmax": "200"})
+
+        self.default = ET.SubElement(self.root, "default")
+        ET.SubElement(self.default, "joint", {"solreflimit": "0.002 1" }) #, "solimplimit": "0.95 0.99 0.001"
+        a = ET.SubElement(self.default, "default", {"class": "ryjoint"})
+        ET.SubElement(a, "position", {"kp": "1000", "kv": "10", }) #{"forcerange": "-150 150", "kp": "1000", "kv": "10", "ctrlrange": "-10 10"})
+        a = ET.SubElement(self.default, "default", {"class": "geom_fric"})
+        ET.SubElement(a, "geom", {"friction": friction, "solref": solref}) #, "solimp": "0.9 0.95 0.001"})
+
+        pair_excludes = ET.SubElement(self.root, "contact")
+        for a,b in zip(collide_exclude[::2], collide_exclude[1::2]):
+            # print('   collide exclude:', a, b)
+            ET.SubElement(pair_excludes, "exclude", {"body1": a, "body2": b})
 
         self.asset = ET.SubElement(self.root, "asset")
+        shapes = C.getShapes()
+        lookup = []
+        for f in shapes:
+            spec = f.asDict()
+            if "mesh" in spec:
+                name, ext = os.path.splitext(self.file_as_str(spec["mesh"]))
+                if name not in lookup:
+                    lookup.append(name)
+                    filename = name + ".stl"
+                    m = ET.SubElement(self.asset, "mesh", {"name": name, "file": filename})
 
         self.visual = ET.SubElement(self.root, "visual")
         ET.SubElement(self.visual, "headlight", {"ambient":"0.4 0.4 0.4", "diffuse":"0.8 0.8 0.8", "specular":"0.1 0.1 0.1"})
         ET.SubElement(self.visual, "map", {"znear": "0.01"})
         ET.SubElement(self.visual, "global", {"offwidth": "1200", "offheight": "800"})
-
-        self.default = ET.SubElement(self.root, "default")
-        a = ET.SubElement(self.default, "default", {"class": "ryjoint"})
-        b = ET.SubElement(a, "position", {}) #{"forcerange": "-150 150", "kp": "1000", "kv": "10", "ctrlrange": "-10 10"})
-        a = ET.SubElement(self.default, "default", {"class": "geom_fric"})
-        b = ET.SubElement(a, "geom", {"friction": friction})
 
         self.actuator = ET.SubElement(self.root, "actuator")
         self.worldbody = ET.SubElement(self.root, "worldbody")
@@ -296,11 +333,11 @@ class MujocoWriter:
             isFree = (f.getJointType() == ry.JT.free)
             parent = f.getParent()
             if parent == None or isFree:
-                if parent is not None:
-                    assert np.linalg.norm(parent.getPose() - np.array([0,0,0,1,0,0,0])) < 1e-10, 'parent of free objects need to be an origin frame!'
+                # if parent is not None:
+                    # assert np.linalg.norm(parent.getPose() - np.array([0,0,0,1,0,0,0])) < 1e-10, 'parent of free objects need to be an origin frame!'
                 self.addFrame(f, self.worldbody)
 
-        f = C.getFrame('camera_init')
+        f = C.getFrame('camera_init', False)
         if f is not None:
             spec = f.asDict()
             pose = spec["pose"]
@@ -319,6 +356,9 @@ class MujocoWriter:
         if self.verbose>0:
             print(f.name, spec)
 
+        if "simulation" in spec and spec["simulation"]==False:
+            return
+        
         d = {"name": f.name}
         if "pose" in spec and "joint" not in spec:
             pose = spec["pose"]
@@ -342,7 +382,11 @@ class MujocoWriter:
             if spec["joint"] == "free":
                 j = ET.SubElement(a, "freejoint", {})
             else:
-                type = self.joint_map[spec["joint"]]
+                type = spec["joint"]
+                if type=='hinge':
+                    type = ('hinge', self.as_str(spec["axis"]))
+                else:
+                    type = self.joint_map[spec["joint"]]
 
                 # create a joint
                 mj_args = {"name": f.name, "damping": "0.1", "type": type[0]}
@@ -351,34 +395,41 @@ class MujocoWriter:
                 for k, v in spec.items():
                     if "mj_joint_" in k:
                         mj_args[k.replace("mj_joint_", "")] = str(v)
+                if "limits" in spec:
+                    mj_args["range"] = self.as_str(spec["limits"])
+                    mj_args["limited"] = "true"
                 j = ET.SubElement(a, "joint", mj_args)
 
                 # create a motor
                 mj_args = {"name": f.name, "joint": f.name, "class": "ryjoint"}
                 for k, v in spec.items():
-                    if "mj_actuator_" in k:
+                    if k.startswith("mj_actuator_"):
                         mj_args[k.replace("mj_actuator_", "")] = str(v)
                 m = ET.SubElement(self.actuator, "position", mj_args)
 
         # has a geometry
         geom = None
         if "mesh" in spec:
-            name = f"{f.name}_mesh"
-            filename = self.file_as_str(spec["mesh"])
-            if filename[-2:] == "h5":
-                filename = filename[:-2] + "stl"
-            m = ET.SubElement(self.asset, "mesh", {"name": name, "file": filename})
+            name, ext = os.path.splitext(self.file_as_str(spec["mesh"]))
+            # name = f"{f.name}_mesh"
+            # filename = self.file_as_str(spec["mesh"])
+            # if filename[-2:] == "h5":
+            #     filename = filename[:-2] + "stl"
+            # m = ET.SubElement(self.asset, "mesh", {"name": name, "file": filename})
             geom = ET.SubElement(a, "geom", {"type": "mesh", "mesh": name})
-        elif "shape" in spec:
+        elif "shape" in spec and not ("simulation" in spec and spec["simulation"]==False):
             # pass
-            col = spec["color"]
+            col = [1.]
+            if "color" in spec:
+                col = spec["color"]
             if not ((len(col) == 2 or len(col) == 4) and col[-1] < 1):
                 type = spec["shape"]
                 size = spec["size"]
                 if type == "box":
                     geom = ET.SubElement(a, "geom", {"type": "box", "size": self.as_str([0.5 * x for x in size[:3]])})
                 elif type == "ssBox":
-                    geom = ET.SubElement(a, "geom", {"type": "box", "size": self.as_str([0.5 * x for x in size[:3]])})
+                    r = size[3]
+                    geom = ET.SubElement(a, "geom", {"type": "box", "margin": self.as_str([r]), "size": self.as_str([(0.5*x - r) for x in size[:3]])})
                 elif type == "capsule":
                     geom = ET.SubElement(a, "geom", {"type": "capsule", "size": self.as_str([size[1], 0.5 * size[0]])})
                 elif type == "sphere":
@@ -404,15 +455,32 @@ class MujocoWriter:
 
         # has inertia
         if "mass" in spec:
-            if geom is not None:
+            if geom is not None and not "inertia" in spec:
                 geom.set("mass", str(spec["mass"]))
             else:
-                i = ET.SubElement(
-                    a, "inertial", {"pos": "0 0 0", "mass": str(spec["mass"]), "diaginertia": "1e-5 1e-5 1e-5"}
-                )
+                i = ET.SubElement(a, "inertial", {"mass": str(spec["mass"])})
+                com = "0 0 0"
+                diaginertia = "1e-3 1e-3 1e-3"
+                if "inertia" in spec:
+                    I = spec["inertia"]
+                    if len(I)==6:
+                        i.set("diaginertia", self.as_str([I[0], I[3], I[5]])) #TODO
+                    elif len(I)==3:
+                        i.set("diaginertia", self.as_str(I))
+                    else:
+                        raise Exception('NIY')
+                if 'com' in spec:
+                    i.set("pos", self.as_str(spec['com']))
+                else:
+                    i.set("pos", "0 0 0")
+
         # friction
         if geom is not None:
-            geom.set("class", "geom_fric")
+            if "mj_geom_friction" in spec:
+                geom.set("priority", "1")
+                geom.set("friction", spec["mj_geom_friction"])
+            else:
+                geom.set("class", "geom_fric")
 
         # recurse through all children (depth first)
         for ch in f.getChildren():

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from robotic.src.yaml_helper import *
-from robotic.src.urdf_io import *
-from robotic.src.mesh_tool import *
+from robotic.tools.yaml_helper import *
+from robotic.tools.urdf_io import *
+from robotic.tools.mesh_tool import *
 import robotic as ry
 import argparse
 import glob

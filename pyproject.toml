@@ -1,6 +1,6 @@
 [project]
 name = "robotic"
-version = "0.4.2a2" #pre-release: 0.4.2a1 before 0.4.2
+version = "0.4.2a3" #pre-release: 0.4.2a1 before 0.4.2
 description = "Robotic Control Interface & Manipulation Planning Library"
 license = "MIT"
 readme = "README.md"
