@@ -129,15 +129,20 @@ class MeshTool():
         mlmesh = meshlab.Mesh(vertex_matrix=self.tmesh.vertices, face_matrix=self.tmesh.faces)
         ms = meshlab.MeshSet()
         ms.add_mesh(mlmesh)
-        if decimate:
-            ms.apply_filter('meshing_decimation_clustering', threshold=meshlab.PureValue(merge_threshold))
-        else:
-            ms.apply_filter('meshing_merge_close_vertices', threshold=meshlab.PureValue(merge_threshold))
+
         if make_convex:
             ms.apply_filter('generate_convex_hull')
-        else:
+
+        if merge_threshold>0.:
+            if decimate:
+                ms.apply_filter('meshing_decimation_clustering', threshold=meshlab.PureValue(merge_threshold))
+            else:
+                ms.apply_filter('meshing_merge_close_vertices', threshold=meshlab.PureValue(merge_threshold))
+
+        if not make_convex:
             ms.apply_filter('meshing_repair_non_manifold_edges')
             ms.apply_filter('meshing_close_holes', maxholesize=1000)
+        
         # ms.apply_filter('meshing_remove_t_vertices')
         # ms.apply_filter('meshing_repair_non_manifold_edges')
         # ms.apply_filter('meshing_close_holes', maxholesize=1000)

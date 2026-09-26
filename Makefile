@@ -19,10 +19,15 @@ info:
 docs-clean:
 	rm -Rf html
 
-local-install:
+install:
 	ln -f -s _make/CMakeLists-ubuntu.txt CMakeLists.txt
-	-rm -f ${HOME}/.local/lib/*rai*
 	cmake . -B build -DPY_VERSION=$(PY_VER)
+	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
+	uv pip install -e .
+
+install-with-hardware:
+	ln -f -s _make/CMakeLists-ubuntu.txt CMakeLists.txt
+	cmake . -B build -DPY_VERSION=$(PY_VER) -DUSE_OPENCV=ON -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON -DUSE_TROSSEN=ON -DUSE_BASLER=ON
 	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
 	uv pip install -e .
 
@@ -30,7 +35,7 @@ local-clean:
 	-rm -Rf $(PY_SITE)/robotic
 	-rm -Rf $(PY_SITE)/robotic-*
 	-rm -f ${HOME}/.local/lib/*rai*
-	-rm -f ${HOME}/.local/bin/*ry*
+	-rm -f ${HOME}/.local/bin/ry-*
 	-rm -Rf ${HOME}/.local/include/rai
 	-rm -Rf robotic/__pycache__ build/bdist* build/lib robotic.egg-info
 

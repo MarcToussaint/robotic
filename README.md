@@ -52,7 +52,7 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       ry-test
 
 
-## Installation from source (basic local build)
+## Installation from source (simulation only, no real Franka & realsense support)
 
 * Clone:
 
@@ -60,6 +60,10 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       git clone --recursive https://github.com/MarcToussaint/robotic.git
       cd robotic
 
+* `uv` install:
+
+      curl -LsSf https://astral.sh/uv/install.sh | sh
+	  
 * Install dependencies:
 
       cp rai/_make/install.sh .
@@ -72,37 +76,33 @@ Lab](https://argmin.lis.tu-berlin.de/)) operate our robots.
       ./install.sh physx
       uv pip install numpy pybind11 pybind11-stubgen
 
-* Compile robotic: (This is equivalent to the shortcut `make local-install`. But for transparency:)
+* Compile and install (look into `Makefile` to debug):
 
-      cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
-      export PY_VER=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-      cmake . -B build -DPY_VERSION=$PY_VER -DUSE_PHYSX=ON -DUSE_OPENCV=ON -DUSE_LIBFRANKA=OFF -DUSE_REALSENSE=OFF
-      make -C build _robotic docstrings install
-      uv pip install -e .
+      make install
 
 * Test:
 
       ry-info
 
 
-## Installation from source (with real Franka & realsense & trossen_arm & basler support)
+## Installation from source with real Franka & realsense & trossen_arm & basler support
 
 Essentially the same as above, but some more dependencies and according flags in cmake:
 
-* Additional dependencies:
+* Additional dependencies: CHOOSE THE [LIBFRANKA VERSION](https://frankarobotics.github.io/docs/doc/libfranka/docs/compatibility_matrix.html)
 
       ./install.sh librealsense
-      ./install.sh libfranka  ## for OLD frankas instead:   ./install.sh -v 0.8.0 libfranka (and you need to patch it...)
-      ./install.sh trossen_arm #when installing Trossen drivers (uses v1.10.0 by default)
-      ./install.sh basler #when installing Basler camera drivers
+      ./install.sh -v 0.13.3 libfranka  
+      ./install.sh -v 0.8.0 libfranka  
+      ./install.sh -v 1.10.0 trossen_arm
+      ./install.sh basler
 
-* Instead of `make local-install`, we do it explicitly, setting the USE_REALSENSE and USE_LIBRFRANKA flags:
+* Compile and install (look into `Makefile` to debug):
 
-      cp _make/CMakeLists-ubuntu.txt CMakeLists.txt
-      export PY_VERSION=`python3 -c "import sys; print(str(sys.version_info[0])+'.'+str(sys.version_info[1]))"`
-      cmake . -B build -DPY_VERSION=$PY_VERSION -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON -DUSE_TROSSEN=ON -DUSE_BASLER=ON
-      make -C build _robotic docstrings install
-      uv pip install -e .
+      make install-with-hardware
+
+
+## Testing the Franka
 
 * For using Franka, recall that the user needs to be part of the `realtime` and `dialout` unix group:
 
@@ -117,7 +117,7 @@ Essentially the same as above, but some more dependencies and according flags in
   on the
   [tutorials page](https://marctoussaint.github.io/robotic/tutorials.html)
   to test and debug first steps with the real franka. In particular
-  test `ry-bot -real -up -home` and debug as explained there.
+  test `ry-bot franka.16 -real -up -home` and debug as explained there.
   
 * Trouble shooting: Perhaps the [github build script](.github/workflows/build.yml) helps?
 
@@ -125,21 +125,18 @@ Essentially the same as above, but some more dependencies and according flags in
 ## Building the wheels within a manylinux docker
 
 * Build the docker
-```
-_make/build-docker.sh
-```
+
+      _make/build-docker.sh
 
 * Compile wheels (this runs `local/_make/build-wheels.sh`
 inside the docker -- see inside the `Makefile`)
-```
-make wheels
-```
+
+      make wheels
 
 * Install these wheels locally with pip or push wheels to pypi -- see inside the `Makefile`
-```
-make wheels-install
-make wheels-upload
-```
+
+      make wheels-install
+      make wheels-upload
 
 
 <!--
