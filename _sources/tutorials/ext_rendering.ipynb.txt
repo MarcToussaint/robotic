@@ -26,7 +26,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "6955369f",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:47.027754Z",
+     "iopub.status.busy": "2026-09-08T15:28:47.027605Z",
+     "iopub.status.idle": "2026-09-08T15:28:47.250753Z",
+     "shell.execute_reply": "2026-09-08T15:28:47.250261Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -86,7 +93,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "1dba9c3b",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:47.252151Z",
+     "iopub.status.busy": "2026-09-08T15:28:47.251967Z",
+     "iopub.status.idle": "2026-09-08T15:28:47.515365Z",
+     "shell.execute_reply": "2026-09-08T15:28:47.514900Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -100,7 +114,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "e9a8d544",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:47.517094Z",
+     "iopub.status.busy": "2026-09-08T15:28:47.516906Z",
+     "iopub.status.idle": "2026-09-08T15:28:48.259157Z",
+     "shell.execute_reply": "2026-09-08T15:28:48.258097Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
@@ -113,7 +134,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "984645b0",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:48.261598Z",
+     "iopub.status.busy": "2026-09-08T15:28:48.261426Z",
+     "iopub.status.idle": "2026-09-08T15:28:48.267746Z",
+     "shell.execute_reply": "2026-09-08T15:28:48.267328Z"
+    }
+   },
    "outputs": [],
    "source": [
     "rgb = C.viewer().getRgb()\n",
@@ -125,7 +153,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "979ef513",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:48.269422Z",
+     "iopub.status.busy": "2026-09-08T15:28:48.269286Z",
+     "iopub.status.idle": "2026-09-08T15:28:48.360445Z",
+     "shell.execute_reply": "2026-09-08T15:28:48.359990Z"
+    }
+   },
    "outputs": [],
    "source": [
     "fig = plt.figure()\n",
@@ -150,7 +185,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "07d64c52",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:48.361786Z",
+     "iopub.status.busy": "2026-09-08T15:28:48.361690Z",
+     "iopub.status.idle": "2026-09-08T15:28:48.363624Z",
+     "shell.execute_reply": "2026-09-08T15:28:48.363246Z"
+    }
+   },
    "outputs": [],
    "source": [
     "f = C.getFrame('cameraTop')\n",
@@ -172,7 +214,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "697df6de",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:48.365038Z",
+     "iopub.status.busy": "2026-09-08T15:28:48.364955Z",
+     "iopub.status.idle": "2026-09-08T15:28:48.366828Z",
+     "shell.execute_reply": "2026-09-08T15:28:48.366421Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.viewer().setCamera(None)"
@@ -192,7 +241,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "ca0a81f2",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:48.368220Z",
+     "iopub.status.busy": "2026-09-08T15:28:48.368139Z",
+     "iopub.status.idle": "2026-09-08T15:28:48.376310Z",
+     "shell.execute_reply": "2026-09-08T15:28:48.376062Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# first ensure a folder\n",
@@ -204,7 +260,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b5b73522",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:48.377843Z",
+     "iopub.status.busy": "2026-09-08T15:28:48.377759Z",
+     "iopub.status.idle": "2026-09-08T15:28:48.856315Z",
+     "shell.execute_reply": "2026-09-08T15:28:48.855573Z"
+    }
+   },
    "outputs": [],
    "source": [
     "q = C.getJointState()\n",
@@ -220,7 +283,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "c290669d",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:48.858068Z",
+     "iopub.status.busy": "2026-09-08T15:28:48.857944Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.016054Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.015505Z"
+    }
+   },
    "outputs": [],
    "source": [
     "os.system('ffmpeg -v 16 -f image2 -framerate 12 -i z.vid/%04d.png -c:v libx264 -r 25 -pix_fmt yuv420p -y vid.mp4')"
@@ -248,7 +318,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "1692a1b0",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.018022Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.017887Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.032406Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.031668Z"
+    }
+   },
    "outputs": [],
    "source": [
     "cam = ry.CameraView(C)"
@@ -258,7 +335,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "72812f56",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.034120Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.034024Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.065906Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.065356Z"
+    }
+   },
    "outputs": [],
    "source": [
     "rgb, depth = cam.computeImageAndDepth(C, simulateDepthNoise=False)"
@@ -268,7 +352,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "4263c41b",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.067016Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.066915Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.152180Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.151498Z"
+    }
+   },
    "outputs": [],
    "source": [
     "fig = plt.figure()\n",
@@ -283,7 +374,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "58a4780d",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.153758Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.153606Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.157145Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.156728Z"
+    }
+   },
    "outputs": [],
    "source": [
     "cam.setCamera(C.getFrame('cameraTop')) # cameraWrist is another pre-defined frame"
@@ -293,7 +391,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b45c63d9",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.158078Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.157958Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.230633Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.230025Z"
+    }
+   },
    "outputs": [],
    "source": [
     "rgb, depth = cam.computeImageAndDepth(C, simulateDepthNoise=True)\n",
@@ -304,7 +409,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b5349790",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.233498Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.233376Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.312035Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.311345Z"
+    }
+   },
    "outputs": [],
    "source": [
     "fig = plt.figure()\n",
@@ -327,7 +439,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "40853083",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.313268Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.313142Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.315140Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.314591Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -338,7 +457,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "25ce340b",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.316152Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.316032Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.503552Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.502919Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
@@ -350,7 +476,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "c5f0c0f9",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.505169Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.504971Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.617743Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.617218Z"
+    }
+   },
    "outputs": [],
    "source": [
     "cam = ry.CameraView(C)\n",
@@ -363,7 +496,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "76b348c7",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.619324Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.619203Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.621875Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.621466Z"
+    }
+   },
    "outputs": [],
    "source": [
     "print(rgb.shape, depth.shape, pcl.shape)\n",
@@ -374,7 +514,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "9646e4f7",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.622903Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.622794Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.708715Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.708016Z"
+    }
+   },
    "outputs": [],
    "source": [
     "fig = plt.figure()\n",
@@ -389,7 +536,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "0e71b7fb",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.709988Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.709855Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.722518Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.722034Z"
+    }
+   },
    "outputs": [],
    "source": [
     "f = C.addFrame('pcl', 'cameraTop')\n",
@@ -409,7 +563,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b13bfb7e",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.723846Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.723729Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.725599Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.725161Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# import robotic as ry\n",
@@ -422,7 +583,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "96b0cba5",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.726923Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.726809Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.728621Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.728197Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# C = ry.Config()\n",
@@ -434,7 +602,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "c8a61052-c89a-4542-9bd4-87e3dc599a50",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.729665Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.729562Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.731374Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.730959Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# C.addFrame('light1') .setPosition([1,0,2]) .setShape(ry.ST.ssBox, [.5,2,.1,.02]) .setColor([.5]) .setAttribute('temperature', 6000)\n",
@@ -446,7 +621,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "17014710",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.732424Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.732322Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.734257Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.733662Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# nv = render.NvisiiRenderer(600, 400, C.view_focalLength())\n",
@@ -457,7 +639,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "26a50413",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.735383Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.735248Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.737039Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.736670Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# nv.setCamera(C)\n",
@@ -470,7 +659,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "8f3e851d",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.738077Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.737932Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.739723Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.739355Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# del nv"
@@ -480,7 +676,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "520c9ce7-e87d-4fc4-9025-a3e180ca024b",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:49.740722Z",
+     "iopub.status.busy": "2026-09-08T15:28:49.740600Z",
+     "iopub.status.idle": "2026-09-08T15:28:49.745355Z",
+     "shell.execute_reply": "2026-09-08T15:28:49.744698Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del C"

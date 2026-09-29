@@ -27,7 +27,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:33.875107Z",
+     "iopub.status.busy": "2026-09-08T15:28:33.874955Z",
+     "iopub.status.idle": "2026-09-08T15:28:34.084408Z",
+     "shell.execute_reply": "2026-09-08T15:28:34.083850Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -51,7 +58,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:34.121424Z",
+     "iopub.status.busy": "2026-09-08T15:28:34.121090Z",
+     "iopub.status.idle": "2026-09-08T15:28:34.127576Z",
+     "shell.execute_reply": "2026-09-08T15:28:34.126877Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.clear()\n",
@@ -73,7 +87,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:34.129075Z",
+     "iopub.status.busy": "2026-09-08T15:28:34.128925Z",
+     "iopub.status.idle": "2026-09-08T15:28:34.134609Z",
+     "shell.execute_reply": "2026-09-08T15:28:34.134070Z"
+    }
+   },
    "outputs": [],
    "source": [
     "f = C.addFrame(name='second', parent='first')\n",
@@ -93,7 +114,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:34.136400Z",
+     "iopub.status.busy": "2026-09-08T15:28:34.136256Z",
+     "iopub.status.idle": "2026-09-08T15:28:34.140615Z",
+     "shell.execute_reply": "2026-09-08T15:28:34.139828Z"
+    }
+   },
    "outputs": [],
    "source": [
     "q = C.getJointState()\n",
@@ -113,7 +141,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:34.142278Z",
+     "iopub.status.busy": "2026-09-08T15:28:34.142123Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.206051Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.204929Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# Add new frames: a box, a ball and a capsule\n",
@@ -138,7 +173,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.208198Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.208060Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.211454Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.211099Z"
+    }
+   },
    "outputs": [],
    "source": [
     "ry.ST.__members__.keys()"
@@ -161,7 +203,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.213405Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.213230Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.216286Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.215775Z"
+    }
+   },
    "outputs": [],
    "source": [
     "ry.JT.__members__.keys()"
@@ -188,7 +237,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.217522Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.217423Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.220956Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.220498Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.clear()\n",
@@ -209,7 +265,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.223932Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.223801Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.227167Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.226682Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.clear()\n",
@@ -244,7 +307,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.228517Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.228397Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.404420Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.403693Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.clear()\n",
@@ -262,7 +332,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.406008Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.405869Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.547167Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.546618Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.addFile(('$RAI_PATH/panda/panda.g'), 'r_')\n",
@@ -281,7 +358,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.550209Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.550101Z",
+     "iopub.status.idle": "2026-09-08T15:28:39.553031Z",
+     "shell.execute_reply": "2026-09-08T15:28:39.552523Z"
+    }
+   },
    "outputs": [],
    "source": [
     "print(C.getJointState())\n",
@@ -299,7 +383,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:39.554176Z",
+     "iopub.status.busy": "2026-09-08T15:28:39.554083Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.577809Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.576832Z"
+    }
+   },
    "outputs": [],
    "source": [
     "q0 = C.getJointState()\n",
@@ -322,7 +413,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.580677Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.580415Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.761201Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.760498Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
@@ -356,7 +454,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.762701Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.762539Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.766282Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.765746Z"
+    }
+   },
    "outputs": [],
    "source": [
     "f = C.getFrame('gripper')\n",
@@ -379,7 +484,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.767814Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.767674Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.771480Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.770731Z"
+    }
+   },
    "outputs": [],
    "source": [
     "[y,J] = C.eval(ry.FS.position, ['gripper'])\n",
@@ -389,7 +501,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.773622Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.773369Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.778247Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.777599Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# negative(!) distance between two convex shapes (or origin of marker)\n",
@@ -399,7 +518,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.779877Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.779710Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.783559Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.782976Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# the x-axis of the given frame in world coordinates\n",
@@ -431,7 +557,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.785033Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.784822Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.788428Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.787914Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.setJointState(q0)\n",
@@ -448,7 +581,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.789820Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.789631Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.794384Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.793761Z"
+    }
+   },
    "outputs": [],
    "source": [
     "X0 = C.getFrameState()\n",
@@ -465,7 +605,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.795539Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.795400Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.798168Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.797873Z"
+    }
+   },
    "outputs": [],
    "source": [
     "X = X0 + .1\n",
@@ -485,7 +632,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.799375Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.799249Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.802035Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.801606Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.setFrameState(X0)\n",
@@ -504,7 +658,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.803177Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.803055Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.805660Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.805099Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.selectJoints(['panda_joint1', 'panda_joint2'])\n",
@@ -515,7 +676,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.806682Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.806569Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.809374Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.808884Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.selectJoints([], notThose=True)\n",
@@ -537,7 +705,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.810420Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.810331Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.961144Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.960690Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.clear()\n",
@@ -567,7 +742,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.962725Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.962617Z",
+     "iopub.status.idle": "2026-09-08T15:28:43.972186Z",
+     "shell.execute_reply": "2026-09-08T15:28:43.971604Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.view_close()"
@@ -576,7 +758,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:43.973536Z",
+     "iopub.status.busy": "2026-09-08T15:28:43.973394Z",
+     "iopub.status.idle": "2026-09-08T15:28:44.003774Z",
+     "shell.execute_reply": "2026-09-08T15:28:44.003306Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# things are still there\n",
@@ -593,7 +782,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:44.005597Z",
+     "iopub.status.busy": "2026-09-08T15:28:44.005378Z",
+     "iopub.status.idle": "2026-09-08T15:28:44.020780Z",
+     "shell.execute_reply": "2026-09-08T15:28:44.020034Z"
+    }
+   },
    "outputs": [],
    "source": [
     "pressed_key = C.view(pause=True, message='press some key!')\n",
@@ -612,7 +808,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:44.022470Z",
+     "iopub.status.busy": "2026-09-08T15:28:44.022225Z",
+     "iopub.status.idle": "2026-09-08T15:28:44.025686Z",
+     "shell.execute_reply": "2026-09-08T15:28:44.025261Z"
+    }
+   },
    "outputs": [],
    "source": [
     "img = C.viewer().getRgb()\n",
@@ -622,7 +825,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:44.027218Z",
+     "iopub.status.busy": "2026-09-08T15:28:44.026962Z",
+     "iopub.status.idle": "2026-09-08T15:28:44.333774Z",
+     "shell.execute_reply": "2026-09-08T15:28:44.333006Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import matplotlib.pyplot as plt\n",
@@ -642,7 +852,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:44.335104Z",
+     "iopub.status.busy": "2026-09-08T15:28:44.334881Z",
+     "iopub.status.idle": "2026-09-08T15:28:44.342623Z",
+     "shell.execute_reply": "2026-09-08T15:28:44.341987Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del C"

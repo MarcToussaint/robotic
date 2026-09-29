@@ -12,7 +12,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:32:59.831855Z",
+     "iopub.status.busy": "2026-09-08T15:32:59.831757Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.212578Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.212033Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -30,7 +37,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.214485Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.214304Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.217274Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.216661Z"
+    }
+   },
    "outputs": [],
    "source": [
     "#the function needs to have the signature (array) -> (array, array) with dimensionalities (n) -> (d, d-times-n)\n",
@@ -51,7 +65,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.218338Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.218248Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.220317Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.219858Z"
+    }
+   },
    "outputs": [],
    "source": [
     "nlp = ry.NLP_Factory()\n",
@@ -71,7 +92,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.221708Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.221567Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.226659Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.226205Z"
+    }
+   },
    "outputs": [],
    "source": [
     "solver = ry.NLP_Solver()\n",
@@ -82,7 +110,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.256647Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.256386Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.264841Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.264244Z"
+    }
+   },
    "outputs": [],
    "source": [
     "solver.solve(True)"
@@ -91,7 +126,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.266144Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.266007Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.269616Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.269094Z"
+    }
+   },
    "outputs": [],
    "source": [
     "solver.getTrace_errs()"
@@ -100,7 +142,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.270950Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.270800Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.272997Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.272550Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -111,7 +160,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.274317Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.274195Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.277658Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.277080Z"
+    }
+   },
    "outputs": [],
    "source": [
     "class MyNLP:\n",
@@ -137,7 +193,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.278927Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.278795Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.280644Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.280251Z"
+    }
+   },
    "outputs": [],
    "source": [
     "p = MyNLP()"
@@ -146,7 +209,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.281703Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.281588Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.284771Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.284371Z"
+    }
+   },
    "outputs": [],
    "source": [
     "solver = ry.NLP_Solver()\n",
@@ -158,7 +228,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.285727Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.285610Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.380564Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.379920Z"
+    }
+   },
    "outputs": [],
    "source": [
     "for i in range(20):\n",
@@ -172,7 +249,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.382028Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.381914Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.387731Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.387219Z"
+    }
+   },
    "outputs": [],
    "source": [
     "X = np.arange(-2, 2, 0.15)\n",
@@ -185,7 +269,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.389116Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.388960Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.505035Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.504079Z"
+    }
+   },
    "outputs": [],
    "source": [
     "fig, ax = plt.subplots()\n",
@@ -196,7 +287,14 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:33:00.507350Z",
+     "iopub.status.busy": "2026-09-08T15:33:00.507172Z",
+     "iopub.status.idle": "2026-09-08T15:33:00.512492Z",
+     "shell.execute_reply": "2026-09-08T15:33:00.512007Z"
+    }
+   },
    "outputs": [],
    "source": [
     "for i in range(20):\n",

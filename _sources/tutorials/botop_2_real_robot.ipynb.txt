@@ -49,7 +49,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "eca938ab",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:14.301337Z",
+     "iopub.status.busy": "2026-09-08T15:31:14.301197Z",
+     "iopub.status.idle": "2026-09-08T15:31:14.406943Z",
+     "shell.execute_reply": "2026-09-08T15:31:14.406174Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -70,7 +77,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "33f75e77",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:14.410551Z",
+     "iopub.status.busy": "2026-09-08T15:31:14.410272Z",
+     "iopub.status.idle": "2026-09-08T15:31:14.758936Z",
+     "shell.execute_reply": "2026-09-08T15:31:14.758379Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
@@ -91,7 +105,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "f1119ecc",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:14.760692Z",
+     "iopub.status.busy": "2026-09-08T15:31:14.760535Z",
+     "iopub.status.idle": "2026-09-08T15:31:15.024606Z",
+     "shell.execute_reply": "2026-09-08T15:31:15.023485Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# True = real robot!!\n",
@@ -110,7 +131,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "bafdead7",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:15.027109Z",
+     "iopub.status.busy": "2026-09-08T15:31:15.026850Z",
+     "iopub.status.idle": "2026-09-08T15:31:15.030098Z",
+     "shell.execute_reply": "2026-09-08T15:31:15.029424Z"
+    }
+   },
    "outputs": [],
    "source": [
     "if bot.get_t()==0: #if the above failed, use a sim...\n",
@@ -130,7 +158,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "df4ea390",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:15.031786Z",
+     "iopub.status.busy": "2026-09-08T15:31:15.031564Z",
+     "iopub.status.idle": "2026-09-08T15:31:17.261766Z",
+     "shell.execute_reply": "2026-09-08T15:31:17.261175Z"
+    }
+   },
    "outputs": [],
    "source": [
     "q = bot.get_qHome()\n",
@@ -156,7 +191,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b651a971",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:17.263535Z",
+     "iopub.status.busy": "2026-09-08T15:31:17.263415Z",
+     "iopub.status.idle": "2026-09-08T15:31:17.265981Z",
+     "shell.execute_reply": "2026-09-08T15:31:17.265527Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# These are camera config parameters\n",
@@ -175,7 +217,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "cb1948ce",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:17.267138Z",
+     "iopub.status.busy": "2026-09-08T15:31:17.267043Z",
+     "iopub.status.idle": "2026-09-08T15:31:22.848461Z",
+     "shell.execute_reply": "2026-09-08T15:31:22.847818Z"
+    }
+   },
    "outputs": [],
    "source": [
     "v = ry.ImageViewer()\n",
@@ -196,7 +245,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "1b2144a8",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:22.850156Z",
+     "iopub.status.busy": "2026-09-08T15:31:22.849988Z",
+     "iopub.status.idle": "2026-09-08T15:31:27.515149Z",
+     "shell.execute_reply": "2026-09-08T15:31:27.514349Z"
+    }
+   },
    "outputs": [],
    "source": [
     "pcl = C.getFrame(\"pcl\")\n",
@@ -231,7 +287,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "79a8549c",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:27.516671Z",
+     "iopub.status.busy": "2026-09-08T15:31:27.516550Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.155251Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.154487Z"
+    }
+   },
    "outputs": [],
    "source": [
     "#slow close\n",
@@ -259,7 +322,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "10443e09",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.156421Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.156323Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.234069Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.233627Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del bot\n",
@@ -278,7 +348,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "6e82d8f8",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.235630Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.235433Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.237672Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.237317Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -290,7 +367,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "aa1a93be",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.239083Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.238944Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.415562Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.414916Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
@@ -302,7 +386,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "5844a69c",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.417092Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.416935Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.660068Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.658919Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# True = real robot!!\n",
@@ -321,7 +412,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "18468cf5",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.662294Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.662110Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.666985Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.666113Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C.view(True, 'floating=False, damping=True -- Try moving the robot by hand!\\n-- press any key to continue --')"
@@ -339,7 +437,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "953b9f3f",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.668993Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.668705Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.676571Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.675819Z"
+    }
+   },
    "outputs": [],
    "source": [
     "bot.hold(floating=True, damping=False)\n",
@@ -358,7 +463,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "5d51abbd",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.678768Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.678575Z",
+     "iopub.status.idle": "2026-09-08T15:31:32.682576Z",
+     "shell.execute_reply": "2026-09-08T15:31:32.681850Z"
+    }
+   },
    "outputs": [],
    "source": [
     "bot.hold(floating=True, damping=True)\n",
@@ -379,7 +491,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "86cad3be",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:32.684567Z",
+     "iopub.status.busy": "2026-09-08T15:31:32.684368Z",
+     "iopub.status.idle": "2026-09-08T15:31:37.927020Z",
+     "shell.execute_reply": "2026-09-08T15:31:37.926264Z"
+    }
+   },
    "outputs": [],
    "source": [
     "bot.moveTo(bot.get_qHome(), 1.)\n",
@@ -403,7 +522,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "549b1e19",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:37.928704Z",
+     "iopub.status.busy": "2026-09-08T15:31:37.928559Z",
+     "iopub.status.idle": "2026-09-08T15:31:38.082175Z",
+     "shell.execute_reply": "2026-09-08T15:31:38.081590Z"
+    }
+   },
    "outputs": [],
    "source": [
     "bot.home(C)"
@@ -413,7 +539,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "248e8726",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:38.083161Z",
+     "iopub.status.busy": "2026-09-08T15:31:38.083047Z",
+     "iopub.status.idle": "2026-09-08T15:31:38.126223Z",
+     "shell.execute_reply": "2026-09-08T15:31:38.125572Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del bot\n",
@@ -434,7 +567,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "09599476",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:38.128046Z",
+     "iopub.status.busy": "2026-09-08T15:31:38.127821Z",
+     "iopub.status.idle": "2026-09-08T15:31:38.130105Z",
+     "shell.execute_reply": "2026-09-08T15:31:38.129596Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -446,7 +586,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b52de13c",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:38.131414Z",
+     "iopub.status.busy": "2026-09-08T15:31:38.131245Z",
+     "iopub.status.idle": "2026-09-08T15:31:38.307141Z",
+     "shell.execute_reply": "2026-09-08T15:31:38.306375Z"
+    }
+   },
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
@@ -458,7 +605,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "69b11c6a",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:38.308955Z",
+     "iopub.status.busy": "2026-09-08T15:31:38.308657Z",
+     "iopub.status.idle": "2026-09-08T15:31:38.520558Z",
+     "shell.execute_reply": "2026-09-08T15:31:38.519613Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# True = real robot!!\n",
@@ -469,7 +623,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "9a4ad737",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:38.522168Z",
+     "iopub.status.busy": "2026-09-08T15:31:38.521915Z",
+     "iopub.status.idle": "2026-09-08T15:31:38.524302Z",
+     "shell.execute_reply": "2026-09-08T15:31:38.523796Z"
+    }
+   },
    "outputs": [],
    "source": [
     "bot.hold(floating=True, damping=False)"
@@ -479,7 +640,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "41a1f137",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:38.525660Z",
+     "iopub.status.busy": "2026-09-08T15:31:38.525506Z",
+     "iopub.status.idle": "2026-09-08T15:31:43.649203Z",
+     "shell.execute_reply": "2026-09-08T15:31:43.648553Z"
+    }
+   },
    "outputs": [],
    "source": [
     "pclFrame = C.addFrame('pcl', 'cameraWrist')\n",
@@ -500,7 +668,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "11284fdc",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:31:43.651054Z",
+     "iopub.status.busy": "2026-09-08T15:31:43.650932Z",
+     "iopub.status.idle": "2026-09-08T15:31:43.736613Z",
+     "shell.execute_reply": "2026-09-08T15:31:43.736026Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del bot\n",

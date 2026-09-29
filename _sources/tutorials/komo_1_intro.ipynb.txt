@@ -28,7 +28,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "8e07bf36",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.495166Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.495027Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.905606Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.905095Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -60,7 +67,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "bccb7b55",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.908008Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.907625Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.911449Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.911019Z"
+    }
+   },
    "outputs": [],
    "source": [
     "qHome = C.getJointState()\n",
@@ -108,7 +122,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "178e3d42",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.912920Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.912768Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.916213Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.915618Z"
+    }
+   },
    "outputs": [],
    "source": [
     "ret = ry.NLP_Solver(komo.nlp(), verbose=4) .solve()\n",
@@ -129,7 +150,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b727e37c",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.917364Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.917244Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.960801Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.960100Z"
+    }
+   },
    "outputs": [],
    "source": [
     "komo.view(False, \"IK solution\")"
@@ -147,7 +175,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "5adc15f8",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.962656Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.962452Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.965501Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.965023Z"
+    }
+   },
    "outputs": [],
    "source": [
     "q = komo.getPath()\n",
@@ -166,7 +201,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "b20fc581",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.967086Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.966948Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.982042Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.980932Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del komo #also closes komo view\n",
@@ -188,7 +230,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "bdbbbe7b",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.984526Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.984307Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.989106Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.988582Z"
+    }
+   },
    "outputs": [],
    "source": [
     "komo = ry.KOMO(C, 1,1,0, True)\n",
@@ -215,7 +264,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "dab4fbee",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.991369Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.991198Z",
+     "iopub.status.idle": "2026-09-08T15:27:30.996050Z",
+     "shell.execute_reply": "2026-09-08T15:27:30.995550Z"
+    }
+   },
    "outputs": [],
    "source": [
     "ret = ry.NLP_Solver(komo.nlp(), verbose=0 ) .solve()\n",
@@ -230,7 +286,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "f1970bb1",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:30.998098Z",
+     "iopub.status.busy": "2026-09-08T15:27:30.997882Z",
+     "iopub.status.idle": "2026-09-08T15:27:31.001404Z",
+     "shell.execute_reply": "2026-09-08T15:27:31.000909Z"
+    }
+   },
    "outputs": [],
    "source": [
     "q = komo.getPath()\n",
@@ -250,7 +313,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "a2d386d6",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:31.003369Z",
+     "iopub.status.busy": "2026-09-08T15:27:31.003200Z",
+     "iopub.status.idle": "2026-09-08T15:27:41.067170Z",
+     "shell.execute_reply": "2026-09-08T15:27:41.066199Z"
+    }
+   },
    "outputs": [],
    "source": [
     "box = C.getFrame('box')\n",
@@ -282,7 +352,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "8222658d",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:41.069189Z",
+     "iopub.status.busy": "2026-09-08T15:27:41.068990Z",
+     "iopub.status.idle": "2026-09-08T15:27:41.074997Z",
+     "shell.execute_reply": "2026-09-08T15:27:41.074237Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del komo\n",
@@ -309,7 +386,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "09c7a057",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:41.076379Z",
+     "iopub.status.busy": "2026-09-08T15:27:41.076249Z",
+     "iopub.status.idle": "2026-09-08T15:27:51.227525Z",
+     "shell.execute_reply": "2026-09-08T15:27:51.226025Z"
+    }
+   },
    "outputs": [],
    "source": [
     "for t in range(10):\n",
@@ -332,7 +416,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "cda905f5",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:51.229819Z",
+     "iopub.status.busy": "2026-09-08T15:27:51.229647Z",
+     "iopub.status.idle": "2026-09-08T15:27:51.240937Z",
+     "shell.execute_reply": "2026-09-08T15:27:51.240112Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del komo\n",
@@ -363,7 +454,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "a6da9bda",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:51.242551Z",
+     "iopub.status.busy": "2026-09-08T15:27:51.242407Z",
+     "iopub.status.idle": "2026-09-08T15:27:51.417298Z",
+     "shell.execute_reply": "2026-09-08T15:27:51.416648Z"
+    }
+   },
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -392,7 +490,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "7c3a74d2",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:51.418725Z",
+     "iopub.status.busy": "2026-09-08T15:27:51.418579Z",
+     "iopub.status.idle": "2026-09-08T15:27:55.438426Z",
+     "shell.execute_reply": "2026-09-08T15:27:55.437458Z"
+    }
+   },
    "outputs": [],
    "source": [
     "komo = ry.KOMO(C, phases=4, slicesPerPhase=1, kOrder=1, enableCollisions=False)\n",
@@ -454,7 +559,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "dd21ae9e",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:55.440174Z",
+     "iopub.status.busy": "2026-09-08T15:27:55.440025Z",
+     "iopub.status.idle": "2026-09-08T15:27:59.481003Z",
+     "shell.execute_reply": "2026-09-08T15:27:59.479919Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# Note, the slicesPerPhase=10 is the only difference to above\n",
@@ -482,7 +594,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "40341e34",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:27:59.482862Z",
+     "iopub.status.busy": "2026-09-08T15:27:59.482710Z",
+     "iopub.status.idle": "2026-09-08T15:28:03.527410Z",
+     "shell.execute_reply": "2026-09-08T15:28:03.526253Z"
+    }
+   },
    "outputs": [],
    "source": [
     "# only differences: the kOrder=2, control objective order 2, constrain final jointState velocity to zero\n",
@@ -521,7 +640,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "3d47d887",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:03.529409Z",
+     "iopub.status.busy": "2026-09-08T15:28:03.529238Z",
+     "iopub.status.idle": "2026-09-08T15:28:03.786343Z",
+     "shell.execute_reply": "2026-09-08T15:28:03.785824Z"
+    }
+   },
    "outputs": [],
    "source": [
     "from matplotlib import pyplot as plt\n",
@@ -547,7 +673,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "add05d33",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:03.788015Z",
+     "iopub.status.busy": "2026-09-08T15:28:03.787859Z",
+     "iopub.status.idle": "2026-09-08T15:28:03.858737Z",
+     "shell.execute_reply": "2026-09-08T15:28:03.858195Z"
+    }
+   },
    "outputs": [],
    "source": [
     "err = komo.info_objectiveErrorTraces()\n",
@@ -574,7 +707,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "3eff36e4",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:03.860026Z",
+     "iopub.status.busy": "2026-09-08T15:28:03.859926Z",
+     "iopub.status.idle": "2026-09-08T15:28:04.094471Z",
+     "shell.execute_reply": "2026-09-08T15:28:04.094042Z"
+    }
+   },
    "outputs": [],
    "source": [
     "#%matplotlib widget\n",
@@ -616,7 +756,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "2c39b8cb",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:04.095725Z",
+     "iopub.status.busy": "2026-09-08T15:28:04.095592Z",
+     "iopub.status.idle": "2026-09-08T15:28:04.097647Z",
+     "shell.execute_reply": "2026-09-08T15:28:04.097326Z"
+    }
+   },
    "outputs": [],
    "source": [
     "plt.close('all')"
@@ -626,7 +773,14 @@
    "cell_type": "code",
    "execution_count": null,
    "id": "08aacd1a",
-   "metadata": {},
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-09-08T15:28:04.098679Z",
+     "iopub.status.busy": "2026-09-08T15:28:04.098579Z",
+     "iopub.status.idle": "2026-09-08T15:28:04.107725Z",
+     "shell.execute_reply": "2026-09-08T15:28:04.107140Z"
+    }
+   },
    "outputs": [],
    "source": [
     "del komo\n",
