@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import h5py
 from robotic.tools.h5_helper import *
 
 parser = argparse.ArgumentParser(description='h5-file info')

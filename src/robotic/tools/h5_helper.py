@@ -3,6 +3,7 @@
 import h5py
 import yaml
 import numpy as np
+import os
 
 class H5Writer:
     def __init__(self, filename):
@@ -31,6 +32,8 @@ class H5Writer:
 class H5Reader:
     def __init__(self, filename):
         self.filename = filename
+        if not os.path.isfile(filename):
+            raise Exception(f'==ry== h5 file {filename} does not exist (from {os.getcwd()})')
         self.fil = h5py.File(filename, 'r')
 
     def print_objs(self, name, obj):

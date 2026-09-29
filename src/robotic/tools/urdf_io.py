@@ -36,6 +36,7 @@ class URDFLoader():
         # links with shapes
 
         links = xmlData.findall('./link')
+        print('-- all links:', [l.attrib['name'] for l in links])
         for link in links:
             link_name = link.attrib['name']
             f_link = self.C.addFrame(link_name)
@@ -71,6 +72,7 @@ class URDFLoader():
         # joints
 
         joints = xmlData.findall('./joint')
+        print('-- all joints:', [j.attrib['name'] for j in joints])
         for joint in joints:
             joint_name = joint.attrib['name']
             if joint.find('child') is None:
@@ -78,15 +80,11 @@ class URDFLoader():
 
             parent_name = joint.find('parent').attrib['link']
             f_parent = self.C.getFrame(parent_name)
-            if f_parent is None:
-                print('SHIT', joint_name)
-                break
+            assert f_parent is not None
 
             child_name = joint.find('child').attrib['link']
             f_child = self.C.getFrame(child_name)
-            if f_child is None:
-                print('SHIT', joint_name)
-                break
+            assert f_child is not None
             if joint_name==child_name:
                 joint_name += '_joint'
                 # f_child.name = f_child.name + '_link'
@@ -128,10 +126,10 @@ class URDFLoader():
             elem = joint.find('mimic')
             f_mimic = None
             if elem is not None:
-                f_mimic = self.C.getFrame(elem.attrib['joint'])
+                mimic_name = elem.attrib['joint']
+                f_mimic = self.C.getFrame(mimic_name)
                 if f_mimic is None:
-                    print('SHIT', elem.attrib['joint'])
-                    break
+                    print(f'##### WARNING #####: cannot set joint {joint_name} to mimic {mimic_name} - probably as not sorted in URDF')
 
             att = joint.attrib.get('type')
             
