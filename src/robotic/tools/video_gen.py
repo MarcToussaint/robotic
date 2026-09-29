@@ -3,11 +3,10 @@ from PIL import Image
 from subprocess import Popen, PIPE
 
 class VideoGenerator():
-    def __init__(self, framerate=50, filename='tmp.mp4'):
-        self.framerate = framerate
+    def __init__(self, input_framerate=50, output_framerate=30, filename='tmp.mp4'):
         self.p = Popen(['ffmpeg', '-y', '-loglevel', 'warning', '-f', 'image2pipe',
-                        '-vcodec', 'png', '-r', str(framerate), '-i', '-', #input
-                        '-vcodec', 'libx264', '-r', str(framerate), '-pix_fmt', 'yuv420p', filename], #output
+                        '-vcodec', 'ppm', '-r', str(input_framerate), '-i', '-', #input
+                        '-vcodec', 'libx264', '-r', str(output_framerate), '-pix_fmt', 'yuv420p', filename], #output
                        stdin=PIPE)
 
     def __del__(self):
@@ -22,5 +21,5 @@ class VideoGenerator():
             assert rgb.ndim==3
             img = Image.fromarray(rgb, 'RGB')
             for _ in range(int(multiple)):
-                img.save(self.p.stdin, 'PNG')
+                img.save(self.p.stdin, 'PPM')
         
