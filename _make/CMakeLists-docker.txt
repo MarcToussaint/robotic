@@ -267,7 +267,7 @@ install(
   DIRECTORY rai-robotModels
   DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic
   FILES_MATCHING
-  PATTERN "*.yml" PATTERN "*.g" PATTERN "*.h5" PATTERN "*.ply" PATTERN "*.png"
+  PATTERN "*.yml" PATTERN "*.g" PATTERN "*.h5" PATTERN "*.ply" PATTERN "*.stl" PATTERN "*.png"
   PATTERN "retired" PATTERN "__pychache__" EXCLUDE
   )
 

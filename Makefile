@@ -6,18 +6,12 @@ PY_SITE = $(VIRTUAL_ENV)/lib/python$(PY_VER)/site-packages
 
 default: compile
 
-compile:
-	$(MAKE) -C build _robotic docstrings install
-
-docs:
-	cd rai-docs && sphinx-build doc ../html
-
-info:
+print-py-info:
 	@echo "PY_VER:" $(PY_VER)
 	@echo "PY_SITE:" $(PY_SITE)
 
-docs-clean:
-	rm -Rf html
+compile:
+	$(MAKE) -C build _robotic docstrings install
 
 install:
 	ln -f -s _make/CMakeLists-ubuntu.txt CMakeLists.txt
@@ -28,7 +22,7 @@ install:
 install-with-hardware:
 	ln -f -s _make/CMakeLists-ubuntu.txt CMakeLists.txt
 	cmake . -B build -DPY_VERSION=$(PY_VER) -DUSE_OPENCV=ON -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON -DUSE_TROSSEN=ON -DUSE_BASLER=ON
-	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
+	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 4)
 	uv pip install -e .
 
 local-clean:
@@ -51,6 +45,12 @@ wheels-upload:
 
 wheels-install:
 	python$(PY_VER) -m pip install dist/robotic-*cp312*.whl --force-reinstall
+
+docs:
+	cd rai-docs && sphinx-build doc ../html
+
+docs-clean:
+	rm -Rf html
 
 test-build:
 	$(eval id = $(shell _make/run-docker.sh ubuntu:24.04 -d))

@@ -1,6 +1,6 @@
 [project]
 name = "robotic"
-version = "0.4.2a4" #pre-release: 0.4.2a1 before 0.4.2
+version = "0.4.3a1" #pre-release: 0.4.2a1 before 0.4.2
 description = "Robotic Control Interface & Manipulation Planning Library"
 license = "MIT"
 readme = "README.md"
@@ -40,3 +40,6 @@ ry-view = "robotic.scripts.ry_view:main"
 ry-bot = "robotic.scripts.ry_bot:main"
 ry-h5info = "robotic.scripts.ry_h5info:main"
 ry-import-urdf = "robotic.scripts.ry_import_urdf:main"
+
+[tool.ruff]
+line-length = 180
