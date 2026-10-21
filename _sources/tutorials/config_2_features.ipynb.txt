@@ -22,14 +22,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.718923Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.718778Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.788064Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.784065Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "import robotic as ry"
@@ -38,14 +31,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.790780Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.790552Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.874787Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.874247Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C = ry.Config()\n",
@@ -56,14 +42,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.876255Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.876128Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.879139Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.878691Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "[y,J] = C.eval(ry.FS.position, ['gripper'])\n",
@@ -73,14 +52,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.904900Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.904561Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.908970Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.908522Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "# the x-axis of the given frame in world coordinates\n",
@@ -110,14 +82,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.909972Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.909856Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.912216Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.911758Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "ry.FS.__members__.keys()"
@@ -172,14 +137,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.913199Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.913103Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.916283Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.915615Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.eval(ry.FS.positionRel, ['gripper', 'panda_joint1'], scale=[1], target=[0, 0, .3])"
@@ -228,14 +186,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.917537Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.917359Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.920217Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.919847Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.eval(ry.FS.position, ['gripper'], [[1,0,0],[0,1,0]])"
@@ -251,14 +202,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.921508Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.921405Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.923894Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.923501Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.eval(ry.FS.positionRel, ['gripper', 'panda_joint1'], [[1,0,0],[0,1,0]])"
@@ -276,14 +220,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.925106Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.925013Z",
-     "iopub.status.idle": "2026-09-08T15:30:40.927614Z",
-     "shell.execute_reply": "2026-09-08T15:30:40.927135Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.computeCollisions() #collisions/proxies are not automatically computed on set...State\n",
@@ -300,14 +237,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:40.928962Z",
-     "iopub.status.busy": "2026-09-08T15:30:40.928855Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.025985Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.025709Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "import robotic as ry\n",
@@ -322,14 +252,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.027658Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.027513Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.299808Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.298665Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.selectJoints(['panda_joint1', 'panda_joint2', 'r_panda_joint1', 'r_panda_joint2'])\n",
@@ -347,14 +270,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.301503Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.301303Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.305113Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.304561Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.eval(ry.FS.negDistance, ['palm', 'r_palm'])"
@@ -363,14 +279,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.306502Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.306371Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.309883Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.309291Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.eval(ry.FS.negDistance, ['panda_coll7', 'r_panda_coll7'])"
@@ -379,14 +288,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.312557Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.312305Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.317184Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.316517Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.eval(ry.FS.negDistance, ['panda_coll6', 'r_panda_coll6'])"
@@ -402,14 +304,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.319502Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.319275Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.324441Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.323824Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.computeCollisions()\n",
@@ -419,14 +314,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.326018Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.325844Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.329485Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.328919Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.coll_totalViolation()"
@@ -444,14 +332,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.331567Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.331325Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.336019Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.335295Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "C.eval(ry.FS.accumulatedCollisions, [])"
@@ -479,14 +360,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {
-    "execution": {
-     "iopub.execute_input": "2026-09-08T15:30:41.337940Z",
-     "iopub.status.busy": "2026-09-08T15:30:41.337676Z",
-     "iopub.status.idle": "2026-09-08T15:30:41.381448Z",
-     "shell.execute_reply": "2026-09-08T15:30:41.380693Z"
-    }
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "del C"
@@ -502,7 +376,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "venv (3.12.3)",
    "language": "python",
    "name": "python3"
   },

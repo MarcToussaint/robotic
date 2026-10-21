@@ -306,9 +306,9 @@ for i in range(10):
     else:
         print(' -- infeasible')
 
-del man
 C.getFrame('box').setPosition([-.25,.1,1.])
-C.view()
+C.view(True)
+print("HERE")
 </pre></div>
 </div>
 </div>
@@ -369,7 +369,6 @@ for i in range(10):
         for t in range(man.path.shape[0]):
             C.setJointState(man.path[t])
             C.view(False, f'grasp {i} with orientation {orientation}, path step {t}\n{ret}')
-            time.sleep(.05)
         C.view(verbose&gt;0, f'path done')
     else:
         print('  -- infeasible')
