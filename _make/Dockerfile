@@ -1,4 +1,9 @@
-FROM quay.io/pypa/manylinux2014_x86_64
+# Target architecture: x86_64 (default) or aarch64.
+# Used for the base image, the CMake download, and matches `uname -m`.
+ARG ARCH=x86_64
+FROM quay.io/pypa/manylinux_2_28_${ARCH}
+# re-declare so ${ARCH} is usable in RUN steps below the FROM
+ARG ARCH
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME="/root"
@@ -7,17 +12,18 @@ ENV MAKEFLAGS="-j$(command nproc --ignore 1)"
 
 ##########################################################
 
-RUN yum -y install gcc wget \
-    atlas-devel f2c-devel zlib-devel \
-    mesa-libGLU-devel libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel \
-    clang lapack-static atlas-static \
-    glm-devel freetype-devel
+RUN dnf -y install epel-release && \
+    dnf -y install --enablerepo=powertools \
+        gcc gcc-gfortran wget clang \
+        zlib-devel freetype-devel \
+        mesa-libGLU-devel \
+        libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel libXxf86vm-devel \
+        glm-devel \
+        openblas-devel && \
+    wget https://www.netlib.org/f2c/f2c.h -O /usr/local/include/f2c.h
     
-RUN cd /usr/lib64; ln -s libstdc++.so.6.0.19 libstdc++.so
-
-# install old cmake
-RUN cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.31.9/cmake-3.31.9-linux-x86_64.sh
-RUN sh /tmp/cmake-3.31.9-linux-x86_64.sh --prefix=/usr/local --exclude-subdir --skip-license
+# the base image ships CMake 4, which rejects projects declaring cmake_minimum_required < 3.5
+ENV CMAKE_POLICY_VERSION_MINIMUM=3.5
 
 RUN wget https://github.com/MarcToussaint/rai/raw/master/_make/install.sh; chmod a+x install.sh
 
@@ -25,17 +31,21 @@ RUN wget https://github.com/MarcToussaint/rai/raw/master/_make/install.sh; chmod
 RUN ./install.sh -gc jsoncpp
 RUN ./install.sh -gc libyaml
 RUN ./install.sh -gc libpng
-RUN ./install.sh -gc hdf5
+# hdf5 1.10.4 predates GCC 14, which turned implicit declarations and incompatible pointer assignments into errors.
+RUN env CC="gcc -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types" ./install.sh -gc hdf5
 RUN ./install.sh -gc freeglut
 RUN ./install.sh -gc glew
 RUN ./install.sh -gc glfw
 
 RUN ./install.sh -gc eigen
-RUN ./install.sh -gc libann
+# libANN's repo ships prebuilt x86-64 .o files, so clone it up front and drop them. Make parses install.sh's "C++=g++" argument as `C+ += g++`, so $(C++) comes from the env.
+RUN git clone https://github.com/daveb-dev/libANN.git ${HOME}/git/libann && rm -f ${HOME}/git/libann/src/*.o
+RUN env "C++=g++" ./install.sh -gc libann
 RUN ./install.sh -gc qhull
 RUN ./install.sh -gc libccd
 RUN ./install.sh -gc fcl
-RUN ./install.sh -gc assimp
+# assimp v5.2.5 builds with -Werror, and GCC 13+ flags its FBX parser with a false-positive -Wdangling-reference
+RUN env CXXFLAGS="-Wno-dangling-reference" ./install.sh -gc assimp
 
 #RUN ./install.sh -gc bullet
 RUN ./install.sh -gc physx
@@ -44,11 +54,11 @@ RUN ./install.sh -gc physx
 #RUN ./install.sh -g librealsense
 #RUN ./install.sh -g libfranka
 
-RUN python3.10 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.11 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.12 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.13 -m pip install pybind11 pybind11-stubgen numpy
-RUN python3.14 -m pip install pybind11 pybind11-stubgen numpy
+RUN python3.10 -m pip install pybind11 pybind11-stubgen numpy wheel
+RUN python3.11 -m pip install pybind11 pybind11-stubgen numpy wheel
+RUN python3.12 -m pip install pybind11 pybind11-stubgen numpy wheel
+RUN python3.13 -m pip install pybind11 pybind11-stubgen numpy wheel
+RUN python3.14 -m pip install pybind11 pybind11-stubgen numpy wheel
 
 ##########################################################
 
