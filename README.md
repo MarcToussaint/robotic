@@ -124,9 +124,17 @@ Essentially the same as above, but some more dependencies and according flags in
 
 ## Building the wheels within a manylinux docker
 
-* Build the docker
+The docker builds for one target architecture at a time, `x86_64`
+(the default) or `aarch64`, and the wheel's platform tag follows
+`uname -m` inside the container. So on an arm machine (Apple silicon,
+arm server, `ubuntu-24.04-arm` runner, etc.) pass `aarch64`. Both are built
+in CI by [.github/workflows/wheels.yml](.github/workflows/wheels.yml).
 
-      _make/build-docker.sh
+* Build the docker
+```
+_make/build-docker.sh            #x86_64
+_make/build-docker.sh aarch64    #arm
+```
 
 * Compile wheels (this runs `local/_make/build-wheels.sh`
 inside the docker -- see inside the `Makefile`)

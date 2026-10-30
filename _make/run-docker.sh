@@ -14,7 +14,10 @@ thispath="$(dirname "$(realpath "$0")")"
 
 xhost +local:root > /dev/null
 
-docker run -it $2 \
+### /dev/input does not exist on Docker Desktop
+[ -e /dev/input ] && opts="--device /dev/input"
+
+docker run -it $2 $opts \
        --volume="$thispath/..:/root/local" \
        --volume="$HOME:/root/home" \
        --volume="$thispath/docker.bashrc:/root/.bash_aliases" \
@@ -23,7 +26,6 @@ docker run -it $2 \
        --env="DISPLAY" \
        --env DEBIAN_FRONTEND="noninteractive" \
        --network host \
-       --device /dev/input \
        $image /bin/bash
 
 #       --device /dev/dri \

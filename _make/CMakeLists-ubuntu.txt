@@ -39,8 +39,9 @@ option(USE_H5 "link to h5 library" ON)
 option(USE_FREETYPE "link to freetype2 library" ON)
 
 ## compile options
+## -fsigned-char: plain char is unsigned on arm/aarch64
 add_compile_options(
-  -O3 -g -Wall -Wpedantic -fPIC
+  -O3 -g -Wall -Wpedantic -fPIC -fsigned-char
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
   $<$<COMPILE_LANGUAGE:CXX>:-Wno-terminate>
   $<$<COMPILE_LANGUAGE:CXX>:-Wno-array-bounds>
@@ -74,7 +75,8 @@ link_directories(
   )
 
 if(USE_H5)
-  link_directories(/usr/lib/x86_64-linux-gnu/hdf5/serial)
+  file(GLOB HDF5_SERIAL_DIRS /usr/lib/*-linux-gnu/hdf5/serial)
+  link_directories(${HDF5_SERIAL_DIRS})
 endif()
 
 if(USE_PHYSX)

@@ -35,8 +35,9 @@ option(USE_H5 "link to h5 library" ON)
 option(USE_FREETYPE "link to freetype2 library" ON)
 
 ## compile options
+## -fsigned-char: plain char is unsigned on arm/aarch64
 add_compile_options(
-  -O3 -g -w -fPIC
+  -O3 -g -w -fPIC -fsigned-char
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
   $<$<COMPILE_LANGUAGE:CXX>:-Wno-terminate>
   $<$<COMPILE_LANGUAGE:CXX>:-Wno-array-bounds>
@@ -61,6 +62,7 @@ include_directories(
   botop/src
   $ENV{HOME}/.local/include
   /usr/local/include/eigen3
+  /usr/include/openblas
   )
 
 link_directories(
@@ -69,7 +71,9 @@ link_directories(
   )
 
 if(USE_PHYSX)
-  link_directories(/usr/local/bin/linux.clang/release)
+  # PhysX output dir is linux.clang on x86_64, linux.aarch64 on arm
+  file(GLOB PHYSX_LIB_DIRS /usr/local/bin/linux.*/release)
+  link_directories(${PHYSX_LIB_DIRS})
 endif()
 
 file(GLOB SRC_AlgoLewiner rai/src/Algo/Lewiner/*.cpp)
@@ -202,7 +206,7 @@ endif()
 # default/required dependencies
 target_link_libraries(rai PRIVATE
   # ORDER MATTERS! test with -no-undefined linker flag (above)
-  lapack libatlas.a
+  openblas gfortran
   libglfw3.a libGLEW.a libglut.a Xrandr Xxf86vm Xi GLU GL
   libjsoncpp.a libyaml.a libpng16.a libassimp.a libzlibstatic.a
   libfcl.a libccd.a libANN.a libqhull.a
