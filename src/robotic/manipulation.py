@@ -73,7 +73,9 @@ class KOMO_ManipulationHelper():
         '''
         self.setup_motion(C, 1, 50, homing_scale, acceleration_scale, accumulated_collisions, joint_limits, quaternion_norms)
 
-        self.komo.initWithWaypoints([q1], 1, interpolate=True, qHomeInterpolate=(.2 if homing_scale>1e-2 else .0), verbose=0)
+        qs = np.empty((1,), dtype=object) #so annying to create an array of arrays
+        qs[0]=q1
+        self.komo.initWithWaypoints(qs, 1, interpolate=True, qHomeInterpolate=(.2 if homing_scale>1e-2 else .0), verbose=0)
         self.komo.addObjective([1.], ry.FS.qItself, [], ry.OT.eq, scale=[1e0], target=q1)
 
     def add_stable_frame(self, jointType, parent, name, initFrame=None, markerSize=-1.):

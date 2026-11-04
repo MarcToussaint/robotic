@@ -34,6 +34,7 @@ local-clean:
 	-rm -Rf robotic/__pycache__ build/bdist* build/lib robotic.egg-info
 
 wheels:
+	ln -f -s _make/CMakeLists-docker.txt CMakeLists.txt
 	$(eval id = $(shell _make/run-docker.sh rai-manylinux -d))
 	@echo "started docker " ${id}
 	docker exec -it ${id} /bin/bash -C local/_make/build-wheels.sh

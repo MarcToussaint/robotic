@@ -27,25 +27,21 @@ ENV CMAKE_POLICY_VERSION_MINIMUM=3.5
 
 RUN wget https://github.com/MarcToussaint/rai/raw/master/_make/install.sh; chmod a+x install.sh
 
-# (some of these we compile manually just to ensure the -fPIC, which is missing in yum packages)
+# we compile several libs from source, to ensure 1) static versions, and 2) -fPIC
 RUN ./install.sh -gc jsoncpp
 RUN ./install.sh -gc libyaml
 RUN ./install.sh -gc libpng
-# hdf5 1.10.4 predates GCC 14, which turned implicit declarations and incompatible pointer assignments into errors.
-RUN env CC="gcc -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types" ./install.sh -gc hdf5
+RUN ./install.sh -gc hdf5
 RUN ./install.sh -gc freeglut
 RUN ./install.sh -gc glew
 RUN ./install.sh -gc glfw
 
 RUN ./install.sh -gc eigen
-# libANN's repo ships prebuilt x86-64 .o files, so clone it up front and drop them. Make parses install.sh's "C++=g++" argument as `C+ += g++`, so $(C++) comes from the env.
-RUN git clone https://github.com/daveb-dev/libANN.git ${HOME}/git/libann && rm -f ${HOME}/git/libann/src/*.o
-RUN env "C++=g++" ./install.sh -gc libann
+RUN ./install.sh -gc libann
 RUN ./install.sh -gc qhull
 RUN ./install.sh -gc libccd
 RUN ./install.sh -gc fcl
-# assimp v5.2.5 builds with -Werror, and GCC 13+ flags its FBX parser with a false-positive -Wdangling-reference
-RUN env CXXFLAGS="-Wno-dangling-reference" ./install.sh -gc assimp
+RUN env MAKEFLAGS="-j6" ./install.sh -gc assimp
 
 #RUN ./install.sh -gc bullet
 RUN ./install.sh -gc physx
