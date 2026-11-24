@@ -14,13 +14,15 @@ parser = argparse.ArgumentParser(
 parser.add_argument('file', type=str, help='urdf file', nargs='?', default='none')
 
 parser.add_argument('-flipDaeYZ', help='when viewing dae-files, flip YZ coordinates', action="store_true", default=False)
-parser.add_argument('-reverseRPY', help='reverse RPY convention', action="store_true", default=True)
-parser.add_argument('-pruneRigidJoints', help='prune useless frames (but you loose their names)', action="store_true", default=True)
+parser.add_argument('-no-reverseRPY', help='reverse RPY convention', action="store_false", default=True)
+parser.add_argument('-no-pruneRigidJoints', help='prune useless frames (but you loose their names)', action="store_false", default=True)
 parser.add_argument('-recomputeInertias', help='', action="store_true")
 parser.add_argument('-defaultMassDensity', help='', type=float, default=5.)
 parser.add_argument('-minInertiaDiagonal', help='', type=float, default=1e-6)
+parser.add_argument('-meshDecimate', help='', type=float, default=-1.)
 parser.add_argument('-no-processMeshes', help='process meshes to h5', action="store_false", default=True)
 parser.add_argument('-no-meshlab', help='process meshes further by applying some meshlab filters', action="store_false", default=True)
+parser.add_argument('-no-colors', help='process meshes further by applying some meshlab filters', action="store_true", default=False)
 parser.add_argument('-meshPathRemove', help='remove path prefixes', type=str, default='file://')
 
 def convert(file, cfg):
@@ -33,19 +35,19 @@ def convert(file, cfg):
     if cfg.flipDaeYZ:
         ry.set_params({'assimp/daeFlipYZ': False})
 
-    C = URDFLoader(file, visualsOnly=True, meshPathRemove=cfg.meshPathRemove, reverseRPY=cfg.reverseRPY).C
+    C = URDFLoader(file, visualsOnly=True, meshPathRemove=cfg.meshPathRemove, reverseRPY=cfg.no_reverseRPY).C
 
     print('#frames raw: ', C.getFrameDimension())
 
     with open(f'{filebase}_raw_conv.yml', 'w') as fil:
         fil.write(C.asYaml())
 
-    C.processStructure(cfg.pruneRigidJoints, True, False, False)
+    C.processStructure(cfg.no_pruneRigidJoints, True, False, False)
     if cfg.recomputeInertias:
         ry.set_params({"defaultMassDensity": cfg.defaultMassDensity})
         ry.set_params({"minInertiaDiagonal": cfg.minInertiaDiagonal})
     C.processInertias(cfg.recomputeInertias)
-    C.processStructure(cfg.pruneRigidJoints, True, False, False)
+    C.processStructure(cfg.no_pruneRigidJoints, True, False, False)
 
     print('#frames processes: ', C.getFrameDimension())
 
@@ -69,15 +71,18 @@ def convert(file, cfg):
             M.report()
 
             if cfg.no_meshlab:
-                M.repair_meshlab(merge_threshold=1e-4)
+                M.repair_meshlab(merge_threshold=1e-4, decimate=cfg.meshDecimate)
                 # M.repair_trimesh(mergeTolerance=1e-4)
                 M.report()
             
             print('  watertight:', M.tmesh.is_watertight)
             print('  oriented:', M.tmesh.is_winding_consistent)
 
+            M.export_h5(without_colors=cfg.no_colors)
+            
+            M.repair_meshlab(merge_threshold=-1., decimate=0.5, make_convex=True)
+            M.report()
             M.export_trimesh(ext='.stl')
-            M.export_h5(without_colors=True)
 
 def main():
     args = parser.parse_args()

@@ -124,25 +124,40 @@ class MeshTool():
         # if self.mesh.visual != None:
             # self.mesh.visual.uv = np.array([[0,0]])
 
-    def repair_meshlab(self, merge_threshold=1e-4, make_convex=False, decimate=False):
+    def repair_meshlab(self, merge_threshold=1e-4, make_convex=False, decimate=-1.):
         print('   - meshlab repair')
         mlmesh = meshlab.Mesh(vertex_matrix=self.tmesh.vertices, face_matrix=self.tmesh.faces)
         ms = meshlab.MeshSet()
         ms.add_mesh(mlmesh)
 
+        if merge_threshold>0.:
+            ms.apply_filter('meshing_merge_close_vertices', threshold=meshlab.PureValue(merge_threshold))
+
+        # basic cleaning
+        ms.apply_filter("meshing_remove_duplicate_vertices")
+        ms.apply_filter("meshing_remove_duplicate_faces")
+        ms.apply_filter("meshing_remove_null_faces")  # Removes zero-area faces
+        ms.apply_filter("meshing_repair_non_manifold_edges", method="Remove Faces")
+        ms.apply_filter("meshing_repair_non_manifold_vertices", vertdispratio=0.0)
+
+        if decimate>0.:
+            ms.apply_filter(
+                "meshing_decimation_quadric_edge_collapse",
+                targetperc=decimate,  # Set to 0 and use targetfacenum=10000 for an exact face count
+                preserveboundary=True,
+                preservenormal=True,
+                preservetopology=True,
+                optimalplacement=True,
+                planarquadric=True,  # Enables planar simplification
+            )
+            # ms.apply_filter('meshing_decimation_clustering', threshold=meshlab.PureValue(merge_threshold))
+
+        
         if make_convex:
             ms.apply_filter('generate_convex_hull')
 
-        if merge_threshold>0.:
-            if decimate:
-                ms.apply_filter('meshing_decimation_clustering', threshold=meshlab.PureValue(merge_threshold))
-            else:
-                ms.apply_filter('meshing_merge_close_vertices', threshold=meshlab.PureValue(merge_threshold))
-
-        if not make_convex:
-            ms.apply_filter('meshing_repair_non_manifold_edges')
-            ms.apply_filter('meshing_close_holes', maxholesize=1000)
-        
+        # ms.apply_filter("meshing_repair_non_manifold_edges", method="Remove Faces")
+        # ms.apply_filter('meshing_close_holes', maxholesize=1000)
         # ms.apply_filter('meshing_remove_t_vertices')
         # ms.apply_filter('meshing_repair_non_manifold_edges')
         # ms.apply_filter('meshing_close_holes', maxholesize=1000)
