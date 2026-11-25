@@ -1,0 +1,303 @@
+cmake_minimum_required(VERSION 3.14)
+
+project(RoboticPython)  # macOS (Homebrew), headless: no GL/X11/GLFW
+
+## first time call: generate unity sources
+if(NOT DEFINED CMAKE_CACHE_MAJOR_VERSION)
+  execute_process(COMMAND make -j1 -C ${CMAKE_CURRENT_SOURCE_DIR}/rai unityAll)
+endif()
+
+## variable default values
+set(CMAKE_INSTALL_MESSAGE LAZY)
+set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ version selection")
+set(PY_VERSION 3.12 CACHE STRING "python version")
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "..." FORCE)
+endif()
+if(DEFINED ENV{VIRTUAL_ENV})
+  set(PY_LIB_SITE "$ENV{VIRTUAL_ENV}/lib/python${PY_VERSION}/site-packages")
+else()
+  set(PY_LIB_SITE "${CMAKE_INSTALL_PREFIX}/lib/python${PY_VERSION}/site-packages")
+endif()
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "@loader_path;${CMAKE_INSTALL_PREFIX}/lib")
+#only for testing: python module needs to link to python later!
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+
+## options
+option(USE_PYBIND "build python bindings" ON)
+option(USE_BULLET "link to bullet" OFF)
+option(USE_PHYSX "link to physx" OFF)
+option(USE_OPENCV "link to opencv" ON)
+option(USE_REALSENSE "link to realsense2 driver library" OFF)
+option(USE_BASLER "link to Basler's pylon library" OFF)
+option(USE_LIBFRANKA "link to libfranka" OFF)
+option(USE_ALLEGRO "link to BHand lib for Allegro hand" OFF)
+option(USE_TROSSEN "link trossen_arm library" OFF)
+option(USE_PCL "link to pcl library" OFF)
+option(USE_H5 "link to h5 library" ON)
+option(USE_FREETYPE "link to freetype2 library" OFF)
+
+## compile options
+## -fsigned-char: plain char is unsigned on arm/aarch64
+add_compile_options(
+  -O3 -g -Wall -Wpedantic -fPIC -fsigned-char
+  $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-terminate>
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-array-bounds>
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-register> # fcl-0.5 headers use 'register' (an error in clang C++17)
+  )
+
+################################################################################
+
+add_definitions(
+  -DRAI_ROOT_PATH=\"${CMAKE_SOURCE_DIR}/rai\"
+  -DRAI_LAPACK -DRAI_EIGEN -DRAI_PTHREAD
+  -DRAI_ANN -DRAI_QHULL8 -DRAI_ASSIMP -DNO_CYCLE_DETECTION -DRAI_PNG -DRAI_PLY -DRAI_YAML
+  -DRAI_GJK -DRAI_CCD -DRAI_FCL -DRAI_Lewiner -DRAI_VHACD
+  -DRAI_BotOp
+  )
+
+################################################################################
+
+set(BREW_PREFIX /opt/homebrew CACHE PATH "homebrew prefix")
+
+include_directories(
+  rai/src
+  botop/src
+  $ENV{HOME}/.local/include
+  ${BREW_PREFIX}/include
+  ${BREW_PREFIX}/include/eigen3
+  ${BREW_PREFIX}/opt/openblas/include
+  )
+
+link_directories(
+  $ENV{HOME}/.local/lib
+  ${BREW_PREFIX}/lib
+  ${BREW_PREFIX}/opt/openblas/lib
+  )
+
+if(USE_PHYSX)
+  link_directories($ENV{HOME}/.local/lib/PhysX)
+endif()
+
+file(GLOB SRC_AlgoLewiner rai/src/Algo/Lewiner/*.cpp)
+file(GLOB SRC_GeoGJK rai/src/Geo/GJK/*.c)
+file(GLOB SRC_GeoPly rai/src/Geo/ply/*.c)
+file(GLOB SRC_GeoCcd rai/src/Geo/ccd_rai/*.c)
+file(GLOB SRC_OptLBFGS rai/src/Optim/liblbfgs/*.c)
+file(GLOB SRC_OptCMA rai/src/Optim/CMA/*.c)
+
+file(GLOB SRC_BotOp botop/src/BotOp/*.cpp)
+file(GLOB SRC_Franka botop/src/Franka/*.cpp)
+file(GLOB SRC_Omnibase botop/src/Omnibase/*.cpp)
+file(GLOB SRC_OptiTrack botop/src/OptiTrack/*.cpp)
+file(GLOB SRC_RealSense botop/src/RealSense/*.cpp)
+file(GLOB SRC_Basler botop/src/Basler/*.cpp)
+file(GLOB SRC_Robotiq botop/src/Robotiq/*.cpp)
+file(GLOB SRC_Allegro botop/src/Allegro/*.cpp)
+list(FILTER SRC_Allegro EXCLUDE REGEX "canAPI.cpp$") # linux/can.h, only needed with USE_ALLEGRO
+file(GLOB SRC_Trossen botop/src/Trossen/*.cpp)
+file(GLOB SRC_Audio botop/src/Audio/*.cpp)
+
+add_library(rai SHARED
+  rai/src/Core/unity.cxx
+  rai/src/Optim/unity.cxx
+  rai/src/Geo/unity.cxx
+  ${SRC_AlgoLewiner}
+  ${SRC_GeoGJK}
+  ${SRC_GeoPly}
+  ${SRC_GeoCcd}
+  ${SRC_OptLBFGS}
+  ${SRC_OptCMA}
+  rai/src/Algo/unity.cxx
+  rai/src/Search/unity.cxx
+  rai/src/PathAlgos/unity.cxx
+  rai/src/Gui/unity.cxx
+  rai/src/Kin/unity.cxx
+  rai/src/KOMO/unity.cxx
+  rai/src/LGP/unity.cxx
+  rai/src/Logic/unity.cxx
+  rai/src/Control/unity.cxx
+  rai/src/DataGen/unity.cxx
+  rai/src/Perception/unity.cxx
+  ${SRC_BotOp}
+  ${SRC_Franka}
+  ${SRC_Omnibase}
+  ${SRC_OptiTrack}
+  ${SRC_RealSense}
+  ${SRC_Basler}
+  ${SRC_Robotiq}
+  ${SRC_Allegro}
+  ${SRC_Trossen}
+  ${SRC_Audio}
+  )
+
+################################################################################
+
+#find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+#target_link_libraries (rai Eigen3::Eigen)
+find_package(PkgConfig REQUIRED)
+
+if(USE_FREETYPE)
+  find_package(Freetype REQUIRED)
+  add_definitions(-DRAI_FREETYPE)
+  include_directories(rai ${FREETYPE_INCLUDE_DIRS})
+  target_link_libraries(rai PRIVATE ${FREETYPE_LIBRARIES})
+  message(STATUS "[rai] using freetype2 libs: " ${FREETYPE_LIBRARIES})
+endif()
+
+if(USE_H5)
+  find_package(HDF5 REQUIRED)
+  add_definitions(-DRAI_H5)
+  include_directories(${HDF5_INCLUDE_DIRS})
+  target_link_libraries(rai PRIVATE hdf5_cpp hdf5 z)
+  message(STATUS "[rai] using H5 libs: hdf5 hdf5_cpp in " ${HDF5_INCLUDE_DIRS})
+endif()
+
+if(USE_BULLET)
+  find_package(Bullet REQUIRED)
+  add_definitions(-DRAI_BULLET)
+  include_directories(${BULLET_INCLUDE_DIRS})
+  target_link_libraries(rai PRIVATE ${BULLET_LIBRARIES})
+  message(STATUS "[rai] using bullet libs:" ${BULLET_LIBRARIES})
+endif()
+
+if(USE_PHYSX)
+  add_definitions(-DRAI_PHYSX -DNDEBUG -DPX_DISABLE_FLUIDS -DCORELIB -DPX32 -DLINUX)
+  target_link_libraries(rai PRIVATE PhysXExtensions_static_64 PhysX_static_64 PhysXCooking_static_64 PhysXCommon_static_64 PhysXFoundation_static_64)
+  message(STATUS "[rai] using physx libs from ~/.local")
+endif()
+
+if(USE_OPENCV)
+  # OpenCV 5 from homebrew (brew install opencv); same modules as the ubuntu build
+  find_package(OpenCV 5 REQUIRED COMPONENTS core imgproc calib geometry objdetect highgui videoio
+    PATHS ${BREW_PREFIX}/opt/opencv NO_DEFAULT_PATH)
+  add_definitions(-DRAI_OPENCV)
+  include_directories(${OpenCV_INCLUDE_DIRS})
+  target_link_libraries(rai PRIVATE ${OpenCV_LIBS})
+  message(STATUS "[rai] using OpenCV ${OpenCV_VERSION} libs: " "${OpenCV_LIBS}")
+endif()
+
+if(USE_REALSENSE)
+  add_definitions(-DRAI_REALSENSE)
+  target_link_libraries(rai PRIVATE realsense2 realsense-file usb-1.0) #rsutils
+  message(STATUS "[rai] using realsense libs")
+endif()
+
+if(USE_BASLER)
+  add_definitions(-DRAI_BASLER)
+  include_directories($ENV{HOME}/.local/include/pylon)
+  target_link_libraries(rai PRIVATE pylonbase pylonutility GenApi_gcc_v3_5_Basler_pylon_v1 GCBase_gcc_v3_5_Basler_pylon_v1)
+  message(STATUS "[rai] using Basler's pylon libs")
+endif()
+
+if(USE_LIBFRANKA)
+  add_definitions(-DRAI_FRANKA)
+  target_link_libraries(rai PRIVATE franka PocoNet PocoFoundation)
+  message(STATUS "[rai] using libfranka")
+endif()
+
+if(USE_ALLEGRO)
+  add_definitions(-DRAI_ALLEGRO)
+  target_link_libraries(rai PRIVATE BHand)
+endif()
+
+if(USE_TROSSEN)
+  add_definitions(-DRAI_TROSSEN)
+  target_link_libraries(rai PRIVATE trossen_arm)
+endif()
+
+# default/required dependencies
+target_link_libraries(rai PRIVATE
+  # ORDER MATTERS! test with -no-undefined linker flag (above)
+  openblas
+  jsoncpp yaml png assimp z
+  fcl ccd ANN qhullstatic
+  pthread dl
+  "-framework OpenGL" # only to resolve a few unguarded legacy gl* calls (e.g. Perception/surfels.cpp); no context is created
+  )
+
+################################################################################
+
+if(USE_PYBIND)
+  set(PYTHON_EXECUTABLE "python${PY_VERSION}")
+  find_package(Python3 ${PY_VERSION} EXACT COMPONENTS Interpreter Development)
+  message(STATUS "[rai] requested python version " ${PY_VERSION} )
+  message(STATUS "[rai] using python executable " ${PYTHON_EXECUTABLE} )
+  execute_process(
+    COMMAND "${PYTHON_EXECUTABLE}" -m pybind11 --cmakedir
+    OUTPUT_VARIABLE pybind11_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  message(STATUS "[rai] using pybind11_DIR " ${pybind11_DIR} ${pybind11_ERROR} ${pybind11_RESULT} )
+  
+  find_package(pybind11)
+  
+  pybind11_add_module(_robotic MODULE
+    rai/src/ry/unity.cxx
+    botop/src/BotOp/py-BotOp.cxx
+  )
+
+  target_compile_definitions(_robotic PUBLIC RAI_PYBIND)
+  target_include_directories(_robotic PUBLIC ${pybind11_INCLUDE_DIRS})
+  target_link_libraries(_robotic PRIVATE rai)
+endif()
+
+################################################################################
+
+get_property(_defs DIRECTORY PROPERTY COMPILE_DEFINITIONS)
+message(STATUS "[rai] compiler flags: " "${_defs}")
+message(STATUS "[rai] source dir: " "${CMAKE_SOURCE_DIR}")
+
+################################################################################
+
+add_custom_target(docstrings #ALL
+  DEPENDS _robotic
+  COMMAND env PYTHONPATH="." ${PYTHON_EXECUTABLE} -m pybind11_stubgen --ignore-all-errors _robotic
+  COMMAND cp -f stubs/_robotic*/*.pyi ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic/)
+
+#add_executable(kinEdit rai/bin/src_kinEdit/main.cpp)
+#target_link_libraries(kinEdit rai)
+
+#add_executable(meshTool rai/bin/src_meshTool/main.cpp)
+#target_link_libraries(meshTool rai)
+
+#add_executable(bot botop/bin/bot/main.cpp)
+#target_link_libraries(bot rai)
+
+################################################################################
+
+message(STATUS "[rai] installing python packages in " ${CMAKE_CURRENT_SOURCE_DIR}/src )
+
+install(
+  TARGETS _robotic rai
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+
+#install(
+#  FILES robotic/__init__.py robotic/version.py robotic/render.py robotic/manipulation.py robotic/__init__.pyi
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+
+install(
+  DIRECTORY rai-robotModels
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic
+  FILES_MATCHING
+  PATTERN "*.yml" PATTERN "*.g" PATTERN "*.h5" PATTERN "*.ply" PATTERN "*.stl" PATTERN "*.png"
+  PATTERN "retired" PATTERN "__pychache__" EXCLUDE
+  )
+
+install(
+  DIRECTORY rai/src/
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic/include/rai
+  FILES_MATCHING
+  PATTERN "*.h" PATTERN "*.ipp"
+  PATTERN "*retired*" EXCLUDE
+  )
+
+#install(
+#  TARGETS meshTool #kinEdit meshTool bot
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)
+
+#install(
+#  PROGRAMS robotic/ry-info robotic/ry-test robotic/ry-view robotic/ry-bot robotic/ry-meshTool robotic/ry-h5info robotic/ry-urdfConvert.py
+#  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/robotic)

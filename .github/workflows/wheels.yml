@@ -55,9 +55,68 @@ jobs:
           path: dist/*.whl
           if-no-files-found: error
 
+  build-macos:
+    name: Build wheels (macos arm64, headless)
+    runs-on: macos-15
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: |
+            3.10
+            3.11
+            3.13
+            3.14
+            3.12
+
+      - name: Homebrew dependencies
+        run: brew install eigen openblas hdf5 jsoncpp libyaml libpng assimp libccd qhull findutils opencv
+
+      - name: Source dependencies (f2c.h, fcl-0.5, libANN)
+        run: |
+          mkdir -p ~/.local/include
+          curl -fsSL https://www.netlib.org/f2c/f2c.h -o ~/.local/include/f2c.h
+          # fcl-0.5's CMakeLists predates the minimum policy version of CMake 4
+          CMAKE_POLICY_VERSION_MINIMUM=3.5 rai/_make/install.sh fcl
+          rai/_make/install.sh libann
+
+      - name: Build wheels
+        run: _make/build-wheels-macos.sh 3.10 3.11 3.12 3.13 3.14
+
+      - name: Test wheel
+        run: |
+          python3.12 -m venv /tmp/venv
+          /tmp/venv/bin/pip install dist/robotic-*-cp312-*macosx*.whl
+          cd /tmp && /tmp/venv/bin/python -c "
+          import robotic as ry
+          C = ry.Config(); C.addFile(ry.raiPath('scenarios/pandaSingle.g'))
+          komo = ry.KOMO(C, 1, 1, 0, True)
+          komo.addObjective([], ry.FS.accumulatedCollisions, [], ry.OT.eq)
+          ret = ry.NLP_Solver(komo.nlp(), verbose=0).solve()
+          print('frames:', len(C.getFrameNames()), 'komo feasible:', ret.feasible)
+          assert ret.feasible
+          q0 = C.getJointState(); qT = q0.copy(); qT[0] += 1.
+          rrt = ry.RRT_PathFinder(); rrt.setProblem(C); rrt.setStartGoal(q0, qT)
+          ret = rrt.solve(verbose=0)
+          print('rrt feasible:', ret.feasible, 'aruco image:', ry.getArucoImage(7).shape)
+          assert ret.feasible
+          "
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-arm64
+          path: dist/*macosx*.whl
+          if-no-files-found: error
+
   publish:
     name: Publish to PyPI
-    needs: build
+    needs: [build, build-macos]
     if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish)
     runs-on: ubuntu-24.04
     environment: pypi

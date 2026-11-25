@@ -1,15 +1,15 @@
 [submodule "rai"]
 	path = rai
-	url = https://github.com/MarcToussaint/rai.git
+	url = git@github.com:MarcToussaint/rai.git
 [submodule "rai-robotModels"]
 	path = rai-robotModels
-	url = https://github.com/MarcToussaint/rai-robotModels.git
+	url = git@github.com:MarcToussaint/rai-robotModels.git
 [submodule "botop"]
 	path = botop
-	url = https://github.com/MarcToussaint/botop.git
+	url = git@github.com:MarcToussaint/botop.git
 [submodule "rai-docs"]
 	path = rai-docs
-	url = https://github.com/MarcToussaint/rai-docs.git
+	url = git@github.com:MarcToussaint/rai-docs.git
 [submodule "rai-tutorials"]
 	path = rai-tutorials
-	url = https://github.com/MarcToussaint/rai-tutorials.git
+	url = git@github.com:MarcToussaint/rai-tutorials.git
