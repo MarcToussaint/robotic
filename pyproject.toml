@@ -17,7 +17,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-robotic = ["*.so",
+robotic = ["*.so", "*.dylib",
 	"include/rai/*/*.h", "include/rai/*/*.ipp",
 	"rai-robotModels/panda/*.g", "rai-robotModels/panda/*.yml", "rai-robotModels/panda/meshes/*",
 	"rai-robotModels/ur10/*.g", "rai-robotModels/ur10/meshes/*",

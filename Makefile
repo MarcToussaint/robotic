@@ -19,6 +19,12 @@ install:
 	$(MAKE) -C build _robotic docstrings install -j $(shell nproc --ignore 2)
 	uv pip install -e .
 
+install-macos:
+	ln -f -s _make/CMakeLists-macos.txt CMakeLists.txt
+	PATH="$(shell brew --prefix findutils)/libexec/gnubin:$$PATH" cmake . -B build -DPY_VERSION=$(PY_VER) $(CMAKE_FLAGS)
+	$(MAKE) -C build _robotic docstrings install -j $(shell sysctl -n hw.ncpu)
+	uv pip install -e .
+
 install-with-hardware:
 	ln -f -s _make/CMakeLists-ubuntu.txt CMakeLists.txt
 	cmake . -B build -DPY_VERSION=$(PY_VER) -DUSE_OPENCV=ON -DUSE_REALSENSE=ON -DUSE_LIBFRANKA=ON -DUSE_TROSSEN=ON -DUSE_BASLER=ON
